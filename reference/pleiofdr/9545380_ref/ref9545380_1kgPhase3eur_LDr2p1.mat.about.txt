@@ -1,0 +1,110 @@
+# description of the reference from /projects/NS9114K/users/alexeas/1000genomes/readme.txt:
+
+Get duplicated variants for 22 chromosomes:
+seq 22 | parallel -j11 "zgrep -v '^#' ./raw/ALL.chr{}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz | cut -f3 | sort | uniq -d > chr{}.dups"
+
+Get european sample IDs (set family ID = individual ID):
+awk 'BEGIN{OFS="\t"; FS="\t"} {if ($7 ~ "IBS|TSI|GBR|CEU|FIN") print($2,$2);}' ./raw/integrated_call_samples_v2.20130502.ALL.ped > samples.eur
+This will produce 670 samples, however this number will reduce to 503 samples after applying additional filters in "plink --vcf" step below.
+
+Get sex of samples:
+tail -n+2 ./raw/integrated_call_samples_v2.20130502.ALL.ped | awk 'BEGIN{OFS="\t"; FS="\t";} {print($2,$2,$5)}' > samples.sex
+
+Convert vcf files for 22 chromosomes to plink format (taking only biallelic reliable variants for european individuals and setting sex from samples.sex file created on the previous step):
+seq 22 | parallel -j11 "plink --vcf ./raw/ALL.chr{}.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --biallelic-only strict --out chr{} --make-bed --mind 0.1 --geno 0.1 --hwe 1.E-20 midp --maf 0.01 --keep samples.eur --exclude chr{}.dups --update-sex samples.sex"
+
+For more details on filtering original vcf files with plink see:
+https://www.cog-genomics.org/plink/1.9/data#make_bed
+https://www.cog-genomics.org/plink/1.9/filter
+https://www.cog-genomics.org/plink/1.9/input#vcf_filter
+
+Calculate r2 for 22 chromosomes (here r2 coefficients are calculated based on genotypes {0,1,2}, to have r2 values based on maximum likelihood haplotypes 'dprime' option should be included):
+for ((i=1;i<23;i++)); do plink --bfile chr${i} --r2 gz yes-really --ld-window 1000000 --ld-window-kb 20000 --ld-window-r2 0.05 --out chr${i}.r2; done
+
+For more details about genotype and haplotype based r2 estimations refer to plink's manual (see 'dprime' option of --r/--r2 flags):
+https://www.cog-genomics.org/plink/1.9/ld#r
+
+
+Convert from plink output format to space-delimited format (write to tmp dir, than overwrite files in the root 1000genomes dir):
+seq 22 | parallel -j11 "zcat chr{}.r2.ld.gz | sed 's/^[ \t]*//' | tr -s ' ' |  gzip -c > tmp/chr{}.r2.ld.gz"
+
+Calculate maf frequencies:
+seq 22 | parallel -j11 "plink --bfile chr{} --freq --out chr{}.maf"
+
+
+
+Create template containing all SNPs:
+echo -e "CHR\tSNP\tBP\tA1\tA2" > template9524k.txt && cut -f1,2,4,5,6 chr*.bim >> template9524k.txt && gzip template9524k.txt
+
+
+Produce "identical" annotations:
+for ((i=1;i<23;i++)); do awk 'BEGIN{OFS="\t"; print("SNP","IDENTICAL");} {print($2,1);}' chr${i}.bim > annot/identical/chr${i}.annot; done
+
+
+==================================
+
+
+# ref9545380_1kgPhase3eur_LDr2p1.mat was created using the following scripts:
+
+import pandas as pd
+import numpy as np
+import scipy.io as sio
+
+print('Reading reference...')
+ref = pd.read_csv('all_chr.bim', delim_whitespace=True, header=None, names='CHR SNP GP BP A1 A2'.split())
+ref['A1'] = ref['A1'].str.upper()
+ref['A2'] = ref['A2'].str.upper()
+snp_to_id = dict([(snp, index) for snp, index in zip(ref['SNP'], ref.index)])
+
+_base_complement = {"A":"T", "C":"G", "G":"C", "T":"A"}
+def _complement(seq):
+    if any([(b not in _base_complement) for b in seq]): return seq
+    return "".join([_base_complement[b] for b in seq])
+
+def _reverse_complement(seq):
+    return _complement(seq[::1])
+
+is_ambiguous = [(a1 == _reverse_complement(a2)) for (a1, a2) in zip(ref['A1'],ref['A2'])]
+
+print('Reading allele frequencies...')
+frq=pd.concat([pd.read_table('chr{}.maf.frq'.format(chri),delim_whitespace=True) for chri in range(1, 23)])
+
+print('Reading LD-weighted annotations...')
+intergenic=pd.read_table('template.1000genomes503eur9m.sorted.complete_annot_hg19.annomat.uniq.ld_informed.txt.gz', delim_whitespace=True)
+
+ld_window_r2=0.1
+
+# re-save bim file with header
+ref.to_csv('9545380.ref',index=False, sep='\t')
+
+for chri in range(1, 23):
+    print('Processing chr{}.r2.ld.gz...'.format(chri))
+    df=pd.read_csv('chr{}.r2.ld.gz'.format(chri), delim_whitespace=True, usecols=['SNP_A', 'SNP_B', 'R2'])
+    df = df[df['R2'] >= ld_window_r2][['SNP_A', 'SNP_B']].copy() # filter based on r2 threshold
+    index_A = df['SNP_A'].map(snp_to_id)
+    index_B = df['SNP_B'].map(snp_to_id)
+
+    # all files will share the same chrnumvec, posvec, mafvec, is_ambiguous and is_intergenic flags
+    sio.savemat('chr{}.r2.ld.mat'.format(chri), 
+        {'id1':index_A.values + 1, 'id2':index_B.values + 1,
+         'chrnumvec':ref['CHR'].values,
+         'posvec':ref['BP'].values,
+         'mafvec':frq['MAF'].values,
+         'is_ambiguous':is_ambiguous,
+         'is_intergenic':intergenic['Intergenic'].values},
+        format='5', do_compression=False, oned_as='column')
+
+
+# run the following from matlab to concatenate the data and convert it to the LD matrix
+'''
+data = load('chr1.r2.ld.mat'); id1 = data.id1; id2 = data.id2;
+for i=2:22, data = load(sprintf('chr%i.r2.ld.mat', i)) ; id1 = [id1; data.id1]; id2 = [id2; data.id2]; end
+nsnp = length(data.chrnumvec)
+LDmat = sparse(double(id1),double(id2),true,double(nsnp),double(nsnp));
+LDmat = LDmat | speye(double(nsnp));
+LDmat = LDmat | (LDmat - LDmat');
+data = rmfield(data,{'id1', 'id2'})
+data.LDmat = LDmat
+
+save('ref9545380_1kgPhase3eur_LDr2p1.mat', '-struct', 'data', '-v7.3')
+'''
