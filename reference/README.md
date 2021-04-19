@@ -6,6 +6,7 @@ This folder containers publicly available reference, derived from different reso
 
 * [ldsc](ldsc) folder contains certain files copied from https://alkesgroup.broadinstitute.org/LDSCORE 
   needed to run basic LD score regression analysis.
+  Some of this data is derived, e.g. ``ldsc/1000G_EUR_Phase3_baseline_split/base`` is extracted from ``1000G_Phase3_baseline_ldscores.tgz`` using just the ``base`` column (i.e. total LD score).
 
 * [ldsc/1000G_EUR_Phase3_plink](ldsc/1000G_EUR_Phase3_plink) contains reference data for the MiXeR tool.
   The reason for placing MiXeR data within ``ldsc`` is because it was derived from LDSC reference data
