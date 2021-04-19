@@ -15,6 +15,7 @@
 
 # matlab files
 *.mat  filter=lfs diff=lfs merge=lfs -text
+matlab/*  filter=lfs diff=lfs merge=lfs -text
 
 # specific files
 reference/ldsc/w_hm3.snplist                 filter=lfs diff=lfs merge=lfs -text

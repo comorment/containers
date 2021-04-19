@@ -8,6 +8,8 @@ Most of the tools require additional reference data, provided in the [reference]
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
 https://github.com/comorment/reference. This repository is private - please approach your contact within CoMorMent project to enable your access.
 
+[matlab](matlab) folder contains pre-compiled binaries of certain MATLAB-based tools. These binaries can be executed using ``singularity/matlabruntime.sif`` container.
+
 Description of containers and usage instructions are provided in the [docs](docs)] folder.
 
 # Legacy
