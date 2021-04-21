@@ -20,7 +20,7 @@ or create environmental variable like this, then use ``singularity shell <contai
 ```
 export SINGULARITY_BIND="containers/reference:/REF:ro,containers/matlab:/MATLAB:ro,reference:/REF2:ro,out:/OUT:rw"
 ```
-We also recommend using ``--container`` or ``--no-home`` arguments to better isolate container from the environment in your host machine.
+We also recommend using ``--contain`` or ``--no-home`` arguments to better isolate container from the environment in your host machine.
 
 All containers have a common set of linux tools like ``gzip``, ``tar``, ``parallel``, etc.
 Please open an issue if you'd like to add more of such basic tools.
