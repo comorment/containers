@@ -1,1 +1,1 @@
-TBD - provide description of all containers
+* [gwas.sif](gwas) - multiple tools (released as binaries/executables) for imputation and GWAS analysis
