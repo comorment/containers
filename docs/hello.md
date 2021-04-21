@@ -16,6 +16,23 @@ It only contains Plink 1.9 (http://zzz.bwh.harvard.edu/plink/) software.
   (C) 2005-2020 Shaun Purcell, Christopher Chang   GNU General Public License v3
   ```
 
+## Helpful links to singularity documentation
+
+It's good idea to familiraze with basics of the singularity, such as these:
+
+* ["singularity shell" options](https://sylabs.io/guides/3.2/user-guide/cli/singularity_shell.html#options)
+* [Bind paths and mounts](https://sylabs.io/guides/3.2/user-guide/bind_paths_and_mounts.html).
+
+## Installing Docker and Singularity on your local machine
+
+While you're getting up to speed with singularity, it might be reasonable to have it install on your local machine (laptop or desktop),
+and try out containers locally before importing them to your HPC environment.
+
+To install singularity on Ubuntu follow steps described here: https://sylabs.io/guides/3.7/user-guide/quick_start.html
+Note that ``sudo apt-get`` can give only a very old version of singularity, which isn't sufficient.
+Therefore it's best to build singularity locally.  Note that singularity depends on GO, so it must be installed first.
+If you discovered more speciifc instructions, please submit an issue or pull request to update this documentation.
+
 ## Mapping your data to singularity containers
 
 There are several ways to give singularity container access to your data. Here are few examples:
@@ -45,7 +62,7 @@ There are several ways to give singularity container access to your data. Here a
    Note that it will consume resources of the machine where  you currently run the singulairty  comand
    (i.e., most likely, the login node of your HPC cluster).
 
-## Running as SLURM job
+ ## Running as SLURM job
 
 * Run singularity container within SLURM job scheduler, by creating a ``hello_slurm.sh`` file (by adjusting the example below), and running ``sbatch hello_slurm.sh``:
   ```
