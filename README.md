@@ -10,7 +10,7 @@ https://github.com/comorment/reference. This repository is private - please appr
 
 [matlab](matlab) folder contains pre-compiled binaries of certain MATLAB-based tools. These binaries can be executed using ``singularity/matlabruntime.sif`` container.
 
-Description of containers and usage instructions are provided in the [docs](docs)] folder.
+Description of containers and usage instructions are provided in the [docs](docs) folder.
 
 # Legacy
 

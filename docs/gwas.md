@@ -22,4 +22,19 @@ Only tools released as binaries (executables) are put in ``gwas`` containers.
 Each tool has corresponding folder within ``/tools/``.
 Most of the tools are copied to ``/bin``, and can be executed by the name of the binary (as listed above).
 Some specific tools (e.g. ``bolt``) add added to the path directly from their tools folder (e.g. ``/tools/bolt``) due to dependencies.
-Either way, all tools can be invoked by their name, as listed above.
+Either way, all tools can be invoked by their name, as listed above. For example:
+
+```
+>singularity exec gwas.sif regenie
+              |=============================|
+              |      REGENIE v2.0.2.gz      |
+              |=============================|
+
+Copyright (c) 2020 Joelle Mbatchou and Jonathan Marchini.
+Distributed under the MIT License.
+Compiled with Boost Iostream library.
+Using Intel MKL with Eigen.
+
+ERROR: You must provide an output prefix using '--out'
+For more information, use option '--help' or visit the website: https://rgcgithub.github.io/regenie/
+```
