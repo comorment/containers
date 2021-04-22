@@ -1,7 +1,7 @@
 ## ``python3.sif``
 
 ``python3.sif`` container runs ``python 3.8.8`` from Anaconda, and has many useful python modules already installed, 
-including pandas, numpy, scipy, matplotlib and few others.
+including pandas, numpy, scipy, matplotlib and few others (see [here](https://github.com/comorment/gwas/blob/main/containers/python3/Dockerfile) for full details).
 
 ```
 >singularity exec python3.sif python
