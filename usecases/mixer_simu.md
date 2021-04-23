@@ -77,3 +77,15 @@ python /tools/mixer/precimed/mixer_figures.py two --statistic mean std --json-fi
 python /tools/mixer/precimed/mixer_figures.py two --statistic mean std --json-fit shared.fit.json --json-test shared.test.json --out mixer_simu_shared
 python /tools/mixer/precimed/mixer_figures.py two --statistic mean std --json-fit partial.fit.json --json-test partial.test.json --out mixer_simu_partial
 ```
+After processing the resulting figures shoud look like this:
+
+Unique:
+![mixer_simu_unique.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_unique.png)
+
+Partial:
+![mixer_simu_partial.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_partial.png)
+
+Shared:
+![mixer_simu_shared.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_shared.png)
+
+
