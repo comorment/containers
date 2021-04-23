@@ -7,20 +7,12 @@ Here is a brief overview of available containers (more info in the links below):
 * [r.sif] - R environment
 * [ldsc.sif] - LD score regression
 
-To simplify instructions throughout this repository, we assume that certain folders are mounted to your container:
-* ``--bind containers/reference:/REF:ro`` - public reference data (read-only)
-* ``--bind containers/matlab:/MATLAB:ro`` - matlab binaries (read-only)
-* ``--bind reference:/REF2:ro`` - private reference data (read-only)
-* ``--bind out:/OUT:rw`` - any output folder of your choice (read-write)
-You may either add this flags to your singularity command:
-```
-singularity shell --bind containers/reference:/REF:ro,containers/matlab:/MATLAB:ro,reference:/REF2:ro,out:/OUT:rw <container>.sif
-```
-or create environmental variable like this, then use ``singularity shell <container.sif>``.
-```
-export SINGULARITY_BIND="containers/reference:/REF:ro,containers/matlab:/MATLAB:ro,reference:/REF2:ro,out:/OUT:rw"
-```
-We also recommend using ``--contain`` or ``--no-home`` arguments to better isolate container from the environment in your host machine.
+To simplify instructions throughout this repository we use certain variables:
+* ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub
+* ``$SIF`` refers to ``$COMORMENT/containers/singularity`` folder, containing several ``.sif`` files
+* ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/containers/matlab:/MATLAB:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2`` and ``/MATLAB``)
+* We assume that all containers run with ``--home $PWD:/home``, mounting current folder mounted as ``/home`` within container
+* We also recommend using ``--contain`` argument to better isolate container from the environment in your host machine. If you choose not to mount ``--home $PWD:/home``, you may want to add ``--no-home`` argument.
 
 All containers have a common set of linux tools like ``gzip``, ``tar``, ``parallel``, etc.
 Please open an issue if you'd like to add more of such basic tools.

@@ -2,15 +2,15 @@
 
 The goal of this repository is to distribute tools for GWAS and post-GWAS analysis in CoMorMent project (http://comorment.eu/).
 
-Most of these tools are packaged into singularity containers (https://sylabs.io/singularity/).
+Most of these tools are packaged into singularity containers (https://sylabs.io/singularity/) and shared in [singularity](singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line (in which case make sure to [install GitLFS extension](https://git-lfs.github.com/)).
 
 Most of the tools require additional reference data, provided in the [reference](reference) folder of this repository.
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
 https://github.com/comorment/reference. This repository is private - please approach your contact within CoMorMent project to enable your access.
 
-[matlab](matlab) folder contains pre-compiled binaries of certain MATLAB-based tools. These binaries can be executed using ``singularity/matlabruntime.sif`` container.
-
 Description of containers and usage instructions are provided in the [docs](docs) folder.
+
+More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](usecases) folder.
 
 # Legacy
 

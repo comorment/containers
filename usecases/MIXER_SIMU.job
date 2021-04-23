@@ -1,0 +1,31 @@
+#!/bin/bash
+#SBATCH --job-name=mixer
+#SBATCH --account=p697_norment
+#SBATCH --time=01:00:00
+#SBATCH --cpus-per-task=21
+#SBATCH --mem-per-cpu=8000M
+#SBATCH --array=1-20
+
+module load singularity/3.7.1
+
+export COMORMENT=/cluster/projects/p697/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/containers/matlab:/MATLAB:ro,$COMORMENT/reference:/REF2:ro"
+export SIF=$COMORMENT/containers/singularity
+export MIXER_COMMON_ARGS="--chr2use 21 --ld-file /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.run4.ld --bim-file /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.bim --extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep${SLURM_ARRAY_TASK_ID}.snps"
+
+export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file unique.1.sumstats --out unique.1.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file unique.2.sumstats --out unique.2.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit2 $MIXER_COMMON_ARGS --trait1-file unique.1.sumstats --trait2-file unique.2.sumstats --trait1-params unique.1.fit.rep${SLURM_ARRAY_TASK_ID}.json --trait2-params unique.2.fit.rep${SLURM_ARRAY_TASK_ID}.json --out unique.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py test2 $MIXER_COMMON_ARGS --trait1-file unique.1.sumstats --trait2-file unique.2.sumstats --load-params unique.fit.rep${SLURM_ARRAY_TASK_ID}.json --out unique.test.rep${SLURM_ARRAY_TASK_ID}
+
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file shared.1.sumstats --out shared.1.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file shared.2.sumstats --out shared.2.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit2 $MIXER_COMMON_ARGS --trait1-file shared.1.sumstats --trait2-file shared.2.sumstats --trait1-params shared.1.fit.rep${SLURM_ARRAY_TASK_ID}.json --trait2-params shared.2.fit.rep${SLURM_ARRAY_TASK_ID}.json --out shared.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py test2 $MIXER_COMMON_ARGS --trait1-file shared.1.sumstats --trait2-file shared.2.sumstats --load-params shared.fit.rep${SLURM_ARRAY_TASK_ID}.json --out shared.test.rep${SLURM_ARRAY_TASK_ID}
+
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file partial.1.sumstats --out partial.1.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit1 $MIXER_COMMON_ARGS --trait1-file partial.2.sumstats --out partial.2.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py fit2 $MIXER_COMMON_ARGS --trait1-file partial.1.sumstats --trait2-file partial.2.sumstats --trait1-params partial.1.fit.rep${SLURM_ARRAY_TASK_ID}.json --trait2-params partial.2.fit.rep${SLURM_ARRAY_TASK_ID}.json --out partial.fit.rep${SLURM_ARRAY_TASK_ID}
+$PYTHON /tools/mixer/precimed/mixer.py test2 $MIXER_COMMON_ARGS --trait1-file partial.1.sumstats --trait2-file partial.2.sumstats --load-params partial.fit.rep${SLURM_ARRAY_TASK_ID}.json --out partial.test.rep${SLURM_ARRAY_TASK_ID}
