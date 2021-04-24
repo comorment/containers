@@ -1,4 +1,4 @@
-This usecase describe how to run MiXeR analysis (http://github.com/precimed/mixer) on synthetic data, generated with simu_linux (http://github.com/precimed/simu)
+This usecase describe how to run MiXeR analysis (http://github.com/precimed/mixer) on synthetic data, generated with simu_linux (http://github.com/precimed/simu). All commands below assume that ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [docs/README.md](../docs/README.md).
 
 1. Generate two pairs of traits for MiXeR analysis, covering two scenarios: complete polygenic overlap (``shared``), non-overlaping causal variants (``unique``), and partly overlaping causal variants (``partial``):
 ```

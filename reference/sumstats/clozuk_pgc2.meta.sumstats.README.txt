@@ -1,0 +1,31 @@
+https://walters.psycm.cf.ac.uk/
+
+DISCLAIMER
+
+These data are provided "as is", and without warranty, for scientific and educational use only. If you download these data, you acknowledge that these data will be used only for non-commercial research purposes; that the investigator is in compliance with all applicable state, local, and federal laws or regulations and institutional policies regarding human subjects and genetics research; that secondary distribution of the data without registration by secondary parties is prohibited; and that the investigator will cite the appropriate publication in any communications or publications arising directly or indirectly from these data. You also acknowledge that yourself or any member of your research team will never attempt to identify any participant in these studies.
+
+"Common schizophrenia alleles are enriched in mutation-intolerant genes and in regions under strong background selection" (2018)
+Publication.
+Preprint.
+
+CLOZUK+PGC2 meta-analysis summary statistics: Download [MD5 checksum]
+CLOZUK+PGC2 meta-analysis high-quality imputed SNP list: Download [MD5 checksum]
+
+Description:
+Meta-analysis of schizophrenia GWAS data from samples of European ancestry (N=105,318; 40,675 cases and 64,643 controls)
+SNP:    SNP name in IMPUTE2 format.
+Freq.A1:    Frequency of effect allele in 1000 Genomes EUR super-population.
+CHR:    Chromosome code.
+BP:    Base-pair position.
+A1:    Effect allele.
+A2:    Non-effect allele.
+OR:    Odds ratio.
+SE:    Standard error of the regression beta (log OR).
+P:    P-value.
+
+Companion file supplies SNP names of high-quality imputed (INFO > 0.9) markers, in LD-Score --merge-alleles format.
+
+Citation: Pardiñas AF, Holmans P, Pocklington AJ, Escott-Price V, Ripke S, Carrera N, et al. Common schizophrenia alleles are enriched in mutation-intolerant genes and in regions under strong background selection. Nat Genet. 2018. doi: 10.1038/s41588-018-0059-2.
+
+Update 31/05/2018: Corrected OR of X-chromosome SNP rs5937157, which was shown as a regression beta. Thanks to Lucy Riglin for reporting this error.
+
