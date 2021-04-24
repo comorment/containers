@@ -7,7 +7,7 @@ Here is a brief overview of available containers (more info in the links below):
 * [r.sif] - R environment
 * [ldsc.sif] - LD score regression
 
-To simplify instructions throughout this repository we use certain variables:
+To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 * ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub
 * ``$SIF`` refers to ``$COMORMENT/containers/singularity`` folder, containing several ``.sif`` files
 * ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/containers/matlab:/MATLAB:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2`` and ``/MATLAB``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most of the exmples don't require private reference data.
