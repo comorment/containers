@@ -12,6 +12,13 @@ Description of containers and usage instructions are provided in the [docs](docs
 
 More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](usecases) folder.
 
+For TSD system, a read-only copy of these containers is maintained at these locations
+(please read /cluster/projects/pNN/github/README.md file before using these copies):
+```
+/cluster/projects/p33/github/comorment
+/cluster/projects/p697/github/comorment
+```
+
 # Legacy
 
 Earlier version (prior to April 2021) of all containers and refrence data was distributed on Google Drive. This is no longer the case, the folder on Google drive is no longer maintained. ALl containers and reference data are released through this repository.
