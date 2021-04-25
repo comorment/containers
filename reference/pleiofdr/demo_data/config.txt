@@ -4,12 +4,12 @@
 # reference file, such as ref9545380_1kgPhase3eur_LDr2p1.mat, which contains variables
 # LDmat (binary sparse LD matrix), chrnumvec, posvec, mafvec, is_ambiguous, is_intergenic.
 # Feel free to specify full path to the file.
-reffile=ref_1kgPhase3eur_LDr2p1_DEMO.mat
+reffile=/REF/pleiofdr/demo_data/ref_1kgPhase3eur_LDr2p1_DEMO.mat
 
 # Set path to the folder with traits files (PGC_SCZ_2014.mat, etc)
 # It is OK to keep 'traitfolder' empty. In this case 'traitfiles' must contain full path to each file.
 # Otherwise 'traitfiles' must give a file name within 'traitfolder', including .mat extension.
-traitfolder=.
+traitfolder=/REF/pleiofdr/demo_data/
 
 # Set your GWAS file here for trait1 and other traits to condition on
 traitfile1=CTG_COG_2018_DEMO.mat

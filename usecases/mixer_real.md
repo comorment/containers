@@ -45,7 +45,7 @@ mhc=(scz['CHR']==6) & (scz['BP']>26e6) & (scz['BP'] < 34e6)
 scz.loc[~mhc, ['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'Z']].to_csv('SCZ.sumstats', index=False, sep='\t')
 os.system('gzip -f SCZ.sumstats')
 
-int = pd.read_csv('/REF/sumstats/SavageJansen_2018_intelligence_metaanalysis.txt.gz')
+int = pd.read_csv('/REF/sumstats/SavageJansen_2018_intelligence_metaanalysis.txt.gz', sep='\t')
 int.rename(columns={'POS':'BP', 'Zscore':'Z', 'N_analyzed':'N'}, inplace=True)
 int['A1']=int['A1'].str.upper()
 int['A2']=int['A2'].str.upper()
