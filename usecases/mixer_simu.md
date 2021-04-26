@@ -88,4 +88,7 @@ Partial:
 Shared:
 ![mixer_simu_shared.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_shared.png)
 
-
+To include density plots to the resulting figure, add ``--trait1-file`` and ``--trait2-file`` arguments like this:
+```
+python /tools/mixer/precimed/mixer_figures.py  two --statistic mean std --json-fit unique.fit.json --json-test unique.test.json  --out mixer_simu_unique --trait1-file unique.1.sumstats --trait2-file unique.2.sumstats
+```
