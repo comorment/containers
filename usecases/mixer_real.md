@@ -8,7 +8,7 @@ SCZ GWAS lacks SNP rs#, z-score and sample size.
 In this case, z-score can be compute from effect direction and p-value,
 sample size can be taken from original publication,
 and SNP rs# does not need to be introduced, because MiXeR can match SNPs to the reference using
-SNP, BP, A1 and A2 information.
+CHR, BP, A1 and A2 information.
 Note that both GWAS have clarified in the README file that A1 is effect allele.
 Also note there is no need to allign alleles - MiXeR will do this automatically
 (and also exclude ambiguous alleles, i.e. A/T and C/G).
