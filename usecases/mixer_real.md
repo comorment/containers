@@ -95,11 +95,9 @@ python /tools/mixer/precimed/mixer_figures.py two --json-fit SCZ_vs_INT.fit.json
 ```
 
 Resulting files:
-* [SCZ_and_INT.test.power.png](SCZ_and_INT.test.power.png) - power curve for SCZ and INT
 * [SCZ_and_INT.fit.csv](SCZ_and_INT.fit.csv) - estimates from univariate analysis (NB! it's important to use the "fit" data for AIC / BIC values, not the "test" data)
-* [SCZ_vs_INT.png](SCZ_vs_INT.png) - venn diagram, stratified QQ plots, likelihood figure
 * [SCZ_vs_INT.csv](SCZ_vs_INT.csv) - estimates from bivariate analysis
-
-![SCZ_and_INT.test.power.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_and_INT.test.power.png)
-
-![SCZ_vs_INT.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_vs_INT.png)
+* [SCZ_vs_INT.png](SCZ_vs_INT.png) - venn diagram, stratified QQ plots, likelihood figure
+  ![SCZ_vs_INT.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_vs_INT.png)
+* [SCZ_and_INT.test.power.png](SCZ_and_INT.test.power.png) - power curve for SCZ and INT
+  ![SCZ_and_INT.test.power.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_and_INT.test.power.png)
