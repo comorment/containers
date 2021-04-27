@@ -81,6 +81,8 @@ constrain analysis to 419659 tag variants (due to extract='/REF/ldsc/1000G_EUR_P
 
 Now generate figures using these commands:
 ```
+singularity exec --home $PWD:/home $SIF/python3.sif python
+
 python /tools/mixer/precimed/mixer_figures.py combine --json SCZ.fit.rep@.json  --out SCZ.fit
 python /tools/mixer/precimed/mixer_figures.py combine --json SCZ.test.rep@.json  --out SCZ.test
 python /tools/mixer/precimed/mixer_figures.py combine --json INT.fit.rep@.json  --out INT.fit
