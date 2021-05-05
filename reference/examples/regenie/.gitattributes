@@ -1,0 +1,12 @@
+covariates.txt.gz filter=lfs diff=lfs merge=lfs -text
+example.bgen.bgi filter=lfs diff=lfs merge=lfs -text
+example_3chr_masks.bed filter=lfs diff=lfs merge=lfs -text
+example.pgen filter=lfs diff=lfs merge=lfs -text
+example_3chr.bgen.bgi filter=lfs diff=lfs merge=lfs -text
+example.test_bin_out_firth_Y1.regenie filter=lfs diff=lfs merge=lfs -text
+example_3chr.bgen filter=lfs diff=lfs merge=lfs -text
+example_3chr_zstd.bgen filter=lfs diff=lfs merge=lfs -text
+example.bgen filter=lfs diff=lfs merge=lfs -text
+example_3chr.bed filter=lfs diff=lfs merge=lfs -text
+example.bed filter=lfs diff=lfs merge=lfs -text
+phenotype_bin.txt.gz filter=lfs diff=lfs merge=lfs -text
