@@ -1,0 +1,9 @@
+COLUMN,TYPE,DESCRIPTION
+IID,IID,Identifier
+PHENO,CONTINUOUS,phenotype
+PHENO2,CONTINUOUS,second phenotype
+CASE,BINARY,case/control phenotype
+CASE2,BINARY,another case/control phenotype
+PC1,CONTINUOUS,principal component1
+PC2,CONTINUOUS,second principal component
+BATCH,NOMINAL,genotype batch
