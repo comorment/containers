@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --job-name=gwas
+#SBATCH --account=p697_norment
+#SBATCH --time=06:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem-per-cpu=8000M
+#SBATCH --array=1,2,3
+
+module load singularity/3.7.1
+
+export COMORMENT=/cluster/projects/p697/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
+export SIF=$COMORMENT/containers/singularity
+
+export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
+export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+$REGENIE  --phenoFile run2.pheno --covarFile run2.covar --step 2 --bsize 400 --out run2_chr${SLURM_ARRAY_TASK_ID} --bed /REF/examples/regenie/example_3chr --ref-first --pred run2.regenie.step1_pred.list --chr ${SLURM_ARRAY_TASK_ID}

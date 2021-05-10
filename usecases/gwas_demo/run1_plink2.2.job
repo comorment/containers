@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name=gwas
+#SBATCH --account=p697_norment
+#SBATCH --time=06:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem-per-cpu=8000M
+
+
+module load singularity/3.7.1
+
+export COMORMENT=/cluster/projects/p697/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
+export SIF=$COMORMENT/containers/singularity
+
+export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
+export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+$PYTHON gwas.py merge-plink2  --sumstats run1_chr@.CASE.glm.logistic --out run1_CASE.plink2  --chr2use 1,2,3 
+$PYTHON gwas.py merge-plink2  --sumstats run1_chr@.CASE2.glm.logistic --out run1_CASE2.plink2  --chr2use 1,2,3 
+
