@@ -37,7 +37,7 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --argsfi
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --argsfile /REF/examples/regenie/example_3chr.argsfile --pheno PHENO PHENO2 --covar PC1 PC2 BATCH --out run2
 ```
 
-Take a look at the resulting [gwas_demo/run1.log](run1.log) and [gwas_demo/run2.log](run2.log), to see if gwas.py was executed as intended.
+Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
 For this small-scale demo example, you could execute the actual GWAS locally on your machine as follows:
 
 ```
