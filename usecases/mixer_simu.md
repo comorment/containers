@@ -58,7 +58,7 @@ python /tools/mixer/precimed/mixer_figures.py two --json partial.json --out part
 
 4. The results are available in ``shared.png``, ``unique.png`` and ``partial.png`` figures.
 
-5. You could also use [MIXER_SIMU.job](MIXER_SIMU.job) script to run this on a cluster 20 times, 
+5. You could also use [MIXER_SIMU.job](mixer_simu/MIXER_SIMU.job) script to run this on a cluster 20 times, 
 each with a random subsets of SNPs as defined by ``1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.rep[1-20].snps`` files, 
 and use variation in parameter estimates amoung these runs this to infer uncertainty of parameter estimates.
 Adjust ``MIXER_SIMU.job`` to match configuration of your cluster. Then trigger analysis by running ``sbatch MIXER_SIMU.job`` command.
@@ -80,13 +80,13 @@ python /tools/mixer/precimed/mixer_figures.py two --statistic mean std --json-fi
 After processing the resulting figures shoud look like this:
 
 Unique:
-![mixer_simu_unique.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_unique.png)
+![mixer_simu_unique.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu/mixer_simu_unique.png)
 
 Partial:
-![mixer_simu_partial.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_partial.png)
+![mixer_simu_partial.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu/mixer_simu_partial.png)
 
 Shared:
-![mixer_simu_shared.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu_shared.png)
+![mixer_simu_shared.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_simu/mixer_simu_shared.png)
 
 To include density plots to the resulting figure, add ``--trait1-file`` and ``--trait2-file`` arguments like this:
 ```

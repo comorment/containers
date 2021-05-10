@@ -54,7 +54,7 @@ int.loc[~mhc, ['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'Z']].to_csv('INT.sumstats',
 os.system('gzip -f INT.sumstats')
 ```
 
-Now you can run MiXeR using [MIXER_REAL.job](MIXER_REAL.job), which is just a slightly adjusted version of the [MIXER_SIMU.job](MIXER_SIMU.job) used in [mixer_simu.md](mixer_simu.md).
+Now you can run MiXeR using [MIXER_REAL.job](mixer_real/MIXER_REAL.job), which is just a slightly adjusted version of the [mixer_simu/MIXER_SIMU.job](MIXER_SIMU.job) used in [mixer_simu.md](mixer_simu.md).
 Note that each run produces a ``SCZ_vs_INT.fit.repN.log`` file, containing some useful information.
 For example, inspect ``SCZ_vs_INT.fit.rep1.log`` to make sure the number of SNPs used in the analysis is reasonable:
 ```
@@ -97,9 +97,9 @@ python /tools/mixer/precimed/mixer_figures.py two --json-fit SCZ_vs_INT.fit.json
 ```
 
 Resulting files:
-* [SCZ_and_INT.fit.csv](SCZ_and_INT.fit.csv) - estimates from univariate analysis (NB! it's important to use the "fit" data for AIC / BIC values, not the "test" data)
-* [SCZ_vs_INT.csv](SCZ_vs_INT.csv) - estimates from bivariate analysis
-* [SCZ_vs_INT.png](SCZ_vs_INT.png) - venn diagram, stratified QQ plots, likelihood figure
-  ![SCZ_vs_INT.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_vs_INT.png)
-* [SCZ_and_INT.test.power.png](SCZ_and_INT.test.power.png) - power curve for SCZ and INT
-  ![SCZ_and_INT.test.power.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/SCZ_and_INT.test.power.png)
+* [SCZ_and_INT.fit.csv](mixer_real/SCZ_and_INT.fit.csv) - estimates from univariate analysis (NB! it's important to use the "fit" data for AIC / BIC values, not the "test" data)
+* [SCZ_vs_INT.csv](mixer_real/SCZ_vs_INT.csv) - estimates from bivariate analysis
+* [SCZ_vs_INT.png](mixer_real/SCZ_vs_INT.png) - venn diagram, stratified QQ plots, likelihood figure
+  ![SCZ_vs_INT.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_real/SCZ_vs_INT.png)
+* [SCZ_and_INT.test.power.png](mixer_real/SCZ_and_INT.test.power.png) - power curve for SCZ and INT
+  ![SCZ_and_INT.test.power.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/mixer_real/SCZ_and_INT.test.power.png)
