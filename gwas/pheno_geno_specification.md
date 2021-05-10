@@ -1,5 +1,5 @@
 This is a specification of the input data format for GWAS anslysis, recommended in CoMorMent projects.
-Current version: ``v0.9``. Further changes from this version will be documented.
+Current version: ``v0.9.1``. Further changes from this version will be documented.
 
 ### Genotypes
  
@@ -80,12 +80,18 @@ which define whether each variable is a binary (case/control), nominal (a discre
 The data dictionary should be a file with two columns, one row per variable (listed in the first column),
 with second column having values *BINARY*, *NOMINAL*, *ORDINAL*, *CONTINUOUS* or *IID*.
 The file may have other optional columns, i.e. description of each variable.
-The file should have column names, first two columns must have names ``COLUMN`` and ``TYPE``.
+The file should have column names, first two columns must have names ``FIELD`` and ``TYPE``.
 
 The purpose of the ``pheno.dict`` file is to allow scripts to choose correct analysis:
 for example, if target variable is continous, we can run GWAS with linear regression mode,
 while if target variable is binary, we will run logistic regression;
 similarly, if a nominal variable is used as covariate, then it will be included as factor.
+
+Binary variables must be encoded as 1 (cases) and 0 (controls).
+This is default in [regenie](https://rgcgithub.github.io/regenie/options/#phenotype-file-format).
+For [plink](https://www.cog-genomics.org/plink2/formats), such coding can be used with ``--1`` argument.
+If you have a binary variable such as SEX and you want to keep the actual labels (e.g. "male" and "female"),
+then you should mark it as "NOMINAL" in the dictionary file.
 
 Example ``MoBa/pheno.csv`` file. Subject ``IID=3`` have missing values for ``SEX`` and ``MDD``.
 ```
@@ -100,7 +106,7 @@ IID,SEX,MDD,PC1,PC2,PC3
 
 Example ``MoBa/pheno.dict`` file:
 ```
-COLUMN,TYPE,DESCRIPTION
+FIELD,TYPE,DESCRIPTION
 IID,IID,Identifier
 SEX,NOMINAL,Sex (M - male, F - female)
 MDD,BINARY,Major depression diagnosis
@@ -113,3 +119,4 @@ PC3,CONTINUOUS,3rd principal component
 ### Change log
 
 * ``v0.9`` - first version of this document
+* ``v0.9.1`` - specify case/control coding and rename COLUMN->FIELD in the dictionary file
