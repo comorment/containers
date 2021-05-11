@@ -202,6 +202,8 @@ export SIF=$COMORMENT/containers/singularity
 
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+
 """.format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "",
            modules = '\n'.join(['module load {}'.format(x) for x in args.module_load]),
            job_name = args.slurm_job_name,
@@ -274,6 +276,7 @@ def execute_gwas(args, log):
 
     cmd_file = args.out + '_cmd.sh'
     if os.path.exists(cmd_file): os.remove(cmd_file)
+    submit_jobs = []
     if 'plink2' in args.analysis:
         with open(args.out + '_plink2.1.job', 'w') as f:
             f.write(make_slurm_header(args, array=True) + make_plink2_commands(args, logistic) + '\n') 
@@ -281,7 +284,9 @@ def execute_gwas(args, log):
             f.write(make_slurm_header(args, array=False) + make_plink2_merge(args, logistic) + '\n') 
         with open(cmd_file, 'a') as f:
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_commands(args, logistic)))
-            f.write(make_plink2_merge(args, logistic) + '\n') 
+            f.write(make_plink2_merge(args, logistic) + '\n')
+        append_job(args.out + '_plink2.1.job', False, submit_jobs)
+        append_job(args.out + '_plink2.2.job', True, submit_jobs)
     if 'regenie' in args.analysis:
         with open(args.out + '_regenie.1.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_regenie_commands(args, logistic, step=1) + '\n') 
@@ -289,11 +294,15 @@ def execute_gwas(args, log):
             f.write(make_slurm_header(args, array=True) + make_regenie_commands(args, logistic, step=2) + '\n') 
         with open(args.out + '_regenie.3.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_regenie_merge(args, logistic) + '\n') 
-
         with open(cmd_file, 'a') as f:
             f.write(make_regenie_commands(args, logistic, step=1) + '\n')
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_regenie_commands(args, logistic, step=2)))
             f.write(make_regenie_merge(args, logistic) + '\n') 
+        append_job(args.out + '_regenie.1.job', False, submit_jobs)
+        append_job(args.out + '_regenie.2.job', True, submit_jobs)
+        append_job(args.out + '_regenie.3.job', True, submit_jobs)
+    log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}.'.format(cmd_file))
+    log.log('\n'.join(submit_jobs))
 
 def merge_plink2(args, log):
     fix_and_validate_chr2use(args, log)
@@ -379,6 +388,12 @@ def read_fam(fam_file):
     log.log(fam.head())
     if np.any(fam['IID'].duplicated()): raise(ValueError("IID column has duplicated values in --fam file"))
     return fam
+
+def append_job(job, depends_on_previous, job_list):
+    if depends_on_previous:
+        job_list.append('RES=$(sbatch --dependency=afterany:${{RES##* }} {})'.format(job))
+    else:
+        job_list.append('RES=$(sbatch {})'.format(job))
 
 def read_comorment_pheno(pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
