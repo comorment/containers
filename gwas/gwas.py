@@ -97,7 +97,7 @@ def extract_variables(df, variables, pheno_dict_map, log):
         dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
 
         log.log('Variable {} will be extracted as dummie, dropping {} label (most frequent)'.format(var, drop_col))
-    return dummies
+    return dummies.copy()
 
 def fix_and_validate_chr2use(args, log):
     arg_dict = vars(args)
@@ -114,6 +114,9 @@ def fix_and_validate_chr2use(args, log):
 def fix_and_validate_args(args, log):
     if not args.pheno_file: raise ValueError('--pheno-file is required.')
     if not args.pheno: raise ValueError('--pheno is required.')    
+
+    if ('plink2' in args.analysis) and ('regenie' in args.analysis):
+        raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
 
     # validate that some of genetic data is provided as input
     if not args.bed_test:
@@ -180,7 +183,6 @@ def make_plink2_commands(args, logistic):
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         " --glm hide-covar" + \
         " --pheno {}.pheno".format(args.out) + \
-        (" --1" if logistic else "") + \
         (" --covar {}.covar".format(args.out) if args.covar else "") + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
     return cmd
@@ -270,6 +272,11 @@ def execute_gwas(args, log):
             log.log('variable: {}, cases: {}, controls: {}, missing: {}'.format(var, np.sum(pheno[var]=='1'), np.sum(pheno[var]=='0'), np.sum(pheno[var].isnull())))
         else:
             log.log('variable: {}, missing: {}'.format(var, np.sum(pheno[var].isnull())))
+
+    if 'plink2' in args.analysis:
+        log.log('mapping case/control variables from 1/0 to 2/1 coding')
+        for var in args.pheno:
+            pheno_output[var] = pheno_output[var].map({'0':'1', '1':'2'}).values
 
     log.log('writing {} columns (including FID, IID) for n={} individuals to {}.pheno'.format(pheno_output.shape[1], len(pheno_output), args.out))
     pheno_output.to_csv(args.out + '.pheno', na_rep='NA', index=False, sep='\t')
