@@ -36,13 +36,23 @@ def parse_args(args):
     parent_parser.add_argument('--argsfile', type=open, action=LoadFromFile, default=None, help="file with additional command-line arguments, e.g. those configuration settings that are the same across all of your runs")
     parent_parser.add_argument("--out", type=str, default="gwas", help="prefix for the output files (<out>.covar, <out>.pheno, etc)")
     parent_parser.add_argument("--log", type=str, default=None, help="file to output log, defaults to <out>.log")
+
+    slurm_parser = argparse.ArgumentParser(add_help=False)
+    slurm_parser.add_argument("--slurm-job-name", type=str, default="gwas", help="SLURM --job-name argument")
+    slurm_parser.add_argument("--slurm-account", type=str, default="p697_norment", help="SLURM --account argument")
+    slurm_parser.add_argument("--slurm-time", type=str, default="06:00:00", help="SLURM --time argument")
+    slurm_parser.add_argument("--slurm-cpus-per-task", type=int, default=16, help="SLURM --cpus-per-task argument")
+    slurm_parser.add_argument("--slurm-mem-per-cpu", type=str, default="8000M", help="SLURM --mem-per-cpu argument")
+    slurm_parser.add_argument("--module-load", type=str, nargs='+', default=['singularity/3.7.1'], help="list of modules to load")
+    slurm_parser.add_argument("--comorment-folder", type=str, default='/cluster/projects/p697/github/comorment', help="folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers")
+    
     parent_parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --bed-test (or similar arguments), but also to specify for which chromosomes to run the association testing.")
 
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
 
-    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser], help='perform gwas analysis'))
+    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, slurm_parser], help='perform gwas analysis'))
     parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser], help='merge plink2 sumstats files'))
     parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser], help='merge regenie sumstats files'))
 
@@ -174,24 +184,32 @@ def make_plink2_commands(args, logistic):
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
     return cmd
 
+
 def make_slurm_header(args, array=False):
     return """#!/bin/bash
-#SBATCH --job-name=gwas
-#SBATCH --account=p697_norment
-#SBATCH --time=06:00:00
-#SBATCH --cpus-per-task=16
-#SBATCH --mem-per-cpu=8000M
+#SBATCH --job-name={job_name}
+#SBATCH --account={account}
+#SBATCH --time={time}
+#SBATCH --cpus-per-task={cpus_per_task}
+#SBATCH --mem-per-cpu={mem_per_cpu}
 {array}
 
-module load singularity/3.7.1
+{modules}
 
-export COMORMENT=/cluster/projects/p697/github/comorment
+export COMORMENT={comorment_folder}
 export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
 export SIF=$COMORMENT/containers/singularity
 
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
-""".format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "")
+""".format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "",
+           modules = '\n'.join(['module load {}'.format(x) for x in args.module_load]),
+           job_name = args.slurm_job_name,
+           account = args.slurm_account,
+           time = args.slurm_time,
+           cpus_per_task = args.slurm_cpus_per_task,
+           mem_per_cpu = args.slurm_mem_per_cpu,
+           comorment_folder = args.comorment_folder)
 
 def execute_gwas(args, log):
     fix_and_validate_chr2use(args, log)
