@@ -67,6 +67,8 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--fam", type=str, default=None, help="optional argument pointing to a plink .fam with lift of individuals with genetic data; is not provided, the list will be taken from --bed-fit or --bed-test file.")
     parser.add_argument("--bed-fit", type=str, default=None, help="plink bed/bim/fam file to use in a first step of mixed effect models")
     parser.add_argument("--bed-test", type=str, default=None, help="plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--bgen-fit", type=str, default=None, help=".bgen file to use in a first step of mixed effect models")
+    parser.add_argument("--bgen-test", type=str, default=None, help=".bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
     parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
     parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
@@ -119,12 +121,14 @@ def fix_and_validate_args(args, log):
         raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
 
     # validate that some of genetic data is provided as input
-    if not args.bed_test:
-        ValueError('--bed-test must be specified')
-    if ('regenie' in 'analysis') and (not args.bed_fit):
-        ValueError('--bed-fit must be specified for --analysis regenie')
+    if (not args.bed_test) and (not args.bgen_test):
+        raise ValueError('--bed-test or --bgen-test must be specified')
+    if ('regenie' in 'analysis') and (not args.bed_fit) and (not args.bgen_fit):
+        raise ValueError('--bed-fit or --bgen-fit must be specified for --analysis regenie')
 
-    if args.fam is None:    
+    if args.fam is None:
+        if (args.bed_fit is None) and (args.bed_test is None):
+            raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --bgen files')
         args.fam = (args.bed_fit if args.bed_fit else args.bed_test) + '.fam'
         if '@' in args.fam: args.fam = args.fam.replace('@', args.chr2use[0])
     check_input_file(args.fam)
@@ -134,7 +138,11 @@ def fix_and_validate_args(args, log):
     check_input_file(args.dict_file)
 
 def make_regenie_commands(args, logistic, step):
-    if ('@' in args.bed_fit): raise(ValueError('--bed-fit contains "@", hense it is incompatible with regenie step1 which require a single file'))
+    geno_fit = args.bed_fit if (args.bed_fit is not None) else args.bgen_fit
+    geno_test = args.bed_test if (args.bed_test is not None) else args.bgen_test
+    geno_test = geno_test.replace('@', '${SLURM_ARRAY_TASK_ID}')
+
+    if ('@' in geno_fit): raise(ValueError('--bed-fit or --bgen-fit contains "@", hense it is incompatible with regenie step1 which require a single file'))
 
     cmd = "$REGENIE " + \
         (" --bt" if logistic else "") + \
@@ -143,13 +151,15 @@ def make_regenie_commands(args, logistic, step):
 
     cmd_step1 = ' --step 1 --bsize 1000' + \
         " --out {}.regenie.step1".format(args.out) + \
-        " --bed {} --ref-first".format(args.bed_fit) + \
+        (" --bed {} --ref-first".format(geno_fit) if (args.bed_fit is not None) else "") + \
+        (" --bgen {} --ref-first".format(geno_fit) if (args.bgen_fit is not None) else "") + \
         (" --bt" if logistic else "") + \
         " --lowmem --lowmem-prefix {}.regenie_tmp_preds".format(args.out)
 
     cmd_step2 = ' --step 2 --bsize 400' + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out) + \
-        " --bed {} --ref-first".format(args.bed_test.replace('@', '${SLURM_ARRAY_TASK_ID}')) + \
+        (" --bed {} --ref-first".format(geno_test) if (args.bed_fit is not None) else "") + \
+        (" --bgen {} --ref-first".format(geno_test) if (args.bgen_fit is not None) else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.regenie.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
@@ -176,9 +186,17 @@ def make_plink2_merge(args, logistic):
             '\n'
     return cmd
 
+def remove_suffix(text, suffix):
+    return text[:-len(suffix)] if text.endswith(suffix) and len(suffix) != 0 else text
+
 def make_plink2_commands(args, logistic):
+    geno = args.bed_test if (args.bed_test is not None) else args.bgen_test
+    geno = geno.replace('@', '${SLURM_ARRAY_TASK_ID}')
+    sample = remove_suffix(geno, ".bgen") + '.sample'
+
     cmd = "$PLINK2 " + \
-        " --bfile " + args.bed_test.replace('@', '${SLURM_ARRAY_TASK_ID}') + \
+        (" --bfile " + geno                                      if (args.bed_test is not None) else "") + \
+        (" --bgen {} ref-first --sample {}".format(geno, sample) if (args.bgen_test is not None) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         " --glm hide-covar" + \
@@ -273,7 +291,7 @@ def execute_gwas(args, log):
         else:
             log.log('variable: {}, missing: {}'.format(var, np.sum(pheno[var].isnull())))
 
-    if 'plink2' in args.analysis:
+    if ('plink2' in args.analysis) and logistic:
         log.log('mapping case/control variables from 1/0 to 2/1 coding')
         for var in args.pheno:
             pheno_output[var] = pheno_output[var].map({'0':'1', '1':'2'}).values
