@@ -45,6 +45,7 @@ def parse_args(args):
     slurm_parser.add_argument("--slurm-mem-per-cpu", type=str, default="8000M", help="SLURM --mem-per-cpu argument")
     slurm_parser.add_argument("--module-load", type=str, nargs='+', default=['singularity/3.7.1'], help="list of modules to load")
     slurm_parser.add_argument("--comorment-folder", type=str, default='/cluster/projects/p697/github/comorment', help="folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers")
+    slurm_parser.add_argument("--singularity-bind", type=str, default='$COMORMENT/containers/reference:/REF:ro', help="translates to SINGULARITY_BIND variable in SLURM scripts")
     
     parent_parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --bed-test (or similar arguments), but also to specify for which chromosomes to run the association testing.")
@@ -197,7 +198,7 @@ def make_slurm_header(args, array=False):
 {modules}
 
 export COMORMENT={comorment_folder}
-export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
+export SINGULARITY_BIND="{singularity_bind}"
 export SIF=$COMORMENT/containers/singularity
 
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
@@ -211,7 +212,8 @@ export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
            time = args.slurm_time,
            cpus_per_task = args.slurm_cpus_per_task,
            mem_per_cpu = args.slurm_mem_per_cpu,
-           comorment_folder = args.comorment_folder)
+           comorment_folder = args.comorment_folder,
+           singularity_bind = args.singularity_bind)
 
 def execute_gwas(args, log):
     fix_and_validate_chr2use(args, log)
