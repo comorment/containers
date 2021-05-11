@@ -71,6 +71,7 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--bgen-test", type=str, default=None, help=".bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
     parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
+    parser.add_argument("--covar-variance-standardize", type=str, default=None, nargs='*', help="covariates to standardize variance; accept the list of covariates (if empty, applied to all); doesn't apply to dummy variables derived from NORMINAL covariates.")
     parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     parser.add_argument("--pheno-na-rep", type=str, default='NA', help="missing data representation for phenotype file (regenie: NA, plink: -9)")
     parser.add_argument('--analysis', type=str, default=['plink2', 'regenie'], nargs='+', choices=['plink2', 'regenie'])
@@ -277,6 +278,18 @@ def execute_gwas(args, log):
                 log.log("n={} individuals remain after removing n={} individuals with missing value in {} covariate".format(len(pheno), n-len(pheno), var))
 
         covar_output = extract_variables(pheno, args.covar, pheno_dict_map, log)
+
+        if args.covar_variance_standardize is not None:
+            if len(args.covar_variance_standardize) == 0:
+                args.covar_variance_standardize = args.covar
+            for covar in args.covar_variance_standardize:
+                if covar not in covar_output:
+                    continue  # skip dummy variables
+
+                mean = np.mean(covar_output[covar].values)
+                std = np.std(covar_output[covar].values, ddof=1)
+                log.log('covariate {} has mean {} and std {}. Normalizing to 0.0 mean and 1.0 std'.format(covar, mean, std))
+                covar_output[covar] = (covar_output[covar].values - mean) / std
 
         log.log('writing {} columns (including FID, IID) for n={} individuals to {}.covar'.format(covar_output.shape[1], len(covar_output), args.out))
         covar_output.to_csv(args.out + '.covar', index=False, sep='\t')
