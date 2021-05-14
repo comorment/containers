@@ -64,15 +64,28 @@ run2_PHENO2.regenie.gz
 Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, A1, A2, N, Z, PVAL``).
 We are currently discussing the specification format for GWAS summary statistics, to include other information (``CHR, BP, BETA, SE, OR, NCASE, NCONTROL``, etc).
 
+It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
+If you have genotypes formatted this way, the only change you need is to replace ``--bed-test`` with ``--bgen-test``,
+as in this example: [example_3chr_bgen.argsfile](../reference/examples/regenie/example_3chr_bgen.argsfile).
+
+
 To see more info about ``gwas.py`` arguments, try this:
 ```
 >singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
 
 usage: gwas.py gwas [-h] [--argsfile ARGSFILE] [--out OUT] [--log LOG] [--chr2use CHR2USE]
+                    [--slurm-job-name SLURM_JOB_NAME] [--slurm-account SLURM_ACCOUNT]
+                    [--slurm-time SLURM_TIME] [--slurm-cpus-per-task SLURM_CPUS_PER_TASK]
+                    [--slurm-mem-per-cpu SLURM_MEM_PER_CPU]
+                    [--module-load MODULE_LOAD [MODULE_LOAD ...]]
+                    [--comorment-folder COMORMENT_FOLDER] [--singularity-bind SINGULARITY_BIND]
                     [--pheno-file PHENO_FILE] [--dict-file DICT_FILE] [--fam FAM]
-                    [--bed-fit BED_FIT] [--bed-test BED_TEST] [--covar COVAR [COVAR ...]]
+                    [--bed-fit BED_FIT] [--bed-test BED_TEST] [--bgen-fit BGEN_FIT]
+                    [--bgen-test BGEN_TEST] [--covar COVAR [COVAR ...]]
+                    [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
                     [--analysis {plink2,regenie} [{plink2,regenie} ...]]
+
 (followed by description of all arguments - we don't copy this information here since gwas.py tool is being actively developed)
 ```
 

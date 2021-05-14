@@ -200,7 +200,7 @@ def make_plink2_commands(args, logistic):
         (" --bgen {} ref-first --sample {}".format(geno, sample) if (args.bgen_test is not None) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
-        " --glm hide-covar --variance-standardize" + \
+        " --glm hide-covar" + \
         " --pheno {}.pheno".format(args.out) + \
         (" --covar {}.covar".format(args.out) if args.covar else "") + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
