@@ -71,7 +71,7 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--bgen-test", type=str, default=None, help=".bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
     parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
-    parser.add_argument("--covar-variance-standardize", type=str, default=None, nargs='*', help="covariates to standardize variance; accept the list of covariates (if empty, applied to all); doesn't apply to dummy variables derived from NORMINAL covariates.")
+    parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
     parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     parser.add_argument("--pheno-na-rep", type=str, default='NA', help="missing data representation for phenotype file (regenie: NA, plink: -9)")
     parser.add_argument('--analysis', type=str, default=['plink2', 'regenie'], nargs='+', choices=['plink2', 'regenie'])
@@ -159,8 +159,8 @@ def make_regenie_commands(args, logistic, step):
 
     cmd_step2 = ' --step 2 --bsize 400' + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out) + \
-        (" --bed {} --ref-first".format(geno_test) if (args.bed_fit is not None) else "") + \
-        (" --bgen {} --ref-first".format(geno_test) if (args.bgen_fit is not None) else "") + \
+        (" --bed {} --ref-first".format(geno_test) if (args.bed_test is not None) else "") + \
+        (" --bgen {} --ref-first".format(geno_test) if (args.bgen_test is not None) else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.regenie.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
@@ -200,7 +200,7 @@ def make_plink2_commands(args, logistic):
         (" --bgen {} ref-first --sample {}".format(geno, sample) if (args.bgen_test is not None) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
-        " --glm hide-covar" + \
+        " --glm hide-covar --variance-standardize" + \
         " --pheno {}.pheno".format(args.out) + \
         (" --covar {}.covar".format(args.out) if args.covar else "") + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
@@ -263,13 +263,14 @@ def execute_gwas(args, log):
 
     log.log("merging --pheno and --fam file...")
     n = len(pheno); pheno = pd.merge(pheno, fam[['IID', 'FID']], on='IID', how='inner')
+    pheno_dict_map['FID'] = 'FID'
     log.log("n={} individuals remain after merging, n={} removed".format(len(pheno), n-len(pheno)))
 
     if args.covar:
         missing_cols = [str(c) for c in args.covar if (c not in pheno.columns)]
         if missing_cols: raise(ValueError('--covar not present in --pheno-file: {}'.format(', '.join(missing_cols))))
 
-        log.log("extracting covariates...")
+        log.log("filtering individuals with missing covariates...")
         for var in args.covar:
             mask = pheno[var].isnull()
             if np.any(mask):
@@ -277,20 +278,27 @@ def execute_gwas(args, log):
                 pheno = pheno[~mask].copy()
                 log.log("n={} individuals remain after removing n={} individuals with missing value in {} covariate".format(len(pheno), n-len(pheno), var))
 
+    if len(pheno) <= 1:
+        raise ValueError('Too few individuals remain for analysis, exit.')
+
+    if args.variance_standardize is not None:
+        print(pheno.columns)
+        print(pheno_dict_map)
+        if len(args.variance_standardize) == 0:
+            args.variance_standardize = [col for col in pheno.columns if (pheno_dict_map[col] == 'CONTINUOUS')]
+
+        for col in args.variance_standardize:
+            if (col not in pheno.columns) or (pheno_dict_map[col] != 'CONTINUOUS'):
+                raise ValueError('Can not apply --variance-standardize to {}, column is missing or its type is other than CONTINUOUS'.fromat(col))
+
+            mean = np.nanmean(pheno[col].values)
+            std = np.nanstd(pheno[col].values, ddof=1)
+            log.log('phenotype {} has mean {:.5f} and std {:.5f}. Normalizing to 0.0 mean and 1.0 std'.format(col, mean, std))
+            pheno[col] = (pheno[col].values - mean) / std
+
+    log.log("extracting covariates...")
+    if args.covar:
         covar_output = extract_variables(pheno, args.covar, pheno_dict_map, log)
-
-        if args.covar_variance_standardize is not None:
-            if len(args.covar_variance_standardize) == 0:
-                args.covar_variance_standardize = args.covar
-            for covar in args.covar_variance_standardize:
-                if covar not in covar_output:
-                    continue  # skip dummy variables
-
-                mean = np.mean(covar_output[covar].values)
-                std = np.std(covar_output[covar].values, ddof=1)
-                log.log('covariate {} has mean {} and std {}. Normalizing to 0.0 mean and 1.0 std'.format(covar, mean, std))
-                covar_output[covar] = (covar_output[covar].values - mean) / std
-
         log.log('writing {} columns (including FID, IID) for n={} individuals to {}.covar'.format(covar_output.shape[1], len(covar_output), args.out))
         covar_output.to_csv(args.out + '.covar', index=False, sep='\t')
     else:
@@ -342,7 +350,7 @@ def execute_gwas(args, log):
         append_job(args.out + '_regenie.2.job', True, submit_jobs)
         append_job(args.out + '_regenie.3.job', True, submit_jobs)
     log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}.'.format(cmd_file))
-    log.log('\n'.join(submit_jobs))
+    print('\n'.join(submit_jobs))
 
 def merge_plink2(args, log):
     fix_and_validate_chr2use(args, log)

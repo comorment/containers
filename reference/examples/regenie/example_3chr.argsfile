@@ -2,4 +2,4 @@
 --bed-fit /REF/examples/regenie/example_3chr
 --bed-test /REF/examples/regenie/example_3chr
 --chr2use 1-3
-
+--variance-standardize

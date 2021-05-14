@@ -17,13 +17,14 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand.
 
-We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--bed-fit``) as well as genotype file to use when testing for associations (``--bed-test``):
+We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--bed-fit``) as well as genotype file to use when testing for associations (``--bed-test``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2:
 ```
 # example_3chr.argsfile
 --pheno-file /REF/examples/regenie/example_3chr.pheno
 --bed-fit /REF/examples/regenie/example_3chr
 --bed-test /REF/examples/regenie/example_3chr
 --chr2use 1-3
+--variance-standardize
 ```
 
 Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
