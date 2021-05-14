@@ -282,8 +282,6 @@ def execute_gwas(args, log):
         raise ValueError('Too few individuals remain for analysis, exit.')
 
     if args.variance_standardize is not None:
-        print(pheno.columns)
-        print(pheno_dict_map)
         if len(args.variance_standardize) == 0:
             args.variance_standardize = [col for col in pheno.columns if (pheno_dict_map[col] == 'CONTINUOUS')]
 
