@@ -142,6 +142,7 @@ def make_regenie_commands(args, logistic, step):
     geno_fit = args.bed_fit if (args.bed_fit is not None) else args.bgen_fit
     geno_test = args.bed_test if (args.bed_test is not None) else args.bgen_test
     geno_test = geno_test.replace('@', '${SLURM_ARRAY_TASK_ID}')
+    sample = (remove_suffix(geno_test, ".bgen") + '.sample')
 
     if ('@' in geno_fit): raise(ValueError('--bed-fit or --bgen-fit contains "@", hense it is incompatible with regenie step1 which require a single file'))
 
@@ -160,7 +161,7 @@ def make_regenie_commands(args, logistic, step):
     cmd_step2 = ' --step 2 --bsize 400' + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out) + \
         (" --bed {} --ref-first".format(geno_test) if (args.bed_test is not None) else "") + \
-        (" --bgen {} --ref-first".format(geno_test) if (args.bgen_test is not None) else "") + \
+        (" --bgen {} --ref-first --sample {}".format(geno_test, sample) if (args.bgen_test is not None) else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.regenie.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
