@@ -356,18 +356,22 @@ def merge_plink2(args, log):
     fix_and_validate_chr2use(args, log)
     pattern = args.sumstats
     stat = 'T_STAT' if  pattern.endswith('.glm.linear') else 'Z_STAT'
-    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'REF', 'ALT', 'A1', 'OBS_CT', stat, 'P']] for chri in args.chr2use])
+    effect_cols = (['BETA', "SE"] if  pattern.endswith('.glm.linear') else ['OR', 'LOG(OR)_SE'])
+    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', '#CHROM', 'POS', 'REF', 'ALT', 'A1', 'OBS_CT', stat, 'P']+effect_cols] for chri in args.chr2use])
     df['A2'] = df['REF']; idx=df['A2']==df['A1']; df.loc[idx, 'A2']=df.loc[idx, 'ALT']; del df['REF']; del df['ALT']
-    df.dropna().rename(columns={'ID':'SNP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL'})[['SNP', 'A1', 'A2', 'N', 'Z', 'PVAL']].to_csv(args.out, index=False, sep='\t')
+    if not pattern.endswith('.glm.linear'):
+        df['BETA'] = np.log(df['OR'])
+        df.rename(columns={'LOG(OR)_SE':'SE'}, inplace=True)
+    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'Z', 'BETA', 'SE', 'PVAL']].to_csv(args.out, index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def merge_regenie(args, log):
     fix_and_validate_chr2use(args, log)
     pattern = args.sumstats
-    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'CHROM', 'BETA',  'GENPOS', 'ALLELE0', 'ALLELE1', 'N', 'LOG10P']] for chri in args.chr2use])
+    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'CHROM', 'BETA', 'SE', 'GENPOS', 'ALLELE0', 'ALLELE1', 'N', 'LOG10P']] for chri in args.chr2use])
     df['PVAL']=np.power(10, -df['LOG10P'])
     df['Z'] = -stats.norm.ppf(df['PVAL'].values*0.5)*np.sign(df['BETA']).astype(np.float64)
-    df.dropna().rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1'})[['SNP', 'A1', 'A2', 'N', 'Z', 'PVAL']].to_csv(args.out,index=False, sep='\t')
+    df.dropna().rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'Z', 'BETA', 'SE', 'PVAL']].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def check_input_file(fname, chr2use=None):
