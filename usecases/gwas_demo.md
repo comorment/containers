@@ -7,15 +7,17 @@ In this demo we're using example data from [reference/examples/regenie](../refer
 Take a moment to look at the [phenotype file](../reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](../reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
 For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](../reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](../reference/examples/regenie/example_3chr.bim)). Btw, if you see ``Stored with Git LFS`` on some github pages, feel free to click ``View raw`` link - it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from ``<COMORMENT/containers/gwas/gwas.py>>`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [docs/README.md](../docs/README.md), as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable):
+Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from ``$COMORMENT/containers/gwas/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [docs/README.md](../docs/README.md), as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable):
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile --pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 --out run1
+--argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
+--pheno CASE CASE2 --analysis plink2 --out run1
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile --pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie --out run2
+--argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
+--pheno PHENO PHENO2 --analysis regenie --out run2
 ```
-Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand.
+Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
 We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--bed-fit``) as well as genotype file to use when testing for associations (``--bed-test``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2:
 ```
