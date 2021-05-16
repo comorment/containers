@@ -63,13 +63,12 @@ run1_CASE2.plink2.gz
 run2_PHENO.regenie.gz
 run2_PHENO2.regenie.gz
 ```
-Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, A1, A2, N, Z, PVAL``).
-We are currently discussing the specification format for GWAS summary statistics, to include other information (``CHR, BP, BETA, SE, OR, NCASE, NCONTROL``, etc).
+Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](gwas/sumstats_specification.md).
 
 It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
 If you have genotypes formatted this way, the only change you need is to replace ``--bed-test`` with ``--bgen-test``,
 as in this example: [example_3chr_bgen.argsfile](../reference/examples/regenie/example_3chr_bgen.argsfile).
-
+It is expected that ``.bgen`` has corresponding ``.sample`` and ``.bgen.bgi`` files.
 
 To see more info about ``gwas.py`` arguments, try this:
 ```
