@@ -81,7 +81,7 @@ constrain analysis to 419659 tag variants (due to extract='/REF/ldsc/1000G_EUR_P
 
 Now generate figures using these commands:
 ```
-singularity exec --home $PWD:/home $SIF/python3.sif python
+singularity shell --home $PWD:/home $SIF/python3.sif
 
 python /tools/mixer/precimed/mixer_figures.py combine --json SCZ.fit.rep@.json  --out SCZ.fit
 python /tools/mixer/precimed/mixer_figures.py combine --json SCZ.test.rep@.json  --out SCZ.test
@@ -95,6 +95,7 @@ python /tools/mixer/precimed/mixer_figures.py one --json SCZ.test.json INT.test.
 
 python /tools/mixer/precimed/mixer_figures.py two --json-fit SCZ_vs_INT.fit.json --json-test SCZ_vs_INT.test.json --out SCZ_vs_INT --trait1 SCZ --trait2 INT --statistic mean std --ext svg
 ```
+These commands may produce some warnings. Pease check if figures are generated, and if so then it's safe to ignore the warnings.
 
 Resulting files:
 * [SCZ_and_INT.fit.csv](mixer_real/SCZ_and_INT.fit.csv) - estimates from univariate analysis (NB! it's important to use the "fit" data for AIC / BIC values, not the "test" data)
