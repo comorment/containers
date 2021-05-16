@@ -36,6 +36,7 @@ def parse_args(args):
     parent_parser.add_argument('--argsfile', type=open, action=LoadFromFile, default=None, help="file with additional command-line arguments, e.g. those configuration settings that are the same across all of your runs")
     parent_parser.add_argument("--out", type=str, default="gwas", help="prefix for the output files (<out>.covar, <out>.pheno, etc)")
     parent_parser.add_argument("--log", type=str, default=None, help="file to output log, defaults to <out>.log")
+    parent_parser.add_argument("--log-sensitive", action="store_true", default=False, help="allow sensitive (individual-level) information in <out>.log. Use with caution. This may help debugging errors, but then you must pay close attention to avoid exporting the .log files out of your security environent. It's recommended to delete .log files after  you've investigate the problem.")
 
     slurm_parser = argparse.ArgumentParser(add_help=False)
     slurm_parser.add_argument("--slurm-job-name", type=str, default="gwas", help="SLURM --job-name argument")
@@ -241,8 +242,8 @@ def execute_gwas(args, log):
     fix_and_validate_chr2use(args, log)
     fix_and_validate_args(args, log)
 
-    fam = read_fam(args.fam)
-    pheno, pheno_dict = read_comorment_pheno(args.pheno_file, args.dict_file)
+    fam = read_fam(args, args.fam)
+    pheno, pheno_dict = read_comorment_pheno(args, args.pheno_file, args.dict_file)
     pheno_dict_map = dict(zip(pheno_dict['FIELD'], pheno_dict['TYPE']))
 
     missing_cols = [str(c) for c in args.pheno if (c not in pheno.columns)]
@@ -428,11 +429,11 @@ class Logger(object):
             with open(self.fh + '.error', 'w') as error_fh:
                 error_fh.write(str(msg).rstrip() + '\n')
 
-def read_fam(fam_file):
+def read_fam(args, fam_file):
     log.log('reading {}...'.format(fam_file))
     fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
-    log.log('done, {} rows, {} cols, header:'.format(len(fam), fam.shape[1]))
-    log.log(fam.head())
+    log.log('done, {} rows, {} cols'.format(len(fam), fam.shape[1]))
+    if args.log_sensitive: log.log(fam.head())
     if np.any(fam['IID'].duplicated()): raise(ValueError("IID column has duplicated values in --fam file"))
     return fam
 
@@ -442,11 +443,11 @@ def append_job(job, depends_on_previous, job_list):
     else:
         job_list.append('RES=$(sbatch {})'.format(job))
 
-def read_comorment_pheno(pheno_file, dict_file):
+def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
     pheno = pd.read_csv(pheno_file, sep=',', dtype=str)
-    log.log('done, {} rows, {} cols, header:'.format(len(pheno), pheno.shape[1]))
-    log.log(pheno.head())
+    log.log('done, {} rows, {} cols'.format(len(pheno), pheno.shape[1]))
+    if args.log_sensitive: log.log(pheno.head())
     
     log.log('reading {}...'.format(pheno_file))
     pheno_dict = pd.read_csv(dict_file, sep=',')
@@ -472,8 +473,8 @@ def read_comorment_pheno(pheno_file, dict_file):
         if pheno_dict_map[c]=='BINARY':
             bad_format = pheno[~pheno[c].isnull() & ~pheno[c].isin(['1', '0'])]
             if len(bad_format)>0:
-                log.log(bad_format.head())
-                raise(ValueError('BINARY column {} has values other than 0 or 1; see above for offending rows'.format(c)))
+                if args.log_sensitive: log.log(bad_format.head())
+                raise(ValueError('BINARY column {} has values other than 0 or 1; see above for offending rows (if not shown, re-run with --log-sensitive argument)'.format(c)))
         if pheno_dict_map[c]=='CONTINUOUS':
             pheno[c] = pheno[c].astype(float)
 
