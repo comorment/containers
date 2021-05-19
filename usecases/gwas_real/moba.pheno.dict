@@ -1,0 +1,33 @@
+COLUMN,TYPE,DESCRIPTION
+Unnamed: 0,NOMINAL,Index
+ID_2445,NOMINAL,Identifier
+PREG_ID_2445,NOMINAL,Identifier
+IID,IID,Identifier
+Role,NOMINAL,Father or Mother
+Sex,NOMINAL,1=male; 2=female
+YOB,CONTINUOUS,Year of birth
+AnyF32,BINARY,At least one registration with major depressive episode
+AnyF33,BINARY,At least one registration with recurrent major depressive disorder
+AnyFdep,BINARY,At least one registration with F32 and/or F33
+AnyF,BINARY,At least one registration with any mental disorder
+height,CONTINUOUS,Height in cm
+genotyping_center,NOMINAL,Genotyping center
+genotyping_center_num,CONTINUOUS,Genotyping center number
+genotyping_chip,NOMINAL,Genotyping chip
+genotyping_chip_num,CONTINUOUS,Genotyping chip number
+Plate_id,NOMINAL,Plate ID
+plate_num,CONTINUOUS,Plate ID number
+genotyping_batch,NOMINAL,Genotyping batch
+genotyping_batch_num,CONTINUOUS,Genotyping batch number
+imputation_batch,NOMINAL,Imputation batch
+imputation_batch_num,CONTINUOUS,Imputation batch number
+PC1,CONTINUOUS,First principal component
+PC2,CONTINUOUS,Second principal component
+PC3,CONTINUOUS,Third principal component
+PC4,CONTINUOUS,Fourth principal component
+PC5,CONTINUOUS,Fifth principal component
+PC6,CONTINUOUS,Sixth principal component
+PC7,CONTINUOUS,Seventh principal component
+PC8,CONTINUOUS,Eight principal component
+PC9,CONTINUOUS,Ninth principal component
+PC10,CONTINUOUS,Tenth principal component
