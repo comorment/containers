@@ -1,6 +1,6 @@
 This usecase describe how to run MiXeR analysis (http://github.com/precimed/mixer) on real summary statistics:
 schizophrenia (SCZ) and intelligence (INT). All commands below assume that ``$SIF`` and ``$SINGULARITY_BIND`` environmental
-variables are defined as described in [docs/README.md](../docs/README.md).
+variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
 
 Firts, let's take a look at the columns available in the summary statistics.
 INT GWAS has all required columns, but they need to be renamed.

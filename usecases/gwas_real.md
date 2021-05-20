@@ -32,7 +32,7 @@ $PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep
 $PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie --out out/run8 | bash
 ```
 
-Resulting files:
+Resulting files (summary statistics):
 ```
 run1_height.plink2.gz, 
 run2_height.regenie.gz
