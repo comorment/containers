@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 # README:
 # gwas.py converts pheno+dict files into format compatible with plink or regenie analysis. Other association analyses can be added later.
-# gwas.py automatically decides whether to run logistic or linear regression by looking at the data dictionary for requested phenotypes 
+# gwas.py automatically decides whether to run logistic or linear regression by looking at the data dictionary for requested phenotypes
 # gwas.py generates all scripts needed to run the analysis, and to convert the results back to a standard summary statistics format
 
 import argparse
@@ -9,7 +11,7 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 MASTHEAD = "***********************************************************************\n"
 MASTHEAD += "* gwas.py: pipeline for GWAS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
@@ -47,7 +49,7 @@ def parse_args(args):
     slurm_parser.add_argument("--module-load", type=str, nargs='+', default=['singularity/3.7.1'], help="list of modules to load")
     slurm_parser.add_argument("--comorment-folder", type=str, default='/cluster/projects/p697/github/comorment', help="folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers")
     slurm_parser.add_argument("--singularity-bind", type=str, default='$COMORMENT/containers/reference:/REF:ro', help="translates to SINGULARITY_BIND variable in SLURM scripts")
-    
+
     parent_parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --bed-test (or similar arguments), but also to specify for which chromosomes to run the association testing.")
 
@@ -117,7 +119,7 @@ def fix_and_validate_chr2use(args, log):
 
 def fix_and_validate_args(args, log):
     if not args.pheno_file: raise ValueError('--pheno-file is required.')
-    if not args.pheno: raise ValueError('--pheno is required.')    
+    if not args.pheno: raise ValueError('--pheno is required.')
 
     if ('plink2' in args.analysis) and ('regenie' in args.analysis):
         raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
@@ -327,9 +329,9 @@ def execute_gwas(args, log):
     submit_jobs = []
     if 'plink2' in args.analysis:
         with open(args.out + '_plink2.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + make_plink2_commands(args, logistic) + '\n') 
+            f.write(make_slurm_header(args, array=True) + make_plink2_commands(args, logistic) + '\n')
         with open(args.out + '_plink2.2.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_plink2_merge(args, logistic) + '\n') 
+            f.write(make_slurm_header(args, array=False) + make_plink2_merge(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_commands(args, logistic)))
             f.write(make_plink2_merge(args, logistic) + '\n')
@@ -337,15 +339,15 @@ def execute_gwas(args, log):
         append_job(args.out + '_plink2.2.job', True, submit_jobs)
     if 'regenie' in args.analysis:
         with open(args.out + '_regenie.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_regenie_commands(args, logistic, step=1) + '\n') 
+            f.write(make_slurm_header(args, array=False) + make_regenie_commands(args, logistic, step=1) + '\n')
         with open(args.out + '_regenie.2.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + make_regenie_commands(args, logistic, step=2) + '\n') 
+            f.write(make_slurm_header(args, array=True) + make_regenie_commands(args, logistic, step=2) + '\n')
         with open(args.out + '_regenie.3.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_regenie_merge(args, logistic) + '\n') 
+            f.write(make_slurm_header(args, array=False) + make_regenie_merge(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
             f.write(make_regenie_commands(args, logistic, step=1) + '\n')
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_regenie_commands(args, logistic, step=2)))
-            f.write(make_regenie_merge(args, logistic) + '\n') 
+            f.write(make_regenie_merge(args, logistic) + '\n')
         append_job(args.out + '_regenie.1.job', False, submit_jobs)
         append_job(args.out + '_regenie.2.job', True, submit_jobs)
         append_job(args.out + '_regenie.3.job', True, submit_jobs)
@@ -377,10 +379,10 @@ def merge_regenie(args, log):
 def check_input_file(fname, chr2use=None):
     if (chr2use is not None) and ('@' in fname):
         for chri in chr2use:
-            if not os.path.isfile(fname.replace('@', str(chri))): 
+            if not os.path.isfile(fname.replace('@', str(chri))):
                 raise ValueError("Input file does not exist: {f}".format(f=fname.replace('@', str(chri))))
     else:
-        if not os.path.isfile(fname): 
+        if not os.path.isfile(fname):
             raise ValueError("Input file does not exist: {f}".format(f=fname))
 
 def sec_to_str(t):
@@ -452,7 +454,7 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     pheno = pd.read_csv(pheno_file, sep=',', dtype=str)
     log.log('done, {} rows, {} cols'.format(len(pheno), pheno.shape[1]))
     if args.log_sensitive: log.log(pheno.head())
-    
+
     log.log('reading {}...'.format(pheno_file))
     pheno_dict = pd.read_csv(dict_file, sep=',')
     log.log('done, {} rows, {} cols, header:'.format(len(pheno_dict), pheno_dict.shape[1]))
