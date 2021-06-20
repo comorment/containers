@@ -1,11 +1,10 @@
 This usecase describe how to run LDSC analysis (https://github.com/bulik/ldsc) on Morningness and Intelligence summary statistics data. All commands below assume that ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
 
-0.
+0. Assign the paths of the containers and reference data
 ```
 export COMORMENT=/cluster/projects/p697/github/comorment
 export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
 export SIF=$COMORMENT/containers/singularity
-export MIXER_COMMON_ARGS="--ld-file /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.run4.ld --bim-file /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.@.bim"
 export REP="rep${SLURM_ARRAY_TASK_ID}"
 export EXTRACT="--extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.$REP.snps"
 ```
@@ -41,7 +40,7 @@ singularity exec --home $PWD:/home $SIF/ldsc.sif python /tools/ldsc/munge_sumsta
 
 ```
 
-4- remove .gz extension for munged sumstats
+4. remove .gz extension for munged sumstats
 
 ```
 mv mor_munge.sumstats.gz mor_munge.sumstats
