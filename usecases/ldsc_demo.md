@@ -59,7 +59,7 @@ singularity exec --home $PWD:/home $SIF/ldsc.sif python /tools/ldsc/ldsc.py  \
 --out int_mor
 
 ```
-After processing the resulting figures shoud look like this:
+The succesfull munge_sumstats.py and ldsc.py results shoud look like this:
 
 Munge Intelligence:
 ![munge1.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/ldsc_demo/munge1.png)
