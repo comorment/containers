@@ -36,4 +36,20 @@ The links and a summary of these requirements is provided below.
    to attempt to identify individual participants and not to use the sumstats for projects that may lead to 
    stigmatizing individuals or groups of individuals.
    ```
+   
+ * ``Morningness_sumstats_Jansenetal.txt.gz``, obtained from https://ctg.cncr.nl/software/summary_statistics
+    (original file named ``Morningness_sumstats_Jansenetal.txt.gz``, extracted and re-packed into ``.gz``) 
+
+   ```
+    Summary statistics for Insomnia, wave 2 from Philip Jansen et al., 2019
+    Jansen PR, Watanabe K, Stringer S, Skene N, Bryois J, Hammerschlag AR, de Leeuw CA, Benjamins JS, Muñoz-Manchado AB, Nagel M, Savage JE, Tiemeier H, White T;       23andMe Research Team, Tung JY, Hinds DA, Vacic V, Wang X, Sullivan PF, van der Sluis S, Polderman TJC, Smit AB, Hjerling-Leffler J, Van Someren EJW, Posthuma       D. Genome-wide analysis of insomnia in 1,331,010 individuals identifies new risk loci and functional pathways . Nature Genetics 2019 Mar;51(3):394-403. doi:         10.1038/s41588-018-0333-3.
+   
+   Please cite this reference when using the summary statistics.
+
+   This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License 
+   (https://creativecommons.org/licenses/by-nc-sa/4.0/). In addition, when downloading the sumstats you agree not 
+   to attempt to identify individual participants and not to use the sumstats for projects that may lead to 
+   stigmatizing individuals or groups of individuals.
+   ```
+
 
