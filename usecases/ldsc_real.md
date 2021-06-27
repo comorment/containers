@@ -11,7 +11,7 @@ export EXTRACT="--extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_ma
 
 1. Determine the path of the summary statistics, name this path as 'sumstats_ld'
 ```
-export sumstats_ld=/cluster/projects/p697/users/bayramc/sumstats_ld
+export sumstats_ld=/reference/sumstats/
 ```
 
 2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
