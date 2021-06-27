@@ -11,7 +11,7 @@ export EXTRACT="--extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_ma
 
 1.  The path of the summary statistics, name this path as 'sumstats_ld'
 ```
-export sumstats_ld=/REF/sumstats
+export sumstats_ld=$COMORMENT/reference/sumstats
 ```
 
 2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
