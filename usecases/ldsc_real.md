@@ -9,9 +9,9 @@ export REP="rep${SLURM_ARRAY_TASK_ID}"
 export EXTRACT="--extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.$REP.snps"
 ```
 
-1. Determine the path of the summary statistics, name this path as 'sumstats_ld'
+1.  The path of the summary statistics, name this path as 'sumstats_ld'
 ```
-export sumstats_ld=/reference/sumstats/
+export sumstats_ld=/REF/sumstats
 ```
 
 2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
