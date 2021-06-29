@@ -9,10 +9,12 @@ export sumstats_ld=$COMORMENT/containers/reference/sumstats
 
 2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
 ```
-gunzip $sumstats_ld/Morningness_sumstats_Jansenetal.txt.gz
-unzip $sumstats_ld/SavageJansen_IntMeta_sumstats.zip
+cp $sumstats_ld/SavageJansen_2018_intelligence_metaanalysis.txt.gz .
+cp $sumstats_ld/Morningness_sumstats_Jansenetal.txt.gz .
 
-cp $sumstats_ld/Morningness_sumstats_Jansenetal.txt .
+gunzip Morningness_sumstats_Jansenetal.txt.gz
+gunzip SavageJansen_2018_intelligence_metaanalysis.txt.gz
+
 
 ```
 
