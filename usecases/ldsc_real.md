@@ -1,15 +1,8 @@
 This usecase describe how to run LDSC analysis (https://github.com/bulik/ldsc) on Morningness and Intelligence summary statistics data. All commands below assume that ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
 
-0. Assign the paths of the containers and reference data
-```
-export COMORMENT=/cluster/projects/p697/github/comorment
-export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
-export SIF=$COMORMENT/containers/singularity
-export REP="rep${SLURM_ARRAY_TASK_ID}"
-export EXTRACT="--extract /REF/ldsc/1000G_EUR_Phase3_plink/1000G.EUR.QC.prune_maf0p05_rand2M_r2p8.$REP.snps"
-```
 
-1.  The path of the summary statistics, name this path as 'sumstats_ld'
+
+1.  Export the path of the summary statistics, name this path as 'sumstats_ld'
 ```
 export sumstats_ld=$COMORMENT/containers/reference/sumstats
 ```
