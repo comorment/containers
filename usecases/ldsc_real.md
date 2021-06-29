@@ -2,9 +2,12 @@ This usecase describe how to run LDSC analysis (https://github.com/bulik/ldsc) o
 
 
 
-1.  Export the path of the summary statistics, name this path as 'sumstats_ld'
+1.  Export the path of the summary statistics, name this path as 'sumstats_ld' and export path for reference data
 ```
 export sumstats_ld=$COMORMENT/containers/reference/sumstats
+
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
+
 ```
 
 2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
@@ -22,7 +25,7 @@ gunzip SavageJansen_2018_intelligence_metaanalysis.txt.gz
 
 ```
 singularity exec --home $PWD:/home $SIF/ldsc.sif python /tools/ldsc/munge_sumstats.py \
---sumstats sumstats/SavageJansen_2018_intelligence_metaanalysis.txt \
+--sumstats SavageJansen_2018_intelligence_metaanalysis.txt \
 --N  2000 \
 --out int_munge \
 --merge-alleles /REF/ldsc/w_hm3.snplist
