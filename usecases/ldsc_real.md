@@ -10,7 +10,7 @@ export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
 
 ```
 
-2. Uncompress sumstat data if required and copy these uncompressed sumstats to your working directory
+2. Copy these uncompressed sumstats to your working directory and Uncompress them if required 
 ```
 cp $sumstats_ld/SavageJansen_2018_intelligence_metaanalysis.txt.gz .
 cp $sumstats_ld/Morningness_sumstats_Jansenetal.txt.gz .
