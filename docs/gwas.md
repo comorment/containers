@@ -17,6 +17,7 @@ The ``gwas.sif`` container has multiple tools related to imputation and GWAS ana
     bcftools            # Version: 1.12 (using htslib 1.12)
     flashpca_x86-64     # flashpca 2.0
     regenie             # REGENIE v2.0.2.gz
+    GWAMA               # GWAMA_v2.2.2.zip
 ```
 Only tools released as binaries (executables) are put in ``gwas`` containers.
 Each tool has corresponding folder within ``/tools/``.
