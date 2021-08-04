@@ -55,6 +55,7 @@ os.system('gzip -f INT.sumstats')
 ```
 
 Now you can run MiXeR using [MIXER_REAL.job](mixer_real/MIXER_REAL.job), which is just a slightly adjusted version of the [mixer_simu/MIXER_SIMU.job](MIXER_SIMU.job) used in [mixer_simu.md](mixer_simu.md).
+Note that you don't need to generate ``.ld`` and ``.snps`` files as they are already included within the reference folder ([here](https://github.com/comorment/containers/tree/main/reference/ldsc/1000G_EUR_Phase3_plink)).
 Note that each run produces a ``SCZ_vs_INT.fit.repN.log`` file, containing some useful information.
 For example, inspect ``SCZ_vs_INT.fit.rep1.log`` to make sure the number of SNPs used in the analysis is reasonable:
 ```
