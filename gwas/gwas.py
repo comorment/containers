@@ -244,7 +244,7 @@ def make_plink2_commands(args, logistic):
         (" --vcf {}".format(geno) if is_vcf_file(geno) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
-        " --glm cols=+a1freq hide-covar" + \
+        " --glm cols=+a1freq hide-covar --ci 0.95" + \
         " --pheno {}.pheno".format(args.out) + \
         (" --covar {}.covar".format(args.out) if args.covar else "") + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
@@ -399,12 +399,14 @@ def merge_plink2(args, log):
     pattern = args.sumstats
     stat = 'T_STAT' if  pattern.endswith('.glm.linear') else 'Z_STAT'
     effect_cols = (['BETA', "SE"] if  pattern.endswith('.glm.linear') else ['OR', 'LOG(OR)_SE'])
-    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', '#CHROM', 'POS', 'REF', 'ALT', 'A1', 'A1_FREQ', 'OBS_CT', stat, 'P']+effect_cols] for chri in args.chr2use])
+    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', '#CHROM', 'POS', 'REF', 'ALT', 'A1', 'A1_FREQ', 'OBS_CT', stat, 'P', 'L95', 'U95']+effect_cols] for chri in args.chr2use])
     df['A2'] = df['REF']; idx=df['A2']==df['A1']; df.loc[idx, 'A2']=df.loc[idx, 'ALT']; del df['REF']; del df['ALT']
     if not pattern.endswith('.glm.linear'):
         df['BETA'] = np.log(df['OR'])
+        df['L95'] = np.log(df['L95'])
+        df['U95'] = np.log(df['U95'])
         df.rename(columns={'LOG(OR)_SE':'SE'}, inplace=True)
-    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL', 'A1_FREQ':'A1_FREQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'A1_FREQ', 'Z', 'BETA', 'SE', 'PVAL']].to_csv(args.out, index=False, sep='\t')
+    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL', 'A1_FREQ':'A1_FREQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'A1_FREQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'PVAL']].to_csv(args.out, index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def merge_regenie(args, log):
