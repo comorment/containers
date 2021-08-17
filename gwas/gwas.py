@@ -191,7 +191,6 @@ def make_regenie_commands(args, logistic, step):
     if (is_vcf_file(geno_fit) or is_vcf_file(geno_test)): raise(ValueError('--geno / --geno-fit can not point to a .vcf file for REGENIE analysis'))
 
     cmd = "$REGENIE " + \
-        (" --bt" if logistic else "") + \
         " --phenoFile {}.pheno".format(args.out) + \
         (" --covarFile {}.covar".format(args.out) if args.covar else "")
 
