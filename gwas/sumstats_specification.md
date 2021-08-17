@@ -6,11 +6,12 @@ The results of GWAS are represented as summary statistics, with the following co
 * ``A1`` - effect allele for ``Z`` and ``BETA`` columns
 * ``A2`` - other allele
 * ``N`` - sample size
+* ``CaseN``, ``ControlN`` - sample size for cases and controls (logistic regression only)
 * ``A1_FREQ`` - frequency of A1 allele
 * ``Z`` - z-score (or t-score) of association
 * ``BETA`` - effect size; for logistic regression, this contains ``log(OR)``
 * ``SE`` - standard error of the ``BETA`` column
-* ``L95``, ``U95`` - lower and upper 95% confidence interval of the``BETA``.
+* ``L95``, ``U95`` - lower and upper 95% confidence interval of the ``BETA``.
 * ``PVAL`` -- p-value
 
 For ``SNP``, ``CHR``, ``BP``, ``A1`` and ``A2`` columns the [gwas.py](gwas.py) script will simply copy over the information from the genetic file, i.e. from ``.bgen`` or ``.bim`` files. This means that ``SNP`` is likely to be dbSNP rs#, or some other form of identifyied such as ``CHR:BP:A1:A2``. 
@@ -19,4 +20,6 @@ Finally, ``A1`` and ``A2`` are not guarantied to be minor or major alleles, but 
 
 The sample size ``N`` is as reported by the software (``plink2`` or ``regenie``). For case-control traits, this appears to be a sum of cases and controls (not the effective sample size which would take into account imbalance between cases and controls).
 
-The ``L95`` and ``U95`` is only provided for ``plink2`` results.
+``L95`` and ``U95`` columns are only provided for ``plink2`` results.
+``CaseN`` and ``ControlN`` columns are only provided for ``plink2`` results for logistic regression.
+If you need these columns for ``regenie`` analysis consider also running ``plink2`` analysis, and copy over the columns into your ``regenie`` output.
