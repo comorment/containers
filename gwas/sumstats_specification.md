@@ -7,12 +7,12 @@ The results of GWAS are represented as summary statistics, with the following co
 * ``A2`` - other allele
 * ``N`` - sample size
 * ``CaseN``, ``ControlN`` - sample size for cases and controls (logistic regression only)
-* ``A1_FREQ`` - frequency of A1 allele
+* ``FRQ`` - frequency of A1 allele
 * ``Z`` - z-score (or t-score) of association
 * ``BETA`` - effect size; for logistic regression, this contains ``log(OR)``
 * ``SE`` - standard error of the ``BETA`` column
 * ``L95``, ``U95`` - lower and upper 95% confidence interval of the ``BETA``.
-* ``PVAL`` -- p-value
+* ``P`` -- p-value
 
 For ``SNP``, ``CHR``, ``BP``, ``A1`` and ``A2`` columns the [gwas.py](gwas.py) script will simply copy over the information from the genetic file, i.e. from ``.bgen`` or ``.bim`` files. This means that ``SNP`` is likely to be dbSNP rs#, or some other form of identifyied such as ``CHR:BP:A1:A2``. 
 For ``CHR`` and ``BP``, there we don't enforce a specific genomic build - it all depends on what build was used by the genotype data.
@@ -34,13 +34,13 @@ If you need these columns for ``regenie`` analysis consider also running ``plink
 
 | CoMorMent     | daner         | LDSC          | BioPsyk       | NORMENT       | Description |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| missing, TBD  | ?             | missing       | 0             | missing       | good idea to provide this column and referencing a line in .bim file     |
+| missing       | ?             | missing       | 0             | missing       | good idea to provide this column and referencing a line in .bim file     |
 | CHR           | CHR           | CHR           | CHR           | CHR           | OK     |
 | BP            | BP            | BP            | POS           | BP            | keep BP which is more informative ( "POS" could also stand for genomic position )    |
 | SNP           | SNP           | SNP           | RSID          | SNP           | keep SNP which makes more sense as we copy over marker name from  genetic file      |
 | A1            | A1            | A2            | EffectAllele  | A1            | keep A1 for consistency with LDSC even thought EffectAllele is more informative  |
 | A2            | A2            | A2            | OtherAllele   | A2            | keep A2 for consistency with LDSC even though OtherAllele is more informative |
-| PVAL, TBD     | P             | P             | P             | PVAL          | TBD: rename     |
+| P             | P             | P             | P             | PVAL          | OK    |
 | SE            | SE            | SE            | SE            | SE            | OK     |
 | L95           | ?             | missing       | ORL95         | missing       | keep "L95" as confidence interval may also be for the BETA or LOG(OR) |
 | U95           | ?             | missing       | ORU95         | missing       | keep "U95"    |
