@@ -412,7 +412,7 @@ def merge_plink2(args, log):
         df['ControlN'] = (df['CTRL_ALLELE_CT'].values / 2).astype(int)
         ct_cols = ['CaseN', 'ControlN']
 
-    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL', 'A1_FREQ':'A1_FREQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + ct_cols + ['A1_FREQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'PVAL']].to_csv(args.out, index=False, sep='\t')
+    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'P':'PVAL', 'A1_FREQ':'FRQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + ct_cols + ['FRQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'PVAL']].to_csv(args.out, index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def merge_regenie(args, log):
@@ -421,7 +421,7 @@ def merge_regenie(args, log):
     df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'CHROM', 'BETA', 'SE', 'GENPOS', 'ALLELE0', 'ALLELE1', 'A1FREQ', 'N', 'LOG10P']] for chri in args.chr2use])
     df['PVAL']=np.power(10, -df['LOG10P'])
     df['Z'] = -stats.norm.ppf(df['PVAL'].values*0.5)*np.sign(df['BETA']).astype(np.float64)
-    df.dropna().rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1', 'A1FREQ':'A1_FREQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'A1_FREQ', 'Z', 'BETA', 'SE', 'PVAL']].to_csv(args.out,index=False, sep='\t')
+    df.dropna().rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1', 'A1FREQ':'FRQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'FRQ', 'Z', 'BETA', 'SE', 'PVAL']].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def check_input_file(fname, chr2use=None):
