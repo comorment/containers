@@ -1,5 +1,5 @@
 --pheno-file /REF/examples/regenie/example_3chr.pheno
---bed-fit /REF/examples/regenie/example_3chr
---bed-test /REF/examples/regenie/example_3chr
+--geno-fit /REF/examples/regenie/example_3chr.bed
+--geno /REF/examples/regenie/example_3chr.bed
 --chr2use 1-3
 --variance-standardize

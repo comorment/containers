@@ -23,8 +23,8 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 ```
 # example_3chr.argsfile
 --pheno-file /REF/examples/regenie/example_3chr.pheno
---bed-fit /REF/examples/regenie/example_3chr
---bed-test /REF/examples/regenie/example_3chr
+--geno-fit /REF/examples/regenie/example_3chr.bed
+--geno /REF/examples/regenie/example_3chr.bed
 --chr2use 1-3
 --variance-standardize
 ```
@@ -73,20 +73,65 @@ It is expected that ``.bgen`` has corresponding ``.sample`` and ``.bgen.bgi`` fi
 To see more info about ``gwas.py`` arguments, try this:
 ```
 >singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
-
-usage: gwas.py gwas [-h] [--argsfile ARGSFILE] [--out OUT] [--log LOG] [--chr2use CHR2USE]
-                    [--slurm-job-name SLURM_JOB_NAME] [--slurm-account SLURM_ACCOUNT]
-                    [--slurm-time SLURM_TIME] [--slurm-cpus-per-task SLURM_CPUS_PER_TASK]
-                    [--slurm-mem-per-cpu SLURM_MEM_PER_CPU]
-                    [--module-load MODULE_LOAD [MODULE_LOAD ...]]
-                    [--comorment-folder COMORMENT_FOLDER] [--singularity-bind SINGULARITY_BIND]
-                    [--pheno-file PHENO_FILE] [--dict-file DICT_FILE] [--fam FAM]
-                    [--bed-fit BED_FIT] [--bed-test BED_TEST] [--bgen-fit BGEN_FIT]
-                    [--bgen-test BGEN_TEST] [--covar COVAR [COVAR ...]]
+```
+Key arguments are also described below, 
+but the actual ``--help`` output will describe more arguments - we don't copy this information here since gwas.py tool is being actively developed.
+```
+usage: gwas.py gwas [-h] [--out OUT] 
+                    [--geno GENO] [--geno-fit GENO_FIT] [--fam FAM]
+                    [--chr2use CHR2USE]                    
+                    [--pheno-file PHENO_FILE] [--dict-file DICT_FILE]
+                    [--covar COVAR [COVAR ...]]
                     [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
                     [--analysis {plink2,regenie} [{plink2,regenie} ...]]
-
-(followed by description of all arguments - we don't copy this information here since gwas.py tool is being actively developed)
+  --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
+  --geno GENO           required argument pointing to a genetic file: (1)
+                        plink's .bed file, or (2) .bgen file, or (3) .pgen
+                        file, or (4) .vcf file. Note that a full name of .bed
+                        (or .bgen, .pgen, .vcf) file is expected here.
+                        Corresponding files should have standard names, e.g.
+                        for plink's format it is expected that .fam and .bim
+                        file can be obtained by replacing .bed extension
+                        accordingly. supports '@' as a place holder for
+                        chromosome labels
+  --geno-fit GENO_FIT   genetic file to use in a first stage of mixed effect
+                        model. Expected to have the same set of individuals as
+                        --geno (this is NOT validated by the gwas.py script,
+                        and it is your responsibility to follow this
+                        assumption). Optional for standard association
+                        analysis (e.g. if for plink's glm). The argument
+                        supports the same file types as the --geno argument.
+                        Noes not support '@' (because mixed effect tools
+                        typically expect a single file at the first stage.
+  --fam FAM             an argument pointing to a plink's .fam file, use by
+                        gwas.py script to pre-filter phenotype information
+                        (--pheno) with the set of individuals available in the
+                        genetic file (--geno / --geno-fit). Optional when
+                        either --geno or --geno-fit is in plink's format,
+                        otherwise required - but IID in this file must be
+                        consistent with identifiers of the genetic file.
+  --chr2use CHR2USE     Chromosome ids to use (e.g. 1,2,3 or 1-4,12,16-20).
+                        Used when '@' is present in --geno, and allows to
+                        specify for which chromosomes to run the association
+                        testing.
+  --pheno-file PHENO_FILE
+                        phenotype file, according to CoMorMent spec
+  --dict-file DICT_FILE
+                        phenotype dictionary file, defaults to <pheno>.dict
+  --covar COVAR [COVAR ...]
+                        covariates to control for (must be columns of the
+                        --pheno-file); individuals with missing values for any
+                        covariates will be excluded not just from <out>.covar,
+                        but also from <out>.pheno file
+  --variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]
+                        the list of continuous phenotypes to standardize
+                        variance; accept the list of columns from the --pheno
+                        file (if empty, applied to all); doesn't apply to
+                        dummy variables derived from NOMINAL or BINARY
+                        covariates.
+  --pheno PHENO [PHENO ...]
+                        target phenotypes to run GWAS (must be columns of the
+                        --pheno-file
 ```
 
