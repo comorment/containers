@@ -24,32 +24,33 @@ The sample size ``N`` is as reported by the software (``plink2`` or ``regenie``)
 ``CaseN`` and ``ControlN`` columns are only provided for ``plink2`` results for logistic regression.
 If you need these columns for ``regenie`` analysis consider also running ``plink2`` analysis, and copy over the columns into your ``regenie`` output.
 
-## Comparison of columns names to other formats
-
-| CoMorMent     | LDSC          | BioPsyk       | NORMENT       | Description |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| missing, TBD  | missing       | 0             | missing       | good idea to provide this column and referencing a line in .bim file     |
-| CHR           | CHR           | CHR           | CHR           | OK     |
-| BP            | BP            | POS           | BP            | keep BP which is more informative ( "POS" could also stand for genomic position )    |
-| SNP           | SNP           | RSID          | SNP           | keep SNP which makes more sense as we copy over marker name from  genetic file      |
-| A1            | A2            | EffectAllele  | A1            | keep A1 for consistency with LDSC even thought EffectAllele is more informative  |
-| A2            | A2            | OtherAllele   | A2            | keep A2 for consistency with LDSC even though OtherAllele is more informative |
-| PVAL, TBD     | P             | P             | PVAL          | TBD: rename     |
-| SE            | SE            | SE            | SE            | OK     |
-| L95           | missing       | ORL95         | missing       | keep "L95" as confidence interval may also be for the BETA or LOG(OR) |
-| U95           | missing       | ORU95         | missing       | keep "U95"    |
-| N             | N             | N             | N             | OK     |
-| CaseN         | N_CAS         | CaseN         | NCASE         | OK     |
-| ControlN      | N_CON         | ControlN      | NCONTROL      | OK     |
-| INFO          | INFO          | INFO          | INFO          | OK     |
-| Direction     | missing       | Direction     | DIRECTION     | OK     |
-| BETA          | BETA          | B             | BETA          | keep "BETA" for consistency with LDSC (and also BETA is more informative)     |
-| Z             | Z             | Z             | Z             | OK     |
-| FRQ           | FRQ           | EAF           | FRQ           | keep "FRQ" which makes more sense for non-EUR populations     |
-| missing       | missing       | EAF_1KG       | missing       | not needed     |
+## Comparison of columns names
 
 * CoMorMent: this file
 * LDSC: https://github.com/precimed/ldsc/blob/master/munge_sumstats.py
 * BioPsyk: https://github.com/BioPsyk/cleansumstats/blob/dev/assets/schemas/cleaned-sumstats.yaml
 * NORMENT: https://github.com/precimed/python_convert/blob/master/sumstats_utils.py
+
+
+| CoMorMent     | daner         | LDSC          | BioPsyk       | NORMENT       | Description |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| missing, TBD  | ?             | missing       | 0             | missing       | good idea to provide this column and referencing a line in .bim file     |
+| CHR           | CHR           | CHR           | CHR           | CHR           | OK     |
+| BP            | BP            | BP            | POS           | BP            | keep BP which is more informative ( "POS" could also stand for genomic position )    |
+| SNP           | SNP           | SNP           | RSID          | SNP           | keep SNP which makes more sense as we copy over marker name from  genetic file      |
+| A1            | A1            | A2            | EffectAllele  | A1            | keep A1 for consistency with LDSC even thought EffectAllele is more informative  |
+| A2            | A2            | A2            | OtherAllele   | A2            | keep A2 for consistency with LDSC even though OtherAllele is more informative |
+| PVAL, TBD     | P             | P             | P             | PVAL          | TBD: rename     |
+| SE            | SE            | SE            | SE            | SE            | OK     |
+| L95           | ?             | missing       | ORL95         | missing       | keep "L95" as confidence interval may also be for the BETA or LOG(OR) |
+| U95           | ?             | missing       | ORU95         | missing       | keep "U95"    |
+| N             | ?             | N             | N             | N             | OK     |
+| CaseN         | Nca           | N_CAS         | CaseN         | NCASE         | OK     |
+| ControlN      | Nco           | N_CON         | ControlN      | NCONTROL      | OK     |
+| INFO          | INFO          | INFO          | INFO          | INFO          | OK     |
+| Direction     | Direction     | missing       | Direction     | DIRECTION     | OK     |
+| BETA          | BETA or OR    | BETA          | B             | BETA or OR    | keep "BETA" for consistency with LDSC (and also BETA is more informative)     |
+| Z             | ?             | Z             | Z             | Z             | OK     |
+| FRQ           | FRQ_A_NNN     | FRQ           | EAF           | FRQ           | keep "FRQ" which makes more sense for non-EUR populations     |
+| missing       | ?             | missing       | EAF_1KG       | missing       | not needed     |
 
