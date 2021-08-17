@@ -241,6 +241,7 @@ def make_plink2_commands(args, logistic):
         (" --bfile {}".format(remove_suffix(geno ,'.bed')) if is_bed_file(geno) else "") + \
         (" --pfile {}".format(remove_suffix(geno ,'.pgen')) if is_pgen_file(geno) else "") + \
         (" --bgen {} ref-first --sample {}".format(geno, replace_suffix(geno, ".bgen", ".sample")) if is_bgen_file(geno) else "") + \
+        (" --vcf {}".format(geno) if is_vcf_file(geno) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         " --glm hide-covar" + \
