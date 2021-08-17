@@ -6,6 +6,7 @@ The results of GWAS are represented as summary statistics, with the following co
 * ``A1`` - effect allele for ``Z`` and ``BETA`` columns
 * ``A2`` - other allele
 * ``N`` - sample size
+* ``A1_FREQ`` - frequency of A1 allele
 * ``Z`` - z-score (or t-score) of association
 * ``BETA`` - effect size; for logistic regression, this contains ``log(OR)``
 * ``SE`` - standard error of the ``BETA`` column
