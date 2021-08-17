@@ -192,7 +192,8 @@ def make_regenie_commands(args, logistic, step):
 
     cmd = "$REGENIE " + \
         " --phenoFile {}.pheno".format(args.out) + \
-        (" --covarFile {}.covar".format(args.out) if args.covar else "")
+        (" --covarFile {}.covar".format(args.out) if args.covar else "") + \
+        " --loocv "
 
     cmd_step1 = ' --step 1 --bsize 1000' + \
         " --out {}.regenie.step1".format(args.out) + \
