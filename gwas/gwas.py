@@ -65,15 +65,23 @@ def parse_args(args):
     slurm_parser.add_argument("--comorment-folder", type=str, default='/cluster/projects/p697/github/comorment', help="folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers")
     slurm_parser.add_argument("--singularity-bind", type=str, default='$COMORMENT/containers/reference:/REF:ro', help="translates to SINGULARITY_BIND variable in SLURM scripts")
 
+    # filtering options
+    filter_parser = argparse.ArgumentParser(add_help=False)
+    filter_parser.add_argument("--info-file", type=str, default=None, help="File with SNP and INFO columns. Values in SNP column must be unique.")
+    filter_parser.add_argument("--info", type=float, default=None, help="threshold for filtering on imputation INFO score")
+    filter_parser.add_argument("--maf", type=float, default=None, help="threshold for filtering on minor allele frequency")
+    filter_parser.add_argument("--hwe", type=float, default=None, help="threshold for filtering on hardy weinberg equilibrium p-value")
+    filter_parser.add_argument("--geno", type=float, default=None, help="threshold for filtering on per-variant missingness rate)")
+
     parent_parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
 
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
 
-    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, slurm_parser], help='perform gwas analysis'))
-    parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser], help='merge plink2 sumstats files'))
-    parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser], help='merge regenie sumstats files'))
+    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, slurm_parser, filter_parser], help='perform gwas analysis'))
+    parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser, filter_parser], help='merge plink2 sumstats files'))
+    parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser, filter_parser], help='merge regenie sumstats files'))
 
     return parser.parse_args(args)
 
@@ -85,7 +93,7 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
     parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
     parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file or --geno-fit-file is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
-    
+
     # deprecated options for genetic files
     parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
     parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
@@ -102,10 +110,12 @@ def parser_gwas_add_arguments(args, func, parser):
 
 def parser_merge_plink2_add_arguments(args, func, parser):
     parser.add_argument("--sumstats", type=str, default=None, help="sumstat file produced by plink2, containing @ as chromosome label place holder")
+    parser.add_argument("--basename", type=str, default=None, help="basename for .vmiss, .afreq and .hardy files, with @ as chromosome label place holder")
     parser.set_defaults(func=func)
 
 def parser_merge_regenie_add_arguments(args, func, parser):
     parser.add_argument("--sumstats", type=str, default=None, help="sumstat file produced by plink2, containing @ as chromosome label place holder")
+    parser.add_argument("--basename", type=str, default=None, help="basename for .vmiss, .afreq and .hardy files, with @ as chromosome label place holder")
     parser.set_defaults(func=func)
 
 def extract_variables(df, variables, pheno_dict_map, log):
@@ -162,6 +172,11 @@ def fix_and_validate_args(args, log):
     if ('plink2' in args.analysis) and ('regenie' in args.analysis):
         raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
 
+    if (args.info is not None) or (args.info_file is not None):
+        if (args.info is None) or (args.info_file is None):
+            raise ValueError('both --info and --info-file must be used at the same time')
+        check_input_file(args.info_file, chr2use=args.chr2use)
+
     # validate that some of genetic data is provided as input
     if not args.geno_file:
         raise ValueError('--geno-file must be specified')
@@ -214,11 +229,21 @@ def make_regenie_commands(args, logistic, step):
 
     return (cmd + cmd_step1) if step==1 else (cmd + cmd_step2)
 
+# this function works similarly to ** in python:
+# all args from args_list that are not None are passed to the caller
+# see make_regenie_merge and make_plink2_merge for a usage example.
+def pass_arguments_along(args, args_list):
+    opts = vars(args)
+    vals = [opts[arg.replace('-', '_')] for arg in args_list]
+    return ''.join([('--{} {} '.format(arg, val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
+
 def make_regenie_merge(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-regenie ' + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@_{pheno}.regenie'.format(out=args.out, pheno=pheno) + \
+            ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno}.regenie '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
@@ -228,28 +253,39 @@ def make_plink2_merge(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@.{pheno}.glm.{what}'.format(out=args.out, pheno=pheno, what=('logistic' if logistic else 'linear')) + \
+            ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno}.plink2 '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
     return cmd
 
-def make_plink2_commands(args, logistic):
+def make_plink2_commands(args):
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
 
     cmd = "$PLINK2 " + \
-        (" --bfile {}".format(remove_suffix(geno_file ,'.bed')) if is_bed_file(geno_file) else "") + \
-        (" --pfile {}".format(remove_suffix(geno_file ,'.pgen')) if is_pgen_file(geno_file) else "") + \
+        (" --bfile {} --no-pheno".format(remove_suffix(geno_file ,'.bed')) if is_bed_file(geno_file) else "") + \
+        (" --pfile {} --no-pheno".format(remove_suffix(geno_file ,'.pgen')) if is_pgen_file(geno_file) else "") + \
         (" --bgen {} ref-first --sample {}".format(geno_file, replace_suffix(geno_file, ".bgen", ".sample")) if is_bgen_file(geno_file) else "") + \
         (" --vcf {}".format(geno_file) if is_vcf_file(geno_file) else "") + \
-        " --no-pheno " + \
-        " --chr ${SLURM_ARRAY_TASK_ID}" + \
+        " --chr ${SLURM_ARRAY_TASK_ID}"
+    return cmd
+
+def make_plink2_glm_commands(args, logistic):
+    cmd = make_plink2_commands(args) + \
         " --glm cols=+a1freq{} hide-covar --ci 0.95".format(",+totallelecc" if (logistic) else "") + \
         " --pheno {}.pheno".format(args.out) + \
         (" --covar {}.covar".format(args.out) if args.covar else "") + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
     return cmd
 
+def make_plink2_info_commands(args):
+    cmd = make_plink2_commands(args) + \
+        " --missing --freq --hardy " + \
+        " --keep {}.pheno".format(args.out) + \
+        " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
+    return cmd
 
 def make_slurm_header(args, array=False):
     return """#!/bin/bash
@@ -369,30 +405,81 @@ def execute_gwas(args, log):
     submit_jobs = []
     if 'plink2' in args.analysis:
         with open(args.out + '_plink2.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + make_plink2_commands(args, logistic) + '\n')
+            f.write(make_slurm_header(args, array=True) + \
+                    make_plink2_info_commands(args) + '\n' + \
+                    make_plink2_glm_commands(args, logistic) + '\n')
         with open(args.out + '_plink2.2.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_plink2_merge(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
-            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_commands(args, logistic)))
+            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
+            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_glm_commands(args, logistic)))
             f.write(make_plink2_merge(args, logistic) + '\n')
         append_job(args.out + '_plink2.1.job', False, submit_jobs)
         append_job(args.out + '_plink2.2.job', True, submit_jobs)
     if 'regenie' in args.analysis:
         with open(args.out + '_regenie.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_regenie_commands(args, logistic, step=1) + '\n')
+            f.write(make_slurm_header(args, array=False) + \
+                    make_regenie_commands(args, logistic, step=1) + '\n')
         with open(args.out + '_regenie.2.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + make_regenie_commands(args, logistic, step=2) + '\n')
+            f.write(make_slurm_header(args, array=True) + \
+                    make_plink2_info_commands(args) + '\n' + \
+                    make_regenie_commands(args, logistic, step=2) + '\n')
         with open(args.out + '_regenie.3.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_regenie_merge(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
             f.write(make_regenie_commands(args, logistic, step=1) + '\n')
+            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_regenie_commands(args, logistic, step=2)))
             f.write(make_regenie_merge(args, logistic) + '\n')
         append_job(args.out + '_regenie.1.job', False, submit_jobs)
         append_job(args.out + '_regenie.2.job', True, submit_jobs)
         append_job(args.out + '_regenie.3.job', True, submit_jobs)
-    log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}.'.format(cmd_file))
+    log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}'.format(cmd_file))
     print('\n'.join(submit_jobs))
+
+def apply_filters(args, df):
+    info_col = []
+    if (args.info is not None) or (args.info_file is not None):
+        if (args.info is None) or (args.info_file is None):
+            raise ValueError('both --info and --info-file must be used at the same time')
+        log.log('reading {}...'.format(args.info_file))
+        chr2use = args.chf2use if ('@' in args.info_file) else ['@']
+        info=pd.concat([pd.read_csv(args.info_file.replace('@', chri), delim_whitespace=True, dtype={'INFO':np.float32})[['SNP', 'INFO']] for chri in chr2use])
+        log.log('done, {} rows, {} cols'.format(len(info), info.shape[1]))
+
+        log.log("merging --sumstats (n={} rows) and --info-file...".format(len(df)))
+        df = pd.merge(df, info, how='inner', on='SNP')
+        log.log("n={} SNPs remain after merging, n={} with missing INFO score".format(len(df), np.sum(df['INFO'].isnull())))
+
+        n = len(df); df = df[~(df['INFO'] < args.info)].copy()
+        log.log("n={} SNPs remain after filtering INFO>={}, n={} removed".format(len(df), args.info, n-len(df)))
+        info_col = ['INFO']
+
+    if args.maf is not None:
+        maf=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.afreq', delim_whitespace=True)[['ID', 'ALT_FREQS']] for chri in args.chr2use])
+        maf.rename(columns={'ID':'SNP'}, inplace=True)
+        df = pd.merge(df, maf, how='left', on='SNP')
+        n=len(df); df = df[(df['ALT_FREQS'] >= args.maf) & (df['ALT_FREQS'] <= (1-args.maf))].copy()
+        log.log("n={} SNPs remain after filtering allele frequency on {}<=FRQ<={}, n={} removed".format(len(df), args.maf, 1-args.maf, n-len(df)))
+
+    if args.hwe is not None:
+        hwe=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.hardy', delim_whitespace=True)[['ID', 'P']] for chri in args.chr2use])
+        hwe.rename(columns={'ID':'SNP', 'P':'P_HWE'}, inplace=True)
+        df = pd.merge(df, hwe, how='left', on='SNP')
+        n=len(df); df = df[df['P_HWE'] >= args.hwe].copy()
+        log.log("n={} SNPs remain after filtering Hardy Weinberg equilibrium P>={}, n={} removed".format(len(df), args.hwe, n-len(df)))
+        del df['P_HWE']
+
+    if args.geno is not None:
+        vmiss=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.vmiss', delim_whitespace=True)[['ID', 'F_MISS']] for chri in args.chr2use])
+        vmiss.rename(columns={'ID':'SNP'}, inplace=True)
+        df = pd.merge(df, vmiss, how='left', on='SNP')
+        n=len(df); df = df[df['F_MISS'] <= args.geno].copy()
+        log.log("n={} SNPs remain after filtering SNPs missingness F_MISS>={}, n={} removed".format(len(df), args.geno, n-len(df)))
+        del df['F_MISS']
+
+    return df, info_col
+    #info-file', 'info', 'maf', 'hwe', 'geno'
 
 def merge_plink2(args, log):
     fix_and_validate_chr2use(args, log)
@@ -412,7 +499,10 @@ def merge_plink2(args, log):
         df['ControlN'] = (df['CTRL_ALLELE_CT'].values / 2).astype(int)
         ct_cols = ['CaseN', 'ControlN']
 
-    df.dropna().rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'A1_FREQ':'FRQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + ct_cols + ['FRQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'P']].to_csv(args.out, index=False, sep='\t')
+    df.dropna(inplace=True)
+    df.rename(columns={'ID':'SNP', '#CHROM':'CHR', 'POS':'BP', 'OBS_CT':'N', stat:'Z', 'A1_FREQ':'FRQ'}, inplace=True)
+    df, info_col = apply_filters(args, df)
+    df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + ct_cols + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'P']].to_csv(args.out, index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def merge_regenie(args, log):
@@ -421,7 +511,10 @@ def merge_regenie(args, log):
     df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'CHROM', 'BETA', 'SE', 'GENPOS', 'ALLELE0', 'ALLELE1', 'A1FREQ', 'N', 'LOG10P']] for chri in args.chr2use])
     df['P']=np.power(10, -df['LOG10P'])
     df['Z'] = -stats.norm.ppf(df['P'].values*0.5)*np.sign(df['BETA']).astype(np.float64)
-    df.dropna().rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1', 'A1FREQ':'FRQ'})[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'FRQ', 'Z', 'BETA', 'SE', 'P']].to_csv(args.out,index=False, sep='\t')
+    df.dropna(inplace=True)
+    df.rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1', 'A1FREQ':'FRQ'}, inplace=True)
+    df, info_col = apply_filters(args, df)
+    df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P']].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
 
 def check_input_file(fname, chr2use=None):
