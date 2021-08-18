@@ -66,7 +66,7 @@ def parse_args(args):
     slurm_parser.add_argument("--singularity-bind", type=str, default='$COMORMENT/containers/reference:/REF:ro', help="translates to SINGULARITY_BIND variable in SLURM scripts")
 
     parent_parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
-         "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno, and allows to specify for which chromosomes to run the association testing.")
+         "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
 
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
@@ -82,15 +82,15 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--dict-file", type=str, default=None, help="phenotype dictionary file, defaults to <pheno>.dict")
 
     # genetic files to use. All must share the same set of individuals. Currently this assumption is not validated.
-    parser.add_argument("--geno", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
-    parser.add_argument("--geno-fit", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
-    parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno / --geno-fit). Optional when either --geno or --geno-fit is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
+    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
+    parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file or --geno-fit-file is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
     
     # deprecated options for genetic files
-    parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
-    parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
-    parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit instead] .bgen file to use in a first step of mixed effect models")
-    parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
+    parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
+    parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
+    parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
     parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
     parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
@@ -154,27 +154,27 @@ def fix_and_validate_args(args, log):
     if not args.pheno: raise ValueError('--pheno is required.')
 
     # fix deprecated arguments
-    if args.bed_fit: args.geno_fit = args.bed_fit + '.bed'; args.bed_fit=None
-    if args.bed_test: args.geno = args.bed_test + '.bed'; args.bed_test=None
-    if args.bgen_fit: args.geno_fit = args.bgen_fit; args.bgen_fit=None
-    if args.bgen_test: args.geno = args.bgen_test; args.bgen_test=None
+    if args.bed_fit: args.geno_fit_file = args.bed_fit + '.bed'; args.bed_fit=None
+    if args.bed_test: args.geno_file = args.bed_test + '.bed'; args.bed_test=None
+    if args.bgen_fit: args.geno_fit_file = args.bgen_fit; args.bgen_fit=None
+    if args.bgen_test: args.geno_file = args.bgen_test; args.bgen_test=None
 
     if ('plink2' in args.analysis) and ('regenie' in args.analysis):
         raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
 
     # validate that some of genetic data is provided as input
-    if not args.geno:
-        raise ValueError('--geno must be specified')
-    if ('regenie' in 'analysis') and (not args.geno_fit):
-        raise ValueError('--geno-fit must be specified for --analysis regenie')
+    if not args.geno_file:
+        raise ValueError('--geno-file must be specified')
+    if ('regenie' in 'analysis') and (not args.geno_fit_file):
+        raise ValueError('--geno-fit-file must be specified for --analysis regenie')
 
     if args.fam is None:
-        if is_bed_file(args.geno):
-            args.fam = replace_suffix(args.geno, '.bed', '.fam')
-        elif is_bed_file(args.geno_fit):
-            args.fam = replace_suffix(args.geno_fit, '.bed', '.fam')
+        if is_bed_file(args.geno_file):
+            args.fam = replace_suffix(args.geno_file, '.bed', '.fam')
+        elif is_bed_file(args.geno_fit_file):
+            args.fam = replace_suffix(args.geno_fit_file, '.bed', '.fam')
         else:
-            raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno / --geno-fit files')
+            raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno-file / --geno-fit-file')
         if '@' in args.fam: args.fam = args.fam.replace('@', args.chr2use[0])
     check_input_file(args.fam)
 
@@ -183,12 +183,12 @@ def fix_and_validate_args(args, log):
     check_input_file(args.dict_file)
 
 def make_regenie_commands(args, logistic, step):
-    geno_fit = args.geno_fit
-    geno_test = args.geno.replace('@', '${SLURM_ARRAY_TASK_ID}')
-    sample = replace_suffix(geno_test, ".bgen", ".sample")
+    geno_fit_file = args.geno_fit_file
+    geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
+    sample = replace_suffix(geno_file, ".bgen", ".sample")
 
-    if ('@' in geno_fit): raise(ValueError('--geno-fit contains "@", hense it is incompatible with regenie step1 which require a single file'))
-    if (is_vcf_file(geno_fit) or is_vcf_file(geno_test)): raise(ValueError('--geno / --geno-fit can not point to a .vcf file for REGENIE analysis'))
+    if ('@' in geno_fit_file): raise(ValueError('--geno-fit-file contains "@", hense it is incompatible with regenie step1 which require a single file'))
+    if (is_vcf_file(geno_fit_file) or is_vcf_file(geno_file)): raise(ValueError('--geno-file / --geno-fit-file can not point to a .vcf file for REGENIE analysis'))
 
     cmd = "$REGENIE " + \
         " --phenoFile {}.pheno".format(args.out) + \
@@ -197,17 +197,17 @@ def make_regenie_commands(args, logistic, step):
 
     cmd_step1 = ' --step 1 --bsize 1000' + \
         " --out {}.regenie.step1".format(args.out) + \
-        (" --bed {} --ref-first".format(remove_suffix(geno_fit, '.bed')) if is_bed_file(geno_fit) else "") + \
-        (" --pgen {} --ref-first".format(remove_suffix(geno_fit, '.pgen')) if is_pgen_file(geno_fit) else "") + \
-        (" --bgen {} --ref-first".format(geno_fit) if is_bgen_file(geno_fit) else "") + \
+        (" --bed {} --ref-first".format(remove_suffix(geno_fit_file, '.bed')) if is_bed_file(geno_fit_file) else "") + \
+        (" --pgen {} --ref-first".format(remove_suffix(geno_fit_file, '.pgen')) if is_pgen_file(geno_fit_file) else "") + \
+        (" --bgen {} --ref-first".format(geno_fit_file) if is_bgen_file(geno_fit_file) else "") + \
         (" --bt" if logistic else "") + \
         " --lowmem --lowmem-prefix {}.regenie_tmp_preds".format(args.out)
 
     cmd_step2 = ' --step 2 --bsize 400' + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out) + \
-        (" --bed {} --ref-first".format(remove_suffix(geno_test, '.bed')) if  is_bed_file(geno_test) else "") + \
-        (" --pgen {} --ref-first".format(remove_suffix(geno_test, '.pgen')) if is_pgen_file(geno_test) else "") + \
-        (" --bgen {} --ref-first --sample {}".format(geno_test, sample) if is_bgen_file(geno_test) else "") + \
+        (" --bed {} --ref-first".format(remove_suffix(geno_file, '.bed')) if  is_bed_file(geno_file) else "") + \
+        (" --pgen {} --ref-first".format(remove_suffix(geno_file, '.pgen')) if is_pgen_file(geno_file) else "") + \
+        (" --bgen {} --ref-first --sample {}".format(geno_file, sample) if is_bgen_file(geno_file) else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.regenie.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
@@ -235,13 +235,13 @@ def make_plink2_merge(args, logistic):
     return cmd
 
 def make_plink2_commands(args, logistic):
-    geno = args.geno.replace('@', '${SLURM_ARRAY_TASK_ID}')
+    geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
 
     cmd = "$PLINK2 " + \
-        (" --bfile {}".format(remove_suffix(geno ,'.bed')) if is_bed_file(geno) else "") + \
-        (" --pfile {}".format(remove_suffix(geno ,'.pgen')) if is_pgen_file(geno) else "") + \
-        (" --bgen {} ref-first --sample {}".format(geno, replace_suffix(geno, ".bgen", ".sample")) if is_bgen_file(geno) else "") + \
-        (" --vcf {}".format(geno) if is_vcf_file(geno) else "") + \
+        (" --bfile {}".format(remove_suffix(geno_file ,'.bed')) if is_bed_file(geno_file) else "") + \
+        (" --pfile {}".format(remove_suffix(geno_file ,'.pgen')) if is_pgen_file(geno_file) else "") + \
+        (" --bgen {} ref-first --sample {}".format(geno_file, replace_suffix(geno_file, ".bgen", ".sample")) if is_bgen_file(geno_file) else "") + \
+        (" --vcf {}".format(geno_file) if is_vcf_file(geno_file) else "") + \
         " --no-pheno " + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         " --glm cols=+a1freq{} hide-covar --ci 0.95".format(",+totallelecc" if (logistic) else "") + \

@@ -23,8 +23,8 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 ```
 # example_3chr.argsfile
 --pheno-file /REF/examples/regenie/example_3chr.pheno
---geno-fit /REF/examples/regenie/example_3chr.bed
---geno /REF/examples/regenie/example_3chr.bed
+--geno-fit-file /REF/examples/regenie/example_3chr.bed
+--geno-file /REF/examples/regenie/example_3chr.bed
 --chr2use 1-3
 --variance-standardize
 ```
@@ -78,7 +78,7 @@ Key arguments are also described below,
 but the actual ``--help`` output will describe more arguments - we don't copy this information here since gwas.py tool is being actively developed.
 ```
 usage: gwas.py gwas [-h] [--out OUT] 
-                    [--geno GENO] [--geno-fit GENO_FIT] [--fam FAM]
+                    [--geno-file GENO_FILE] [--geno-fit-file GENO_FIT_FILE] [--fam FAM]
                     [--chr2use CHR2USE]                    
                     [--pheno-file PHENO_FILE] [--dict-file DICT_FILE]
                     [--covar COVAR [COVAR ...]]
@@ -86,7 +86,7 @@ usage: gwas.py gwas [-h] [--out OUT]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
                     [--analysis {plink2,regenie} [{plink2,regenie} ...]]
   --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
-  --geno GENO           required argument pointing to a genetic file: (1)
+  --geno-file GENO      required argument pointing to a genetic file: (1)
                         plink's .bed file, or (2) .bgen file, or (3) .pgen
                         file, or (4) .vcf file. Note that a full name of .bed
                         (or .bgen, .pgen, .vcf) file is expected here.
@@ -95,24 +95,25 @@ usage: gwas.py gwas [-h] [--out OUT]
                         file can be obtained by replacing .bed extension
                         accordingly. supports '@' as a place holder for
                         chromosome labels
-  --geno-fit GENO_FIT   genetic file to use in a first stage of mixed effect
+  --geno-fit-file GENO_FIT_FILE
+                        genetic file to use in a first stage of mixed effect
                         model. Expected to have the same set of individuals as
-                        --geno (this is NOT validated by the gwas.py script,
+                        --geno-file (this is NOT validated by the gwas.py script,
                         and it is your responsibility to follow this
                         assumption). Optional for standard association
                         analysis (e.g. if for plink's glm). The argument
-                        supports the same file types as the --geno argument.
+                        supports the same file types as the --geno-file argument.
                         Noes not support '@' (because mixed effect tools
                         typically expect a single file at the first stage.
   --fam FAM             an argument pointing to a plink's .fam file, use by
                         gwas.py script to pre-filter phenotype information
                         (--pheno) with the set of individuals available in the
-                        genetic file (--geno / --geno-fit). Optional when
-                        either --geno or --geno-fit is in plink's format,
+                        genetic file (--geno-file / --geno-fit-file). Optional when
+                        either --geno-file or --geno-fit-file is in plink's format,
                         otherwise required - but IID in this file must be
                         consistent with identifiers of the genetic file.
   --chr2use CHR2USE     Chromosome ids to use (e.g. 1,2,3 or 1-4,12,16-20).
-                        Used when '@' is present in --geno, and allows to
+                        Used when '@' is present in --geno-file, and allows to
                         specify for which chromosomes to run the association
                         testing.
   --pheno-file PHENO_FILE
