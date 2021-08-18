@@ -141,4 +141,3 @@ usage: gwas.py gwas [-h] [--out OUT]
   --hwe HWE             threshold for filtering on hardy weinberg equilibrium p-value
   --geno GENO           threshold for filtering on per-variant missingness rate)
 ```
-

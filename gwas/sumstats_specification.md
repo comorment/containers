@@ -12,7 +12,7 @@ The results of GWAS are represented as summary statistics, with the following co
 * ``BETA`` - effect size; for logistic regression, this contains ``log(OR)``
 * ``SE`` - standard error of the ``BETA`` column
 * ``L95``, ``U95`` - lower and upper 95% confidence interval of the ``BETA``.
-* ``P`` -- p-value
+* ``P`` - p-value
 
 For ``SNP``, ``CHR``, ``BP``, ``A1`` and ``A2`` columns the [gwas.py](gwas.py) script will simply copy over the information from the genetic file, i.e. from ``.bgen`` or ``.bim`` files. This means that ``SNP`` is likely to be dbSNP rs#, or some other form of identifyied such as ``CHR:BP:A1:A2``. 
 For ``CHR`` and ``BP``, there we don't enforce a specific genomic build - it all depends on what build was used by the genotype data.

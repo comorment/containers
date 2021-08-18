@@ -479,7 +479,29 @@ def apply_filters(args, df):
         del df['F_MISS']
 
     return df, info_col
-    #info-file', 'info', 'maf', 'hwe', 'geno'
+
+def write_readme_file(args):
+    with open(args.out + '.README.txt', 'w') as f:
+        f.write('''Columns are defined as follows:
+SNP      - marker name, for example rs#.
+CHR      - chromosome label
+BP       - base-pair position
+A1       - effect allele for ``Z`` and ``BETA`` columns
+A2       - other allele
+N        - sample size
+CaseN    - sample size for cases (logistic regression only)
+ControlN - sample size for controls (logistic regression only)
+INFO     - imputation INFO score
+FRQ      - frequency of A1 allele
+Z        - z-score or t-score of association
+BETA     - effect size; for logistic regression, this contains log(OR)
+SE       - standard error of the BETA column
+L95      - lower 95% confidence interval of the BETA
+U95      - upper 95% confidence interval of the BETA
+P        - p-value
+
+For more information, see .log files produced by gwas.py and sebsequent runs.
+''')
 
 def merge_plink2(args, log):
     fix_and_validate_chr2use(args, log)
@@ -504,6 +526,7 @@ def merge_plink2(args, log):
     df, info_col = apply_filters(args, df)
     df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + ct_cols + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'L95', 'U95', 'P']].to_csv(args.out, index=False, sep='\t')
     os.system('gzip -f ' + args.out)
+    write_readme_file(args)    
 
 def merge_regenie(args, log):
     fix_and_validate_chr2use(args, log)
@@ -516,6 +539,7 @@ def merge_regenie(args, log):
     df, info_col = apply_filters(args, df)
     df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P']].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
+    write_readme_file(args)
 
 def check_input_file(fname, chr2use=None):
     if (chr2use is not None) and ('@' in fname):
