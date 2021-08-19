@@ -54,6 +54,7 @@ def parse_args(args):
     parent_parser.add_argument('--argsfile', type=open, action=LoadFromFile, default=None, help="file with additional command-line arguments, e.g. those configuration settings that are the same across all of your runs")
     parent_parser.add_argument("--out", type=str, default="gwas", help="prefix for the output files (<out>.covar, <out>.pheno, etc)")
     parent_parser.add_argument("--log", type=str, default=None, help="file to output log, defaults to <out>.log")
+    parent_parser.add_argument("--log-append", action="store_true", default=False, help="append to existing log file. Default is to erase previous log file if it exists.")    
     parent_parser.add_argument("--log-sensitive", action="store_true", default=False, help="allow sensitive (individual-level) information in <out>.log. Use with caution. This may help debugging errors, but then you must pay close attention to avoid exporting the .log files out of your security environent. It's recommended to delete .log files after  you've investigate the problem.")
 
     slurm_parser = argparse.ArgumentParser(add_help=False)
@@ -104,6 +105,7 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file or --geno-fit-file is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
+    parser.add_argument("--bfile-ld", type=str, default=None, help="plink file to use for LD structure estimation (forwarded to 'gwas.py loci --bfile' argument")
 
     # deprecated options for genetic files
     parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
@@ -116,6 +118,12 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     parser.add_argument("--pheno-na-rep", type=str, default='NA', help="missing data representation for phenotype file (regenie: NA, plink: -9)")
     parser.add_argument('--analysis', type=str, default=['plink2', 'regenie'], nargs='+', choices=['plink2', 'regenie'])
+
+    parser.add_argument("--loci", action="store_true", default=False, help="Call 'gwas.py loci' after merging summary statistics")
+    parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs.")
+
+    #TBD: parser.add_argument("--qq", action="store_true", default=False, help="Call 'gwas.py qq' after merging summary statistics") 
+    #TBD: parser.add_argument("--manh", action="store_true", default=False, help="Call 'gwas.py manh' after merging summary statistics")
 
     parser.set_defaults(func=func)
 
@@ -275,9 +283,16 @@ def pass_arguments_along(args, args_list):
     vals = [opts[arg.replace('-', '_')] for arg in args_list]
     return ''.join([('--{} {} '.format(arg, val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
 
-def make_loci(args):
-    # $PYTHON gwas.py loci --sumstats run1_CASE2.regenie.gz --out run1_CASE2.regenie --bfile /REF/examples/regenie/example_3chr --chr2use 1-3 --clump-p1 0.1
-    pass
+def make_loci(args, pheno, analysis):
+    cmd = '$PYTHON gwas.py loci ' + \
+        ' --sumstats {out}_{pheno}.{analysis}.gz'.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --bfile {}'.format(args.bfile_ld if (args.bfile_ld is not None) else remove_suffix(args.geno_file, '.bed')) + \
+        ' --out {out}_{pheno}.{analysis} '.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --log-append ' + \
+        pass_arguments_along(args, ['clump-p1']) + \
+        ' --chr2use {} '.format(','.join(args.chr2use)) + \
+        '\n'
+    return cmd
 
 def make_manh(args):
     # $PYTHON manhattan.py run1_CASE2.regenie.gz --out run1_CASE2.regenie.png --chr2use 1-3 --lead run1_CASE2.regenie.lead.csv --indep run1_CASE2.regenie.indep.csv --downsample-frac 1
@@ -297,7 +312,8 @@ def make_regenie_merge(args, logistic):
             ' --out {out}_{pheno}.regenie '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
-
+        if args.loci:
+            cmd += make_loci(args, pheno, 'regenie')
     return cmd
 
 def make_plink2_merge(args, logistic):
@@ -310,6 +326,8 @@ def make_plink2_merge(args, logistic):
             ' --out {out}_{pheno}.plink2 '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
+        if args.loci:
+            cmd += make_loci(args, pheno, 'plink2')
     return cmd
 
 def make_plink2_commands(args):
@@ -712,8 +730,8 @@ def tar_filter(tarinfo):
 
 def clump_cleanup(args, log):
     temp_out = args.out + '.temp'
-    log.log('Saving intermediate files to {out}.temp.tar.gz'.format(out=args.out))
-    with tarfile.open('{out}.temp.tar.gz'.format(out=args.out), "w:gz") as tar:
+    log.log('Saving intermediate files to {out}.loc.tar.gz'.format(out=args.out))
+    with tarfile.open('{out}.loci.tar.gz'.format(out=args.out), "w:gz") as tar:
         tar.add(temp_out, arcname=os.path.basename(temp_out), filter=tar_filter)
     shutil.rmtree(temp_out)
 
@@ -917,7 +935,8 @@ if __name__ == "__main__":
     if args.out is None:
         raise ValueError('--out is required.')
 
-    log = Logger(args.log if args.log else (args.out + '.log'), 'w')
+    log = Logger(args.log if args.log else (args.out + '.log'), 'a' if args.log_append else 'w')
+        
     start_time = time.time()
 
     try:
