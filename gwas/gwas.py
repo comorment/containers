@@ -642,37 +642,23 @@ def execute_gwas(args, log):
     submit_jobs = []
 
     if 'plink2' in args.analysis:
-        with open(args.out + '.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + \
-                    make_plink2_info_commands(args) + '\n' + \
-                    make_plink2_glm_commands(args, logistic) + '\n')
-        with open(args.out + '.2.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_plink2_merge_commands(args, logistic) + '\n')
-        with open(cmd_file, 'a') as f:
-            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
-            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_glm_commands(args, logistic)))
-            f.write(make_plink2_merge_commands(args, logistic) + '\n')
-        append_job(args.out + '.1.job', False, submit_jobs)
-        append_job(args.out + '.2.job', True, submit_jobs)
+        commands = [make_plink2_info_commands(args),
+                    make_plink2_glm_commands(args, logistic)]
+        append_job(args, commands, True, 1, cmd_file, submit_jobs)
+
+        commands = [make_plink2_merge_commands(args, logistic)]
+        append_job(args, commands, False, 2, cmd_file, submit_jobs)
 
     if 'regenie' in args.analysis:
-        with open(args.out + '.1.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + \
-                    make_regenie_commands(args, logistic, step=1) + '\n')
-        with open(args.out + '.2.job', 'w') as f:
-            f.write(make_slurm_header(args, array=True) + \
-                    make_plink2_info_commands(args) + '\n' + \
-                    make_regenie_commands(args, logistic, step=2) + '\n')
-        with open(args.out + '.3.job', 'w') as f:
-            f.write(make_slurm_header(args, array=False) + make_regenie_merge_commands(args, logistic) + '\n')
-        with open(cmd_file, 'a') as f:
-            f.write(make_regenie_commands(args, logistic, step=1) + '\n')
-            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
-            f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_regenie_commands(args, logistic, step=2)))
-            f.write(make_regenie_merge_commands(args, logistic) + '\n')
-        append_job(args.out + '.1.job', False, submit_jobs)
-        append_job(args.out + '.2.job', True, submit_jobs)
-        append_job(args.out + '.3.job', True, submit_jobs)
+        commands = [make_regenie_commands(args, logistic, step=1)]
+        append_job(args, commands, False, 1, cmd_file, submit_jobs)
+
+        commands = [make_plink2_info_commands(args), make_regenie_commands(args, logistic, step=2)]
+        append_job(args, commands, True, 2, cmd_file, submit_jobs)
+
+        commands = [make_regenie_merge_commands(args, logistic)]
+        append_job(args, commands, False, 3, cmd_file, submit_jobs)
+
     log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}'.format(cmd_file))
     print('\n'.join(submit_jobs))
 
@@ -847,11 +833,30 @@ def read_fam(args, fam_file):
     if np.any(fam['IID'].duplicated()): raise(ValueError("IID column has duplicated values in --fam file"))
     return fam
 
-def append_job(job, depends_on_previous, job_list):
-    if depends_on_previous:
-        job_list.append('RES=$(sbatch --dependency=afterany:${{RES##* }} {})'.format(job))
+# Intput:
+#   args - command line arguments (as usual)
+#   commands - array of commands to put in a SLURM job
+#   as_array - whether the job is an array of 22 jobs, or not
+# Output:
+#   slurm_job_file - filename of a .job file to output commands (with SLURM header)
+#   cmd_file - file that concatenate all commands (in case user wants to execute everything by a BASH on a local node)
+#   submit_job_list - instructions for a user about how to schedule SLURM jobs
+def append_job(args, commands, as_array, slurm_job_index, cmd_file, submit_jobs_list):
+    slurm_job_file = args.out + '.{}.job'.format(slurm_job_index)
+    with open(slurm_job_file, 'w') as f:
+        f.write(make_slurm_header(args, array=as_array) + '\n'.join(commands) + '\n')
+    
+    with open(cmd_file, 'a') as f:
+        for command in commands:
+            if as_array:
+                f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), command))
+            else:
+                f.write('{}\n'.format(command))
+
+    if (slurm_job_index != 1):
+        submit_jobs_list.append('RES=$(sbatch --dependency=afterany:${{RES##* }} {})'.format(slurm_job_file))
     else:
-        job_list.append('RES=$(sbatch {})'.format(job))
+        submit_jobs_list.append('RES=$(sbatch {})'.format(slurm_job_file))
 
 def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
