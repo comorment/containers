@@ -921,15 +921,9 @@ if __name__ == "__main__":
     start_time = time.time()
 
     try:
-        defaults = vars(parse_args([sys.argv[1]]))
-        opts = vars(args)
-        non_defaults = [x for x in opts.keys() if opts[x] != defaults[x]]
         header = MASTHEAD
         header += "Call: \n"
-        header += './gwas.py {} \\\n'.format(sys.argv[1])
-        options = ['\t--'+x.replace('_','-')+' '+str(opts[x]).replace('\t', '\\t')+' \\' for x in non_defaults]
-        header += '\n'.join(options).replace('True','').replace('False','')
-        header = header[0:-1]+'\n'
+        header += ' '.join(sys.argv).replace(' --', ' \\\n\t--')
         log.log(header)
         log.log('Beginning analysis at {T} by {U}, host {H}'.format(T=time.ctime(), U=getpass.getuser(), H=socket.gethostname()))
 
