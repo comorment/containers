@@ -149,9 +149,10 @@ def parser_loci_add_arguments(args, func, parser):
 
     parser.add_argument("--ld-window-kb", type=float, default=10000, help="Window size in KB to search for clumped SNPs. ")
     parser.add_argument("--loci-merge-kb", type=float, default=250, help="Maximum distance in KB of LD blocks to merge. ")
-    parser.add_argument("--exclude-ranges", type=str, nargs='+',
-        help='Exclude SNPs in ranges of base pair position, for example MHC. '
-        'The syntax is chr:from-to, for example 6:25000000-35000000. Multiple regions can be excluded.')
+    parser.add_argument("--merge-ranges", type=str, nargs='+',
+        help='Merge loci if they fall within --merge-ranges, so that no more than 1 loci is reported for each range. '
+        'This is useful to handle complex LD regions such as MHC or chr8 inversion. The syntax is chr:from-to, and multiple regions can be excluded. '
+        'Example: --merge-ranges 6:25000000-35000000 8:7000000-12000000.')
     parser.add_argument("--plink", type=str, default='plink', help="Path to plink executable.")
     parser.set_defaults(func=func)
 
@@ -725,19 +726,19 @@ def execute_command(command, log):
     log.log('Done. Exit code: {}'.format(exit_code))
     return exit_code
 
-def make_ranges(args_exclude_ranges, log):
-    # Interpret --exclude-ranges input
+def make_ranges(args_merge_ranges, log):
+    # Interpret --merge-ranges input
     ChromosomeRange = collections.namedtuple('ChromosomeRange', ['chr', 'from_bp', 'to_bp'])
-    exclude_ranges = []
-    if args_exclude_ranges is not None:
-        for exclude_range in args_exclude_ranges:
+    merge_ranges = []
+    if args_merge_ranges is not None:
+        for merge_range in args_merge_ranges:
             try:
-                range = ChromosomeRange._make([int(x) for x in exclude_range.replace(':', ' ').replace('-', ' ').split()[:3]])
+                range = ChromosomeRange._make([int(x) for x in merge_range.replace(':', ' ').replace('-', ' ').split()[:3]])
             except Exception as e:
-                raise(ValueError('Unable to interpret exclude range "{}", chr:from-to format is expected.'.format(exclude_range)))
-            exclude_ranges.append(range)
-            log.log('Exclude range: chromosome {} from BP {} to {}'.format(range.chr, range.from_bp, range.to_bp))
-    return exclude_ranges
+                raise(ValueError('Unable to interpret merge range "{}", chr:from-to format is expected.'.format(merge_range)))
+            merge_ranges.append(range)
+            log.log('Merge range: chromosome {} from BP {} to {}'.format(range.chr, range.from_bp, range.to_bp))
+    return merge_ranges
 
 def make_loci_implementation(args, log):
     """
@@ -746,7 +747,7 @@ def make_loci_implementation(args, log):
     TBD: in snps table, do an outer merge - e.i, include SNPs that pass p-value threshold (some without locus number), and SNPs without p-value (e.i. from reference genotypes)
     """
     fix_and_validate_chr2use(args, log)    
-    exclude_ranges = make_ranges(args.exclude_ranges, log)
+    merge_ranges = make_ranges(args.merge_ranges, log)
 
     temp_out = args.out + '.temp'
     if not os.path.exists(temp_out):
@@ -859,9 +860,9 @@ def make_loci_implementation(args, log):
             if df_lead['CHR_A'][i] != df_lead['CHR_A'][i-1]: continue
 
             merge_to_previous = False
-            if (df_lead['MinBP'][i] - df_lead['MaxBP_locus'][i-1]) < (1000 * 250):
+            if (df_lead['MinBP'][i] - df_lead['MaxBP_locus'][i-1]) < (1000 * args.loci_merge_kb):
                 merge_to_previous = True
-            for exrange in exclude_ranges:
+            for exrange in merge_ranges:
                 if df_lead['CHR_A'][i] != exrange.chr: continue
                 if (df_lead['MaxBP_locus'][i-1] >= exrange.from_bp) and (df_lead['MinBP'][i] <= exrange.to_bp):
                     merge_to_previous = True
