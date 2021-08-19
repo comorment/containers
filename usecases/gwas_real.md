@@ -51,8 +51,8 @@ Few notes:
 
 After all jobs are executed the following commands allow to make QQ plots and manhattan plots:
 ```
-ls out/*gz | parallel -j16 $PYTHON /tools/python_convert/qq.py {} --out {}.qq.png
-ls out/*gz | parallel -j16 $PYTHON /tools/python_convert/manhattan.py {} --out {}.manh
+ls out/*gz | parallel -j16 $PYTHON gwas.py qq --sumstats {} --out {}.qq.png
+ls out/*gz | parallel -j16 $PYTHON gwas.py manh --sumstats {} --out {}.manh.png
 ```
 
 Also, I've combined QQ plots using (combine_figures.py)[out/combine_figures.py] script.
