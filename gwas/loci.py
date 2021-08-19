@@ -34,37 +34,33 @@ MASTHEAD += "* GNU General Public License v3\n"
 MASTHEAD += "***********************************************************************\n"
 
 def parse_args(args):
-    parser = argparse.ArgumentParser(description="Perform LD-based clumping of summary stats", 
-        help="""Perform LD-based clumping of summary stats. ThisMASTHEAD += "* The algorithm is the same, implementation might be slightly different.\n" works similar to FUMA snp2gene functionality (http://fuma.ctglab.nl/tutorial#snp2gene).
+    parser = argparse.ArgumentParser(description="""Perform LD-based clumping of summary stats, using a procedure that is similar to FUMA snp2gene functionality (http://fuma.ctglab.nl/tutorial#snp2gene):
 Step 1. Re-save summary stats into one file for each chromosome.
-Step 2a Use 'plink --clump' to find independent significant SNPs (default r2=0.6)
-Step 2b Use 'plink --clump' to find lead SNPs, by clumping independent significant SNPs (default r2=0.1)
-Step 3. Use 'plink --ld' to find genomic loci around each independent significant SNP (default r2=0.6)
-Step 4. Merge together genomic loci which are closer than certain threshold (250 KB)
-Step 5. Merge together genomic loci that fall into exclusion regions, such as MHC
-Step 6. Output genomic loci report, indicating lead SNPs for each loci
-Step 7. Output candidate SNP report""")
-
-    parser.add_argument("--log", type=str, default=None, help="filename for the log file. Default is <out>.log")
-    parser.add_argument("--log-append", action="store_true", default=False, help="append to existing log file. Default is to erase previous log file if it exists.")
+Step 2a Use 'plink --clump' to find independent significant SNPs (default r2=0.6);
+Step 2b Use 'plink --clump' to find lead SNPs, by clumping independent significant SNPs (default r2=0.1);
+Step 3. Use 'plink --ld' to find genomic loci around each independent significant SNP (default r2=0.6);
+Step 4. Merge together genomic loci which are closer than certain threshold (250 KB);
+Step 5. Merge together genomic loci that fall into exclusion regions, such as MHC;
+Step 6. Output genomic loci report, indicating lead SNPs for each loci;
+Step 7. Output candidate SNP report;""")
 
     parser.add_argument("--sumstats", type=str, help="Input file with summary statistics")
     parser.add_argument("--out", type=str, help="[required] File to output the result.")
     parser.add_argument("--force", action="store_true", default=False, help="Allow sumstats.py to overwrite output file if it exists.")
-    parser.add_argument("--chr-labels", type=str, nargs='+',
-        help="List of chromosome labels to substitute for @, default to 1..22")
+    parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
+         "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
 
-    parser.add_argument("--clump-field", type=str, default='PVAL', help="Column to clump on.")
+    parser.add_argument("--clump-field", type=str, default='P', help="Column to clump on.")
     parser.add_argument("--clump-snp-field", type=str, default='SNP', help="Column with marker name.")
     parser.add_argument("--chr", type=str, default='CHR', help="Column name with chromosome labels. ")
 
     parser.add_argument("--indep-r2", type=float, default=0.6, help="LD r2 threshold for clumping independent significant SNPs.")
     parser.add_argument("--lead-r2", type=float, default=0.1, help="LD r2 threshold for clumping lead SNPs.")
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs.")
-    parser.add_argument("--bfile-chr", type=str,
-        help="prefix for plink .bed/.bim/.fam file. Will automatically concatenate .bed/.bim/.fam files split across 22 chromosomes. "
-        "If the filename prefix contains the symbol @, sumstats.py will replace the @ symbol with chromosome numbers. "
-        "Otherwise, sumstats.py will append chromosome numbers to the end of the filename prefix. ")
+    parser.add_argument("--bfile", type=str,
+        help="prefix for plink .bed/.bim/.fam file. Can work with files split across 22 chromosomes: "
+        "if the filename prefix contains the symbol @, sumstats.py will replace the @ symbol with chromosome numbers. ")
+
     parser.add_argument("--ld-window-kb", type=float, default=10000, help="Window size in KB to search for clumped SNPs. ")
     parser.add_argument("--loci-merge-kb", type=float, default=250, help="Maximum distance in KB of LD blocks to merge. ")
     parser.add_argument("--exclude-ranges", type=str, nargs='+',
@@ -141,10 +137,6 @@ def clump_cleanup(args, log):
     rmtree(temp_out)
 
 def sub_chr(s, chr):
-    '''Substitute chr for @, else append chr to the end of str.'''
-    if '@' not in s:
-        s += '@'
-
     return s.replace('@', str(chr))
 
 def execute_command(command, log):
@@ -195,15 +187,25 @@ def check_output_file(file, force=False):
     output_dir = os.path.dirname(file)
     if output_dir and not os.path.isdir(output_dir): os.makedirs(output_dir)  # ensure that output folder exists
 
+def fix_and_validate_chr2use(args, log):
+    arg_dict = vars(args)
+    chr2use_arg = arg_dict["chr2use"]
+    chr2use = []
+    for a in chr2use_arg.split(","):
+        if "-" in a:
+            start, end = [int(x) for x in a.split("-")]
+            chr2use += [str(x) for x in range(start, end+1)]
+        else:
+            chr2use.append(a.strip())
+    arg_dict["chr2use"] = chr2use
+
 def make_clump(args, log):
     """
     Clump summary stats, produce lead SNP report, produce candidate SNP report
     TBD: refine output tables
     TBD: in snps table, do an outer merge - e.i, include SNPs that pass p-value threshold (some without locus number), and SNPs without p-value (e.i. from reference genotypes)
     """
-    #check_output_file(args.out, args.force)
-    #for chri in range(1, 23):
-    #    check_input_file(sub_chr(args.bfile_chr, chri) + '.bed')
+    fix_and_validate_chr2use(args, log)    
     exclude_ranges = make_ranges(args.exclude_ranges, log)
 
     temp_out = args.out + '.temp'
@@ -213,13 +215,10 @@ def make_clump(args, log):
     if (not args.sumstats) and (not args.sumstats_chr):
         raise ValueError('At least one of --sumstats or --sumstats-chr must be specified')
 
-    if args.chr_labels is None:
-        args.chr_labels = list(range(1, 23))
-
     if args.sumstats_chr:
-        args.sumstats_chr = [sub_chr(args.sumstats_chr, chri) for chri in args.chr_labels]
+        args.sumstats_chr = [sub_chr(args.sumstats_chr, chri) for chri in args.chr2use]
     else:
-        args.sumstats_chr = ['{}/sumstats.chr{}.csv'.format(temp_out, chri) for chri in args.chr_labels]
+        args.sumstats_chr = ['{}/sumstats.chr{}.csv'.format(temp_out, chri) for chri in args.chr2use]
 
     def validate_columns(df):
         for cname in [args.clump_field, args.clump_snp_field, args.chr]:
@@ -232,7 +231,7 @@ def make_clump(args, log):
         df_sumstats = pd.read_csv(args.sumstats, delim_whitespace=True)
         log.log('Read {} SNPs from --sumstats file'.format(len(df_sumstats)))
         validate_columns(df_sumstats)
-        for chri, df_chr_file in zip(args.chr_labels, args.sumstats_chr):
+        for chri, df_chr_file in zip(args.chr2use, args.sumstats_chr):
             df_sumstats[df_sumstats[args.chr] == int(chri)].to_csv(df_chr_file, sep='\t',index=False)
     else:
         for df_chr_file in args.sumstats_chr:
@@ -241,11 +240,11 @@ def make_clump(args, log):
         df_sumstats = pd.concat([pd.read_csv(df_chr_file, delim_whitespace=True) for df_chr_file in args.sumstats_chr])
         log.log('Read {} SNPs'.format(len(df_sumstats)))
 
-    for chri, df_chr_file in zip(reversed(args.chr_labels), reversed(args.sumstats_chr)):
+    for chri, df_chr_file in zip(reversed(args.chr2use), reversed(args.sumstats_chr)):
         # Step1 - find independent significant SNPs
         execute_command(
             "{} ".format(args.plink) +
-            "--bfile {} ".format(sub_chr(args.bfile_chr, chri)) +
+            "--bfile {} ".format(sub_chr(args.bfile, chri)) +
             "--clump {} ".format(df_chr_file) +
             "--clump-p1 {} --clump-p2 1 ".format(args.clump_p1) +
             "--clump-r2 {} --clump-kb 1e9 ".format(args.indep_r2) +
@@ -260,7 +259,7 @@ def make_clump(args, log):
         # Step 2 - find lead SNPs by clumping together independent significant SNPs
         execute_command(
             "{} ".format(args.plink) +
-            "--bfile {} ".format(sub_chr(args.bfile_chr, chri)) +
+            "--bfile {} ".format(sub_chr(args.bfile, chri)) +
             "--clump {} ".format('{}/indep.chr{}.clumped'.format(temp_out, chri)) +
             "--clump-p1 {} --clump-p2 1 ".format(args.clump_p1) +
             "--clump-r2 {} --clump-kb 1e9 ".format(args.lead_r2) +
@@ -272,14 +271,14 @@ def make_clump(args, log):
         pd.read_csv('{}/indep.chr{}.clumped'.format(temp_out, chri), delim_whitespace=True)['SNP'].to_csv('{}/indep.chr{}.clumped.snps'.format(temp_out, chri), index=False, header=False)
         execute_command(
             "{} ".format(args.plink) + 
-            "--bfile {} ".format(sub_chr(args.bfile_chr, chri)) +
+            "--bfile {} ".format(sub_chr(args.bfile, chri)) +
             "--r2 --ld-window {} --ld-window-r2 {} ".format(args.ld_window_kb, args.indep_r2) +
             "--ld-snp-list {out}/indep.chr{chri}.clumped.snps ".format(out=temp_out, chri=chri) +
             "--out  {out}/indep.chr{chri} ".format(out=temp_out, chri=chri),
             log)
 
     # find indep to lead SNP mapping (a data frame with columns 'LEAD' and 'INDEP')
-    files = ["{}/lead.chr{}.clumped".format(temp_out, chri) for chri in args.chr_labels]
+    files = ["{}/lead.chr{}.clumped".format(temp_out, chri) for chri in args.chr2use]
     files = [file for file in files if os.path.isfile(file)]
     if not files: 
         log.log('WARNING: No .clumped files found - could it be that no variants pass significance threshold?')
@@ -300,7 +299,7 @@ def make_clump(args, log):
     # SNP_B is a candidate SNP
     # LEAD_SNP is lead SNP
     # R2 is always correlation between candidate and independent significant SNP
-    files = ["{out}/indep.chr{chri}.ld".format(out=temp_out, chri=chri) for chri in args.chr_labels]
+    files = ["{out}/indep.chr{chri}.ld".format(out=temp_out, chri=chri) for chri in args.chr2use]
     files = [file for file in files if os.path.isfile(file)]
     if not files: raise ValueError('No .ld files found')
     df_cand=pd.concat([pd.read_csv(file, delim_whitespace=True) for file in files])
@@ -328,8 +327,8 @@ def make_clump(args, log):
                     merge_to_previous = True
             if merge_to_previous and (df_lead['locusnum'][i] != df_lead['locusnum'][i-1]):
                 log.log('Merge locus {} to {}'.format(df_lead['locusnum'][i], df_lead['locusnum'][i-1]))
-                df_lead['locusnum'][i] = df_lead['locusnum'][i-1]
-                df_lead['MaxBP_locus'][i] = np.max([df_lead['MaxBP_locus'][i-1], df_lead['MaxBP_locus'][i]])
+                df_lead.loc[i, 'locusnum'] = df_lead.loc[i-1, 'locusnum']
+                df_lead.loc[i, 'MaxBP_locus'] = np.max([df_lead['MaxBP_locus'][i-1], df_lead['MaxBP_locus'][i]])
                 has_changes = True
                 break
 
@@ -378,16 +377,16 @@ if __name__ == "__main__":
     if args.out is None:
         raise ValueError('--out is required.')
 
-    log = Logger(args.log if args.log else (args.out + '.log' if (args.out != '-') else None), 'a' if args.log_append else 'w')
+    log = Logger(args.out + '.log', 'w')
     start_time = time.time()
 
     try:
-        defaults = vars(parse_args([sys.argv[1]]))
+        defaults = vars(parse_args([]))
         opts = vars(args)
         non_defaults = [x for x in opts.keys() if opts[x] != defaults[x]]
         header = MASTHEAD
         header += "Call: \n"
-        header += './sumstats.py {} \\\n'.format(sys.argv[1])
+        header += './loci.py \\\n'
         options = ['\t--'+x.replace('_','-')+' '+str(opts[x]).replace('\t', '\\t')+' \\' for x in non_defaults]
         header += '\n'.join(options).replace('True','').replace('False','')
         header = header[0:-1]+'\n'

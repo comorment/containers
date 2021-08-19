@@ -87,12 +87,10 @@ def parse_args(args):
         help="Size of the gap between chromosomes in the figure")
     parser.add_argument("--snps-to-keep", nargs="+", default=["NA"],
         help="A list of files with ids of SNPs to take for plotting, 'NA' if absent. "
-        "These sets of SNPs are further reduced according to '--downsample-frac' argument. "
+        "These sets of SNPs are further reduced according to '--max-points' argument. "
         "These files should contain a single column with SNP ids without header")
-    parser.add_argument("--downsample-frac", nargs="+", type=float,
-        default=[0.005], help="Fraction of SNPs to take for plotting")
-    parser.add_argument("--downsample-thresh", nargs="+", type=float,
-        default=[None], help="Only SNPs with p-values larger than the threshold are downsampled")
+    parser.add_argument("--max-points", type=float, default=10000, help="max number of points to show; "
+        "points from --lead and --indep lists won't count towards this limit")
     parser.add_argument("--chr2use", type=str, default="1-22",
         help=("Chromosome ids to plot (e.g. 1,2,3 or 1-4,12,16-20 or 19-22,X,Y). "
             "The order in the figure will correspond to the order in this argument. "
@@ -165,8 +163,6 @@ def process_args(args):
     assert len(args.bp) == n, "--bp" + msg
     assert len(args.p) == n, "--p " + msg
     assert len(args.snps_to_keep) == n, "--snps-to-keep" + msg
-    assert len(args.downsample_frac) == n, "--downsample-frac" + msg
-    assert len(args.downsample_thresh) == n, "--downsample-thresh" + msg
     assert len(args.legend_labels) == n, "--legend-labels" + msg
 
 
@@ -240,7 +236,7 @@ def filter_sumstats(sumstats_f, sep, snpid_col, pval_col, chr_col, bp_col, chr2u
 
 
 def get_df2plot(df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_snps_f,
-    annot_f, snps_to_keep_f, downsample_frac, downsample_thresh, pval_col):
+    annot_f, snps_to_keep_f, max_points, pval_col):
     """
     Select variants which will be plotted. Mark lead and independent significant
     variants if corresponding information is provided.
@@ -252,10 +248,7 @@ def get_df2plot(df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_snps_f,
         indep_snps_f: a name of file with independent significant variants
         snps_to_keep_f: a list of variants to consider for plotting, only these
             variants are considered when downsampling take place 
-        downsample_frac: a fraction of variants which will be sampled from df
-            for plotting
-        downsample_thresh: only variants with p-value larger than this threshold
-            are downsampled
+        max_points: max number of points to show; points from --lead and --indep lists won't count towards this limit
         pval_col: a column with p-values in df
     Returns:
         df2plot: DataFrame with variants for plotting
@@ -270,36 +263,27 @@ def get_df2plot(df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_snps_f,
     annot_series = get_annot(annot_f)
     outlined_snp_ids = np.unique(np.concatenate((outlined_snp_ids, lead_snp_id)))
     bold_snp_ids = np.unique(np.concatenate((bold_snp_ids, indep_snp_id)))
+
     # sample variants
     if snps_to_keep_f != "NA":
         snps2keep = get_snp_ids(snps_to_keep_f)
         ii = df.index.intersection(snps2keep)
         df = df.loc[ii,:]
         print("%d SNPs overlap with %s" % (len(df),snps_to_keep_f))
-    if not downsample_thresh is None:
-        i2downsample = df[pval_col]>downsample_thresh
-        df2downsample = df.loc[i2downsample,:]
-        snps2downsample = df2downsample.index
-        snps2downsample_pvals = df2downsample[pval_col]
-        snps2keep = df.loc[~i2downsample,:].index.values
-    else:
-        snps2downsample = df.index
-        snps2downsample_pvals = df[pval_col]
-        snps2keep = []
-    n = int(downsample_frac*len(snps2downsample))
-    # w = 1/df[pval_col].values
-    w = -np.log10(snps2downsample_pvals.values)
-    w /= sum(w)
 
-    snp_sample = np.random.choice(snps2downsample,size=n,replace=False,p=w)
-    # TODO: keep SNPs within identified loci with higher prob?
     # NOTE: it could be that there are snp ids in outlined_snp_ids or bold_snp_ids which
     # are not in df.index, therefore we should take an index.intersection first.
     outlined_snp_ids = df.index.intersection(outlined_snp_ids)
     bold_snp_ids = df.index.intersection(bold_snp_ids)
     annot_snp_ids = df.index.intersection(annot_series.index)
-    snps2keep = np.unique(np.concatenate((snps2keep, outlined_snp_ids, bold_snp_ids,
-        snp_sample, annot_snp_ids)))
+    snps2keep = np.unique(np.concatenate((outlined_snp_ids, bold_snp_ids, annot_snp_ids)))
+    snps2downsample =df.index.difference(snps2keep)
+
+    n = min(max_points, len(snps2downsample))
+
+    snp_sample = np.random.choice(snps2downsample,size=n,replace=False)
+    snps2keep = np.unique(np.concatenate((snps2keep, snp_sample)))
+
     df2plot = df.loc[snps2keep,:]
     df2plot.loc[:,"outlined"] = False
     df2plot.loc[outlined_snp_ids,"outlined"] = True
@@ -423,8 +407,7 @@ if __name__ == "__main__":
         for i,s in enumerate(args.sumstats)]
 
     dfs2plot = [get_df2plot(df, args.outlined[i], args.bold[i], args.lead[i], args.indep[i],
-                            args.annot[i], args.snps_to_keep[i], args.downsample_frac[i],
-                            args.downsample_thresh[i], args.p[i])
+                            args.annot[i], args.snps_to_keep[i], args.max_points, args.p[i])
         for i, df in enumerate(sumstat_dfs)]
 
     chr_df = get_chr_df(dfs2plot, args.bp, args.chr, args.between_chr_gap, args.chr2use)
@@ -519,11 +502,5 @@ if __name__ == "__main__":
 
 
     plt.tight_layout()
-
-    # save/show
-    # plt.savefig(args.out)
-    plt.savefig(args.out+'.png')
-    plt.savefig(args.out+'.pdf')
-    plt.savefig(args.out+'.svg')
-    # plt.show()
+    plt.savefig(args.out)
     print("%s was generated" % args.out)
