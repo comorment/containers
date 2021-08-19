@@ -381,7 +381,7 @@ def fix_and_validate_args(args, log):
     # validate that some of genetic data is provided as input
     if not args.geno_file:
         raise ValueError('--geno-file must be specified')
-    if ('regenie' in 'analysis') and (not args.geno_fit_file):
+    if ('regenie' in args.analysis) and (not args.geno_fit_file):
         raise ValueError('--geno-fit-file must be specified for --analysis regenie')
 
     if args.fam is None:
@@ -412,12 +412,12 @@ def make_regenie_commands(args, logistic, step):
         " --loocv "
 
     cmd_step1 = ' --step 1 --bsize 1000' + \
-        " --out {}.regenie.step1".format(args.out) + \
+        " --out {}.step1".format(args.out) + \
         (" --bed {} --ref-first".format(remove_suffix(geno_fit_file, '.bed')) if is_bed_file(geno_fit_file) else "") + \
         (" --pgen {} --ref-first".format(remove_suffix(geno_fit_file, '.pgen')) if is_pgen_file(geno_fit_file) else "") + \
         (" --bgen {} --ref-first".format(geno_fit_file) if is_bgen_file(geno_fit_file) else "") + \
         (" --bt" if logistic else "") + \
-        " --lowmem --lowmem-prefix {}.regenie_tmp_preds".format(args.out)
+        " --lowmem --lowmem-prefix {}_tmp_preds".format(args.out)
 
     cmd_step2 = ' --step 2 --bsize 400' + \
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out) + \
@@ -425,7 +425,7 @@ def make_regenie_commands(args, logistic, step):
         (" --pgen {} --ref-first".format(remove_suffix(geno_file, '.pgen')) if is_pgen_file(geno_file) else "") + \
         (" --bgen {} --ref-first --sample {}".format(geno_file, sample) if is_bgen_file(geno_file) else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
-        " --pred {}.regenie.step1_pred.list".format(args.out) + \
+        " --pred {}.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
 
     return (cmd + cmd_step1) if step==1 else (cmd + cmd_step2)
@@ -438,32 +438,32 @@ def pass_arguments_along(args, args_list):
     vals = [opts[arg.replace('-', '_')] for arg in args_list]
     return ''.join([('--{} {} '.format(arg, val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
 
-def make_loci_commands(args, pheno, analysis):
+def make_loci_commands(args, pheno):
     cmd = '$PYTHON gwas.py loci ' + \
-        ' --sumstats {out}_{pheno}.{analysis}.gz'.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --sumstats {out}_{pheno}.gz'.format(out=args.out, pheno=pheno) + \
         ' --bfile {}'.format(args.bfile_ld if (args.bfile_ld is not None) else remove_suffix(args.geno_file, '.bed')) + \
-        ' --out {out}_{pheno}.{analysis} '.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
         ' --log-append ' + \
         pass_arguments_along(args, ['clump-p1']) + \
         ' --chr2use {} '.format(','.join(args.chr2use)) + \
         '\n'
     return cmd
 
-def make_manh_commands(args, pheno, analysis):
+def make_manh_commands(args, pheno):
     cmd = '$PYTHON gwas.py manh ' + \
-        ' --sumstats {out}_{pheno}.{analysis}.gz'.format(out=args.out, pheno=pheno, analysis=analysis) + \
-        ' --out {out}_{pheno}.{analysis}.manh.png '.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --sumstats {out}_{pheno}.gz'.format(out=args.out, pheno=pheno) + \
+        ' --out {out}_{pheno}.manh.png '.format(out=args.out, pheno=pheno) + \
         ' --chr2use {} '.format(','.join(args.chr2use))
     if args.loci:
-        cmd += ' --lead {out}_{pheno}.{analysis}.lead.csv '.format(out=args.out, pheno=pheno, analysis=analysis)
-        cmd += ' --indep {out}_{pheno}.{analysis}.indep.csv '.format(out=args.out, pheno=pheno, analysis=analysis)
+        cmd += ' --lead {out}_{pheno}.lead.csv '.format(out=args.out, pheno=pheno)
+        cmd += ' --indep {out}_{pheno}.indep.csv '.format(out=args.out, pheno=pheno)
     cmd += '\n'
     return cmd
 
-def make_qq_commands(args, pheno, analysis):
+def make_qq_commands(args, pheno):
     cmd = '$PYTHON gwas.py qq ' + \
-        ' --sumstats {out}_{pheno}.{analysis}.gz'.format(out=args.out, pheno=pheno, analysis=analysis) + \
-        ' --out {out}_{pheno}.{analysis}.qq.png '.format(out=args.out, pheno=pheno, analysis=analysis) + \
+        ' --sumstats {out}_{pheno}.gz'.format(out=args.out, pheno=pheno) + \
+        ' --out {out}_{pheno}.qq.png '.format(out=args.out, pheno=pheno) + \
         '\n'
     return cmd
 
@@ -474,12 +474,12 @@ def make_regenie_merge_commands(args, logistic):
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@_{pheno}.regenie'.format(out=args.out, pheno=pheno) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
-            ' --out {out}_{pheno}.regenie '.format(out=args.out, pheno=pheno) + \
+            ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
-        if args.loci: cmd += make_loci_commands(args, pheno, 'regenie')
-        if args.manh: cmd += make_manh_commands(args, pheno, 'regenie')
-        if args.qq: cmd += make_qq_commands(args, pheno, 'regenie')
+        if args.loci: cmd += make_loci_commands(args, pheno)
+        if args.manh: cmd += make_manh_commands(args, pheno)
+        if args.qq: cmd += make_qq_commands(args, pheno)
         
     return cmd
 
@@ -490,12 +490,12 @@ def make_plink2_merge_commands(args, logistic):
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@.{pheno}.glm.{what}'.format(out=args.out, pheno=pheno, what=('logistic' if logistic else 'linear')) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
-            ' --out {out}_{pheno}.plink2 '.format(out=args.out, pheno=pheno) + \
+            ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
             '\n'
-        if args.loci: cmd += make_loci_commands(args, pheno, 'plink2')
-        if args.manh: cmd += make_manh_commands(args, pheno, 'plink2')
-        if args.qq: cmd += make_qq_commands(args, pheno, 'plink2')
+        if args.loci: cmd += make_loci_commands(args, pheno)
+        if args.manh: cmd += make_manh_commands(args, pheno)
+        if args.qq: cmd += make_qq_commands(args, pheno)
     return cmd
 
 def make_plink2_commands(args):
@@ -640,37 +640,39 @@ def execute_gwas(args, log):
     cmd_file = args.out + '_cmd.sh'
     if os.path.exists(cmd_file): os.remove(cmd_file)
     submit_jobs = []
+
     if 'plink2' in args.analysis:
-        with open(args.out + '_plink2.1.job', 'w') as f:
+        with open(args.out + '.1.job', 'w') as f:
             f.write(make_slurm_header(args, array=True) + \
                     make_plink2_info_commands(args) + '\n' + \
                     make_plink2_glm_commands(args, logistic) + '\n')
-        with open(args.out + '_plink2.2.job', 'w') as f:
+        with open(args.out + '.2.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_plink2_merge_commands(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_glm_commands(args, logistic)))
             f.write(make_plink2_merge_commands(args, logistic) + '\n')
-        append_job(args.out + '_plink2.1.job', False, submit_jobs)
-        append_job(args.out + '_plink2.2.job', True, submit_jobs)
+        append_job(args.out + '.1.job', False, submit_jobs)
+        append_job(args.out + '.2.job', True, submit_jobs)
+
     if 'regenie' in args.analysis:
-        with open(args.out + '_regenie.1.job', 'w') as f:
+        with open(args.out + '.1.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + \
                     make_regenie_commands(args, logistic, step=1) + '\n')
-        with open(args.out + '_regenie.2.job', 'w') as f:
+        with open(args.out + '.2.job', 'w') as f:
             f.write(make_slurm_header(args, array=True) + \
                     make_plink2_info_commands(args) + '\n' + \
                     make_regenie_commands(args, logistic, step=2) + '\n')
-        with open(args.out + '_regenie.3.job', 'w') as f:
+        with open(args.out + '.3.job', 'w') as f:
             f.write(make_slurm_header(args, array=False) + make_regenie_merge_commands(args, logistic) + '\n')
         with open(cmd_file, 'a') as f:
             f.write(make_regenie_commands(args, logistic, step=1) + '\n')
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_plink2_info_commands(args)))
             f.write('for SLURM_ARRAY_TASK_ID in {}; do {}; done\n'.format(' '.join(args.chr2use), make_regenie_commands(args, logistic, step=2)))
             f.write(make_regenie_merge_commands(args, logistic) + '\n')
-        append_job(args.out + '_regenie.1.job', False, submit_jobs)
-        append_job(args.out + '_regenie.2.job', True, submit_jobs)
-        append_job(args.out + '_regenie.3.job', True, submit_jobs)
+        append_job(args.out + '.1.job', False, submit_jobs)
+        append_job(args.out + '.2.job', True, submit_jobs)
+        append_job(args.out + '.3.job', True, submit_jobs)
     log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}'.format(cmd_file))
     print('\n'.join(submit_jobs))
 
