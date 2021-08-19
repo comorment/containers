@@ -35,7 +35,7 @@ def parse_args(args):
     parser.add_argument("sumstats", help="Sumstats file")
     parser.add_argument("--sep", default='\t',
         help="Column separator in sumstat file")
-    parser.add_argument("--p", default="PVAL",
+    parser.add_argument("--p", default="P",
         help="A column with SNP p-values in sumstats file")
     parser.add_argument("--snp", default="SNP",
         help="A column with SNP ids in sumstats file")
