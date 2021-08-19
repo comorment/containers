@@ -13,7 +13,6 @@ import os
 import time, sys, traceback
 import argparse
 import six
-from sumstats_utils import *
 import collections
 import re
 from shutil import copyfile, rmtree
