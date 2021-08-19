@@ -11,11 +11,11 @@ Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno CASE CASE2 --analysis plink2 --out run1 --maf 0.1 --geno 0.5 --hwe 0.01
+--pheno CASE CASE2 --analysis plink2 --out run1 --maf 0.1 --geno 0.5 --hwe 0.01 --loci --clump-p1 0.1 --manh --qq
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno PHENO PHENO2 --analysis regenie --out run2 --maf 0.1 --geno 0.5 --hwe 0.01
+--pheno PHENO PHENO2 --analysis regenie --out run2 --maf 0.1 --geno 0.5 --hwe 0.01 --loci --clump-p1 0.1 --manh --qq
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
