@@ -1,0 +1,6 @@
+EUR.cov filter=lfs diff=lfs merge=lfs -text
+EUR.fam filter=lfs diff=lfs merge=lfs -text
+EUR.height filter=lfs diff=lfs merge=lfs -text
+Height.gwas.txt.gz filter=lfs diff=lfs merge=lfs -text
+EUR.bed filter=lfs diff=lfs merge=lfs -text
+EUR.bim filter=lfs diff=lfs merge=lfs -text
