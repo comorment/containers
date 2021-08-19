@@ -11,11 +11,11 @@ Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno CASE CASE2 --analysis plink2 --out run1_plink2 --maf 0.1 --geno 0.5 --hwe 0.01 --loci --clump-p1 0.1 --manh --qq
+--pheno CASE CASE2 --analysis plink2  loci manh qq --out run1_plink2 --maf 0.1 --geno 0.5 --hwe 0.01 --clump-p1 0.1
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno PHENO PHENO2 --analysis regenie --out run2_regenie --maf 0.1 --geno 0.5 --hwe 0.01 --loci --clump-p1 0.1 --manh --qq
+--pheno PHENO PHENO2 --analysis regenie loci manh qq --out run2_regenie --maf 0.1 --geno 0.5 --hwe 0.01 --clump-p1 0.1
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
@@ -87,7 +87,19 @@ usage: gwas.py gwas [-h] [--out OUT]
                     [--covar COVAR [COVAR ...]]
                     [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
-                    [--analysis {plink2,regenie} [{plink2,regenie} ...]]
+                    [--analysis {plink2,regenie,loci,manh,qq} [{plink2,regenie,loci,manh,qq} ...]]
+
+  --analysis {plink2,regenie,loci,manh,qq} [{plink2,regenie,loci,manh,qq} ...]
+                        list of analyses to perform. plink2 and regenie can not be combined (i.e.
+                        require two separate runs). loci, manh and qq can be added to etiher plink2
+                        or regenie analysis, but then can also be executed separately ("--analysis
+                        loci manh qq" without plink2 or regenie). This scenario indented as a
+                        follow-up to visualize the results produced by running only plink2 or
+                        regenie analysis. If you want to apply loci analyses to summary statistics
+                        generated not via gwas.py, use a more flexible "gwas.py loci" option
+                        instead of trying to use "gwas.py gwas --analysis loci"; same applyes for
+                        manh and qq.
+
   --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
   --geno-file GENO      required argument pointing to a genetic file: (1)
                         plink's .bed file, or (2) .bgen file, or (3) .pgen
@@ -147,8 +159,5 @@ Filtering options:
   --geno GENO           threshold for filtering on per-variant missingness rate)
 
 Visualization options:
-  --loci                Call 'gwas.py loci' after merging summary statistics
   --clump-p1 CLUMP_P1   p-value threshold for independent significant SNPs.
-  --manh                Call 'gwas.py manh' after merging summary statistics
-  --qq                  Call 'gwas.py qq' after merging summary statistics
 ```
