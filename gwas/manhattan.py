@@ -57,7 +57,7 @@ def parse_args(args):
         help="A list of columns with SNP chromosomes in sumstat files")
     parser.add_argument("--bp", nargs="+", default=["BP"],
         help="A list of columns with SNP positions in sumstat files")
-    parser.add_argument("--p", nargs="+", default=["PVAL"],
+    parser.add_argument("--p", nargs="+", default=["P"],
         help="A list of columns with SNP p-values in sumstat files")
 
     parser.add_argument("--outlined", nargs="+", default=["NA"],
