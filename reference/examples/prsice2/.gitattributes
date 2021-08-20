@@ -4,3 +4,8 @@ EUR.height filter=lfs diff=lfs merge=lfs -text
 Height.gwas.txt.gz filter=lfs diff=lfs merge=lfs -text
 EUR.bed filter=lfs diff=lfs merge=lfs -text
 EUR.bim filter=lfs diff=lfs merge=lfs -text
+TOY_TARGET_DATA.pheno filter=lfs diff=lfs merge=lfs -text
+TOY_BASE_GWAS.assoc filter=lfs diff=lfs merge=lfs -text
+TOY_TARGET_DATA.bed filter=lfs diff=lfs merge=lfs -text
+TOY_TARGET_DATA.bim filter=lfs diff=lfs merge=lfs -text
+TOY_TARGET_DATA.fam filter=lfs diff=lfs merge=lfs -text
