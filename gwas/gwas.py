@@ -20,7 +20,7 @@ import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 import matplotlib.patheffects as mpe
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 MASTHEAD = "***********************************************************************\n"
 MASTHEAD += "* gwas.py: pipeline for GWAS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
@@ -78,6 +78,14 @@ def parse_args(args):
     parent_parser.add_argument("--log-append", action="store_true", default=False, help="append to existing log file. Default is to erase previous log file if it exists.")    
     parent_parser.add_argument("--log-sensitive", action="store_true", default=False, help="allow sensitive (individual-level) information in <out>.log. Use with caution. This may help debugging errors, but then you must pay close attention to avoid exporting the .log files out of your security environent. It's recommended to delete .log files after  you've investigate the problem.")
 
+    pheno_parser = argparse.ArgumentParser(add_help=False)
+    pheno_parser.add_argument("--pheno-file", type=str, default=None, help="phenotype file, according to CoMorMent spec")
+    pheno_parser.add_argument("--dict-file", type=str, default=None, help="phenotype dictionary file, defaults to <pheno>.dict")
+    pheno_parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file (or --geno-fit-file) is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
+    pheno_parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
+    pheno_parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
+    pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
+
     slurm_parser = argparse.ArgumentParser(add_help=False)
     slurm_parser.add_argument("--slurm-job-name", type=str, default="gwas", help="SLURM --job-name argument")
     slurm_parser.add_argument("--slurm-account", type=str, default="p697_norment", help="SLURM --account argument")
@@ -99,7 +107,9 @@ def parse_args(args):
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
 
-    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, slurm_parser, filter_parser], help='perform gwas analysis'))
+    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, pheno_parser, slurm_parser, filter_parser], help='perform GWAS (genome-wide association) analysis'))
+    parser_pgrs_add_arguments(args=args, func=execute_pgrs, parser=subparsers.add_parser("pgrs", parents=[parent_parser, pheno_parser, slurm_parser], help='compute polygenic risk score'))
+    
     parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser, filter_parser], help='merge plink2 sumstats files'))
     parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser, filter_parser], help='merge regenie sumstats files'))
 
@@ -135,14 +145,21 @@ python qq.py PGC_MDD_2018_no23andMe.csv.gz --strata PGC_MDD_2018_no23andMe.csv.g
 
     return parser.parse_args(args)
 
-def parser_gwas_add_arguments(args, func, parser):
-    parser.add_argument("--pheno-file", type=str, default=None, help="phenotype file, according to CoMorMent spec")
-    parser.add_argument("--dict-file", type=str, default=None, help="phenotype dictionary file, defaults to <pheno>.dict")
+# compute polygenic risk scores
+def parser_pgrs_add_arguments(args, func, parser):
+    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--geno-ld-file", type=str, default=None, help="plink file to use for LD structure estimation")
+    parser.add_argument("--sumstats", type=str, help="Input file with summary statistics")
+    parser.add_argument('--analysis', type=str, default=['prsice2'], nargs='+', choices=['prsice2'], help='list of analyses to perform.')
+    parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use, (e.g. 1,2,3 or 1-4,12,16-20).")
+    parser.add_argument("--clump-p1", type=float, nargs='+', default=[5e-8, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 0.05, 0.1, 0.5, 1.0], help="p-value threshold for independent significant SNPs.")
+    parser.add_argument("--keep-ambig", action="store_true", help='Keep ambiguous SNPs. Only use this option if you are certain that the base and target has the same A1 and A2 alleles')
+    parser.set_defaults(func=func)
 
+def parser_gwas_add_arguments(args, func, parser):
     # genetic files to use. All must share the same set of individuals. Currently this assumption is not validated.
     parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
     parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
-    parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file or --geno-fit-file is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
     parser.add_argument("--bfile-ld", type=str, default=None, help="plink file to use for LD structure estimation (forwarded to 'gwas.py loci --bfile' argument")
@@ -153,10 +170,6 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
     parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
-    parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
-    parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
-    parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
-    parser.add_argument("--pheno-na-rep", type=str, default='NA', help="missing data representation for phenotype file (regenie: NA, plink: -9)")
     parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'loci', 'manh', 'qq'], nargs='+', choices=['plink2', 'regenie', 'loci', 'manh', 'qq'], help='list of analyses to perform. plink2 and regenie can not be combined (i.e. require two separate runs). loci, manh and qq can be added to etiher plink2 or regenie analysis, but then can also be executed separately ("--analysis loci manh qq" without plink2 or regenie). This scenario indented as a follow-up to visualize the results produced by running only plink2 or regenie analysis. If you want to apply loci analyses to summary statistics generated not via gwas.py, use a more flexible "gwas.py loci" option instead of trying to use "gwas.py gwas --analysis loci"; same applyes for manh and qq.')
 
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs. Applys to 'loci' analysis.")
@@ -357,10 +370,29 @@ def fix_and_validate_chr2use(args, log):
             chr2use.append(a.strip())
     arg_dict["chr2use"] = chr2use
 
-def fix_and_validate_args(args, log):
+def fix_and_validate_pheno_args(args, log):
     if not args.pheno_file: raise ValueError('--pheno-file is required.')
     if not args.pheno: raise ValueError('--pheno is required.')
 
+    # validate that some of genetic data is provided as input
+    if not args.geno_file:
+        raise ValueError('--geno-file must be specified')
+
+    if args.fam is None:
+        if is_bed_file(args.geno_file):
+            args.fam = replace_suffix(args.geno_file, '.bed', '.fam')
+        elif ('geno_fit_file' in dict(args)) and is_bed_file(args.geno_fit_file):
+            args.fam = replace_suffix(args.geno_fit_file, '.bed', '.fam')
+        else:
+            raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno-file / --geno-fit-file')
+        if '@' in args.fam: args.fam = args.fam.replace('@', args.chr2use[0])
+    check_input_file(args.fam)
+
+    check_input_file(args.pheno_file)
+    if not args.dict_file: args.dict_file = args.pheno_file + '.dict'
+    check_input_file(args.dict_file)
+
+def fix_and_validate_gwas_args(args, log):
     # fix deprecated arguments
     if args.bed_fit: args.geno_fit_file = args.bed_fit + '.bed'; args.bed_fit=None
     if args.bed_test: args.geno_file = args.bed_test + '.bed'; args.bed_test=None
@@ -375,25 +407,8 @@ def fix_and_validate_args(args, log):
             raise ValueError('both --info and --info-file must be used at the same time')
         check_input_file(args.info_file, chr2use=args.chr2use)
 
-    # validate that some of genetic data is provided as input
-    if not args.geno_file:
-        raise ValueError('--geno-file must be specified')
     if ('regenie' in args.analysis) and (not args.geno_fit_file):
         raise ValueError('--geno-fit-file must be specified for --analysis regenie')
-
-    if args.fam is None:
-        if is_bed_file(args.geno_file):
-            args.fam = replace_suffix(args.geno_file, '.bed', '.fam')
-        elif is_bed_file(args.geno_fit_file):
-            args.fam = replace_suffix(args.geno_fit_file, '.bed', '.fam')
-        else:
-            raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno-file / --geno-fit-file')
-        if '@' in args.fam: args.fam = args.fam.replace('@', args.chr2use[0])
-    check_input_file(args.fam)
-
-    check_input_file(args.pheno_file)
-    if not args.dict_file: args.dict_file = args.pheno_file + '.dict'
-    check_input_file(args.dict_file)
 
 def make_regenie_commands(args, logistic, step):
     geno_fit_file = args.geno_fit_file
@@ -433,7 +448,7 @@ def make_regenie_commands(args, logistic, step):
 def pass_arguments_along(args, args_list):
     opts = vars(args)
     vals = [opts[arg.replace('-', '_')] for arg in args_list]
-    return ''.join([('--{} {} '.format(arg, val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
+    return ''.join([(' --{} {} '.format(arg, '' if (val==True) else val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
 
 def make_loci_commands(args):
     cmd = ''
@@ -520,6 +535,25 @@ def make_plink2_info_commands(args):
         " --out {}_chr${{SLURM_ARRAY_TASK_ID}}".format(args.out)
     return cmd
 
+def make_prsice2_commands(args, logistic):
+    geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
+
+    cmd = "$PRSICE2 " + \
+        " --base {} ".format(args.sumstats) + \
+        " --binary-target {}".format(','.join([('T' if logistic else 'F') for pheno in args.pheno])) + \
+        " --pheno {}.pheno".format(args.out) + \
+        " --pheno-col {}".format(','.join(args.pheno)) + \
+        " --target {}".format(remove_suffix(geno_file ,'.bed')) + \
+        " --type {}".format('bgen' if is_bgen_file(geno_file) else 'bed') + \
+        " --ld {}".format(remove_suffix(args.geno_ld_file ,'.bed')) + \
+        " --ld-type {}".format('bgen' if is_bgen_file(args.geno_ld_file) else 'bed') + \
+        " --cov {}.covar".format(args.out) + \
+        " --bar-levels {} --fastscore --no-full".format(','.join([str(x) for x in args.clump_p1])) + \
+        " --out {}".format(args.out) + \
+        pass_arguments_along(args, ['keep-ambig']) \
+
+    return cmd
+
 def make_slurm_header(args, array=False):
     return """#!/bin/bash
 #SBATCH --job-name={job_name}
@@ -538,6 +572,7 @@ export SIF=$COMORMENT/containers/singularity
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 
 """.format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "",
            modules = '\n'.join(['module load {}'.format(x) for x in args.module_load]),
@@ -549,10 +584,7 @@ export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
            comorment_folder = args.comorment_folder,
            singularity_bind = args.singularity_bind)
 
-def execute_gwas(args, log):
-    fix_and_validate_chr2use(args, log)
-    fix_and_validate_args(args, log)
-
+def prepare_covar_and_phenofiles(args, log, cc12):
     fam = read_fam(args, args.fam)
     pheno, pheno_dict = read_comorment_pheno(args, args.pheno_file, args.dict_file)
     pheno_dict_map = dict(zip(pheno_dict['FIELD'], pheno_dict['TYPE']))
@@ -568,7 +600,6 @@ def execute_gwas(args, log):
     if len(pheno_type) != 1:
         raise(ValueError('--pheno variables has a mix of BINARY and CONTINUOS types'))
     pheno_type = pheno_type[0]
-    logistic = (pheno_type=='BINARY')
 
     if 'FID' in pheno.columns:
         log.log("FID column is present in --pheno-file; this values will be ignored and replaced with FID column from --fam file")
@@ -618,12 +649,12 @@ def execute_gwas(args, log):
     log.log("extracting phenotypes...")
     pheno_output = extract_variables(pheno, args.pheno, pheno_dict_map, log)
     for var in args.pheno:
-        if logistic:
+        if pheno_type=='BINARY':
             log.log('variable: {}, cases: {}, controls: {}, missing: {}'.format(var, np.sum(pheno[var]=='1'), np.sum(pheno[var]=='0'), np.sum(pheno[var].isnull())))
         else:
             log.log('variable: {}, missing: {}'.format(var, np.sum(pheno[var].isnull())))
 
-    if ('plink2' in args.analysis) and logistic:
+    if cc12 and (pheno_type=='BINARY'):
         log.log('mapping case/control variables from 1/0 to 2/1 coding')
         for var in args.pheno:
             pheno_output[var] = pheno_output[var].map({'0':'1', '1':'2'}).values
@@ -631,7 +662,45 @@ def execute_gwas(args, log):
     log.log('writing {} columns (including FID, IID) for n={} individuals to {}.pheno'.format(pheno_output.shape[1], len(pheno_output), args.out))
     pheno_output.to_csv(args.out + '.pheno', na_rep='NA', index=False, sep='\t')
 
-    log.log('all --pheno variables have type: {}, selected analysis: {}'.format(pheno_type, 'logistic' if logistic else 'linear'))
+    log.log('all --pheno variables have type: {}'.format(pheno_type))
+    return pheno_type    
+
+def execute_pgrs(args, log):
+    fix_and_validate_chr2use(args, log)
+    fix_and_validate_pheno_args(args, log)
+
+    if not args.geno_file: raise ValueError('--geno-file is required.')
+    if (not is_bed_file(args.geno_file)) and (not is_bgen_file(args.geno_file)): raise ValueError('--geno-file must be .bed or .bgen')
+
+    if not args.geno_ld_file: raise ValueError('--geno-ld-file is required.')
+    if (not is_bed_file(args.geno_ld_file)) and (not is_bgen_file(args.geno_ld_file)): raise ValueError('--geno-ld-file must be .bed or .bgen')
+    
+
+    pheno_type = prepare_covar_and_phenofiles(args, log, cc12=True)
+    logistic = (pheno_type=='BINARY')
+
+    cmd_file = args.out + '_cmd.sh'
+    if os.path.exists(cmd_file): os.remove(cmd_file)
+    submit_jobs = []
+
+    num_jobs=0
+
+    if 'prsice2' in args.analysis:
+        commands = [make_prsice2_commands(args, logistic)]
+        num_jobs = append_job(args, commands, True, num_jobs+1, cmd_file, submit_jobs)
+
+    log.log('To submit all jobs via SLURM, use the following scripts, otherwise execute commands from {}'.format(cmd_file))
+    print('\n'.join(submit_jobs))
+
+def execute_gwas(args, log):
+    fix_and_validate_chr2use(args, log)
+    fix_and_validate_pheno_args(args, log)
+    fix_and_validate_gwas_args(args, log)
+
+    cc12 = ('plink2' in args.analysis)
+    pheno_type = prepare_covar_and_phenofiles(args, log, cc12)
+    logistic = (pheno_type=='BINARY')
+    log.log('selected analysis: {}'.format('logistic' if logistic else 'linear'))
 
     cmd_file = args.out + '_cmd.sh'
     if os.path.exists(cmd_file): os.remove(cmd_file)

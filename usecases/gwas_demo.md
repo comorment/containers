@@ -1,4 +1,6 @@
 This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
+Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software.
+
 This will use genotype and phenotype data formatted according to [CoMorMent specification](../gwas/pheno_geno_specification.md),
 and the helper [gwas.py](../gwas/gwas.py) script that reads the phenotype data,
 extracts user-defined subset of phenotypes and covariates,
@@ -160,4 +162,38 @@ Filtering options:
 
 Visualization options:
   --clump-p1 CLUMP_P1   p-value threshold for independent significant SNPs.
+```
+
+## How to PRSice2 software
+
+Computing polygenic risk scores require (and testing how they work on a known phenotype data)  
+require a similar set input to what you use for running a GWAS analysis,
+with an addition of an ``--sumstats`` argument that points to summary statistics.
+
+You can run an example as follows:
+
+```
+singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
+  --argsfile /REF/examples/regenie/example_3chr.pgrs.argsfile --covar PC1 PC2 BATCH \
+  --sumstats run1_plink2_CASE.gz \
+  --pheno CASE CASE2 --analysis prsice2 --out run3_prsice2 --clump-p1 0.9 \
+  --keep-ambig  # only for a purpose of this demo, exclude for real analysis
+
+export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+
+cat run3_prsice2_cmd.sh | bash
+```
+
+The resulting ``run3_prsice2.summary`` file looks as follows, 
+which is reasonable: PGRS computed based on CASE phenotypes explains CASE phenotype better (P=1.88e-09) than CASE2 phenotype.
+```
+Phenotype	Set	Threshold	PRS.R2	Full.R2	Null.R2	Prevalence	Coefficient	Standard.Error	P	Num_SNP
+CASE	Base	0.9	0.064886	0.818532	0.753646	-	92.0264	15.3183	1.88278e-09	50
+CASE2	Base	0.9	5.09224e-05	0.0334905	0.0334396	-	0.93301	7.02908	0.894402	50
+```
+
+For more information, see this:
+
+```
+singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs --help
 ```
