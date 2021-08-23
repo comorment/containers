@@ -1,5 +1,5 @@
 This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
-Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software.
+Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software to compute polygenic risk scores.
 
 This will use genotype and phenotype data formatted according to [CoMorMent specification](../gwas/pheno_geno_specification.md),
 and the helper [gwas.py](../gwas/gwas.py) script that reads the phenotype data,
@@ -7,31 +7,36 @@ extracts user-defined subset of phenotypes and covariates,
 and prepares the scripts or SLURM jobs for ``plink2`` and ``regenie`` analysis.
 In this demo we're using example data from [reference/examples/regenie](../reference/examples/regenie) folder.
 Take a moment to look at the [phenotype file](../reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](../reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
-For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](../reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](../reference/examples/regenie/example_3chr.bim)). Btw, if you see ``Stored with Git LFS`` on some github pages, feel free to click ``View raw`` link - it should show the content of the file you're trying to see.
+For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](../reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](../reference/examples/regenie/example_3chr.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from ``$COMORMENT/containers/gwas/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable):
+Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from ``$COMORMENT/containers/gwas/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno CASE CASE2 --analysis plink2  loci manh qq --out run1_plink2 --maf 0.1 --geno 0.5 --hwe 0.01 --clump-p1 0.1
+--argsfile /REF/examples/regenie/example_3chr.argsfile \
+--pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 loci manh qq --out run1_plink2 
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile --covar PC1 PC2 BATCH \
---pheno PHENO PHENO2 --analysis regenie loci manh qq --out run2_regenie --maf 0.1 --geno 0.5 --hwe 0.01 --clump-p1 0.1
+--argsfile /REF/examples/regenie/example_3chr.argsfile \
+--pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie loci manh qq --out run2_regenie
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
-We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--bed-fit``) as well as genotype file to use when testing for associations (``--bed-test``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2:
+We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``. The ``--clump-p1`` defines p-value threshold for genome-wide significant loci:
 ```
-# example_3chr.argsfile
---pheno-file /REF/examples/regenie/example_3chr.pheno
+# example_3chr.args file defines the following arguments:
+--pheno-file /REF/examples/regenie/example_3chr.pheno 
 --geno-fit-file /REF/examples/regenie/example_3chr.bed
 --geno-file /REF/examples/regenie/example_3chr.bed
+--info-file /REF/examples/regenie/example_3chr.info --info 0.8
 --chr2use 1-3
 --variance-standardize
+--maf 0.1        # normally 0.01 or lower
+--geno 0.5       # normally 0.98 or higher
+--hwe 0.01       # normaly 1e-10 or lower
+--clump-p1 0.1   # GWS loci threshold; normally you want 5e-08 here
 ```
 
-Flags ``--loci``, ``--manh`` and ``--qq`` trigger post-GWAS scripts to detect genome-wide significant loci and generate manhattan / qq plots.
+Adding ``loci``, ``manh`` and ``qq`` to the ``--analysis`` argument trigger post-GWAS scripts to detect genome-wide significant loci and generate manhattan / qq plots.
 
 
 Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
@@ -174,10 +179,13 @@ You can run an example as follows:
 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
-  --argsfile /REF/examples/regenie/example_3chr.pgrs.argsfile --covar PC1 PC2 BATCH \
   --sumstats run1_plink2_CASE.gz \
-  --pheno CASE CASE2 --analysis prsice2 --out run3_prsice2 --clump-p1 0.9 \
-  --keep-ambig  # only for a purpose of this demo, exclude for real analysis
+  --geno-file /REF/examples/regenie/example_3chr.bed \
+  --geno-ld-file /REF/examples/regenie/example_3chr.bed \
+  --pheno-file /REF/examples/regenie/example_3chr.pheno --pheno CASE CASE2 --covar PC1 PC2 BATCH \
+  --chr2use 1-3 --variance-standardize --clump-p1 0.9 \
+  --analysis prsice2 --out run3_prsice2 \
+  --keep-ambig  # only for a purpose of this demo; exclude for real analysis (unlee you know why it's there)
 
 export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 
