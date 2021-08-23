@@ -202,7 +202,7 @@ def parser_loci_add_arguments(args, func, parser):
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs.")
     parser.add_argument("--bfile", type=str,
         help="prefix for plink .bed/.bim/.fam file. Can work with files split across 22 chromosomes: "
-        "if the filename prefix contains the symbol @, sumstats.py will replace the @ symbol with chromosome numbers. ")
+        "if the filename prefix contains the symbol @, it will be replaced with chromosome numbers. ")
 
     parser.add_argument("--ld-window-kb", type=float, default=10000, help="Window size in KB to search for clumped SNPs. ")
     parser.add_argument("--loci-merge-kb", type=float, default=250, help="Maximum distance in KB of LD blocks to merge. ")
@@ -236,14 +236,14 @@ def parser_manh_add_arguments(args, func, parser):
         help=("A list of files with ids (1st column) and labels (2nd column) of SNPs to annotate, 'NA' if absent. "
             "These files should contain two tab-delimited columns (1st: SNP ids, 2nd: SNP labels) without header"))
     # the next two options are shortcuts for --outlined and --bold to work
-    # directly with the output of "sumstats.py clump". These options probably
+    # directly with the output of "gwas.py loci". These options probably
     # should be removed in future for clarity
     parser.add_argument("--lead", nargs="+", default=["NA"],
         help=("A list of files with ids of lead SNPs, 'NA' if absent. "
-            "These files should be the output of 'sumstats.py clump'"))
+            "These files should be the output of 'gwas.py loci'"))
     parser.add_argument("--indep", nargs="+", default=["NA"],
         help=("A list of files with ids of independent significant SNPs, 'NA' if absent. "
-        "These files should be the output of 'sumstats.py clump'"))
+        "These files should be the output of 'gwas.py loci'"))
 
     parser.add_argument("--p-thresh", type=float, default=5.E-8,
         help="Significance threshold for p-values")
