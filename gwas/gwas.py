@@ -447,7 +447,7 @@ def make_regenie_commands(args, logistic, step):
 def pass_arguments_along(args, args_list):
     opts = vars(args)
     vals = [opts[arg.replace('-', '_')] for arg in args_list]
-    return ''.join([(' --{} {} '.format(arg, '' if (val==True) else val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
+    return ''.join([(' --{} {} '.format(arg, '' if (val==True) else val) if val else '') for arg, val in zip(args_list, vals)])
 
 def make_loci_commands(args):
     cmd = ''
