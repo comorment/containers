@@ -253,10 +253,9 @@ def parser_manh_add_arguments(args, func, parser):
         help="Size of the gap between chromosomes in the figure")
     parser.add_argument("--snps-to-keep", nargs="+", default=["NA"],
         help="A list of files with ids of SNPs to take for plotting, 'NA' if absent. "
-        "These sets of SNPs are further reduced according to '--max-points' argument. "
         "These files should contain a single column with SNP ids without header")
-    parser.add_argument("--max-points", type=float, default=10000, help="max number of points to show; "
-        "points from --lead and --indep lists won't count towards this limit")
+    parser.add_argument("--snps-visual-bins", type=int, default=1000,
+        help= "We filter points if they are too close on a screen to make the figure more lightweight (especially .svg and other vector graphics). This is done by binning vertical and horizonal range into this many bins, and keeping one point of a bin. Points that are annotated, bold or outlined are always plotted.")
     parser.add_argument("--chr2use", type=str, default="1-22",
         help=("Chromosome ids to plot (e.g. 1,2,3 or 1-4,12,16-20 or 19-22,X,Y). "
             "The order in the figure will correspond to the order in this argument. "
@@ -1322,7 +1321,7 @@ def manh_filter_sumstats(log, sumstats_f, sep, snpid_col, pval_col, chr_col, bp_
 
 
 def manh_get_df2plot(log, df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_snps_f,
-    annot_f, snps_to_keep_f, max_points, pval_col):
+    annot_f, snps_to_keep_f):
     """
     Select variants which will be plotted. Mark lead and independent significant
     variants if corresponding information is provided.
@@ -1334,8 +1333,6 @@ def manh_get_df2plot(log, df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_s
         indep_snps_f: a name of file with independent significant variants
         snps_to_keep_f: a list of variants to consider for plotting, only these
             variants are considered when downsampling take place 
-        max_points: max number of points to show; points from --lead and --indep lists won't count towards this limit
-        pval_col: a column with p-values in df
     Returns:
         df2plot: DataFrame with variants for plotting
     """
@@ -1356,19 +1353,15 @@ def manh_get_df2plot(log, df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_s
         ii = df.index.intersection(snps2keep)
         df = df.loc[ii,:]
         log.log("%d SNPs overlap with %s" % (len(df),snps_to_keep_f))
+    else:
+        snps2keep = df.index
 
     # NOTE: it could be that there are snp ids in outlined_snp_ids or bold_snp_ids which
     # are not in df.index, therefore we should take an index.intersection first.
     outlined_snp_ids = df.index.intersection(outlined_snp_ids)
     bold_snp_ids = df.index.intersection(bold_snp_ids)
     annot_snp_ids = df.index.intersection(annot_series.index)
-    snps2keep = np.unique(np.concatenate((outlined_snp_ids, bold_snp_ids, annot_snp_ids)))
-    snps2downsample =df.index.difference(snps2keep)
-
-    n = min(max_points, len(snps2downsample))
-
-    snp_sample = np.random.choice(snps2downsample,size=n,replace=False)
-    snps2keep = np.unique(np.concatenate((snps2keep, snp_sample)))
+    snps2keep = np.unique(np.concatenate((outlined_snp_ids, bold_snp_ids, annot_snp_ids, snps2keep)))
 
     df2plot = df.loc[snps2keep,:]
     df2plot.loc[:,"outlined"] = False
@@ -1380,7 +1373,6 @@ def manh_get_df2plot(log, df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_s
     log.log("%d outlined SNPs" % len(outlined_snp_ids))
     log.log("%d bold SNPs" % len(bold_snp_ids))
     log.log("%d annotated SNPs" % len(annot_snp_ids))
-    log.log("%d SNPs will be plotted in total" % len(df2plot))
     return df2plot
 
 
@@ -1424,7 +1416,7 @@ def manh_get_chr_df(log, dfs2plot, bp_cols, chr_cols, between_chr_gap, chr2use):
     return chr_df
 
 
-def manh_add_coords(log, df2plot, chr_col, bp_col, pval_col, chr_df):
+def manh_add_coords(log, df2plot, chr_col, bp_col, pval_col, chr_df, snps_visual_bins):
     """
     Modify provided DataFrame df2plot by adding columns with x-y coordinates for
     plotting to it.
@@ -1440,6 +1432,15 @@ def manh_add_coords(log, df2plot, chr_col, bp_col, pval_col, chr_df):
     df2plot.loc[:,"x_coord"] = (df2plot[bp_col] - chr_min)/chr_df.loc[chr_df.index[0],"max"] + chr_start
     df2plot.loc[:,"log10p"] = -np.log10(df2plot[pval_col]) # y coord
 
+    # filter points for plotting
+    df2plot.loc[:,"x_coord_bin"] = np.digitize(df2plot.loc[:,"x_coord"], np.linspace(df2plot['x_coord'].min(), df2plot['x_coord'].max(), num=snps_visual_bins))
+    df2plot.loc[:,"log10p_bin"] = np.digitize(df2plot.loc[:,"log10p"], np.linspace(df2plot['log10p'].min(), df2plot['log10p'].max(), num=snps_visual_bins))
+    idx = (~df2plot['outlined'].values & ~df2plot['bold'].values & (df2plot['annot']==""))
+    df2plot.loc[:, 'screen_dup'] = False
+    df2plot.loc[idx, 'screen_dup'] = df2plot[idx][['x_coord_bin', 'log10p_bin']].duplicated()
+    log.log("%d SNPs visually insignificant SNPs will be excluded " % np.sum(df2plot['screen_dup']))
+    df2plot.drop(df2plot.index[df2plot['screen_dup'].values], inplace=True)
+    log.log("%d SNPs will be plotted in total" % len(df2plot))
 
 def manh_add_striped_background(log, chr_df, ax, y_up):
     """
@@ -1491,13 +1492,13 @@ def make_manh_implementation(args, log):
         for i,s in enumerate(args.sumstats)]
 
     dfs2plot = [manh_get_df2plot(log, df, args.outlined[i], args.bold[i], args.lead[i], args.indep[i],
-                            args.annot[i], args.snps_to_keep[i], args.max_points, args.p[i])
+                            args.annot[i], args.snps_to_keep[i])
         for i, df in enumerate(sumstat_dfs)]
 
     chr_df = manh_get_chr_df(log, dfs2plot, args.bp, args.chr, args.between_chr_gap, args.chr2use)
 
     for i,df in enumerate(dfs2plot):
-        manh_add_coords(log, df, args.chr[i], args.bp[i], args.p[i], chr_df)
+        manh_add_coords(log, df, args.chr[i], args.bp[i], args.p[i], chr_df, snps_visual_bins=args.snps_visual_bins)
 
     n_subplots = len(dfs2plot) if args.separate_sumstats else 1
 
@@ -1563,8 +1564,8 @@ def make_manh_implementation(args, log):
         ax.set_xticks(x_ticks)
         ax.set_xticklabels(map(str, x_ticks.index), fontsize=14)
 
-        ax.set_xlim((-0.1,
-            chr_df.loc[chr_df.index[-1], "start"] + chr_df.loc[chr_df.index[-1], "rel_size"] + 0.1))
+        xlim = chr_df.loc[chr_df.index[-1], "start"] + chr_df.loc[chr_df.index[-1], "rel_size"]
+        ax.set_xlim((-0.1, (xlim if np.isfinite(xlim) else 0) + 0.1))
         y_low = ax.get_ylim()[0]
         ax.set_ylim((0-0.005*y_up, y_up))
         # remove top and right spines
