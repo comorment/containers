@@ -743,6 +743,7 @@ def apply_filters(args, df):
         log.log('reading {}...'.format(args.info_file))
         chr2use = args.chf2use if ('@' in args.info_file) else ['@']
         info=pd.concat([pd.read_csv(args.info_file.replace('@', chri), delim_whitespace=True, dtype={'INFO':np.float32})[['SNP', 'INFO']] for chri in chr2use])
+        if np.any(info['SNP'].duplicated()): raise(ValueError("SNP column has duplicated values in --info-file file"))
         log.log('done, {} rows, {} cols'.format(len(info), info.shape[1]))
 
         log.log("merging --sumstats (n={} rows) and --info-file...".format(len(df)))
@@ -755,6 +756,7 @@ def apply_filters(args, df):
 
     if args.maf is not None:
         maf=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.afreq', delim_whitespace=True)[['ID', 'ALT_FREQS']] for chri in args.chr2use])
+        if np.any(maf['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.afreq file - have your .bim file had duplicated SNPs?".format(args.basename)))
         maf.rename(columns={'ID':'SNP'}, inplace=True)
         df = pd.merge(df, maf, how='left', on='SNP')
         n=len(df); df = df[(df['ALT_FREQS'] >= args.maf) & (df['ALT_FREQS'] <= (1-args.maf))].copy()
@@ -762,6 +764,7 @@ def apply_filters(args, df):
 
     if args.hwe is not None:
         hwe=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.hardy', delim_whitespace=True)[['ID', 'P']] for chri in args.chr2use])
+        if np.any(hwe['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.hardy file - have your .bim file had duplicated SNPs?".format(args.basename)))
         hwe.rename(columns={'ID':'SNP', 'P':'P_HWE'}, inplace=True)
         df = pd.merge(df, hwe, how='left', on='SNP')
         n=len(df); df = df[df['P_HWE'] >= args.hwe].copy()
@@ -770,6 +773,7 @@ def apply_filters(args, df):
 
     if args.geno is not None:
         vmiss=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.vmiss', delim_whitespace=True)[['ID', 'F_MISS']] for chri in args.chr2use])
+        if np.any(vmiss['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.vmiss file - have your .bim file had duplicated SNPs?".format(args.basename)))
         vmiss.rename(columns={'ID':'SNP'}, inplace=True)
         df = pd.merge(df, vmiss, how='left', on='SNP')
         n=len(df); df = df[df['F_MISS'] <= args.geno].copy()
@@ -1100,7 +1104,7 @@ def make_loci_implementation(args, log):
         lead_to_indep.append(pd.concat([pd.DataFrame(data=[(lead, indep_snp.split('(')[0]) for indep_snp in indep_snps.split(',') if indep_snp != 'NONE'] + [(lead, lead)], columns=['LEAD', 'INDEP']) for lead, indep_snps in zip(df['SNP'].values, df['SP2'].values)]))
     lead_to_indep = pd.concat(lead_to_indep).reset_index(drop=True)
     if lead_to_indep.duplicated(subset=['INDEP'], keep=False).any():
-        raise ValueError('Some independent significant SNP belongs to to lead SNPs; this is an internal error in sumstats.py logic - please report this bug.')
+        raise ValueError('Some independent significant SNP belongs to two lead SNPs; this is an internal error in "gwas.py loci" logic - please report this bug.')
     log.log('{} independent significant SNPs, {} lead SNPs'.format(len(set(lead_to_indep['INDEP'])), len(set(lead_to_indep['LEAD']))))
 
     # group loci together:
