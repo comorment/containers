@@ -10,6 +10,7 @@ Input files:
   --pheno-file moba.pheno
   --geno-fit-file moba.hm3.withoutFID
   --geno-file /cluster/projects/p697/genotype/MoBa_98k_post-imputationQC/98k-ec-eur-fin-batch-basic-qc-withoutFID
+  --bfile-ld "$COMORMENT/containers/reference/magma/g1000_eur/g1000_eur"
   --fam moba.hm3.withoutFID.fam
   --singularity-bind "$COMORMENT/containers/reference:/REF:ro,/cluster/projects/p697:/cluster/projects/p697"
   --covar PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 genotyping_batch YOB Sex
@@ -21,27 +22,27 @@ Now GWAS analysis  can be triggered as follows:
 mkdir out
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
 
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis plink2 --out out/run1 | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis regenie --out out/run2 | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 --out out/run3 | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie --out out/run4 | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis plink2 loci manh qq --out out/run1_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis regenie loci manh qq  --out out/run2_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 loci manh qq  --out out/run3_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie loci manh qq --out out/run4_regenie | bash
 
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis plink2 --out out/run5 | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis regenie --out out/run6 | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 --out out/run7 | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie --out out/run8 | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis plink2  loci manh qq --out out/run5_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis regenie loci manh qq --out out/run6_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 loci manh qq --out out/run7_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie loci manh qq --out out/run8_regenie | bash
 ```
 
 Resulting files (summary statistics):
 ```
-run1_height.plink2.gz, 
-run2_height.regenie.gz
-run3_AnyF32.plink2.gz, run3_AnyF33.plink2.gz, run3_AnyFdep.plink2.gz
-run4_AnyF32.regenie.gz, run4_AnyF33.regenie.gz, run4_AnyFdep.regenie.gz
-run5_height.plink2.gz, 
-run6_height.regenie.gz
-run7_AnyF32.plink2.gz, run7_AnyF33.plink2.gz, run7_AnyFdep.plink2.gz
-run8_AnyF32.regenie.gz, run8_AnyF33.regenie.gz, run8_AnyFdep.regenie.gz
+run1_plink2_height.gz, 
+run2_regenie_height.gz
+run3_plink2_AnyF32.gz, run3_plink2_AnyF33.gz, run3_plink2_AnyFdep.gz
+run4_regenie_AnyF32.gz, run4_regenie_AnyF33.gz, run4_regenie_AnyFdep.gz
+run5_plink2_height.gz, 
+run6_regenie_height.gz
+run7_plink2_AnyF32.gz, run7_plink2_AnyF33.gz, run7_plink2_AnyFdep.gz
+run8_regenie_AnyF32.gz, run8_regenie_AnyF33.gz, run8_regenie_AnyFdep.gz
 ```
 
 Few notes:
