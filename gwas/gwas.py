@@ -1223,10 +1223,6 @@ def process_manhattan_args(args):
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
     for f in args.bold:
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
-    for f in args.lead:
-        assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
-    for f in args.indep:
-        assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
     for f in args.annot:
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
 
@@ -1263,7 +1259,10 @@ def manh_get_snp_ids(fname):
 
 
 def manh_get_lead(fname):
-    if (fname == "NA") or (os.stat(fname).st_size == 0):
+    if fname == "NA":
+        return np.array([])
+    elif (not os.path.isfile(fname)) or (os.stat(fname).st_size == 0):
+        log.log('WARNING: {} (--lead) does not exist, or appears to be empty. Could it be that no variants passed significance threshold?'.format(fname))
         return np.array([])
     else:
         df = pd.read_csv(fname, delim_whitespace=True)
@@ -1271,7 +1270,10 @@ def manh_get_lead(fname):
 
 
 def manh_get_indep_sig(fname):
-    if (fname == "NA") or (os.stat(fname).st_size == 0):
+    if fname == "NA":
+        return np.array([])
+    elif (not os.path.isfile(fname)) or (os.stat(fname).st_size == 0):
+        log.log('WARNING: {} (--indep) does not exist, or appears to be empty. Could it be that no variants passed significance threshold?'.format(fname))
         return np.array([])
     else:
         df = pd.read_csv(fname, delim_whitespace=True)
