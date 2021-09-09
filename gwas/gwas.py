@@ -202,7 +202,7 @@ def parser_loci_add_arguments(args, func, parser):
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs.")
     parser.add_argument("--bfile", type=str,
         help="prefix for plink .bed/.bim/.fam file. Can work with files split across 22 chromosomes: "
-        "if the filename prefix contains the symbol @, sumstats.py will replace the @ symbol with chromosome numbers. ")
+        "if the filename prefix contains the symbol @, it will be replaced with chromosome numbers. ")
 
     parser.add_argument("--ld-window-kb", type=float, default=10000, help="Window size in KB to search for clumped SNPs. ")
     parser.add_argument("--loci-merge-kb", type=float, default=250, help="Maximum distance in KB of LD blocks to merge. ")
@@ -236,14 +236,14 @@ def parser_manh_add_arguments(args, func, parser):
         help=("A list of files with ids (1st column) and labels (2nd column) of SNPs to annotate, 'NA' if absent. "
             "These files should contain two tab-delimited columns (1st: SNP ids, 2nd: SNP labels) without header"))
     # the next two options are shortcuts for --outlined and --bold to work
-    # directly with the output of "sumstats.py clump". These options probably
+    # directly with the output of "gwas.py loci". These options probably
     # should be removed in future for clarity
     parser.add_argument("--lead", nargs="+", default=["NA"],
         help=("A list of files with ids of lead SNPs, 'NA' if absent. "
-            "These files should be the output of 'sumstats.py clump'"))
+            "These files should be the output of 'gwas.py loci'"))
     parser.add_argument("--indep", nargs="+", default=["NA"],
         help=("A list of files with ids of independent significant SNPs, 'NA' if absent. "
-        "These files should be the output of 'sumstats.py clump'"))
+        "These files should be the output of 'gwas.py loci'"))
 
     parser.add_argument("--p-thresh", type=float, default=5.E-8,
         help="Significance threshold for p-values")
@@ -447,7 +447,7 @@ def make_regenie_commands(args, logistic, step):
 def pass_arguments_along(args, args_list):
     opts = vars(args)
     vals = [opts[arg.replace('-', '_')] for arg in args_list]
-    return ''.join([(' --{} {} '.format(arg, '' if (val==True) else val) if (val is not None) else '') for arg, val in zip(args_list, vals)])
+    return ''.join([(' --{} {} '.format(arg, '' if (val==True) else val) if val else '') for arg, val in zip(args_list, vals)])
 
 def make_loci_commands(args):
     cmd = ''
@@ -743,6 +743,7 @@ def apply_filters(args, df):
         log.log('reading {}...'.format(args.info_file))
         chr2use = args.chf2use if ('@' in args.info_file) else ['@']
         info=pd.concat([pd.read_csv(args.info_file.replace('@', chri), delim_whitespace=True, dtype={'INFO':np.float32})[['SNP', 'INFO']] for chri in chr2use])
+        if np.any(info['SNP'].duplicated()): raise(ValueError("SNP column has duplicated values in --info-file file"))
         log.log('done, {} rows, {} cols'.format(len(info), info.shape[1]))
 
         log.log("merging --sumstats (n={} rows) and --info-file...".format(len(df)))
@@ -755,6 +756,7 @@ def apply_filters(args, df):
 
     if args.maf is not None:
         maf=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.afreq', delim_whitespace=True)[['ID', 'ALT_FREQS']] for chri in args.chr2use])
+        if np.any(maf['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.afreq file - have your .bim file had duplicated SNPs?".format(args.basename)))
         maf.rename(columns={'ID':'SNP'}, inplace=True)
         df = pd.merge(df, maf, how='left', on='SNP')
         n=len(df); df = df[(df['ALT_FREQS'] >= args.maf) & (df['ALT_FREQS'] <= (1-args.maf))].copy()
@@ -762,6 +764,7 @@ def apply_filters(args, df):
 
     if args.hwe is not None:
         hwe=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.hardy', delim_whitespace=True)[['ID', 'P']] for chri in args.chr2use])
+        if np.any(hwe['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.hardy file - have your .bim file had duplicated SNPs?".format(args.basename)))
         hwe.rename(columns={'ID':'SNP', 'P':'P_HWE'}, inplace=True)
         df = pd.merge(df, hwe, how='left', on='SNP')
         n=len(df); df = df[df['P_HWE'] >= args.hwe].copy()
@@ -770,6 +773,7 @@ def apply_filters(args, df):
 
     if args.geno is not None:
         vmiss=pd.concat([pd.read_csv(args.basename.replace('@', chri) + '.vmiss', delim_whitespace=True)[['ID', 'F_MISS']] for chri in args.chr2use])
+        if np.any(vmiss['ID'].duplicated()): raise(ValueError("ID column has duplicated values in {}.vmiss file - have your .bim file had duplicated SNPs?".format(args.basename)))
         vmiss.rename(columns={'ID':'SNP'}, inplace=True)
         df = pd.merge(df, vmiss, how='left', on='SNP')
         n=len(df); df = df[df['F_MISS'] <= args.geno].copy()
@@ -1100,7 +1104,7 @@ def make_loci_implementation(args, log):
         lead_to_indep.append(pd.concat([pd.DataFrame(data=[(lead, indep_snp.split('(')[0]) for indep_snp in indep_snps.split(',') if indep_snp != 'NONE'] + [(lead, lead)], columns=['LEAD', 'INDEP']) for lead, indep_snps in zip(df['SNP'].values, df['SP2'].values)]))
     lead_to_indep = pd.concat(lead_to_indep).reset_index(drop=True)
     if lead_to_indep.duplicated(subset=['INDEP'], keep=False).any():
-        raise ValueError('Some independent significant SNP belongs to to lead SNPs; this is an internal error in sumstats.py logic - please report this bug.')
+        raise ValueError('Some independent significant SNP belongs to two lead SNPs; this is an internal error in "gwas.py loci" logic - please report this bug.')
     log.log('{} independent significant SNPs, {} lead SNPs'.format(len(set(lead_to_indep['INDEP'])), len(set(lead_to_indep['LEAD']))))
 
     # group loci together:
@@ -1219,10 +1223,6 @@ def process_manhattan_args(args):
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
     for f in args.bold:
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
-    for f in args.lead:
-        assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
-    for f in args.indep:
-        assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
     for f in args.annot:
         assert os.path.isfile(f) or f=="NA", "'%s' file doesn't exist" % f
 
@@ -1259,7 +1259,10 @@ def manh_get_snp_ids(fname):
 
 
 def manh_get_lead(fname):
-    if (fname == "NA") or (os.stat(fname).st_size == 0):
+    if fname == "NA":
+        return np.array([])
+    elif (not os.path.isfile(fname)) or (os.stat(fname).st_size == 0):
+        log.log('WARNING: {} (--lead) does not exist, or appears to be empty. Could it be that no variants passed significance threshold?'.format(fname))
         return np.array([])
     else:
         df = pd.read_csv(fname, delim_whitespace=True)
@@ -1267,7 +1270,10 @@ def manh_get_lead(fname):
 
 
 def manh_get_indep_sig(fname):
-    if (fname == "NA") or (os.stat(fname).st_size == 0):
+    if fname == "NA":
+        return np.array([])
+    elif (not os.path.isfile(fname)) or (os.stat(fname).st_size == 0):
+        log.log('WARNING: {} (--indep) does not exist, or appears to be empty. Could it be that no variants passed significance threshold?'.format(fname))
         return np.array([])
     else:
         df = pd.read_csv(fname, delim_whitespace=True)
