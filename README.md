@@ -17,7 +17,8 @@ More extensive use cases of containers, focusing on real data analysis, are prov
 We recommend to clone this entire repository. 
 This is done by running the following command:
 ```
-git clone --depth 1 https://github.com/comorment/containers.git```
+git clone --depth 1 https://github.com/comorment/containers.git
+```
 
 NB! Please add ``--depth 1`` to your command as shown above. This will limit the amount of data transfered from github to your machine.
 
