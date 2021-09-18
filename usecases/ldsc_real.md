@@ -1,4 +1,4 @@
-This usecase describe how to run LDSC analysis (https://github.com/bulik/ldsc) on Morningness and Intelligence summary statistics data. All commands below assume that ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+This usecase describe how to run LDSC analysis (https://github.com/bulik/ldsc) on Morningness and Intelligence summary statistics data. All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
 
 
 
