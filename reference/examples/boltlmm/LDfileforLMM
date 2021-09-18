@@ -2,10 +2,9 @@ This usecase describe how to obtain required LDscore file and pheno file to run 
 
 
 
-1.  Export the path of the summary statistics, name this path as 'sumstats_ld' and export path for reference data
+1.  Getting LD file
 ```
-export sumstats_ld=$COMORMENT/containers/reference/sumstats
+mkdir bolt_out
 
-export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
-
+singularity exec --home $PWD:/home $SIF/ldsc.sif python /tools/ldsc/ldsc.py --bfile /REF/examples/regenie/example_3chr --l2 --ld-wind-cm 1 --yes   --out  bolt_out/myld
 ```
