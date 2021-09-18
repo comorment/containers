@@ -1,0 +1,11 @@
+This usecase describe how to obtain required LDscore file and pheno file to run BOLT-LMM. All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+
+
+
+1.  Export the path of the summary statistics, name this path as 'sumstats_ld' and export path for reference data
+```
+export sumstats_ld=$COMORMENT/containers/reference/sumstats
+
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro"
+
+```
