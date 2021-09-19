@@ -6,3 +6,4 @@ The following use cases illustrate applications of CoMorMent containers:
 * [ldsc_real.md](ldsc_real.md) describes how to run [LDSC analysis](https://github.com/bulik/ldsc/wiki/Heritability-and-Genetic-Correlation) on intelligence vs morningness summary statistics
 * [meta_simu.md](meta_simu.md) describe use cases related to meta-analysis
 * [bolt-lmm_demo.md](bolt-lmm_demo.md) describes how to run bolt-lmm
+* [saige_demo.md](saige_demo.md) describes how to run bolt-lmm
