@@ -1,0 +1,25 @@
+PLINK v1.90b6.18 64-bit (16 Jun 2020)
+Options in effect:
+  --bfile /REF/examples/regenie/example_3chr
+  --freq
+  --out bolt_out/example_3chr
+
+Hostname: bayram-VirtualBox
+Working directory: /home
+Start time: Sat Sep 18 17:17:59 2021
+
+Random number seed: 1631985479
+2942 MB RAM detected; reserving 1471 MB for main workspace.
+500 variants loaded from .bim file.
+500 people (0 males, 0 females, 500 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to bolt_out/example_3chr.nosex .
+500 phenotype values loaded from .fam.
+Warning: Ignoring phenotypes of missing-sex samples.  If you don't want those
+phenotypes to be ignored, use the --allow-no-sex flag.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 500 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to bolt_out/example_3chr.frq
+.
+
+End time: Sat Sep 18 17:17:59 2021
