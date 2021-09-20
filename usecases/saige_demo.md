@@ -23,7 +23,7 @@ df2=pd.read_csv('/REF/examples/regenie/covariates.txt', delimiter=" ")
 
 dff=pd.merge(df1,df2, on='IID', how='inner')
 
-dff.to_csv('saige_out/pheno_cov.txt', header=True, index=False, sep='\t', mode='a'
+dff.to_csv('saige_out/pheno_cov.txt', header=True, index=False, sep='\t', mode='a')
 ```
 
 3.  Run step 1
