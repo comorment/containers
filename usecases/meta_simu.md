@@ -8,6 +8,33 @@ To run the example provided with GWAMA software, use this following:
 cd $COMORMENT/containers/reference/examples/gwama
 singularity exec --home $PWD:/home $SIF/gwas.sif GWAMA -qt
 ```
+Each GWA study file has mandatory column headers:
+MARKERNAME --snp name
+EA -- effect allele
+NEA -- non effect allele
+OR -- odds ratio
+OR_95L -- lower confidence interval of OR
+OR_95U -- upper confidence interval of OR
+   study files might also contain columns:
+N -- number of samples
+EAF -- effect allele frequency
+STRAND -- marker strand (if the column is missing then the program expects all markers being on positive strand)
+IMPUTED -- if marker is imputed of not (if the column is missing then all markers are counted as directly genotyped ones)
+
+A GWAMA pointer file is needed, which simply is a .txt file that contains the path of the summary statistics files for the meta analysis. The above columns are needed for GWAMA analysis.
+
+```
+GWAMA \
+-i /GWAMA_pointer_file.txt \
+--name_marker ID \
+--name_n OBS_CT \
+--name_ea ea \
+--name_nea nea \
+--name_or OR \
+--name_or_95l L95 \
+--name_or95u U95 \
+-o /output_path
+```
 
 For more informatino about GWAMA, see here: https://genomics.ut.ee/en/tools/gwama
 
