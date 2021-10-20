@@ -55,6 +55,8 @@ See comments below, and refer to the METAL documentation for more information.
 SCHEME   STDERR
 
 # define variables that need to be accumulated across GWASes for each SNP.
+# such CUSTOMVARIABLE columns are optional, but it's a good practice to accumulate per-SNP sample size across studies.
+# it's also reasonale to compute per-study effective sample size, i.e. 4/(1/nca + 1/nco), and accumulate this value across studies.
 CUSTOMVARIABLE NCASE
 CUSTOMVARIABLE NCONTROL
 
