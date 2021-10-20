@@ -12,6 +12,12 @@ Description of containers and usage instructions are provided in the [docs](docs
 
 More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](usecases) folder.
 
+The history of changes is available in the [CHANGELOG.md](CHANGELOG.md) file.
+
+Additional tools are available in separate repositories:
+
+* https://github.com/comorment/HDL - High-Definition Likelihood
+
 # Getting started
 
 We recommend to clone this entire repository using ``git clone.``
