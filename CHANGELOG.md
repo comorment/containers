@@ -18,6 +18,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [Unreleased]
 - add CHANGELOG.md (this file)
+  gwas.py: remove ``loci`` step from default ``--analysis`` (#22)
 
 ## [1.0.0] - 2020-10-20
 

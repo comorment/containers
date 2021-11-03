@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 # README:
@@ -20,7 +21,7 @@ import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 import matplotlib.patheffects as mpe
 
-__version__ = '1.1.0'
+__version__ = '1.0.1'
 MASTHEAD = "***********************************************************************\n"
 MASTHEAD += "* gwas.py: pipeline for GWAS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
@@ -170,7 +171,16 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
     parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
 
-    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'loci', 'manh', 'qq'], nargs='+', choices=['plink2', 'regenie', 'loci', 'manh', 'qq'], help='list of analyses to perform. plink2 and regenie can not be combined (i.e. require two separate runs). loci, manh and qq can be added to etiher plink2 or regenie analysis, but then can also be executed separately ("--analysis loci manh qq" without plink2 or regenie). This scenario indented as a follow-up to visualize the results produced by running only plink2 or regenie analysis. If you want to apply loci analyses to summary statistics generated not via gwas.py, use a more flexible "gwas.py loci" option instead of trying to use "gwas.py gwas --analysis loci"; same applyes for manh and qq.')
+    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'manh', 'qq'],
+        nargs='+', choices=['plink2', 'regenie', 'loci', 'manh', 'qq'],
+        help='list of analyses to perform. plink2 and regenie can not be combined '
+        '(i.e. require two separate runs). loci, manh and qq can be added to etiher '
+        'plink2 or regenie analysis, but then can also be executed separately '
+        '("--analysis loci manh qq" without plink2 or regenie). '
+        'This scenario indented as a follow-up to visualize the results produced by '
+        'running only plink2 or regenie analysis. If you want to apply loci analyses to '
+        'summary statistics generated not via gwas.py, use a more flexible "gwas.py loci" option '
+        'instead of trying to use "gwas.py gwas --analysis loci"; same applyes for manh and qq.')
 
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs. Applys to 'loci' analysis.")
     

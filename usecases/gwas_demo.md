@@ -13,15 +13,15 @@ Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 loci manh qq --out run1_plink2 
+--pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 manh qq --out run1_plink2 
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie loci manh qq --out run2_regenie
+--pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie manh qq --out run2_regenie
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
-We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``. The ``--clump-p1`` defines p-value threshold for genome-wide significant loci:
+We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
 ```
 # example_3chr.args file defines the following arguments:
 --pheno-file /REF/examples/regenie/example_3chr.pheno 
@@ -33,10 +33,9 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 --maf 0.1        # normally 0.01 or lower
 --geno 0.5       # normally 0.98 or higher
 --hwe 0.01       # normaly 1e-10 or lower
---clump-p1 0.1   # GWS loci threshold; normally you want 5e-08 here
 ```
 
-Adding ``loci``, ``manh`` and ``qq`` to the ``--analysis`` argument trigger post-GWAS scripts to detect genome-wide significant loci and generate manhattan / qq plots.
+Adding ``manh`` and ``qq`` to the ``--analysis`` argument trigger post-GWAS scripts to generate manhattan / qq plots. You may also add ``--analysis loci`` to detect genome-wide significant loci and highlight lead SNPs on the manhattan plot, however this step is more heavy as it relies on an external reference panel to prune SNPs based on LD structure. If you want to use ``--analysis loci`` in this example,
 
 
 Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
@@ -65,6 +64,11 @@ Further, you may need to customize ``--module-load`` argument, which by default 
 Feel free to replace this with other version of singularity, or list multiple modules if you need to load something else in addition to singularity.
 (a handy trick: if you want to explicily avoid loading the singularity module, because it's pre-installed, but don't need any other modules, you may add another irrelevant module just to overwrite the default ``--module-load`` argument).
 Finally, you need to customize ``--comorment-folder`` folder containing a ``containers`` subfolder with a full copy of https://github.com/comorment/containers.
+
+It's possible to customize manhattan plots by highlighting lead SNPs.
+To do this you need to add ``loci`` to your ``gwas.py gwas --analysis`` argument.
+In this demo example, you also need to add ``--clump-p1 0.1`` argument to
+re-define p-value threshold for genome-wide significant loci, using ``0.1`` instead of the default ``5e-08``.
 
 For more results, see [gwas_demo](gwas_demo) folder. Main results are the following GWAS summary statistics:
 ```
