@@ -1386,6 +1386,7 @@ def manh_get_df2plot(log, df, outlined_snps_f, bold_snps_f, lead_snps_f, indep_s
     df2plot.loc[bold_snp_ids,"bold"] = True
     df2plot.loc[:,"annot"] = ""
     df2plot.loc[annot_snp_ids,"annot"] = annot_series[annot_snp_ids]
+    log.log("%d SNPs will be used for plotting, including:" % len(df2plot))
     log.log("%d outlined SNPs" % len(outlined_snp_ids))
     log.log("%d bold SNPs" % len(bold_snp_ids))
     log.log("%d annotated SNPs" % len(annot_snp_ids))
@@ -1454,9 +1455,7 @@ def manh_add_coords(log, df2plot, chr_col, bp_col, pval_col, chr_df, snps_visual
     idx = (~df2plot['outlined'].values & ~df2plot['bold'].values & (df2plot['annot']==""))
     df2plot.loc[:, 'screen_dup'] = False
     df2plot.loc[idx, 'screen_dup'] = df2plot[idx][['x_coord_bin', 'log10p_bin']].duplicated()
-    log.log("%d SNPs visually insignificant SNPs will be excluded " % np.sum(df2plot['screen_dup']))
     df2plot.drop(df2plot.index[df2plot['screen_dup'].values], inplace=True)
-    log.log("%d SNPs will be plotted in total" % len(df2plot))
 
 def manh_add_striped_background(log, chr_df, ax, y_up):
     """
