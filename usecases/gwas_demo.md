@@ -18,6 +18,10 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
 --pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie manh qq --out run2_regenie
+
+singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
+--argsfile /REF/examples/regenie/example_3chr_vcf.argsfile \
+--pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis saige manh qq --out run3_saige
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
@@ -45,6 +49,7 @@ For this small-scale demo example, you could execute the actual GWAS locally on 
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif "
 
 cat run1_plink2_cmd.sh | bash
 cat run2_regenie_cmd.sh | bash

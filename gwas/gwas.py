@@ -113,6 +113,7 @@ def parse_args(args):
     
     parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser, filter_parser], help='merge plink2 sumstats files'))
     parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser, filter_parser], help='merge regenie sumstats files'))
+    parser_merge_saige_add_arguments(args=args, func=merge_saige, parser=subparsers.add_parser("merge-saige", parents=[parent_parser, filter_parser], help='merge saige sumstats files'))
 
     loci_parser_descr = """Perform LD-based clumping of summary stats, using a procedure that is similar to FUMA snp2gene functionality (http://fuma.ctglab.nl/tutorial#snp2gene):
 Step 1. Re-save summary stats into one file for each chromosome.
@@ -163,16 +164,9 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
-    parser.add_argument("--bfile-ld", type=str, default=None, help="plink file to use for LD structure estimation (forwarded to 'gwas.py loci --bfile' argument")
 
-    # deprecated options for genetic files
-    parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
-    parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
-    parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
-    parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
-
-    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'manh', 'qq'],
-        nargs='+', choices=['plink2', 'regenie', 'loci', 'manh', 'qq'],
+    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'saige', 'manh', 'qq'],
+        nargs='+', choices=['plink2', 'regenie', 'saige', 'loci', 'manh', 'qq'],
         help='list of analyses to perform. plink2 and regenie can not be combined '
         '(i.e. require two separate runs). loci, manh and qq can be added to etiher '
         'plink2 or regenie analysis, but then can also be executed separately '
@@ -182,6 +176,15 @@ def parser_gwas_add_arguments(args, func, parser):
         'summary statistics generated not via gwas.py, use a more flexible "gwas.py loci" option '
         'instead of trying to use "gwas.py gwas --analysis loci"; same applyes for manh and qq.')
 
+    parser.add_argument('--vcf-field', type=str, default=['DS'], choices=['DS', 'GT'], help='field to read for vcf files')
+
+    # deprecated options for genetic files
+    parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
+    parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
+    parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
+    parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
+
+    parser.add_argument("--bfile-ld", type=str, default=None, help="plink file to use for LD structure estimation (forwarded to 'gwas.py loci --bfile' argument")
     parser.add_argument("--clump-p1", type=float, default=5e-8, help="p-value threshold for independent significant SNPs. Applys to 'loci' analysis.")
     
     parser.set_defaults(func=func)
@@ -193,6 +196,12 @@ def parser_merge_plink2_add_arguments(args, func, parser):
     parser.set_defaults(func=func)
 
 def parser_merge_regenie_add_arguments(args, func, parser):
+    parser.add_argument("--sumstats", type=str, default=None, help="sumstat file produced by plink2, containing @ as chromosome label place holder")
+    parser.add_argument("--basename", type=str, default=None, help="basename for .vmiss, .afreq and .hardy files, with @ as chromosome label place holder")
+    parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use, (e.g. 1,2,3 or 1-4,12,16-20).")
+    parser.set_defaults(func=func)
+
+def parser_merge_saige_add_arguments(args, func, parser):
     parser.add_argument("--sumstats", type=str, default=None, help="sumstat file produced by plink2, containing @ as chromosome label place holder")
     parser.add_argument("--basename", type=str, default=None, help="basename for .vmiss, .afreq and .hardy files, with @ as chromosome label place holder")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use, (e.g. 1,2,3 or 1-4,12,16-20).")
@@ -361,7 +370,7 @@ def is_bgen_file(fname):
 def is_pgen_file(fname):
     return fname.endswith('.pgen')
 def is_vcf_file(fname):
-    return fname.endswith('.vcf')
+    return fname.endswith('.vcf') or fname.endswith('.vcf.gz')
 def remove_suffix(text, suffix):
     return text[:-len(suffix)] if text.endswith(suffix) and len(suffix) != 0 else text
 def replace_suffix(text, suffix, new_suffix):
@@ -383,6 +392,11 @@ def fix_and_validate_pheno_args(args, log):
     if not args.pheno_file: raise ValueError('--pheno-file is required.')
     if not args.pheno: raise ValueError('--pheno is required.')
 
+    if len(set(args.pheno)) != len(args.pheno):
+        raise ValueError('check you --pheno argument, some phenotypes listed more then once')
+    if len(set(args.covar)) != len(args.covar):
+        raise ValueError('check you --covar argument, some covariates listed more then once')
+
     # validate that some of genetic data is provided as input
     if not args.geno_file:
         raise ValueError('--geno-file must be specified')
@@ -390,7 +404,7 @@ def fix_and_validate_pheno_args(args, log):
     if args.fam is None:
         if is_bed_file(args.geno_file):
             args.fam = replace_suffix(args.geno_file, '.bed', '.fam')
-        elif ('geno_fit_file' in dict(args)) and is_bed_file(args.geno_fit_file):
+        elif ('geno_fit_file' in vars(args)) and is_bed_file(args.geno_fit_file):
             args.fam = replace_suffix(args.geno_fit_file, '.bed', '.fam')
         else:
             raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno-file / --geno-fit-file')
@@ -408,8 +422,8 @@ def fix_and_validate_gwas_args(args, log):
     if args.bgen_fit: args.geno_fit_file = args.bgen_fit; args.bgen_fit=None
     if args.bgen_test: args.geno_file = args.bgen_test; args.bgen_test=None
 
-    if ('plink2' in args.analysis) and ('regenie' in args.analysis):
-        raise ValueError('--analysis can not have both --plink2 and --regenie, please choose one of these.')
+    if len(set(['plink2', 'regenie', 'saige']).intersection(set(args.analysis))) > 1:
+        raise ValueError('--analysis can have only one of plink2, regenie, saige; please choose one of these.')
 
     if (args.info is not None) or (args.info_file is not None):
         if (args.info is None) or (args.info_file is None):
@@ -418,6 +432,9 @@ def fix_and_validate_gwas_args(args, log):
 
     if ('regenie' in args.analysis) and (not args.geno_fit_file):
         raise ValueError('--geno-fit-file must be specified for --analysis regenie')
+
+    if ('saige' in args.analysis) and (not args.geno_fit_file):
+        raise ValueError('--geno-fit-file must be specified for --analysis saige')
 
 def make_regenie_commands(args, logistic, step):
     geno_fit_file = args.geno_fit_file
@@ -450,6 +467,49 @@ def make_regenie_commands(args, logistic, step):
         " --chr ${SLURM_ARRAY_TASK_ID}"
 
     return (cmd + cmd_step1) if step==1 else (cmd + cmd_step2)
+
+def make_saige_commands(args, logistic, step):
+    geno_fit_file = args.geno_fit_file
+    geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
+
+    if ('@' in geno_fit_file): raise(ValueError('--geno-fit-file contains "@", hense it is incompatible with SAIGE step1 which require a single file'))
+    if (is_pgen_file(geno_fit_file) or is_pgen_file(geno_file)): raise(ValueError('--geno-file / --geno-fit-file can not point to plink2 pgen file for SAIGE analysis'))
+
+    cmd_step1 = ''; cmd_step2 = ''
+
+    for pheno in args.pheno:
+        cmd_step1 += '\n$SAIGE step1_fitNULLGLMM.R ' + \
+            (" --plinkFile={} ".format(remove_suffix(geno_fit_file, '.bed')) if is_bed_file(geno_fit_file) else "") + \
+            (" --vcfFile={f} --vcfFileIndex={f}.tbi --vcfField={vf} ".format(f=geno_fit_file, vf=args.vcf_field) if is_vcf_file(geno_fit_file) else "") + \
+            (" --bgenFile={f} --bgenFileIndex={f}.bgi ".format(f=geno_fit_file) if is_bgen_file(geno_fit_file) else "") + \
+            " --phenoFile={}.pheno".format(args.out) + \
+            " --phenoCol={}".format(pheno) + \
+            " --covarColList={}".format(','.join(args.covar)) + \
+            " --sampleIDColinphenoFil=IID " + \
+            " --traitType={}".format('binary' if logistic else 'quantitative') + \
+            " --outputPrefix={}_{}.step1".format(args.out, pheno) + \
+            " --nThreads={} ".format(args.slurm_cpus_per_task) + \
+            " --LOCO=TRUE " + \
+            " --minMAFforGRM=0.01" + \
+            " --tauInit=1,0 "
+
+        cmd_step2 += '\n$SAIGE step2_SPAtests.R ' + \
+            (" --plinkFile={} ".format(remove_suffix(geno_file, '.bed')) if is_bed_file(geno_file) else "") + \
+            (" --vcfFile={f} --vcfFileIndex={f}.tbi --vcfField={vf} ".format(f=geno_file, vf=args.vcf_field) if is_vcf_file(geno_file) else "") + \
+            (" --bgenFile={f} --bgenFileIndex={f}.bgi ".format(f=geno_file) if is_bgen_file(geno_file) else "") + \
+            " --chr ${SLURM_ARRAY_TASK_ID}" + \
+            (" --minMAF={}".format(args.maf) if (args.maf is not None) else '') + \
+            " --minMAC=1" + \
+            " --sampleFile={}.sample".format(args.out) + \
+            " --GMMATmodelFile={}_{}.step1.rda".format(args.out, pheno) + \
+            " --varianceRatioFile={}_{}.step1.varianceRatio.txt".format(args.out, pheno) + \
+            " --SAIGEOutputFile={}_chr${{SLURM_ARRAY_TASK_ID}}_{}.saige".format(args.out, pheno) + \
+            " --numLinesOutput=2" + \
+            (" --IsOutputAFinCaseCtrl=TRUE" if logistic else '')+ \
+            (" --IsOutputNinCaseCtrl=TRUE" if logistic else '') + \
+            " --LOCO=TRUE "
+
+    return cmd_step1 if step==1 else cmd_step2
 
 # this function works similarly to ** in python:
 # all args from args_list that are not None are passed to the caller
@@ -500,6 +560,18 @@ def make_regenie_merge_commands(args, logistic):
         cmd += '$PYTHON gwas.py merge-regenie ' + \
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@_{pheno}.regenie'.format(out=args.out, pheno=pheno) + \
+            ' --basename {out}_chr@'.format(out=args.out) + \
+            ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
+            ' --chr2use {} '.format(','.join(args.chr2use)) + \
+            '\n'
+    return cmd
+
+def make_saige_merge_commands(args, logistic):
+    cmd = ''
+    for pheno in args.pheno:
+        cmd += '$PYTHON gwas.py merge-saige ' + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
+            ' --sumstats {out}_chr@_{pheno}.saige'.format(out=args.out, pheno=pheno) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
             ' --chr2use {} '.format(','.join(args.chr2use)) + \
@@ -582,6 +654,7 @@ export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
 export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
 
 """.format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "",
            modules = '\n'.join(['module load {}'.format(x) for x in args.module_load]),
@@ -593,7 +666,7 @@ export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
            comorment_folder = args.comorment_folder,
            singularity_bind = args.singularity_bind)
 
-def prepare_covar_and_phenofiles(args, log, cc12):
+def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
     fam = read_fam(args, args.fam)
     pheno, pheno_dict = read_comorment_pheno(args, args.pheno_file, args.dict_file)
     pheno_dict_map = dict(zip(pheno_dict['FIELD'], pheno_dict['TYPE']))
@@ -647,17 +720,19 @@ def prepare_covar_and_phenofiles(args, log, cc12):
             log.log('phenotype {} has mean {:.5f} and std {:.5f}. Normalizing to 0.0 mean and 1.0 std'.format(col, mean, std))
             pheno[col] = (pheno[col].values - mean) / std
 
-    log.log("extracting covariates...")
-    if args.covar:
-        covar_output = extract_variables(pheno, args.covar, pheno_dict_map, log)
-        log.log('writing {} columns (including FID, IID) for n={} individuals to {}.covar'.format(covar_output.shape[1], len(covar_output), args.out))
-        covar_output.to_csv(args.out + '.covar', index=False, sep='\t')
-    else:
-        log.log('--covar not specified')
+    if not join_covar_into_pheno:
+        log.log("extracting covariates...")
+        if args.covar:
+            covar_output = extract_variables(pheno, args.covar, pheno_dict_map, log)
+            log.log('writing {} columns (including FID, IID) for n={} individuals to {}.covar'.format(covar_output.shape[1], len(covar_output), args.out))
+            covar_output.to_csv(args.out + '.covar', index=False, sep='\t')
+        else:
+            log.log('--covar not specified')
 
-    log.log("extracting phenotypes...")
-    pheno_output = extract_variables(pheno, args.pheno, pheno_dict_map, log)
-    for var in args.pheno:
+    log.log("extracting phenotypes{}...".format(' and covariates' if join_covar_into_pheno else ''))
+    pheno_and_covar_cols = args.pheno + (args.covar if join_covar_into_pheno else [])
+    pheno_output = extract_variables(pheno, pheno_and_covar_cols, pheno_dict_map, log)
+    for var in pheno_and_covar_cols:
         if pheno_type=='BINARY':
             log.log('variable: {}, cases: {}, controls: {}, missing: {}'.format(var, np.sum(pheno[var]=='1'), np.sum(pheno[var]=='0'), np.sum(pheno[var].isnull())))
         else:
@@ -670,6 +745,11 @@ def prepare_covar_and_phenofiles(args, log, cc12):
 
     log.log('writing {} columns (including FID, IID) for n={} individuals to {}.pheno'.format(pheno_output.shape[1], len(pheno_output), args.out))
     pheno_output.to_csv(args.out + '.pheno', na_rep='NA', index=False, sep='\t')
+    fam[['IID']].to_csv(args.out + '.sample', na_rep='NA', header=None, index=False, sep='\t')
+
+    if join_covar_into_pheno:
+        # update args.covar so that it reflects dummies
+        args.covar = [col for col in pheno_output.columns if (col not in (['IID', 'FID'] + args.pheno))]
 
     log.log('all --pheno variables have type: {}'.format(pheno_type))
     return pheno_type    
@@ -685,7 +765,7 @@ def execute_pgrs(args, log):
     if (not is_bed_file(args.geno_ld_file)) and (not is_bgen_file(args.geno_ld_file)): raise ValueError('--geno-ld-file must be .bed or .bgen')
     
 
-    pheno_type = prepare_covar_and_phenofiles(args, log, cc12=True)
+    pheno_type = prepare_covar_and_phenofiles(args, log, cc12=True, join_covar_into_pheno=False)
     logistic = (pheno_type=='BINARY')
 
     cmd_file = args.out + '_cmd.sh'
@@ -706,8 +786,9 @@ def execute_gwas(args, log):
     fix_and_validate_pheno_args(args, log)
     fix_and_validate_gwas_args(args, log)
 
-    cc12 = ('plink2' in args.analysis)
-    pheno_type = prepare_covar_and_phenofiles(args, log, cc12)
+    cc12 = ('plink2' in args.analysis)  # for plink, case=2, control=1; other tools use case=1, control=0
+    join_covar_into_pheno = ('saige' in args.analysis)  # SAIGE require covars and target phenotype to be in the same file
+    pheno_type = prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno=join_covar_into_pheno)
     logistic = (pheno_type=='BINARY')
     log.log('selected analysis: {}'.format('logistic' if logistic else 'linear'))
 
@@ -733,6 +814,16 @@ def execute_gwas(args, log):
         num_jobs = append_job(args, commands, True, num_jobs+1, cmd_file, submit_jobs)
 
         commands = [make_regenie_merge_commands(args, logistic)]
+        num_jobs = append_job(args, commands, False, num_jobs+1, cmd_file, submit_jobs)
+
+    if 'saige' in args.analysis:
+        commands = [make_saige_commands(args, logistic, step=1)]
+        num_jobs = append_job(args, commands, False, num_jobs+1, cmd_file, submit_jobs)
+
+        commands = [make_plink2_info_commands(args), make_saige_commands(args, logistic, step=2)]
+        num_jobs = append_job(args, commands, True, num_jobs+1, cmd_file, submit_jobs)
+
+        commands = [make_saige_merge_commands(args, logistic)]
         num_jobs = append_job(args, commands, False, num_jobs+1, cmd_file, submit_jobs)
 
     commands = []
@@ -850,6 +941,28 @@ def merge_regenie(args, log):
     df.rename(columns={'ID':'SNP', 'CHROM':'CHR', 'GENPOS':'BP', 'ALLELE0':'A2', 'ALLELE1':'A1', 'A1FREQ':'FRQ'}, inplace=True)
     df, info_col = apply_filters(args, df)
     df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P']].to_csv(args.out,index=False, sep='\t')
+    os.system('gzip -f ' + args.out)
+    write_readme_file(args)
+
+def merge_saige(args, log):
+    # quantitative GWAS columns: CHR POS SNPID Allele1 Allele2 AC_Allele2 AF_Allele2 imputationInfo N BETA SE Tstat p.value varT varTstar
+    # binary GWAS columns:       CHR POS SNPID Allele1 Allele2 AC_Allele2 AF_Allele2 imputationInfo N BETA SE Tstat p.value p.value.NA Is.SPA.converge varT varTstar AF.Cases AF.Controls N.Cases N.Controls
+
+    fix_and_validate_chr2use(args, log)
+    pattern = args.sumstats
+    df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True) for chri in args.chr2use])
+    cols = [('SNPID', 'SNP'), ('CHR', 'CHR'), ('POS', 'BP'),
+            ('Allele1', 'A2'), ('Allele2', 'A1'),
+            ('N', 'N'), ('BETA', 'BETA'), ('SE', 'SE'), 
+            ('Tstat', 'Z'), ('p.value', 'P'), ('AF_Allele2', 'FRQ')]
+
+    logistic = ('N.Cases' in df.columns) and ('N.Controls' in df.columns)
+    if logistic: cols += [('N.Cases', 'CaseN'), ('N.Controls', 'ControlN')]
+
+    df.dropna(inplace=True)
+    df.rename(columns=dict(cols), inplace=True)
+    df, info_col = apply_filters(args, df)
+    df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P'] + (['CaseN', 'ControlN'] if logistic else [])].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
     write_readme_file(args)
 

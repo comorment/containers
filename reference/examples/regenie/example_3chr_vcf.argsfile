@@ -1,0 +1,7 @@
+--pheno-file /REF/examples/regenie/example_3chr.pheno
+--geno-fit-file /REF/examples/regenie/example_3chr.bed
+--geno-file /REF/examples/regenie/example_3chr.vcf.gz
+--chr2use 1-3
+--variance-standardize
+--vcf-field GT
+
