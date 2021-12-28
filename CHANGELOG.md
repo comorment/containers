@@ -19,6 +19,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ## [Unreleased]
 - add CHANGELOG.md (this file)
   gwas.py: remove ``loci`` step from default ``--analysis`` (#22)
+- update software versions:
+  ```
+  ec089544b13d3eb39f13728f8584dcde  saige.sif   (SAIGE v0.44.6.5)
+  ```
 
 ## [1.0.0] - 2020-10-20
 
