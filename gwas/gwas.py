@@ -160,7 +160,7 @@ def parser_pgrs_add_arguments(args, func, parser):
 
 def parser_gwas_add_arguments(args, func, parser):
     # genetic files to use. All must share the same set of individuals. Currently this assumption is not validated.
-    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf, .or .vcf.gz) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
     parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
@@ -416,12 +416,6 @@ def fix_and_validate_pheno_args(args, log):
     check_input_file(args.dict_file)
 
 def fix_and_validate_gwas_args(args, log):
-    # fix deprecated arguments
-    if args.bed_fit: args.geno_fit_file = args.bed_fit + '.bed'; args.bed_fit=None
-    if args.bed_test: args.geno_file = args.bed_test + '.bed'; args.bed_test=None
-    if args.bgen_fit: args.geno_fit_file = args.bgen_fit; args.bgen_fit=None
-    if args.bgen_test: args.geno_file = args.bgen_test; args.bgen_test=None
-
     if len(set(['plink2', 'regenie', 'saige']).intersection(set(args.analysis))) > 1:
         raise ValueError('--analysis can have only one of plink2, regenie, saige; please choose one of these.')
 

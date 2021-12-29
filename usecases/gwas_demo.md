@@ -85,9 +85,10 @@ run2_regenie_PHENO2.gz
 Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](../gwas/sumstats_specification.md).
 
 It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
-If you have genotypes formatted this way, the only change you need is to replace ``--bed-test`` with ``--bgen-test``,
+If you have genotypes formatted this way, the only change you need is to change ``--geno-file`` file, pointing it to ``.bgen``  (or a ``.vcf``) file
 as in this example: [example_3chr_bgen.argsfile](../reference/examples/regenie/example_3chr_bgen.argsfile).
 It is expected that ``.bgen`` has corresponding ``.sample`` and ``.bgen.bgi`` files.
+Similarly, for a ``.vcf`` (or ``.vcf.gz``) formats you need to generate ``.tbi`` and/or ``.csi`` index files (see https://www.biostars.org/p/59492/).
 
 To see more info about ``gwas.py`` arguments, try this:
 ```
