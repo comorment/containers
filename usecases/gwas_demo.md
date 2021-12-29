@@ -160,9 +160,6 @@ Filtering options:
   --maf MAF             threshold for filtering on minor allele frequency
   --hwe HWE             threshold for filtering on hardy weinberg equilibrium p-value
   --geno GENO           threshold for filtering on per-variant missingness rate)
-
-Visualization options:
-  --clump-p1 CLUMP_P1   p-value threshold for independent significant SNPs.
 ```
 
 ## How to PRSice2 software
@@ -179,7 +176,7 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
   --geno-file /REF/examples/regenie/example_3chr.bed \
   --geno-ld-file /REF/examples/regenie/example_3chr.bed \
   --pheno-file /REF/examples/regenie/example_3chr.pheno --pheno CASE CASE2 --covar PC1 PC2 BATCH \
-  --chr2use 1-3 --variance-standardize --clump-p1 0.9 \
+  --chr2use 1-3 --variance-standardize \
   --analysis prsice2 --out run3_prsice2 \
   --keep-ambig  # only for a purpose of this demo; exclude for real analysis (unlee you know why it's there)
 

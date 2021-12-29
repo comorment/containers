@@ -606,7 +606,7 @@ def make_plink2_commands(args):
         (" --bfile {} --no-pheno".format(remove_suffix(geno_file ,'.bed')) if is_bed_file(geno_file) else "") + \
         (" --pfile {} --no-pheno".format(remove_suffix(geno_file ,'.pgen')) if is_pgen_file(geno_file) else "") + \
         (" --bgen {} ref-first --sample {}".format(geno_file, replace_suffix(geno_file, ".bgen", ".sample")) if is_bgen_file(geno_file) else "") + \
-        (" --vcf {}".format(geno_file) if is_vcf_file(geno_file) else "") + \
+        (" --vcf {} --double-id".format(geno_file) if is_vcf_file(geno_file) else "") + \
         " --chr ${SLURM_ARRAY_TASK_ID}"
     return cmd
 
@@ -976,7 +976,7 @@ def merge_saige(args, log):
     df.dropna(inplace=True)
     df.rename(columns=dict(cols), inplace=True)
     df, info_col = apply_filters(args, df)
-    df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P'] + (['CaseN', 'ControlN'] if logistic else [])].to_csv(args.out,index=False, sep='\t')
+    df[['SNP', 'CHR', 'BP', 'A1', 'A2', 'N'] + (['CaseN', 'ControlN'] if logistic else []) + info_col + ['FRQ', 'Z', 'BETA', 'SE', 'P']].to_csv(args.out,index=False, sep='\t')
     os.system('gzip -f ' + args.out)
     write_readme_file(args)
 
