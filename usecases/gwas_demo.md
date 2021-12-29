@@ -13,15 +13,15 @@ Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script from 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 manh qq --out run1_plink2 
+--pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 figures --out run1_plink2 
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie manh qq --out run2_regenie
+--pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie figures --out run2_regenie
 
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr_vcf.argsfile \
---pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis saige manh qq --out run3_saige
+--pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis saige figures --out run3_saige
 ```
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
@@ -39,8 +39,7 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 --hwe 0.01       # normaly 1e-10 or lower
 ```
 
-Adding ``manh`` and ``qq`` to the ``--analysis`` argument trigger post-GWAS scripts to generate manhattan / qq plots. You may also add ``--analysis loci`` to detect genome-wide significant loci and highlight lead SNPs on the manhattan plot, however this step is more heavy as it relies on an external reference panel to prune SNPs based on LD structure. If you want to use ``--analysis loci`` in this example,
-
+Adding ``figures`` to the ``--analysis`` argument trigger post-GWAS scripts to generate manhattan / qq plots.
 
 Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
 For this small-scale demo example, you could execute the actual GWAS locally on your machine as follows:
@@ -50,6 +49,7 @@ export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
 export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif "
+export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
 
 cat run1_plink2_cmd.sh | bash
 cat run2_regenie_cmd.sh | bash
@@ -69,11 +69,6 @@ Further, you may need to customize ``--module-load`` argument, which by default 
 Feel free to replace this with other version of singularity, or list multiple modules if you need to load something else in addition to singularity.
 (a handy trick: if you want to explicily avoid loading the singularity module, because it's pre-installed, but don't need any other modules, you may add another irrelevant module just to overwrite the default ``--module-load`` argument).
 Finally, you need to customize ``--comorment-folder`` folder containing a ``containers`` subfolder with a full copy of https://github.com/comorment/containers.
-
-It's possible to customize manhattan plots by highlighting lead SNPs.
-To do this you need to add ``loci`` to your ``gwas.py gwas --analysis`` argument.
-In this demo example, you also need to add ``--clump-p1 0.1`` argument to
-re-define p-value threshold for genome-wide significant loci, using ``0.1`` instead of the default ``5e-08``.
 
 For more results, see [gwas_demo](gwas_demo) folder. Main results are the following GWAS summary statistics:
 ```
@@ -104,18 +99,9 @@ usage: gwas.py gwas [-h] [--out OUT]
                     [--covar COVAR [COVAR ...]]
                     [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
-                    [--analysis {plink2,regenie,loci,manh,qq} [{plink2,regenie,loci,manh,qq} ...]]
+                    [--analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]]
 
-  --analysis {plink2,regenie,loci,manh,qq} [{plink2,regenie,loci,manh,qq} ...]
-                        list of analyses to perform. plink2 and regenie can not be combined (i.e.
-                        require two separate runs). loci, manh and qq can be added to etiher plink2
-                        or regenie analysis, but then can also be executed separately ("--analysis
-                        loci manh qq" without plink2 or regenie). This scenario indented as a
-                        follow-up to visualize the results produced by running only plink2 or
-                        regenie analysis. If you want to apply loci analyses to summary statistics
-                        generated not via gwas.py, use a more flexible "gwas.py loci" option
-                        instead of trying to use "gwas.py gwas --analysis loci"; same applyes for
-                        manh and qq.
+  --analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]
 
   --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
   --geno-file GENO      required argument pointing to a genetic file: (1)

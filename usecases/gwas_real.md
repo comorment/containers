@@ -22,15 +22,15 @@ Now GWAS analysis  can be triggered as follows:
 mkdir out
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
 
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis plink2 loci manh qq --out out/run1_plink2 | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis regenie loci manh qq  --out out/run2_regenie | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 loci manh qq  --out out/run3_plink2 | bash
-$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie loci manh qq --out out/run4_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis plink2 figures --out out/run1_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis regenie figures  --out out/run2_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 figures  --out out/run3_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie figures --out out/run4_regenie | bash
 
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis plink2  loci manh qq --out out/run5_plink2 | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis regenie loci manh qq --out out/run6_regenie | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 loci manh qq --out out/run7_plink2 | bash
-$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie loci manh qq --out out/run8_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis plink2  figures --out out/run5_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno height --analysis regenie figures --out out/run6_regenie | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis plink2 figures --out out/run7_plink2 | bash
+$PYTHON gwas.py gwas --argsfile moba.bgen.argsfile --pheno AnyF32 AnyF33 AnyFdep --analysis regenie figures --out out/run8_regenie | bash
 ```
 
 Resulting files (summary statistics):

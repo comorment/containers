@@ -165,8 +165,8 @@ def parser_gwas_add_arguments(args, func, parser):
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
 
-    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'saige', 'manh', 'qq'],
-        nargs='+', choices=['plink2', 'regenie', 'saige', 'loci', 'manh', 'qq'],
+    parser.add_argument('--analysis', type=str, default=['plink2', 'regenie', 'saige', 'figures'],
+        nargs='+', choices=['plink2', 'regenie', 'saige', 'loci', 'manh', 'qq', 'figures'],
         help='list of analyses to perform. plink2 and regenie can not be combined '
         '(i.e. require two separate runs). loci, manh and qq can be added to etiher '
         'plink2 or regenie analysis, but then can also be executed separately '
@@ -526,6 +526,21 @@ def make_loci_commands(args):
         '\n'
     return cmd
 
+def make_figures_commands(args):
+    cmd = ''
+    for pheno in args.pheno:
+        Rcmd = 'library(data.table);library(qqman);library(ggplot2);'
+        Rcmd += 'df=read.table("{out}_{pheno}.gz", header=TRUE);'.format(out=args.out, pheno=pheno)
+        Rcmd += 'png("{out}_{pheno}.qq.png", width=600, unit="px", pointsize=12, bg="white");'.format(out=args.out, pheno=pheno)
+        Rcmd += 'qq(df$P, main="{pheno}");'.format(pheno=pheno)
+        Rcmd += 'dev.off();'
+        Rcmd += 'df=df[df$P < 0.05, ];'
+        Rcmd += 'png("{out}_{pheno}.manh.png", width=1200, unit="px", pointsize=12, bg="white");'.format(out=args.out, pheno=pheno)
+        Rcmd += 'manhattan(df, chr="CHR", bp="BP", snp="SNP", p="P", main="{pheno}");'.format(pheno=pheno)
+        Rcmd += 'dev.off();'
+        cmd += "$RSCRIPT -e '{}'\n".format(Rcmd)
+    return cmd
+
 def make_manh_commands(args):
     cmd = ''
     for pheno in args.pheno:
@@ -647,6 +662,7 @@ export SIF=$COMORMENT/containers/singularity
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
 export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
 
@@ -780,6 +796,9 @@ def execute_gwas(args, log):
     fix_and_validate_pheno_args(args, log)
     fix_and_validate_gwas_args(args, log)
 
+    if ('loci' in args.analysis) or ('qq' in args.analysis) or ('manh' in args.analysis):
+        log.log('loci, qq and manh are deprecated and will soon be removed; use --analysis figures instead')
+
     cc12 = ('plink2' in args.analysis)  # for plink, case=2, control=1; other tools use case=1, control=0
     join_covar_into_pheno = ('saige' in args.analysis)  # SAIGE require covars and target phenotype to be in the same file
     pheno_type = prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno=join_covar_into_pheno)
@@ -824,6 +843,7 @@ def execute_gwas(args, log):
     if 'loci' in args.analysis: commands.append(make_loci_commands(args))
     if 'manh' in args.analysis: commands.append(make_manh_commands(args))
     if 'qq' in args.analysis: commands.append(make_qq_commands(args))
+    if 'figures' in args.analysis: commands.append(make_figures_commands(args))
     if commands:
         num_jobs = append_job(args, commands, False, num_jobs+1, cmd_file, submit_jobs)
 

@@ -20,6 +20,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - add CHANGELOG.md (this file)
   gwas.py: remove ``loci`` step from default ``--analysis`` (#22)
 - implement ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
+- implement ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
+- mark ``gws.py --analysis loci manh qq`` options as deprecated
 - remove deprecated options from ``gwas.py`` (``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test``)
   use new flags ``--geno-fit-file`` and ``--geno-file``
 - add package ``qqman`` to ``r.sif``
