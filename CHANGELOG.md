@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   gwas.py: remove ``loci`` step from default ``--analysis`` (#22)
 - implement ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
 - add package ``qqman`` to ``r.sif``
+- remove ``regenie.sif`` and ``regenie3.sif`` (regenie software is included in ``gwas.sif``)
 - update software versions:
   ```
   ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
