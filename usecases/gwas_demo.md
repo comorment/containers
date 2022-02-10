@@ -38,6 +38,8 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 --geno 0.5       # normally 0.98 or higher
 --hwe 0.01       # normaly 1e-10 or lower
 ```
+In the above example ``--geno-fit-file`` points to the same file as ``--geno-file``, which is NOT how things should be done in a real application. ``--geno-fit-file`` should point to a single genetic file (merged across chromosomes),
+constrained to approximately less than a million SNPs, for example constrain to genotyped SNPs, or constrain to  the set of HapMap3 SNPs. For a real example, see [gwas_real.md](gwas_real.md).
 
 Adding ``figures`` to the ``--analysis`` argument trigger post-GWAS scripts to generate manhattan / qq plots.
 

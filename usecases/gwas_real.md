@@ -2,7 +2,7 @@ This use case describes application of [gwas.py](../gwas/gwas.py) to perform GWA
 
 Input files:
 * [moba.pheno.dict](gwas_real/moba.pheno.dict) - dictionary file. Corresponding ``moba.pheno`` file is not included as it contains individual-level information
-* ``moba.hm3.withoutFID.[bed/bim/fam]`` - individual-level genotypes in plink format, constrained to HapMap3 SNPs, with ``N=86890`` individuals and ``M=787125`` markers; this is only used for ``regenie`` analysis
+* ``moba.hm3.withoutFID.[bed/bim/fam]`` - individual-level genotypes in plink format, constrained to HapMap3 SNPs, with ``N=86890`` individuals and ``M=787125`` markers; this is only used for ``regenie`` and ``saige`` analyses. To constrain imputed data down to HapMap3 SNPs one can use ``$PLINK --bfile <imputed> --extract <REF>/ldsc/w_hm3.justrs --make-bed --out <out>`` command.
 * ``98k-ec-eur-fin-batch-basic-qc-withoutFID.[bed/bim/fam]`` - full genotypes without constraining to HapMap3 SNPs, with exacly the same set of individuals, and ``M=5003746`` markers
 * [moba.bed.argsfile](gwas_real/moba.bed.argsfile) and [moba.bgen.argsfile](gwas_real/moba.bgen.argsfile) - file for the ``gwas.py --argsfile`` argument, containing pointers to hard calles (in plink format) and dosages (in ``bgen`` format):    
   ```
