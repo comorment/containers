@@ -743,10 +743,13 @@ def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
     pheno_and_covar_cols = args.pheno + (args.covar if join_covar_into_pheno else [])
     pheno_output = extract_variables(pheno, pheno_and_covar_cols, pheno_dict_map, log)
     for var in pheno_and_covar_cols:
-        if pheno_type=='BINARY':
-            log.log('variable: {}, cases: {}, controls: {}, missing: {}'.format(var, np.sum(pheno[var]=='1'), np.sum(pheno[var]=='0'), np.sum(pheno[var].isnull())))
+        if pheno_dict_map[var]=='BINARY':
+            log.log('variable: {} ({}), cases: {}, controls: {}, missing: {}'.format(var, pheno_dict_map[var], np.sum(pheno[var]=='1'), np.sum(pheno[var]=='0'), np.sum(pheno[var].isnull())))
+        elif pheno_dict_map[var] in ['NOMINAL', 'ORDINAL']:
+            counts = '; '.join(["'{}' - {}".format(val, np.sum(pheno[var]==val)) for val in pheno[var].unique()])
+            log.log('variable: {} ({}), value counts: {}'.format(var, pheno_dict_map[var], counts))
         else:
-            log.log('variable: {}, missing: {}'.format(var, np.sum(pheno[var].isnull())))
+            log.log('variable: {} ({}), missing: {}'.format(var, pheno_dict_map[var], np.sum(pheno[var].isnull())))
 
     if cc12 and (pheno_type=='BINARY'):
         log.log('mapping case/control variables from 1/0 to 2/1 coding')
