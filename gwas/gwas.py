@@ -404,7 +404,7 @@ def fix_and_validate_pheno_args(args, log):
     if args.fam is None:
         if is_bed_file(args.geno_file):
             args.fam = replace_suffix(args.geno_file, '.bed', '.fam')
-        elif ('geno_fit_file' in vars(args)) and is_bed_file(args.geno_fit_file):
+        elif ('geno_fit_file' in vars(args)) and args.geno_fit_file and is_bed_file(args.geno_fit_file):
             args.fam = replace_suffix(args.geno_fit_file, '.bed', '.fam')
         else:
             raise ValueError('please specify --fam argument in plink format, containing the same set of individuals as your --geno-file / --geno-fit-file')
