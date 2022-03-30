@@ -48,7 +48,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   cdbfbddc9e5827ad9ef2ad8d346e6b82  r.sif
   b8c1727227dc07e3006c0c8070f4e22e  regenie.sif
   97f75a45a39f0a2b3d728f0b8e85a401  regenie3.sif
-  20e01618bfb4b0825ef8246c5a63aec5  saige.sif
+  fb25c83625cea1c08b792c2d97920c5f  saige.sif
   5de579f750fb5633753bfda549822a32  tryggve_query.sif
   ```
 
@@ -92,7 +92,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | r.sif             | GSMR                | v1.0.9
   | r.sif             | LAVA                | ?
   | r.sif             | LAVA partitioning   | ?
-  | saige.sif         | SAIGE               | version 0.43
+  | saige.sif         | SAIGE               | version 1.02
   | enigma-cnv.sif    | PennCNV             | version 1.0.5
   | ldsc.sif          | LDSC                | version 1.0.1
   | ipsychcnv.sif     | ????                | missing Dockerfile
