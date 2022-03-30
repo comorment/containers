@@ -1,0 +1,3 @@
+downloaded from https://cnsgenomics.com/software/gctb/#Download
+wget https://cnsgenomics.com/software/gctb/download/gctb_2.0_tutorial.zip
+

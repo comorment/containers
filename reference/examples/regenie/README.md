@@ -31,3 +31,17 @@ PC2,CONTINUOUS,second principal component
 BATCH,NOMINAL,genotype batch
 """)
 
+
+#.info file
+import pandas as pd
+import numpy as np
+df=pd.read_csv('example_3chr.bim', delim_whitespace=True, header=None)
+df['INFO']=[np.random.rand() for x in df[1].values]
+df.rename(columns={1:'SNP'}, inplace=True)
+df[['SNP', 'INFO']].to_csv('example_3chr.info',sep='\t')
+
+
+bgzip -c example_3chr.vcf > example_3chr.vcf.gz
+tabix -p vcf example_3chr.vcf.gz
+tabix -p vcf --csi example_3chr.vcf.gz
+

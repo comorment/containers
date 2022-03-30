@@ -12,9 +12,15 @@ Description of containers and usage instructions are provided in the [docs](docs
 
 More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](usecases) folder.
 
+The history of changes is available in the [CHANGELOG.md](CHANGELOG.md) file.
+
+Additional tools are available in separate repositories:
+
+* https://github.com/comorment/HDL - High-Definition Likelihood
+
 # Getting started
 
-We recommend to clone this entire repository. This is done by running ``git clone https://github.com/comorment/containers.git`` command. 
+We recommend to clone this entire repository using ``git clone.``
 However, you need to enable [install GitLFS extension](https://git-lfs.github.com/).
 This is done by downloading and unpacking the GitLFS package, adding ``git-lfs`` binary to a folder that is in your ``PATH``, and running
 ``git lfs install`` command.
@@ -30,8 +36,10 @@ git lfs install
 
 Now you're all set to clone this repository:
 ```
-git clone https://github.com/comorment/containers.git
+git clone --depth 1 https://github.com/comorment/containers.git
 ```
+
+NB! Please add ``--depth 1`` to your command as shown above. This will limit the amount of data transfered from github to your machine.
 
 For TSD system, a read-only copy of these containers is maintained at these locations
 (please read /cluster/projects/pNN/github/README.md file before using these copies):

@@ -53,8 +53,21 @@ mhc=(int['CHR']==6) & (int['BP']>26e6) & (int['BP'] < 34e6)
 int.loc[~mhc, ['SNP', 'CHR', 'BP', 'A1', 'A2', 'N', 'Z']].to_csv('INT.sumstats', index=False, sep='\t')
 os.system('gzip -f INT.sumstats')
 ```
+The result:
+```
+>zcat SCZ.sumstats.gz | head -n 3
+SNP	CHR	BP	A1	A2	N	Z
+10:100968448:T:AA	10	100968448	T	AA	99863.42410604075	0.23784669541774933
+10:101574552:A:ATG	10	101574552	A	ATG	99863.42410604075	-1.1299435776163629
+
+> zcat INT.sumstats.gz | head -n 3
+SNP	CHR	BP	A1	A2	N	Z
+rs12184267	1	715265	T	C	225955.0	0.916
+rs12184277	1	715367	A	G	226215.0	-0.656
+```
 
 Now you can run MiXeR using [MIXER_REAL.job](mixer_real/MIXER_REAL.job), which is just a slightly adjusted version of the [mixer_simu/MIXER_SIMU.job](MIXER_SIMU.job) used in [mixer_simu.md](mixer_simu.md).
+Note that you don't need to generate ``.ld`` and ``.snps`` files as they are already included within the reference folder ([here](https://github.com/comorment/containers/tree/main/reference/ldsc/1000G_EUR_Phase3_plink)).
 Note that each run produces a ``SCZ_vs_INT.fit.repN.log`` file, containing some useful information.
 For example, inspect ``SCZ_vs_INT.fit.rep1.log`` to make sure the number of SNPs used in the analysis is reasonable:
 ```

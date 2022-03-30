@@ -10,3 +10,9 @@ example.bgen filter=lfs diff=lfs merge=lfs -text
 example_3chr.bed filter=lfs diff=lfs merge=lfs -text
 example.bed filter=lfs diff=lfs merge=lfs -text
 phenotype_bin.txt.gz filter=lfs diff=lfs merge=lfs -text
+example_3chr.pgen filter=lfs diff=lfs merge=lfs -text
+example_3chr.psam filter=lfs diff=lfs merge=lfs -text
+example_3chr.pvar filter=lfs diff=lfs merge=lfs -text
+example_3chr.vcf.gz filter=lfs diff=lfs merge=lfs -text
+example_3chr.vcf.gz.tbi filter=lfs diff=lfs merge=lfs -text
+example_3chr.vcf.gz.csi filter=lfs diff=lfs merge=lfs -text

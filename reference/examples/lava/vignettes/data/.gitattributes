@@ -1,0 +1,10 @@
+hypothyroidism.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+neuro.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+rheuma.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+asthma.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+bmi.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+depression.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+diabetes.sumstats.txt filter=lfs diff=lfs merge=lfs -text
+g1000_test.fam filter=lfs diff=lfs merge=lfs -text
+g1000_test.bed filter=lfs diff=lfs merge=lfs -text
+g1000_test.bim filter=lfs diff=lfs merge=lfs -text

@@ -10,13 +10,20 @@ The ``gwas.sif`` container has multiple tools related to imputation and GWAS ana
     bolt                # v2.3.5 March 20, 2021  
     gcta64              # version 1.93.2 beta Linux
     gctb                # GCTB 2.02
-    qctool              #
+    qctool              # version: 2.0.6, revision 18b8f17
     king                # KING 2.2.6 - (c)
     metal               # version released on 2011-03-25
     vcftools            # VCFtools (0.1.17)
     bcftools            # Version: 1.12 (using htslib 1.12)
     flashpca_x86-64     # flashpca 2.0
     regenie             # REGENIE v2.0.2.gz
+    GWAMA               # GWAMA_v2.2.2.zip
+    magma               # magma_v1.09a_static.zip
+    shapeit2            # Version : v2.r904
+    impute4             # impute4.1.2_r300.3
+    minimac4            # Version: 1.0.2; Built: Fri Sep  3 13:25:51
+    bgenix              # version: 1.1.7, revision
+    cat-bgen, edit-bgen # same as bgenix
 ```
 Only tools released as binaries (executables) are put in ``gwas`` containers.
 Each tool has corresponding folder within ``/tools/``.

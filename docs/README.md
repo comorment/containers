@@ -4,7 +4,7 @@ Here is a brief overview of available containers (more info in the links below):
 * [gwas.sif](gwas.md) - multiple tools (released as binaries/executables) for imputation and GWAS analysis
 * [matlabruntime.sif](matlabruntime.md) - container allowing to run several tools implemented in MATLAB
 * [python3.sif](python3.md) - python3 environment with pre-installed modules and tools
-* [r.sif] - R environment (TBD)
+* [r.sif](r.md) - R 4.0.3 environment with rareGWAMA, GenomicSEM, TwoSampleMR and GSMR packages installed (plus some standard R packages)
 * [ldsc.sif] - LD score regression (TBD)
 
 All containers have a common set of linux tools like ``gzip``, ``tar``, ``parallel``, etc.

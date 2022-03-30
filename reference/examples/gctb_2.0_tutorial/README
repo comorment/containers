@@ -1,0 +1,61 @@
+# ------------------------------------------------------ #
+# GCTB v2.0 information
+# Luke Lloyd-Jones and Jian Zeng
+# Date: 6/2/2019
+# ------------------------------------------------------ #
+
+GCTB is a software tool that comprises Bayesian mixed 
+linear models for complex trait analyses using genome-wide 
+SNPs. Version 2.0 includes summary-data based 
+implementations of the previously implemented models.
+
+System
+------
+
+We provide a statically linked 64-bit Linux executable, 
+gctb, that has been tested on several Linux systems. The
+software has also been compiled and run on Mac operating
+systems but this will require installation. 
+
+Installation
+------------
+
+Please see http://cnsgenomics.com/software/gctb/download/README.html for detailed
+installation instructions. Typical install time is less
+than one hour on normal desktop computer.
+
+Instructions for use
+--------------------
+
+Please see the tutorial on http://cnsgenomics.com/software/gctb
+for a detailed description of how to run the summary-based 
+components of the GCTB software on the demonstration data
+derived from the 1000 Genomes. The tutorial and subsequent
+files are representative of the process used to generate
+the results in the BioRxiv paper "Improved polygenic 
+prediction by Bayesian multiple regression on summary 
+statistics" (https://doi.org/10.1101/522961).
+
+Tutorial
+--------
+
+For instructions how to use the data and program, please refer to the Tutorial
+on the website http://cnsgenomics.com/software/gctb/#Tutorial.
+
+File description:
+   data # 1000 Genomes data in PLINK format
+   pheno_generation # R scripts for generating simulated phenotypes 
+   pheno # Simulated phenotypes
+   gwas # PLINK GWAS summary statistics
+   ldm # LD correlation matrices and scripts to calculate them
+   ma # Summary statistics in GCTB compatible format
+   sbayesr # Scripts for running and SBayesR analysis using GCTB and subsequent results
+
+
+
+
+
+ 
+
+
+

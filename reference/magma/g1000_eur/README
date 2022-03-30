@@ -1,0 +1,16 @@
+Downloaded from 1000 Genomes FTP on 08-06-2016
+- ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr[CHR].phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz
+- ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chrX.phase3_shapeit2_mvncall_integrated_v1b.20130502.genotypes.vcf.gz
+
+Converted to PLINK format using PLINK2
+Updated sex column to value from file integrated_call_samples_v3.20130502.ALL.panel
+Filtered to specified population using integrated_call_samples_v3.20130502.ALL.panel
+Filtered to only (bi-allelic) SNPs
+Removed remaining duplicate SNP IDs
+Removed SNPs with MAC of 0
+
+A block of ss IDs was found on chromosome 12; these IDs have been converted to corresponding rs IDs, using the following file
+- ftp://ftp.ncbi.nlm.nih.gov/snp/organisms/human_9606/database/data/organism_data/SNPSubSNPLink.bcp.gz (obtained 13-03-2018)
+
+The .synonyms file is current up to dbSNP 151. It is based on the main SNP synonym file available from the MAGMA website, removing entries with no SNPs in the 1,000 Genomes data to reduce size
+Note that the .synonyms file will be loaded automatically (MAGMA v1.06 and up) as long as it matches the prefix of the .bim/.bed/.fam files

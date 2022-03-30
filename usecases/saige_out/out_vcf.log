@@ -1,0 +1,30 @@
+PLINK v1.90b6.18 64-bit (16 Jun 2020)
+Options in effect:
+  --bfile /REF/examples/regenie/example_3chr
+  --out /home/saige_out/out_vcf
+  --recode vcf-iid
+
+Hostname: bayram-VirtualBox
+Working directory: /home
+Start time: Sun Sep 19 12:29:46 2021
+
+Random number seed: 1632054586
+2942 MB RAM detected; reserving 1471 MB for main workspace.
+500 variants loaded from .bim file.
+500 people (0 males, 0 females, 500 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to /home/saige_out/out_vcf.nosex .
+500 phenotype values loaded from .fam.
+Warning: Ignoring phenotypes of missing-sex samples.  If you don't want those
+phenotypes to be ignored, use the --allow-no-sex flag.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 500 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+500 variants and 500 people pass filters and QC.
+Phenotype data is quantitative.
+--recode vcf-iid to /home/saige_out/out_vcf.vcf ... done.
+Warning: At least one VCF allele code violates the official specification;
+other tools may not accept the file.  (Valid codes must either start with a
+'<', only contain characters in {A,C,G,T,N,a,c,g,t,n}, be an isolated '*', or
+represent a breakend.)
+
+End time: Sun Sep 19 12:29:46 2021
