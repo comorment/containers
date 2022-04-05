@@ -82,6 +82,10 @@ def parse_args(args):
     pheno_parser = argparse.ArgumentParser(add_help=False)
     pheno_parser.add_argument("--pheno-file", type=str, default=None, help="phenotype file, according to CoMorMent spec")
     pheno_parser.add_argument("--dict-file", type=str, default=None, help="phenotype dictionary file, defaults to <pheno>.dict")
+    pheno_parser.add_argument("--pheno-sep", default=',', type=str, choices=[',', 'comma', ';', 'semicolon', '\t', 'tab', ' ', 'space', 'delim-whitespace'],
+        help="Delimiter to use when reading --pheno-file (',' ';' $' ', $'\\t' or 'delim-whitespace', the later triggers delim_whitespace=True option in pandas")
+    pheno_parser.add_argument("--dict-sep", default=None, type=str, choices=[None, ',', 'comma', ';', 'semicolon', '\t', 'tab', ' ', 'space', 'delim-whitespace'],
+        help="Delimiter to use when reading --dict-file; by default uses delimiter provided to --pheno-sep")
     pheno_parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file (or --geno-fit-file) is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
     pheno_parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     pheno_parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
@@ -396,6 +400,12 @@ def fix_and_validate_pheno_args(args, log):
         raise ValueError('check you --pheno argument, some phenotypes listed more then once')
     if len(set(args.covar)) != len(args.covar):
         raise ValueError('check you --covar argument, some covariates listed more then once')
+
+    # '\s+' is equivalent to delim_whitespace=True option in pandas.read_csv
+    sep_map = {'delim-whitespace': '\s+', 'comma':',', 'semicolon':';', 'tab':'\t', 'space':' '}
+    if args.pheno_sep in sep_map: args.pheno_sep = sep_map[args.pheno_sep]
+    if args.dict_sep is None: args.dict_sep = args.pheno_sep
+    if args.dict_sep in sep_map: args.dict_sep = sep_map[args.dict_sep]
 
     # validate that some of genetic data is provided as input
     if not args.geno_file:
@@ -1079,12 +1089,12 @@ def append_job(args, commands, as_array, slurm_job_index, cmd_file, submit_jobs_
 
 def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
-    pheno = pd.read_csv(pheno_file, sep=',', dtype=str)
+    pheno = pd.read_csv(pheno_file, sep=args.pheno_sep, dtype=str)
     log.log('done, {} rows, {} cols'.format(len(pheno), pheno.shape[1]))
     if args.log_sensitive: log.log(pheno.head())
 
     log.log('reading {}...'.format(pheno_file))
-    pheno_dict = pd.read_csv(dict_file, sep=',')
+    pheno_dict = pd.read_csv(dict_file, sep=args.dict_sep)
     log.log('done, {} rows, {} cols, header:'.format(len(pheno_dict), pheno_dict.shape[1]))
     log.log(pheno_dict.head())
 

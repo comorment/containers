@@ -32,6 +32,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
   627734a5c74c94bd69453d0366aced5a  r.sif       (new packages)
   ```
 - add ``gctb_2.0_tutorial.zip`` (under ``reference/examples/gctb_2.0_tutorial``)
+- add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file 
+  and phenotype dictionary file
 
 ## [1.0.0] - 2020-10-20
 
