@@ -24,7 +24,7 @@ for (i in 1:n.loc) {
 			                loc.info = data.frame(locus = locus$id, chr = locus$chr, start = locus$start, stop = locus$stop, n.snps = locus$n.snps, n.pcs = locus$K)
 	                
 	                # run the univariate and bivariate tests
-	                loc.out = run.univ.bivar(locus, univ.thresh=1e-4)
+	                loc.out = run.univ.bivar(locus, univ.thresh=0.05)
 			                u[[i]] = cbind(loc.info, loc.out$univ)
 			                if(!is.null(loc.out$bivar)) b[[i]] = cbind(loc.info, loc.out$bivar)
 					        }

@@ -176,7 +176,7 @@ def parser_gwas_add_arguments(args, func, parser):
         'summary statistics generated not via gwas.py, use a more flexible "gwas.py loci" option '
         'instead of trying to use "gwas.py gwas --analysis loci"; same applyes for manh and qq.')
 
-    parser.add_argument('--vcf-field', type=str, default=['DS'], choices=['DS', 'GT'], help='field to read for vcf files')
+    parser.add_argument('--vcf-field', type=str, default='DS', choices=['DS', 'GT'], help='field to read for vcf files')
 
     # deprecated options for genetic files
     parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
