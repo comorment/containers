@@ -137,13 +137,6 @@ def parser_gwas_add_arguments(args, func, parser):
         '"figures" option can be added to plink2/regenie/saige commands. ')
 
     parser.add_argument('--vcf-field', type=str, default='DS', choices=['DS', 'GT'], help='field to read for vcf files')
-
-    # deprecated options for genetic files
-    parser.add_argument("--bed-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in a first step of mixed effect models")
-    parser.add_argument("--bed-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead (but remember to add .bed to your argument)] plink bed/bim/fam file to use in association testing; supports '@' as a place holder for chromosome labels (see --chr2use argument)")
-    parser.add_argument("--bgen-fit", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-fit-file instead] .bgen file to use in a first step of mixed effect models")
-    parser.add_argument("--bgen-test", type=str, default=None, action=ActionStoreDeprecated, help="[DEPRECATED, use --geno-file instead] .bgen file to use in association testing; supports '@' as a place holder for chromosome labels")
-
     parser.set_defaults(func=func)
 
 def parser_merge_plink2_add_arguments(args, func, parser):
