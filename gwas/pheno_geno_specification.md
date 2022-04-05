@@ -51,8 +51,9 @@ We expect the same set of individuals across all autosomes (chr 1..22).
    
 ### Phenotypes and covariates
 
-For phenotypes and covariates, we expect the data to be organized in a single comma-separated file (hereinafter referred to as *phenotype file*), 
+For phenotypes and covariates, we expect the data to be organized in a single delimiter-separated file (hereinafter referred to as *phenotype file*), 
 with rows corresponding to individuals, and columns corresponding to relevant variables of interest or covariates.
+By default the delimiter is expected to be a comma, but also can be tab, semicolon, space, or a white-space delimited file.
 Phenotype file should be accompanied by a *data dictionary* file, as described below.
 We expect a single phenotype file and a single data dictionary file for each cohort:
 ```
