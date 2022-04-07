@@ -8,6 +8,7 @@
 import argparse
 import logging, time, sys, traceback, socket, getpass, six, os
 import json
+import yaml
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -64,6 +65,7 @@ def parse_args(args):
 
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument('--argsfile', type=open, action=LoadFromFile, default=None, help="file with additional command-line arguments, e.g. those configuration settings that are the same across all of your runs")
+    parent_parser.add_argument('--config', type=str, default="config.yaml", help="file with misc configuration options")
     parent_parser.add_argument("--out", type=str, default="gwas", help="prefix for the output files (<out>.covar, <out>.pheno, etc)")
     parent_parser.add_argument("--log", type=str, default=None, help="file to output log, defaults to <out>.log")
     parent_parser.add_argument("--log-append", action="store_true", default=False, help="append to existing log file. Default is to erase previous log file if it exists.")    
@@ -81,16 +83,6 @@ def parse_args(args):
     pheno_parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
     pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
 
-    slurm_parser = argparse.ArgumentParser(add_help=False)
-    slurm_parser.add_argument("--slurm-job-name", type=str, default="gwas", help="SLURM --job-name argument")
-    slurm_parser.add_argument("--slurm-account", type=str, default="p697_norment", help="SLURM --account argument")
-    slurm_parser.add_argument("--slurm-time", type=str, default="06:00:00", help="SLURM --time argument")
-    slurm_parser.add_argument("--slurm-cpus-per-task", type=int, default=16, help="SLURM --cpus-per-task argument")
-    slurm_parser.add_argument("--slurm-mem-per-cpu", type=str, default="8000M", help="SLURM --mem-per-cpu argument")
-    slurm_parser.add_argument("--module-load", type=str, nargs='+', default=['singularity/3.7.1'], help="list of modules to load")
-    slurm_parser.add_argument("--comorment-folder", type=str, default='/cluster/projects/p697/github/comorment', help="folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers")
-    slurm_parser.add_argument("--singularity-bind", type=str, default='$COMORMENT/containers/reference:/REF:ro', help="translates to SINGULARITY_BIND variable in SLURM scripts")
-
     # filtering options
     filter_parser = argparse.ArgumentParser(add_help=False)
     filter_parser.add_argument("--info-file", type=str, default=None, help="File with SNP and INFO columns. Values in SNP column must be unique.")
@@ -102,8 +94,8 @@ def parse_args(args):
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
 
-    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, pheno_parser, slurm_parser, filter_parser], help='perform GWAS (genome-wide association) analysis'))
-    parser_pgrs_add_arguments(args=args, func=execute_pgrs, parser=subparsers.add_parser("pgrs", parents=[parent_parser, pheno_parser, slurm_parser], help='compute polygenic risk score'))
+    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, pheno_parser, filter_parser], help='perform GWAS (genome-wide association) analysis'))
+    parser_pgrs_add_arguments(args=args, func=execute_pgrs, parser=subparsers.add_parser("pgrs", parents=[parent_parser, pheno_parser], help='compute polygenic risk score'))
     
     parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser, filter_parser], help='merge plink2 sumstats files'))
     parser_merge_regenie_add_arguments(args=args, func=merge_regenie, parser=subparsers.add_parser("merge-regenie", parents=[parent_parser, filter_parser], help='merge regenie sumstats files'))
@@ -447,14 +439,14 @@ export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
 
 """.format(array="#SBATCH --array={}".format(','.join(args.chr2use)) if array else "",
-           modules = '\n'.join(['module load {}'.format(x) for x in args.module_load]),
-           job_name = args.slurm_job_name,
-           account = args.slurm_account,
-           time = args.slurm_time,
-           cpus_per_task = args.slurm_cpus_per_task,
-           mem_per_cpu = args.slurm_mem_per_cpu,
-           comorment_folder = args.comorment_folder,
-           singularity_bind = args.singularity_bind)
+           modules = '\n'.join(['module load {}'.format(x) for x in args.config['slurm']['module_load']]),
+           job_name = args.config['slurm']['job_name'],
+           account = args.config['slurm']['account'],
+           time = args.config['slurm']['time'],
+           cpus_per_task = args.config['slurm']['cpus_per_task'],
+           mem_per_cpu = args.config['slurm']['mem_per_cpu'],
+           comorment_folder = args.config['comorment_folder'],
+           singularity_bind = args.config['singularity_bind'])
 
 def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
     fam = read_fam(args, args.fam)
@@ -898,7 +890,7 @@ if __name__ == "__main__":
         raise ValueError('--out is required.')
 
     log = Logger(args.log if args.log else (args.out + '.log'), 'a' if args.log_append else 'w')
-        
+
     start_time = time.time()
 
     try:
@@ -906,6 +898,10 @@ if __name__ == "__main__":
         header += "Call: \n"
         header += ' '.join(sys.argv).replace(' --', ' \\\n\t--')
         log.log(header)
+
+        args.config = yaml.safe_load(open(args.config, "r"))
+        log.log("Config: \n{}".format(args.config))
+
         log.log('Beginning analysis at {T} by {U}, host {H}'.format(T=time.ctime(), U=getpass.getuser(), H=socket.gethostname()))
 
         # run the analysis

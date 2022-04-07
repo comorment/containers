@@ -17,6 +17,7 @@ To identify the version of a .sif file, run ``md5sum <container>.sif`` command a
 If MD5 sum is not listed for a certain release then it means that the container hasn't been changed from the previous release.
 
 ## [Unreleased]
+
 - add CHANGELOG.md (this file)
 - implement ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
 - implement ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
@@ -35,7 +36,11 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file 
   and phenotype dictionary file
 - use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
-
+- move a bunch of command-line options to a ``config.yaml`` file;
+  this includes options ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu``, ``--module-load``, ``--comorment-folder``, ``--singularity-bind``,
+  all of which are now removed (as command-line options); indead, the values have to provided via ``config.yaml`` file.
+  ``config.yaml`` file is now required.
+  
 ## [1.0.0] - 2020-10-20
 
 ### Added
