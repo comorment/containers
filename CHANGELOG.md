@@ -23,11 +23,13 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
 - remove deprecated options from ``gwas.py`` (``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test``), in favour of new flags ``--geno-fit-file`` and ``--geno-file``
 - add package ``qqman`` to ``r.sif``
+- add package ``yaml`` to ``python3.sif``
 - remove ``regenie.sif`` and ``regenie3.sif`` (regenie software is included in ``gwas.sif``)
 - update software versions:
   ```
   ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
   627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
+  cd282f8014f5de820a4b9836847c42fa  python3.sif (add yaml package)
   ```
 - add ``gctb_2.0_tutorial.zip`` (under ``reference/examples/gctb_2.0_tutorial``)
 - add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file 
