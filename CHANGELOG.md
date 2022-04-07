@@ -18,22 +18,21 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [Unreleased]
 - add CHANGELOG.md (this file)
-  gwas.py: remove ``loci`` step from default ``--analysis`` (#22)
 - implement ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
 - implement ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
-- ``gwas.py --analysis loci manh qq`` options as removed
-- remove deprecated options from ``gwas.py`` (``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test``)
-  use new flags ``--geno-fit-file`` and ``--geno-file``
+- ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
+- remove deprecated options from ``gwas.py`` (``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test``), in favour of new flags ``--geno-fit-file`` and ``--geno-file``
 - add package ``qqman`` to ``r.sif``
 - remove ``regenie.sif`` and ``regenie3.sif`` (regenie software is included in ``gwas.sif``)
 - update software versions:
   ```
   ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
-  627734a5c74c94bd69453d0366aced5a  r.sif       (new packages)
+  627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
   ```
 - add ``gctb_2.0_tutorial.zip`` (under ``reference/examples/gctb_2.0_tutorial``)
 - add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file 
   and phenotype dictionary file
+- use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
 
 ## [1.0.0] - 2020-10-20
 

@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 # README:
@@ -704,6 +703,7 @@ def merge_plink2(args, log):
     stat = 'T_STAT' if  pattern.endswith('.glm.linear') else 'Z_STAT'
     effect_cols = (['BETA', "SE"] if  pattern.endswith('.glm.linear') else ['OR', 'LOG(OR)_SE'])
     ct_cols = ([] if pattern.endswith('.glm.linear') else ["CASE_ALLELE_CT", "CTRL_ALLELE_CT"])
+    check_input_file(pattern, args.chr2use)
     df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', '#CHROM', 'POS', 'REF', 'ALT', 'A1', 'A1_FREQ', 'OBS_CT', stat, 'P', 'L95', 'U95']+ct_cols+effect_cols] for chri in args.chr2use])
     df['A2'] = df['REF']; idx=df['A2']==df['A1']; df.loc[idx, 'A2']=df.loc[idx, 'ALT']; del df['REF']; del df['ALT']
 
@@ -726,6 +726,7 @@ def merge_plink2(args, log):
 def merge_regenie(args, log):
     fix_and_validate_chr2use(args, log)
     pattern = args.sumstats
+    check_input_file(pattern, args.chr2use)
     df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True)[['ID', 'CHROM', 'BETA', 'SE', 'GENPOS', 'ALLELE0', 'ALLELE1', 'A1FREQ', 'N', 'LOG10P']] for chri in args.chr2use])
     df['P']=np.power(10, -df['LOG10P'])
     df['Z'] = -stats.norm.ppf(df['P'].values*0.5)*np.sign(df['BETA']).astype(np.float64)
@@ -742,6 +743,7 @@ def merge_saige(args, log):
 
     fix_and_validate_chr2use(args, log)
     pattern = args.sumstats
+    check_input_file(pattern, args.chr2use)
     df=pd.concat([pd.read_csv(pattern.replace('@', chri), delim_whitespace=True) for chri in args.chr2use])
     cols = [('SNPID', 'SNP'), ('CHR', 'CHR'), ('POS', 'BP'),
             ('Allele1', 'A2'), ('Allele2', 'A1'),
@@ -846,7 +848,7 @@ def append_job(args, commands, as_array, slurm_job_index, cmd_file, submit_jobs_
                 f.write('{}\n'.format(command))
 
     if (slurm_job_index != 1):
-        submit_jobs_list.append('RES=$(sbatch --dependency=afterany:${{RES##* }} {})'.format(slurm_job_file))
+        submit_jobs_list.append('RES=$(sbatch --dependency=afterok:${{RES##* }} {})'.format(slurm_job_file))
     else:
         submit_jobs_list.append('RES=$(sbatch {})'.format(slurm_job_file))
 
