@@ -15,3 +15,6 @@ comorment_folder: "/cluster/projects/p697/github/comorment"
 
 # SINGULARITY_BIND variable to set in SLURM scripts
 singularity_bind: "$COMORMENT/containers/reference:/REF:ro"
+
+saige:
+  cpus_per_task_stage2: 1

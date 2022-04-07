@@ -28,6 +28,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - add package ``yaml`` to ``python3.sif``
 - add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
 - add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
+- add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
 
 ### Updated
 
@@ -41,6 +42,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Fixed
 
 - use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
+- use SLURM's ``cpus_per_task=1`` for SAIGE step2, because it doesn't support --nThreads (see https://github.com/saigegit/SAIGE/issues/9)
 
 ### Removed
 
