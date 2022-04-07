@@ -289,7 +289,7 @@ def make_saige_commands(args, logistic, step):
             " --sampleIDColinphenoFil=IID " + \
             " --traitType={}".format('binary' if logistic else 'quantitative') + \
             " --outputPrefix={}_{}.step1".format(args.out, pheno) + \
-            " --nThreads={} ".format(args.slurm_cpus_per_task) + \
+            " --nThreads={} ".format(args.config['slurm']['cpus_per_task']) + \
             " --LOCO=TRUE " + \
             " --minMAFforGRM=0.01" + \
             " --tauInit=1,0 "
