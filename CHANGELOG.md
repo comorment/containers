@@ -29,6 +29,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
 - add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
 - add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
+- add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
 
 ### Updated
 
