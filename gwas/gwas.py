@@ -83,6 +83,8 @@ def parse_args(args):
     pheno_parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     pheno_parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
     pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
+    pheno_parser.add_argument("--keep", type=str, default=[], nargs='+', help="filename(s) with IID identifiers to keep for GWAS analysis; see https://www.cog-genomics.org/plink/2.0/filter#sample for more details.")
+    pheno_parser.add_argument("--remove", type=str, default=[], nargs='+', help="filename(s) with IID identifiers to remove from GWAS analysis;  this option takes precedence over --remove option, i.e. when both lists are provided, an individual will be removed as long as it's specified in --remove list (even if it's also present in --keep)")
 
     # filtering options
     filter_parser = argparse.ArgumentParser(add_help=False)
@@ -224,6 +226,8 @@ def fix_and_validate_pheno_args(args, log):
     check_input_file(args.pheno_file)
     if not args.dict_file: args.dict_file = args.pheno_file + '.dict'
     check_input_file(args.dict_file)
+    for fname in args.keep: check_input_file(fname)
+    for fname in args.remove: check_input_file(fname)
 
 def fix_and_validate_gwas_args(args, log):
     if len(set(['plink2', 'regenie', 'saige']).intersection(set(args.analysis))) > 1:
@@ -874,6 +878,16 @@ def read_bim(args, bim_file):
     log.log('done, {} rows, {} cols'.format(len(bim), bim.shape[1]))
     return bim
 
+def read_iid_from_keep_or_remove_file(args, fname):
+    log.log('reading {}...'.format(fname))
+    df = pd.read_csv(fname, delim_whitespace=True, header=None, comment='#', dtype=str)
+    col_idx = 0 if (len(df.columns) == 1) else 1
+    iid = set(df[col_idx].values)
+    log.log('done, {} rows, {} cols, {} unique IIDs taken from {} column'.format(len(df), df.shape[1], len(iid), col_idx + 1))
+    if len(iid) == 0:
+        raise(ValueError(f'no IIDs found in {fname} file'))
+    return iid
+
 def read_fam(args, fam_file):
     log.log('reading {}...'.format(fam_file))
     fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
@@ -915,7 +929,7 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('done, {} rows, {} cols'.format(len(pheno), pheno.shape[1]))
     if args.log_sensitive: log.log(pheno.head())
 
-    log.log('reading {}...'.format(pheno_file))
+    log.log('reading {}...'.format(dict_file))
     pheno_dict = pd.read_csv(dict_file, sep=args.dict_sep)
     log.log('done, {} rows, {} cols, header:'.format(len(pheno_dict), pheno_dict.shape[1]))
     log.log(pheno_dict.head())
@@ -943,6 +957,25 @@ def read_comorment_pheno(args, pheno_file, dict_file):
                 raise(ValueError('BINARY column {} has values other than 0 or 1; see above for offending rows (if not shown, re-run with --log-sensitive argument)'.format(c)))
         if pheno_dict_map[c]=='CONTINUOUS':
             pheno[c] = pheno[c].astype(float)
+
+    # filter phenotype file according to --keep and --remove
+    keep = set(); remove = set()
+    for fname in args.keep:
+        keep = keep.union(read_iid_from_keep_or_remove_file(args, fname))
+    for fname in args.remove:
+        remove = remove.union(read_iid_from_keep_or_remove_file(args, fname))
+
+    if len(keep) > 0:
+        pheno = pheno[pheno['IID'].isin(keep)]
+        log.log('{} individuals remain after applying --keep file(s)'.format(len(pheno)))
+        if len(pheno) == 0:
+            raise ValueError('no individuals left after applying --keep file(s)')
+
+    if len(remove) > 0:
+        pheno = pheno[~pheno['IID'].isin(remove)]
+        log.log('{} individuals remain after applying --remove file(s)'.format(len(pheno)))
+        if len(pheno) == 0:
+            raise ValueError('no individuals left after applying --keep file(s)')
 
     return pheno, pheno_dict
 
