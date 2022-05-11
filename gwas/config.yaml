@@ -2,7 +2,7 @@
 slurm:
   job_name: gwas
   account: p697_norment
-  time: 06:00:00
+  time: "06:00:00"
   cpus_per_task: 16
   mem_per_cpu: 8000M
 
