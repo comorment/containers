@@ -329,7 +329,7 @@ def make_saige_commands(args, logistic, step):
             " --sampleIDColinphenoFil=IID " + \
             " --traitType={}".format('binary' if logistic else 'quantitative') + \
             " --outputPrefix={}_{}.step1".format(args.out, pheno) + \
-            " --nThreads={} ".format(args.config['slurm']['cpus_per_task']) + \
+            " --nThreads={} ".format(args.config_object['slurm']['cpus_per_task']) + \
             " --LOCO=TRUE " + \
             " --minMAFforGRM=0.01" + \
             " --tauInit=1,0 "
@@ -493,14 +493,14 @@ export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
 
 """.format(array="#SBATCH --array={}".format(','.join(array_spec)) if (array_spec is not None) else "",
-           modules = '\n'.join(['module load {}'.format(x) for x in args.config['slurm']['module_load']]),
-           job_name = args.config['slurm']['job_name'],
-           account = args.config['slurm']['account'],
-           time = args.config['slurm']['time'],
-           cpus_per_task = args.config['slurm']['cpus_per_task'],
-           mem_per_cpu = args.config['slurm']['mem_per_cpu'],
-           comorment_folder = args.config['comorment_folder'],
-           singularity_bind = args.config['singularity_bind'])
+           modules = '\n'.join(['module load {}'.format(x) for x in args.config_object['slurm']['module_load']]),
+           job_name = args.config_object['slurm']['job_name'],
+           account = args.config_object['slurm']['account'],
+           time = args.config_object['slurm']['time'],
+           cpus_per_task = args.config_object['slurm']['cpus_per_task'],
+           mem_per_cpu = args.config_object['slurm']['mem_per_cpu'],
+           comorment_folder = args.config_object['comorment_folder'],
+           singularity_bind = args.config_object['singularity_bind'])
 
 def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
     fam = read_fam(args, args.fam)
@@ -659,11 +659,11 @@ def execute_gwas(args, log):
         command, _ = make_saige_commands(args, logistic, step=1)
         num_jobs = append_job(args, [command], None, num_jobs+1, cmd_file, submit_jobs)
 
-        cpus_per_task = args.config['slurm']['cpus_per_task']
-        args.config['slurm']['cpus_per_task'] = args.config['saige']['cpus_per_task_stage2']
+        cpus_per_task = args.config_object['slurm']['cpus_per_task']
+        args.config_object['slurm']['cpus_per_task'] = args.config_object['saige']['cpus_per_task_stage2']
         command, array_spec = make_saige_commands(args, logistic, step=2)
         num_jobs = append_job(args, [command], array_spec, num_jobs+1, cmd_file, submit_jobs)
-        args.config['slurm']['cpus_per_task'] = cpus_per_task
+        args.config_object['slurm']['cpus_per_task'] = cpus_per_task
 
         commands = [make_plink2_info_commands(args)]
         num_jobs = append_job(args, commands, args.chr2use, num_jobs+1, cmd_file, submit_jobs)
@@ -995,8 +995,8 @@ if __name__ == "__main__":
         header += ' '.join(sys.argv).replace(' --', ' \\\n\t--')
         log.log(header)
 
-        args.config = yaml.safe_load(open(args.config, "r"))
-        log.log("Config: \n{}".format(args.config))
+        args.config_object = yaml.safe_load(open(args.config, "r"))
+        log.log("Config: \n{}".format(args.config_object))
 
         log.log('Beginning analysis at {T} by {U}, host {H}'.format(T=time.ctime(), U=getpass.getuser(), H=socket.gethostname()))
 
