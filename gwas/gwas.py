@@ -65,7 +65,6 @@ def parse_args(args):
 
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument('--argsfile', type=open, action=LoadFromFile, default=None, help="file with additional command-line arguments, e.g. those configuration settings that are the same across all of your runs")
-    parent_parser.add_argument('--config', type=str, default="config.yaml", help="file with misc configuration options")
     parent_parser.add_argument("--out", type=str, default="gwas", help="prefix for the output files (<out>.covar, <out>.pheno, etc)")
     parent_parser.add_argument("--log", type=str, default=None, help="file to output log, defaults to <out>.log")
     parent_parser.add_argument("--log-append", action="store_true", default=False, help="append to existing log file. Default is to erase previous log file if it exists.")    
@@ -85,6 +84,7 @@ def parse_args(args):
     pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*', help="the list of continuous phenotypes to standardize variance; accept the list of columns from the --pheno file (if empty, applied to all); doesn't apply to dummy variables derived from NOMINAL or BINARY covariates.")
     pheno_parser.add_argument("--keep", type=str, default=[], nargs='+', help="filename(s) with IID identifiers to keep for GWAS analysis; see https://www.cog-genomics.org/plink/2.0/filter#sample for more details.")
     pheno_parser.add_argument("--remove", type=str, default=[], nargs='+', help="filename(s) with IID identifiers to remove from GWAS analysis;  this option takes precedence over --remove option, i.e. when both lists are provided, an individual will be removed as long as it's specified in --remove list (even if it's also present in --keep)")
+    pheno_parser.add_argument('--config', type=str, default="config.yaml", help="file with misc configuration options")
 
     # filtering options
     filter_parser = argparse.ArgumentParser(add_help=False)
@@ -390,7 +390,7 @@ def make_regenie_merge_commands(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-regenie ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@_{pheno}.regenie'.format(out=args.out, pheno=pheno) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
@@ -403,7 +403,7 @@ def make_saige_merge_commands(args, logistic, array_spec):
     use_chunks = (args.chunk_size_bp is not None)
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-saige ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             (' --sumstats {out}_chr@_{pheno}.saige'.format(out=args.out, pheno=pheno) if (not use_chunks) else "") + \
             (' --sumstats {out}_chunk@_{pheno}.saige'.format(out=args.out, pheno=pheno) if use_chunks else "") + \
             ' --basename {out}_chr@'.format(out=args.out) + \
@@ -417,7 +417,7 @@ def make_plink2_merge_commands(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
             ' --sumstats {out}_chr@.{pheno}.glm.{what}'.format(out=args.out, pheno=pheno, what=('logistic' if logistic else 'linear')) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
@@ -995,8 +995,9 @@ if __name__ == "__main__":
         header += ' '.join(sys.argv).replace(' --', ' \\\n\t--')
         log.log(header)
 
-        args.config_object = yaml.safe_load(open(args.config, "r"))
-        log.log("Config: \n{}".format(args.config_object))
+        if 'config' in args:
+            args.config_object = yaml.safe_load(open(args.config, "r"))
+            log.log("Config: \n{}".format(args.config_object))
 
         log.log('Beginning analysis at {T} by {U}, host {H}'.format(T=time.ctime(), U=getpass.getuser(), H=socket.gethostname()))
 
