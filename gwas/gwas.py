@@ -390,7 +390,7 @@ def make_regenie_merge_commands(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-regenie ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
             ' --sumstats {out}_chr@_{pheno}.regenie'.format(out=args.out, pheno=pheno) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
@@ -403,7 +403,7 @@ def make_saige_merge_commands(args, logistic, array_spec):
     use_chunks = (args.chunk_size_bp is not None)
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-saige ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
             (' --sumstats {out}_chr@_{pheno}.saige'.format(out=args.out, pheno=pheno) if (not use_chunks) else "") + \
             (' --sumstats {out}_chunk@_{pheno}.saige'.format(out=args.out, pheno=pheno) if use_chunks else "") + \
             ' --basename {out}_chr@'.format(out=args.out) + \
@@ -417,7 +417,7 @@ def make_plink2_merge_commands(args, logistic):
     cmd = ''
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
-            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
+            pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno', 'config']) + \
             ' --sumstats {out}_chr@.{pheno}.glm.{what}'.format(out=args.out, pheno=pheno, what=('logistic' if logistic else 'linear')) + \
             ' --basename {out}_chr@'.format(out=args.out) + \
             ' --out {out}_{pheno} '.format(out=args.out, pheno=pheno) + \
