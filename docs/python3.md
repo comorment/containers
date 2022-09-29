@@ -20,6 +20,5 @@ The port is optional, but you may want to specify it if you'd like to run jupyte
 
 * ``/tools/ukb/ukb_helper.py`` - https://github.com/precimed/ukb/
 * ``/tools/python_convert`` - https://github.com/precimed/python_convert
-* ``/tools/mixer`` - https://github.com/precimed/mixer
 
 * ``ldpred`` - https://github.com/bvilhjal/ldpred is installed via pip, simply run 'ldpred --help' to get started
