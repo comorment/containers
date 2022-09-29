@@ -116,10 +116,10 @@ RUN bash /tmp/install_gwama.sh
 # RUN bash /tmp/install_magma.sh
 
 # shapeit2
-WORKDIR /tools/shapeit2
-COPY /scripts/install_shapeit2.sh /tmp
-RUN chmod +x /tmp/install_shapeit2.sh
-RUN bash /tmp/install_shapeit2.sh
+# WORKDIR /tools/shapeit2
+# COPY /scripts/install_shapeit2.sh /tmp
+# RUN chmod +x /tmp/install_shapeit2.sh
+# RUN bash /tmp/install_shapeit2.sh
 
 # impute4
 WORKDIR /tools/impute4
