@@ -122,11 +122,11 @@ RUN bash /tmp/install_gwama.sh
 # RUN bash /tmp/install_shapeit2.sh
 
 # impute4
-WORKDIR /tools/impute4
-COPY /software/impute4/impute4.1.2_r300.3 .
-COPY /software/impute4/LICENCE.txt .
-COPY /software/impute4/impute4.1.2_r300.3 /bin/impute4
-RUN chmod +x /bin/impute4
+# WORKDIR /tools/impute4
+# COPY /software/impute4/impute4.1.2_r300.3 .
+# COPY /software/impute4/LICENCE.txt .
+# COPY /software/impute4/impute4.1.2_r300.3 /bin/impute4
+# RUN chmod +x /bin/impute4
 
 # minimac4
 WORKDIR /tools/
