@@ -47,7 +47,7 @@ When you're ready to contribute code to address an open issue, please follow the
 
         git clone git@github.com:USERNAME/containers.git
 
-    At this point the local clone of your fork only knows that it came from *your* repo, github.com/USERNAME/containers.git, but doesn't know anything the *main* repo, [https://github.com/espenhgn/citesting.git](https://github.com/espenhgn/citesting). You can see this by running
+    At this point the local clone of your fork only knows that it came from *your* repo, github.com/USERNAME/containers.git, but doesn't know anything the *main* repo, [https://github.com/comorment/containers.git](https://github.com/comorment/containers). You can see this by running
 
         git remote -v
 
@@ -56,7 +56,7 @@ When you're ready to contribute code to address an open issue, please follow the
         origin https://github.com/USERNAME/containers.git (fetch)
         origin https://github.com/USERNAME/containers.git (push)
 
-    This means that your local clone can only track changes from your fork, but not from the main repo, and so you won't be able to keep your fork up-to-date with the main repo over time. Therefore you'll need to add another "remote" to your clone that points to [https://github.com/espenhgn/citesting.git](https://github.com/espenhgn/citesting). To do this, run the following:
+    This means that your local clone can only track changes from your fork, but not from the main repo, and so you won't be able to keep your fork up-to-date with the main repo over time. Therefore you'll need to add another "remote" to your clone that points to [https://github.com/comorment/containers.git](https://github.com/comorment/containers). To do this, run the following:
 
         git remote add upstream https://github.com/comorment/containers.git
 
