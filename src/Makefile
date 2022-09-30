@@ -3,7 +3,7 @@ all: hello.sif gwas.sif python3.sif r.sif saige.sif
 %.sif: dockerfiles/%/Dockerfile
 	docker build -t $* -f dockerfiles/$*/Dockerfile . && \
 	scripts/convert_docker_image_to_singularity.sh $* && \
-	scripts/scripts/move_singularity_file.sh.sh $*
+	scripts/move_singularity_file.sh $*
 
 # Example commands executed by this make file
 # 
