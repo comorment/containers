@@ -109,25 +109,6 @@ COPY /scripts/install_gwama.sh /tmp
 RUN chmod +x /tmp/install_gwama.sh
 RUN bash /tmp/install_gwama.sh
 
-# magma
-# WORKDIR /tools/magma
-# COPY /scripts/install_magma.sh /tmp
-# RUN chmod +x /tmp/install_magma.sh
-# RUN bash /tmp/install_magma.sh
-
-# shapeit2
-# WORKDIR /tools/shapeit2
-# COPY /scripts/install_shapeit2.sh /tmp
-# RUN chmod +x /tmp/install_shapeit2.sh
-# RUN bash /tmp/install_shapeit2.sh
-
-# impute4
-# WORKDIR /tools/impute4
-# COPY /software/impute4/impute4.1.2_r300.3 .
-# COPY /software/impute4/LICENCE.txt .
-# COPY /software/impute4/impute4.1.2_r300.3 /bin/impute4
-# RUN chmod +x /bin/impute4
-
 # minimac4
 WORKDIR /tools/
 COPY /scripts/install_minimac4.sh /tmp
