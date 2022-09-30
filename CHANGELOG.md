@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
 - add CHANGELOG.md (this file)
 - add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
 - add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
