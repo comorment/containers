@@ -38,6 +38,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
   627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
   ec2824fc1ad8673739b219864c1b4097  python3.sif (add yaml package)
+  5c830470a2ee3562974d1e2890d52315  python3.sif (remove mixer package)
   ```
 
 ### Fixed
@@ -53,6 +54,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
 - ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
 - remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
+- remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (https://github.com/comorment/mixer). This is also where you will find MiXeR's use-cases.
 
 ## [1.0.0] - 2020-10-20
 
