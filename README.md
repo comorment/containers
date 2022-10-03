@@ -63,4 +63,7 @@ To simplify instructions throughout this repository we use certain variables (it
 Earlier version (prior to April 2021) of all containers and refrence data was distributed on Google Drive. This is no longer the case, the folder on Google drive is no longer maintained. ALl containers and reference data are released through this repository.
 
 
+# Source files
 
+The source files for configuring and building the container files provided here are found in the [`src`](https://github.com/comorment/containers/src) directory. 
+See the corresponding README file therein for detailes. 
