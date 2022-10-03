@@ -24,13 +24,13 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](docs/gwas.md).
 * ``python3`` - python3 packages distributed via miniconda. This package also contains jupyter notebook.
 * ``ldsc`` - LD score regression
 * ``matlab`` - container allowing to run pre-compiled MATLAB software. This container also has OCTAVE installed.
-* ``R`` - contaienr for R analysis (installed by native R package manager)
+* ``R`` - container for R analysis (installed by native R package manager)
 
 All containers have a shared layer of common utilities (``wget``, ``gzip``, etc). 
 
 ## Feedback
 
-If you face any issues, or if you need additional software, please let us know by creating an [issue](https://github.com/comorment/gwas/issues/new). 
+If you face any issues, or if you need additional software, please let us know by creating an [issue](https://github.com/comorment/containers/issues/new). 
 
 ## Note about NREC machine
 
@@ -77,4 +77,4 @@ A cloned version of comorment repositories is available here:
 ```
 Feel free to change these folders and use git pull / git push. TBD: currently the folder is cloned as 'ofrei' user - I'm not sure if it will actually work to pull & push. But let's figure this out.
 
-
+ 
