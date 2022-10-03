@@ -40,13 +40,6 @@ RUN bash /tmp/install_gcta.sh
 
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install('snpStats')"
-RUN R -e "devtools::install_git('https://github.com/josefin-werme/LAVA.git')"
-
-WORKDIR /tools/
-COPY /scripts/install_lava_partitioning.sh /tmp
-RUN chmod +x /tmp/install_lava_partitioning.sh
-RUN bash /tmp/install_lava_partitioning.sh
-
 RUN R -e "install.packages('qqman')"
 
 WORKDIR /tools
