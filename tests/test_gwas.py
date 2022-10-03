@@ -13,3 +13,6 @@ def test_gwas():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
     
+    call = f'singularity run {pth} plink2 --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
