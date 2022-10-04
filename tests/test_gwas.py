@@ -6,6 +6,7 @@ Test module for ``gwas.sif`` build
 
 import os
 import subprocess
+import tempfile
 
 pth = os.path.join('singularity', 'gwas.sif')
 
@@ -14,12 +15,17 @@ def test_plink():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
-def test_plink2()
+def test_plink2():
     call = f'singularity run {pth} plink2 --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
 def test_minimac4():
     call = f'singularity run {pth} minimac4 --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+def test_bgenix():
+    call = f'singularity run {pth} bgenix -help'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
