@@ -27,8 +27,10 @@ RUN conda install python=3.10 \
     jupyterlab \
     matplotlib-venn \
     numdifftools \
-    lifelines --yes
-#RUN conda install -c conda-forge jupyterlab matplotlib-venn numdifftools lifelines --yes
+    lifelines \
+    pyreadstat \
+    xlrd \
+    "h5py=3.7.0=nompi*" --yes
 # RUN conda install -c conda-forge bgenix  # don't include accd. to Alex
 # RUN conda install -c bioconda htslib  # don't include accd. to Alex
 
@@ -45,11 +47,8 @@ RUN git clone https://github.com/precimed/python_convert.git . && git reset --ha
 WORKDIR /tools/ukb
 RUN git clone https://github.com/precimed/ukb.git
 
-RUN yes | pip install pyreadstat
-RUN yes | pip install xlrd
-RUN yes | pip install plinkio
+RUN yes | pip install plinkio  
 RUN yes | pip install ldpred
-RUN yes | pip install h5py
 RUN yes | pip install pycap
 
 WORKDIR /tools
