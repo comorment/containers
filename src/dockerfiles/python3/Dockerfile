@@ -11,13 +11,24 @@ RUN chmod +x apt_get_essential.sh
 RUN bash apt_get_essential.sh
 
 WORKDIR /tmp
-COPY /scripts/install_miniconda3.sh .
-RUN chmod +x install_miniconda3.sh
-RUN bash install_miniconda3.sh
+COPY /scripts/install_miniforge3.sh .
+RUN chmod +x install_miniforge3.sh
+RUN bash install_miniforge3.sh
 
 # set up python env.
-RUN conda install python=3.8 numpy scipy pandas statsmodels matplotlib seaborn --yes
-RUN conda install -c conda-forge jupyterlab matplotlib-venn numdifftools lifelines --yes
+RUN conda install python=3.10 \
+    numpy \
+    scipy \
+    pandas \
+    statsmodels \
+    matplotlib \
+    seaborn \
+    pyyaml \
+    jupyterlab \
+    matplotlib-venn \
+    numdifftools \
+    lifelines --yes
+#RUN conda install -c conda-forge jupyterlab matplotlib-venn numdifftools lifelines --yes
 # RUN conda install -c conda-forge bgenix  # don't include accd. to Alex
 # RUN conda install -c bioconda htslib  # don't include accd. to Alex
 
@@ -40,8 +51,6 @@ RUN yes | pip install plinkio
 RUN yes | pip install ldpred
 RUN yes | pip install h5py
 RUN yes | pip install pycap
-
-RUN conda install -c conda-forge pyyaml --yes
 
 WORKDIR /tools
  
