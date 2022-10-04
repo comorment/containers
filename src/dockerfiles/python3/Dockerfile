@@ -11,9 +11,9 @@ RUN chmod +x apt_get_essential.sh
 RUN bash apt_get_essential.sh
 
 WORKDIR /tmp
-COPY /scripts/install_miniforge3.sh .
-RUN chmod +x install_miniforge3.sh
-RUN bash install_miniforge3.sh
+COPY /scripts/install_mambaforge.sh .
+RUN chmod +x install_mambaforge.sh
+RUN bash install_mambaforge.sh
 
 # set up python env.
 RUN mamba install python=3.10 \
@@ -31,8 +31,8 @@ RUN mamba install python=3.10 \
     pyreadstat \
     xlrd \
     "h5py=3.7.0=nompi*" --yes
-# RUN conda install -c conda-forge bgenix  # don't include accd. to Alex
-# RUN conda install -c bioconda htslib  # don't include accd. to Alex
+# RUN conda install -c conda-forge bgenix  # don't include accd. to @ofrei
+# RUN conda install -c bioconda htslib  # don't include accd. to @ofrei
 
 # Plink (as python_convert depends on plink)
 WORKDIR /tools/plink
