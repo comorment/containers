@@ -44,6 +44,7 @@ RUN bash /tmp/install_plink.sh
 WORKDIR /tools/python_convert
 RUN git clone https://github.com/precimed/python_convert.git . && git reset --hard bcde562f0286f3ff271dbb54d486d4ca1d40ae36
 
+# ukb script(s)
 WORKDIR /tools/ukb
 RUN git clone https://github.com/precimed/ukb.git
 
