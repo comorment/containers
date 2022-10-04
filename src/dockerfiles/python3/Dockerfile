@@ -16,7 +16,7 @@ RUN chmod +x install_miniforge3.sh
 RUN bash install_miniforge3.sh
 
 # set up python env.
-RUN conda install python=3.10 \
+RUN mamba install python=3.10 \
     numpy \
     scipy \
     pandas \
@@ -50,6 +50,11 @@ RUN git clone https://github.com/precimed/ukb.git
 RUN yes | pip install plinkio  
 RUN yes | pip install ldpred
 RUN yes | pip install pycap
+
+# cleanup for smaller image size
+RUN mamba clean -a -y
+RUN pip cache purge 
+
 
 WORKDIR /tools
  
