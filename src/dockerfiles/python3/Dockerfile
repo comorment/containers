@@ -1,5 +1,5 @@
 # gwas container
-FROM 'ubuntu:18.04'
+FROM 'ubuntu:22.04'
 
 ENV TZ=Europe
 ENV DEBIAN_FRONTEND noninteractive
