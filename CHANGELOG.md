@@ -19,7 +19,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ## [Unreleased]
 
 ### Added
-
+ 
+- add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
 - add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
 - add CHANGELOG.md (this file)
 - add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
