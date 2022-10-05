@@ -1,5 +1,5 @@
 # gwas container
-FROM 'ubuntu:22.04'
+FROM 'ubuntu:20.04'
 
 ENV TZ=Europe
 ENV DEBIAN_FRONTEND noninteractive
@@ -30,7 +30,9 @@ RUN mamba install python=3.10 \
     lifelines \
     pyreadstat \
     xlrd \
-    "h5py=3.7.0=nompi*" --yes
+    "h5py=3.7.0=nompi*" \
+    semantic_version \
+    --yes
 # RUN conda install -c conda-forge bgenix  # don't include accd. to @ofrei
 # RUN conda install -c bioconda htslib  # don't include accd. to @ofrei
 
