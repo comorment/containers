@@ -32,7 +32,7 @@ apt-get update && apt-get install -y  --no-install-recommends \
    unzip=6.0-25ubuntu1 \
    vim=2:8.1.2269-1ubuntu5.9 \
    wget=1.20.3-1ubuntu1 \
-   zlib1g-dev=1:1.2.11.dfsg-2ubuntu1.3 \
+   zlib1g-dev=1:1.2.11.dfsg-2ubuntu1.4 \
    && \
    apt-get clean && \
    rm -rf /var/lib/apt/lists/*
