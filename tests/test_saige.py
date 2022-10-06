@@ -8,7 +8,7 @@ import os
 import subprocess
 
 
-def test_saige():
+def test_saige_R():
     pth = os.path.join('singularity', 'saige.sif')
     call = f'singularity run {pth} R --version'
     out = subprocess.run(call.split(' '))
