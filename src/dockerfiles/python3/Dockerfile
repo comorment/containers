@@ -1,5 +1,5 @@
 # gwas container
-FROM 'ubuntu:18.04'
+FROM 'ubuntu:20.04'
 
 ENV TZ=Europe
 ENV DEBIAN_FRONTEND noninteractive
@@ -11,15 +11,35 @@ RUN chmod +x apt_get_essential.sh
 RUN bash apt_get_essential.sh
 
 WORKDIR /tmp
-COPY /scripts/install_miniconda3.sh .
-RUN chmod +x install_miniconda3.sh
-RUN bash install_miniconda3.sh
+COPY /scripts/install_mambaforge.sh .
+RUN chmod +x install_mambaforge.sh
+RUN bash install_mambaforge.sh
 
 # set up python env.
-RUN conda install python=3.8 numpy scipy pandas statsmodels matplotlib seaborn --yes
-RUN conda install -c conda-forge jupyterlab matplotlib-venn numdifftools lifelines --yes
-# RUN conda install -c conda-forge bgenix  # don't include accd. to Alex
-# RUN conda install -c bioconda htslib  # don't include accd. to Alex
+RUN mamba install python=3.10.6 \
+    numpy=1.23.3 \
+    scipy=1.9.1 \
+    pandas=1.5.0 \
+    statsmodels=0.13.2 \
+    matplotlib=3.6.0 \
+    seaborn=0.12.0 \
+    pyyaml=6.0 \
+    jupyterlab=3.4.8 \
+    matplotlib-venn=0.11.5 \
+    numdifftools=0.9.39 \
+    lifelines=0.27.0 \
+    pyreadstat=1.1.9 \
+    xlrd=2.0.1 \
+    "h5py=3.7.0=nompi*" \
+    semantic_version=2.10.0 \
+    --yes
+# RUN conda install -c conda-forge bgenix  # don't include accd. to @ofrei
+# RUN conda install -c bioconda htslib  # don't include accd. to @ofrei
+
+# pip install stuff in env.
+RUN yes | pip install plinkio==0.9.8 
+RUN yes | pip install LDpred==1.0.11
+RUN yes | pip install pycap==2.1.0
 
 # Plink (as python_convert depends on plink)
 WORKDIR /tools/plink
@@ -29,19 +49,18 @@ RUN bash /tmp/install_plink.sh
 
 # python_convert script(s)
 WORKDIR /tools/python_convert
-RUN git clone https://github.com/precimed/python_convert.git . && git reset --hard bcde562f0286f3ff271dbb54d486d4ca1d40ae36
+RUN git clone https://github.com/precimed/python_convert.git . && \
+    git reset --hard bcde562f0286f3ff271dbb54d486d4ca1d40ae36
 
+# ukb script(s)
 WORKDIR /tools/ukb
-RUN git clone https://github.com/precimed/ukb.git
+RUN git clone https://github.com/precimed/ukb.git && \
+    cd ukb && \
+    git reset --hard dc57e0d8380cd9b2eca479dc6f181d76ca5a429a
 
-RUN yes | pip install pyreadstat
-RUN yes | pip install xlrd
-RUN yes | pip install plinkio
-RUN yes | pip install ldpred
-RUN yes | pip install h5py
-RUN yes | pip install pycap
-
-RUN conda install -c conda-forge pyyaml --yes
+# cleanup for smaller image size
+RUN mamba clean -a -y
+RUN pip cache purge 
 
 WORKDIR /tools
  

@@ -1,10 +1,20 @@
 #!/bin/sh
 
+# install some deps for installing cget
+apt-get update && \
+    apt-get install --no-install-recommends \
+    python3-pip=20.0.2-5ubuntu1.6 \
+    python3-click=7.0-3 \
+    python3-six=1.14.0-2 \
+    -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-apt-get update
-apt-get install cmake -y python-pip python-dev -y
-pip install cget
-git clone https://github.com/statgen/Minimac4.git && \
+# install cget 
+pip3 install --no-cache-dir cget==0.2.0
+
+# install Minimac4
+git clone --depth 1 -b v4.1.0 https://github.com/statgen/Minimac4.git && \
 cd Minimac4 && \
 cget install -f ./requirements.txt && \
 mkdir build && cd build && \
@@ -13,3 +23,8 @@ make && \
 cp minimac4 /bin
 #make installi
 
+# remove cget, python-pip etc. used to build Minimac4
+pip3 uninstall cget -y
+apt-get purge \
+    python3-pip python3-click python3-six -y && \
+    apt-get autoremove --purge -y

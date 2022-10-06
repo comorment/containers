@@ -6,6 +6,7 @@ set -e
 apt-get update && apt-get install -y --no-install-recommends \
     curl libcurl4-gnutls-dev libbz2-dev liblzma-dev \
     libperl-dev && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 
