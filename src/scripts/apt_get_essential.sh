@@ -4,7 +4,7 @@ apt-get update && apt-get install -y --no-install-recommends ca-certificates=202
    update-ca-certificates
 
 # (!) Keep the list below sorted (!)
-apt-get update && apt-get install -y  --no-install-recommends apt-utils \
+apt-get update && apt-get install -y  --no-install-recommends \
    autoconf=2.69-11.1 \
    automake=1:1.16.1-4ubuntu6 \
    build-essential=12.8ubuntu1 \
