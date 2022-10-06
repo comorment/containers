@@ -16,8 +16,23 @@ def test_gwas_bgenix():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
+def test_gwas_bolt():
+    call = f'singularity run {pth} /tools/bolt/bolt -h'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+def test_gwas_gcta():
+    # 
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.chdir(cwd)
+        call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
 def test_gwas_king():
-    # prep test dataset:
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
