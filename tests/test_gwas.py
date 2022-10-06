@@ -22,13 +22,22 @@ def test_gwas_bolt():
     assert out.returncode == 0
 
 def test_gwas_gcta():
-    # 
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
         os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
         os.chdir(cwd)
         call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
+def test_gwas_gctb():
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.chdir(cwd)
+        call = f'singularity run {pth} gctb --bfile {d}/ex --out {d}'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
