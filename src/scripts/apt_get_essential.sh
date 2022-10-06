@@ -6,6 +6,7 @@ apt-get update && apt-get install -y --no-install-recommends ca-certificates=202
 # (!) Keep the list below sorted (!)
 apt-get update && apt-get install -y  --no-install-recommends apt-utils \
    autoconf=2.69-11.1 \
+   automake=1:1.16.1-4ubuntu6 \
    build-essential=12.8ubuntu1 \
    bzip2=1.0.8-2 \
    cmake=3.16.3-1ubuntu1 \
@@ -25,6 +26,7 @@ apt-get update && apt-get install -y  --no-install-recommends apt-utils \
    pandoc-citeproc=0.15.0.1-1build4 \
    parallel=20161222-1.1 \
    perl=5.30.0-9ubuntu0.2 \
+   pkg-config=0.29.1-0ubuntu4 \
    tar=1.30+dfsg-7ubuntu0.20.04.2 \
    tofrodos=1.7.13+ds-4 \
    unzip=6.0-25ubuntu1 \
