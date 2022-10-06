@@ -5,6 +5,7 @@ Test module for ``gwas.sif`` build
 """
 
 import os
+import pytest
 import subprocess
 import tempfile
 
@@ -12,12 +13,23 @@ import tempfile
 pth = os.path.join('singularity', 'gwas.sif')
 
 def test_gwas_bgenix():
-    call = f'singularity run {pth} bgenix -help'
+    for bin in ['bgenix', 'cat-bgen', 'edit-bgen']:
+        call = f'singularity run {pth} {bin} -help'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
+def test_gwas_bcftools():
+    call = f'singularity run {pth} bcftools --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
 def test_gwas_bolt():
     call = f'singularity run {pth} /tools/bolt/bolt -h'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+def test_gwas_flashpca():
+    call = f'singularity run {pth} flashpca_x86-64 --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
@@ -41,6 +53,11 @@ def test_gwas_gctb():
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
+def test_gwas_gwama():
+    call = f'singularity run {pth} GWAMA --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0    
+    
 def test_gwas_king():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
@@ -50,6 +67,15 @@ def test_gwas_king():
         call = f'singularity run {pth} king -b {d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
+
+@pytest.mark.skip(reason="Not implemented")
+def test_gwas_metal():
+    raise NotImplementedError
+
+def test_gwas_minimac4():
+    call = f'singularity run {pth} minimac4 --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
 
 def test_gwas_plink():
     call = f'singularity run {pth} plink --version'
@@ -71,8 +97,12 @@ def test_gwas_prsice():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
-def test_gwas_minimac4():
-    call = f'singularity run {pth} minimac4 --version'
+@pytest.mark.skip(reason="Not implemented")
+def test_gwas_qctools():
+    raise NotImplementedError
+
+def test_gwas_regenie():
+    call = f'singularity run {pth} regenie option --help'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
@@ -86,4 +116,8 @@ def test_gwas_simu():
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
     
+def test_gwas_vcftools():
+    call = f'singularity run {pth} vcftools --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
 
