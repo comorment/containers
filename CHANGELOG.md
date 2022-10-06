@@ -20,6 +20,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- added bunch of tests for ``gwas.sif`` build
+- added version pins to all software explicitly installed in containers (except ``bgenix@release`` which is ambiguous) 
 - replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
 - add basic test that KING software runs in ``gwas.sif``
 - replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
