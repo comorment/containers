@@ -19,3 +19,18 @@ def test_python3_python():
     call = f'singularity run {pth} python --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
+
+def test_python3_python_convert():
+    args = ['/tools/python_convert/sumstats.py -h',
+            '/tools/python_convert/tests/test_consistent.py',
+            '/tools/python_convert/tests/test_duplicated.py']
+    for arg in args:
+        call = f'singularity run {pth} python {arg}'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
+def test_python3_ukb():
+    arg = '/tools/ukb/ukb_helper.py -h'
+    call = f'singularity run {pth} python {arg}'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
