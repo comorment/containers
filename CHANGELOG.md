@@ -21,9 +21,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 - replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
-- add basic test that KING software runs in ``gwas.sif``
-- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
+- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
 - add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
+- add basic test that KING software runs in ``gwas.sif``
 - add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
 - add CHANGELOG.md (this file)
 - add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
@@ -95,7 +95,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | gwas.sif          | gcta64              | version 1.93.2 beta Linux
   | gwas.sif          | gctb                | GCTB 2.02
   | gwas.sif          | qctool              | version: 2.0.6, revision 18b8f17
-  | gwas.sif          | king                | KING 2.2.6 - (c)
+  | gwas.sif          | king                | KING 2.2.9 - (c)
   | gwas.sif          | metal               | version released on 2011-03-25
   | gwas.sif          | vcftools            | VCFtools (0.1.17)
   | gwas.sif          | bcftools            | Version: 1.12 (using htslib 1.12)
@@ -109,7 +109,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | gwas.sif          | bgenix              | version: 1.1.7, revision
   | gwas.sif          | cat-bgen            | same version as bgenix  
   | gwas.sif          | edit-bgen           | same version as bgenix  
-  | python3.sif       | python3             | python 3.8 + standard packages (numpy, pandas, etc)
+  | python3.sif       | python3             | python 3.10 + standard packages (numpy, pandas, etc)
   | python3.sif       | ldpred              | ?
   | python3.sif       | mixer               | mixer v1.3
   | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36

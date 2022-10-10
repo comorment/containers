@@ -8,6 +8,7 @@ import os
 import subprocess
 import tempfile
 
+
 pth = os.path.join('singularity', 'gwas.sif')
 
 def test_gwas_plink():
