@@ -19,7 +19,6 @@ apt-get update && apt-get install -y  --no-install-recommends apt-utils \
    libgsl0-dev \
    libnss3 \
    libpcre2-dev \
-   libquadmath0 \
    libxt-dev \
    make \
    pandoc \
