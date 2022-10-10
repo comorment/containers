@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
 - add basic test that KING software runs in ``gwas.sif``
 - add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
 - add CHANGELOG.md (this file)
@@ -106,7 +107,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | gwas.sif          | bgenix              | version: 1.1.7, revision
   | gwas.sif          | cat-bgen            | same version as bgenix  
   | gwas.sif          | edit-bgen           | same version as bgenix  
-  | python3.sif       | python3             | python 3.8 + standard packages (numpy, pandas, etc)
+  | python3.sif       | python3             | python 3.10 + standard packages (numpy, pandas, etc)
   | python3.sif       | ldpred              | ?
   | python3.sif       | mixer               | mixer v1.3
   | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36
