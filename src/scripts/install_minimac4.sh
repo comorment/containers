@@ -3,11 +3,12 @@
 # install some deps for installing cget
 apt-get update && \
     apt-get install --no-install-recommends \
-    python-pip python-setuptools python-click python-six python-dev -y && \
+    python3-pip python3-click python3-six -y && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # install cget 
-pip install --no-cache-dir cget
+pip3 install --no-cache-dir cget
 
 # install Minimac4
 git clone https://github.com/statgen/Minimac4.git && \
@@ -20,7 +21,7 @@ cp minimac4 /bin
 #make installi
 
 # remove cget, python-pip etc. used to build Minimac4
-pip uninstall cget
+pip3 uninstall cget -y
 apt-get purge \
-    python-setuptools python-pip python-dev python-click python-six -y && \
+    python3-pip python3-click python3-six -y && \
     apt-get autoremove --purge -y

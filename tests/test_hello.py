@@ -8,7 +8,7 @@ import os
 import subprocess
 
 
-def test_hello():
+def test_hello_plink():
     pth = os.path.join('singularity', 'hello.sif')
     call = f'singularity run {pth} plink --version'
     out = subprocess.run(call.split(' '))

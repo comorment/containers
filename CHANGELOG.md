@@ -19,9 +19,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ## [Unreleased]
 
 ### Added
- 
+
+- replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
+- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
 - add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
-- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
 - add basic test that KING software runs in ``gwas.sif``
 - add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
 - add CHANGELOG.md (this file)

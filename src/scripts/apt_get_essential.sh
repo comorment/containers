@@ -32,5 +32,6 @@ apt-get update && apt-get install -y  --no-install-recommends apt-utils \
    wget \
    zlib1g-dev \
    && \
+   apt-get clean && \
    rm -rf /var/lib/apt/lists/*
    
