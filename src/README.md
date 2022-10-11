@@ -31,9 +31,11 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container. 
   Please keep up to date (and update the main `<containers>/README.md` when pushing new container builds):
   
-  | container         | tool                | version
+  | container         | OS/tool                | version
   | ----------------- | ------------------- | ----------------------------------------
+  | hello.sif         | ubuntu              | 20.04
   | hello.sif         | plink               | v1.90b6.18 64-bit (16 Jun 2020)
+  | gwas.sif          | ubuntu              | 20.04
   | gwas.sif          | plink               | v1.90b6.18 64-bit (16 Jun 2020)
   | gwas.sif          | plink2              | v2.00a3.6LM 64-bit Intel (14 Aug 2022)
   | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)
@@ -54,9 +56,11 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | gwas.sif          | bgenix              | 1.1.7
   | gwas.sif          | cat-bgen            | same version as bgenix  
   | gwas.sif          | edit-bgen           | same version as bgenix  
+  | python3.sif       | ubuntu              | 20.04 (LTS)
   | python3.sif       | python3             | python 3.10.6 + standard packages (numpy, pandas, etc.)
   | python3.sif       | LDpred              | 1.0.11
   | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36
+  | r.sif             | ubuntu              | 20.04
   | r.sif             | R                   | 4.0.3 (2020-10-10) + standard packages (data.table, ggplot, etc)
   | r.sif             | seqminer            | ?
   | r.sif             | rareGWAMA           | ?
@@ -65,6 +69,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | r.sif             | GSMR                | v1.0.9
   | r.sif             | LAVA                | ?
   | r.sif             | LAVA partitioning   | ?
+  | saige.sif         | ubuntu              | 16.04
   | saige.sif         | SAIGE               | version 0.43
 
 
