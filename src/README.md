@@ -60,6 +60,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | python3.sif       | python3             | python 3.10.6 + standard packages (numpy, pandas, etc.)
   | python3.sif       | LDpred              | 1.0.11
   | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36
+  | python3.sif       | plink               | v1.90b6.18 64-bit (16 Jun 2020)
   | r.sif             | ubuntu              | 20.04
   | r.sif             | R                   | 4.0.3 (2020-10-10) + standard packages (data.table, ggplot, etc)
   | r.sif             | seqminer            | ?
