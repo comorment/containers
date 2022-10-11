@@ -81,7 +81,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   5de579f750fb5633753bfda549822a32  tryggve_query.sif
   ```
 
-  Here is the list of tools available in this version:
+  Here is the list of tools available in prebuilt containers:
   
   | container         | tool                | version
   | ----------------- | ------------------- | ----------------------------------------
@@ -95,7 +95,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | gwas.sif          | gcta64              | version 1.93.2 beta Linux
   | gwas.sif          | gctb                | GCTB 2.02
   | gwas.sif          | qctool              | version: 2.0.6, revision 18b8f17
-  | gwas.sif          | king                | KING 2.2.9 - (c)
+  | gwas.sif          | king                | KING 2.2.6 - (c)
   | gwas.sif          | metal               | version released on 2011-03-25
   | gwas.sif          | vcftools            | VCFtools (0.1.17)
   | gwas.sif          | bcftools            | Version: 1.12 (using htslib 1.12)
@@ -109,7 +109,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   | gwas.sif          | bgenix              | version: 1.1.7, revision
   | gwas.sif          | cat-bgen            | same version as bgenix  
   | gwas.sif          | edit-bgen           | same version as bgenix  
-  | python3.sif       | python3             | python 3.10 + standard packages (numpy, pandas, etc)
+  | python3.sif       | python3             | python 3.8 + standard packages (numpy, pandas, etc)
   | python3.sif       | ldpred              | ?
   | python3.sif       | mixer               | mixer v1.3
   | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36
