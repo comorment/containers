@@ -12,16 +12,16 @@ import tempfile
 
 pth = os.path.join('singularity', 'gwas.sif')
 
+def test_gwas_bcftools():
+    call = f'singularity run {pth} bcftools --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
 def test_gwas_bgenix():
     for bin in ['bgenix', 'cat-bgen', 'edit-bgen']:
         call = f'singularity run {pth} {bin} -help'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
-
-def test_gwas_bcftools():
-    call = f'singularity run {pth} bcftools --version'
-    out = subprocess.run(call.split(' '))
-    assert out.returncode == 0
 
 def test_gwas_bolt():
     call = f'singularity run {pth} /tools/bolt/bolt -h'
