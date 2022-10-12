@@ -21,7 +21,6 @@ mkdir build && cd build && \
 cmake -DCMAKE_TOOLCHAIN_FILE=../cget/cget/cget.cmake .. && \
 make && \
 cp minimac4 /bin
-#make installi
 
 # remove cget, python-pip etc. used to build Minimac4
 pip3 uninstall cget -y
