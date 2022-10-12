@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
 - replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
 - replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
 - add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
@@ -81,7 +82,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   5de579f750fb5633753bfda549822a32  tryggve_query.sif
   ```
 
-  Here is the list of tools available in this version:
+  Here is the list of tools available in prebuilt containers:
   
   | container         | tool                | version
   | ----------------- | ------------------- | ----------------------------------------
