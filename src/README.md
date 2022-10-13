@@ -56,6 +56,8 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | gwas.sif          | bgenix              | 1.1.7
   | gwas.sif          | cat-bgen            | same version as bgenix  
   | gwas.sif          | edit-bgen           | same version as bgenix  
+  | gwas.sif          | HTSlib              | 1.11
+  | gwas.sif          | shapeit4.2          | v4.2.2
   | python3.sif       | ubuntu              | 20.04 (LTS)
   | python3.sif       | python3             | python 3.10.6 + standard packages (numpy, pandas, etc.)
   | python3.sif       | LDpred              | 1.0.11

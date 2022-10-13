@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
 - added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
 - add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
 - replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
