@@ -123,4 +123,33 @@ A cloned version of comorment repositories is available here:
 ```
 Feel free to change these folders and use git pull / git push. TBD: currently the folder is cloned as 'ofrei' user - I'm not sure if it will actually work to pull & push. But let's figure this out.
 
- 
+## Testing container builds
+
+Some basic checks for the functionality of the different container builds are provided in `<containers>/tests/`, implemented in Python. 
+The tests can be executed using the [Pytest](https://docs.pytest.org) testing framework. 
+
+To install Pytest in the current Python environment, issue:
+```
+pip install pytest  # --user optional
+```
+
+New virtual environment using [conda](https://docs.conda.io/en/latest/index.html):
+```
+conda create -n pytest python=3 pytest -y  # creates env "pytest"
+conda activate pytest  # activates env "pytest"
+```
+
+Then, all checks can be executed by issuing:
+```
+cd <containers>
+py.test -v tests  # with verbose output
+```
+
+Checks for individual containers (e.g., `gwas.sif`) can be executed by issuing:
+```
+py.test -v tests/test_<container-prefix>.py
+```
+
+Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in `<containers>/singularity/`, 
+not only git LFS pointer files.
+

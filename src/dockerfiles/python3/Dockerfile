@@ -54,8 +54,7 @@ RUN git clone https://github.com/precimed/python_convert.git . && \
 
 # ukb script(s)
 WORKDIR /tools/ukb
-RUN git clone https://github.com/precimed/ukb.git && \
-    cd ukb && \
+RUN git clone https://github.com/precimed/ukb.git . && \
     git reset --hard dc57e0d8380cd9b2eca479dc6f181d76ca5a429a
 
 # cleanup for smaller image size
