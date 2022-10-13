@@ -37,7 +37,7 @@ def test_gwas_gcta():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
         os.chdir(cwd)
         call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
         out = subprocess.run(call.split(' '))
@@ -47,7 +47,7 @@ def test_gwas_gctb():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
         os.chdir(cwd)
         call = f'singularity run {pth} gctb --bfile {d}/ex --out {d}'
         out = subprocess.run(call.split(' '))
@@ -62,7 +62,7 @@ def test_gwas_king():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
         os.chdir(cwd)
         call = f'singularity run --home=/tmp/:/home/ {pth} king -b {d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'
         out = subprocess.run(call.split(' '))
@@ -110,7 +110,7 @@ def test_gwas_simu():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
         os.chdir(cwd)
         call = f'singularity run --home=/tmp/:/home/ {pth} simu_linux --bfile {d}/ex --qt --causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'
         out = subprocess.run(call.split(' '))
