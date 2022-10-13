@@ -121,4 +121,10 @@ COPY /scripts/install_bgenix.sh /tmp
 RUN chmod +x /tmp/install_bgenix.sh
 RUN bash /tmp/install_bgenix.sh
 
+# HTSlib + shapeit4
+WORKDIR /tmp/shapeit4
+COPY /scripts/install_shapeit4.sh .
+RUN chmod +x install_shapeit4.sh
+RUN ./install_shapeit4.sh
+
 WORKDIR /tools
