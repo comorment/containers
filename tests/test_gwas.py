@@ -54,7 +54,7 @@ def test_gwas_gctb():
         assert out.returncode == 0
 
 def test_gwas_gwama():
-    call = f'singularity run {pth} GWAMA --version'
+    call = f'singularity run --home=/tmp/:/home/ {pth} GWAMA --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0    
     
@@ -64,7 +64,7 @@ def test_gwas_king():
         os.chdir(d)
         os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
         os.chdir(cwd)
-        call = f'singularity run {pth} king -b {d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'
+        call = f'singularity run --home=/tmp/:/home/ {pth} king -b {d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
@@ -112,7 +112,7 @@ def test_gwas_simu():
         os.chdir(d)
         os.system('wget https://www.kingrelatedness.com/ex.tar.gz && tar -xvf ex.tar.gz')
         os.chdir(cwd)
-        call = f'singularity run {pth} simu_linux --bfile {d}/ex --qt --causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'
+        call = f'singularity run --home=/tmp/:/home/ {pth} simu_linux --bfile {d}/ex --qt --causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
     
