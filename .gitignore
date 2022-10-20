@@ -1,8 +1,14 @@
+# misc
 .DS_Store
-*.pyc
-.pytest_cache
+
+# bash
 .bash_history
 
-# R crap
+# Python
+*.pyc
+.pytest_cache
+__pycache__
+
+# R
 .rda
 .varianceRatio.txt
