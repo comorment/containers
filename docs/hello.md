@@ -1,6 +1,6 @@
 # ``hello.sif`` container
 
-You may use ``hello.sif`` container to familiraze yourself with Singularity (https://sylabs.io/docs/),
+You may use ``hello.sif`` container to familirize yourself with Singularity (https://sylabs.io/docs/),
 and the way it works on your secure HPC environment (TSD, Bianca, Computerome, or similar).
 This singularity container is indented as a demo. 
 It only contains Plink 1.9 (http://zzz.bwh.harvard.edu/plink/) software.
