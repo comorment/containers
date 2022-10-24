@@ -37,9 +37,9 @@ RUN mamba install python=3.10.6 \
 # RUN conda install -c bioconda htslib  # don't include accd. to @ofrei
 
 # pip install stuff in env.
-RUN yes | pip install plinkio==0.9.8 
-RUN yes | pip install LDpred==1.0.11
-RUN yes | pip install pycap==2.1.0
+RUN pip install plinkio==0.9.8 
+RUN pip install LDpred==1.0.11
+RUN pip install pycap==2.1.0
 
 # Plink (as python_convert depends on plink)
 WORKDIR /tools/plink
