@@ -34,3 +34,27 @@ def test_python3_ukb():
     call = f'singularity run {pth} python {arg}'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
+
+def test_python3_packages():
+    packages = [
+        'h5py', 
+        'ldpred', 
+        'lifelines',
+        'matplotlib',
+        'matplotlib_venn',
+        'numdifftools',
+        'numpy',
+        'pandas',
+        'plinkio',
+        'redcap',  # pycap
+        'pyreadstat',
+        'yaml',  # pyyaml
+        'scipy',
+        'seaborn',
+        'semantic_version',
+        'statsmodels',
+        'xlrd']
+    for pkg in packages:
+        call = f'singularity run {pth} python -c "import {pkg}"'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
