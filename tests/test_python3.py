@@ -23,6 +23,13 @@ def test_python3_python():
     assert out.returncode == 0
 
 
+def test_python3_fastlmm():
+    pwd = os.getcwd()
+    call = f'singularity run --home={pwd} {pth} python {pwd}/tests/extras/fastlmm_example_script.py'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
 def test_python3_python_convert():
     args = ['/tools/python_convert/sumstats.py -h',
             '/tools/python_convert/tests/test_consistent.py',
