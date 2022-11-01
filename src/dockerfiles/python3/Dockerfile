@@ -22,6 +22,7 @@ RUN mamba install python=3.10.6 \
 
 # keep the list of packages sorted alphabetically
 # https://www.online-utility.org/text/sort.jsp
+# hadolint disable=DL3059
 RUN mamba install \
     "h5py=3.7.0=nompi*" \
     lifelines=0.27.0 \
