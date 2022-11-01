@@ -25,7 +25,8 @@ def test_python3_python():
 
 def test_python3_fastlmm():
     pwd = os.getcwd()
-    call = f'singularity run --home={pwd} {pth} python {pwd}/tests/extras/fastlmm_example_script.py'
+    call = f'singularity run --home={pwd} {pth} python ' +
+           f'{pwd}/tests/extras/fastlmm_example_script.py'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
