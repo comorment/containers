@@ -16,14 +16,11 @@ RUN chmod +x install_mambaforge.sh
 RUN bash install_mambaforge.sh
 
 # set up python env.
-RUN mamba install python=3.10.6 \
-    jupyterlab=3.4.8 \
-    --yes
-
 # keep the list of packages sorted alphabetically
 # https://www.online-utility.org/text/sort.jsp
-RUN mamba install \
+RUN mamba install python=3.10.6 \
     "h5py=3.7.0=nompi*" \
+    jupyterlab=3.4.8 \
     lifelines=0.27.0 \
     matplotlib-venn=0.11.5 \
     matplotlib=3.6.0 \
@@ -47,9 +44,8 @@ RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir bgen-reader==4.0.8 && \
     pip install --no-cache-dir bed-reader==0.2.24 && \
     pip install --no-cache-dir pysnptools==0.5.7 && \
-    pip install --no-cache-dir fastlmm==0.6.3
-
-RUN pip install --no-cache-dir plinkio==0.9.8 && \
+    pip install --no-cache-dir fastlmm==0.6.3 && \
+    pip install --no-cache-dir plinkio==0.9.8 && \
     pip install --no-cache-dir LDpred==1.0.11 && \
     pip install --no-cache-dir pycap==2.1.0
 
