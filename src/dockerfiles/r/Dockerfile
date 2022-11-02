@@ -7,8 +7,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # Essential tools
 WORKDIR /tmp
 COPY /scripts/apt_get_essential.sh .
-RUN chmod +x apt_get_essential.sh
-RUN bash apt_get_essential.sh
+RUN bash apt_get_essential.sh && \
+    rm apt_get_essential.sh
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     libperl-dev=5.30.0-9ubuntu0.2 && \

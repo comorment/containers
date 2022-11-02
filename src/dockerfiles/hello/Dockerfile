@@ -7,13 +7,13 @@ ENV DEBIAN_FRONTEND noninteractive
 # Essential Tools
 WORKDIR /tmp
 COPY /scripts/apt_get_essential.sh .
-RUN chmod +x apt_get_essential.sh
-RUN bash apt_get_essential.sh
+RUN bash apt_get_essential.sh && \
+    rm apt_get_essential.sh
 
 # Plink
-WORKDIR /tools/plink
-COPY /scripts/install_plink.sh /tmp
-RUN chmod +x /tmp/install_plink.sh
-RUN bash /tmp/install_plink.sh
+WORKDIR /tmp/plink
+COPY /scripts/install_plink.sh /tmp/plink/
+RUN bash /tmp/plink/install_plink.sh && \
+    rm -rf /tmp/plink
 
 WORKDIR /tools
