@@ -16,10 +16,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # gcta (good to have this in R container because gsmr package uses gcta)
-WORKDIR /tools/gcta
-COPY /scripts/install_gcta.sh /tmp
-RUN chmod +x /tmp/install_gcta.sh
-RUN bash /tmp/install_gcta.sh
+WORKDIR /tmp/gcta
+COPY /scripts/install_gcta.sh /tmp/gcta/
+RUN bash /tmp/gcta/install_gcta.sh && \
+    rm -rf /tmp/gcta
 
 # R packages.
 # CRAN packages

@@ -29,7 +29,7 @@ RUN bash /tmp/simu/install_simu.sh && \
     rm -rf /tmp/simu
 
 # Plink2
-WORKDIR /tools/plink2
+WORKDIR /tmp/plink2
 COPY /scripts/install_plink2.sh /tmp/plink2/
 RUN bash /tmp/plink2/install_plink2.sh && \
     rm -rf /tmp/plink2
@@ -89,16 +89,16 @@ RUN bash /tmp/metal/install_metal.sh && \
     rm -rf /tmp/metal
 
 # vcftools
-WORKDIR /tools/vcftools
+WORKDIR /tmp/vcftools
 COPY /scripts/install_vcftools.sh /tmp/vcftools/
 RUN bash /tmp/vcftools/install_vcftools.sh && \
     rm -rf /tmp/vcftools
 
-# Bcftools (installes /tools/bcftools and /tools/htslib)
-WORKDIR /tools/bcftools/
+# Bcftools (installs /tools/bcftools and /tools/htslib)
+WORKDIR /tmp/bcftools/
 COPY /scripts/install_bcftools.sh /tmp/bcftools/
 RUN bash /tmp/bcftools/install_bcftools.sh && \
-    rm -rf /tmp/bcftools/
+    rm -rf /tmp/bcftools
 
 # flashpca
 WORKDIR /tmp/flashpca
