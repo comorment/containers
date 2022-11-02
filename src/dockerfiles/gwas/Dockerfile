@@ -53,7 +53,7 @@ RUN bash /tmp/plink2_avx2/install_plink2_avx2.sh && \
 
 WORKDIR /tools/bolt
 COPY /scripts/install_bolt.sh /tools/bolt
-COPY /scripts/Makefile.patch /tools/bolt
+COPY /scripts/bolt.Makefile.patch /tools/bolt/
 RUN bash /tools/bolt/install_bolt.sh && \
     rm /tools/bolt/install_bolt.sh
 ENV PATH="/tools/bolt:${PATH}"
