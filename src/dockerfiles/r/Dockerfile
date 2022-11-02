@@ -11,7 +11,7 @@ RUN bash apt_get_essential.sh && \
     rm apt_get_essential.sh
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    libperl-dev=5.30.0-9ubuntu0.2 && \
+    libperl-dev=5.30.0-9ubuntu0.3 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
