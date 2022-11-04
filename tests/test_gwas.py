@@ -68,9 +68,19 @@ def test_gwas_king():
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
-@pytest.mark.skip(reason="Not implemented")
 def test_gwas_metal():
-    raise NotImplementedError
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system(f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz')
+        os.chdir('GlucoseExample')
+        call = f'singularity run --home=$PWD:/home/ {cwd}/{pth} metal metal.txt'
+        out = subprocess.run(call.split(' '), capture_output=True)
+        assert out.returncode == 0
+        # software may not crash on error, checking captured output
+        assert out.stdout.decode('utf-8').rfind('Error') <= 0
+        assert out.stdout.decode('utf-8').rfind("## Smallest p-value is 1.491e-12 at marker 'rs560887'") > 0
+    os.chdir(cwd)
 
 def test_gwas_minimac4():
     call = f'singularity run {pth} minimac4 --version'
@@ -97,9 +107,10 @@ def test_gwas_prsice():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
-@pytest.mark.skip(reason="Not implemented")
 def test_gwas_qctools():
-    raise NotImplementedError
+    call = f'singularity run {pth} qctool -help'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
 
 def test_gwas_regenie():
     call = f'singularity run {pth} regenie option --help'
