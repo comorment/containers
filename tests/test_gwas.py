@@ -71,8 +71,9 @@ def test_gwas_king():
         os.chdir(d)
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
         os.chdir(cwd)
-        call = f'singularity run --home=/tmp/:/home/ {pth} king -b ' + \
-            '{d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'
+        call = ' '.join(
+            [f'singularity run --home=/tmp/:/home/ {pth} king -b ',
+             f'{d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'])
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
