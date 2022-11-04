@@ -41,19 +41,8 @@ RUN bash /tmp/plink2_avx2/install_plink2_avx2.sh && \
     rm -rf /tmp/plink2_avx2
 
 # Bolt LMM
-# RUN apt-get update && apt-get install -y  --no-install-recommends \
-#     libboost-dev=1.71.0.0ubuntu2 \
-#     libboost-iostreams-dev=1.71.0.0ubuntu2 \
-#     libboost-program-options-dev=1.71.0.0ubuntu2 \
-#     libmkl-dev=2020.0.166-1 \
-#     libnlopt-cxx-dev=2.6.1-8ubuntu2 \
-#     && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
-
 WORKDIR /tools/bolt
 COPY /scripts/install_bolt.sh /tools/bolt
-COPY /scripts/bolt.Makefile.patch /tools/bolt/
 RUN bash /tools/bolt/install_bolt.sh && \
     rm /tools/bolt/install_bolt.sh
 ENV PATH="/tools/bolt:${PATH}"
