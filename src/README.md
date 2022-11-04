@@ -41,7 +41,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)
   | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05) 
   | gwas.sif          | simu_linux          | v0.9.4
-  | gwas.sif          | bolt                | v2.4 July 22, 2022 
+  | gwas.sif          | bolt                | v2.3.5 March 20, 2021
   | gwas.sif          | gcta64              | version 1.93.2 beta Linux
   | gwas.sif          | gctb                | 2.02
   | gwas.sif          | qctool              | 2.0.6, revision 18b8f17
