@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
 - add basic GitHub actions from https://github.com/precimed/container_template.git
 - add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
 - add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
