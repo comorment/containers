@@ -12,3 +12,7 @@ __pycache__
 # R
 .rda
 .varianceRatio.txt
+
+# sphinx
+sphinx-docs/source/_build
+sphinx-docs/source/_static
