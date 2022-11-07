@@ -1,9 +1,9 @@
 .. template documentation master file, created by
-   sphinx-quickstart on Fri Oct 14 10:51:33 2022.
+   sphinx=quickstart on Fri Oct 14 10:51:33 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CoMorMent-container's documentation!
+Welcome to CoMorMent=container's documentation!
 ===============================================
 
 .. toctree::
@@ -14,20 +14,20 @@ Welcome to CoMorMent-container's documentation!
 .. mdinclude:: ../../README.md
 
 
-**docs** directory
-==================
+Container documentation
+=======================
 
 .. mdinclude:: ../../docs/README.md
 
 
-**usecases** directory
-======================
+Usecases
+========
 
 .. mdinclude:: ../../usecases/README.md
 
 
-**src** directory
-=================
+Souce codes
+===========
 
 .. mdinclude:: ../../src/README.md
 

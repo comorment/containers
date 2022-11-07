@@ -4,11 +4,11 @@ This repository is used to develop and document singularity containers with vari
 
 ## Getting started
 
-For new users we recommend to go over introductory instructions in [docs/hello.md](https://github.com/comorment/containers/docs/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
+For new users we recommend to go over introductory instructions in [docs/hello.md](https://github.com/comorment/containers/blob/main/docs/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
 
-If you would like to contribute to developing these containers, please see  [docs/contributing.md](https://github.com/comorment/containers/docs/contributing.md).
+If you would like to contribute to developing these containers, please see  [docs/contributing.md](https://github.com/comorment/containers/blob/main/docs/contributing.md).
 
-For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.com/comorment/containers/docs/gwas.md).
+For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.com/comorment/containers/blob/main/docs/gwas.md).
 
 ## Prerequisites (to running tutorials)
 
@@ -33,7 +33,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
 ## Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
-  Please keep up to date (and update the main [``<containers>/README.md``](https://github.com/comorment/containers/README.md) when pushing new container builds):
+  Please keep up to date (and update the main [``<containers>/README.md``](https://github.com/comorment/containers/blob/main/README.md) when pushing new container builds):
   
   | container         | OS/tool             | version                                   | license
   | ----------------- | ------------------- | ----------------------------------------- | -------------
