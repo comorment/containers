@@ -26,7 +26,7 @@ def test_gwas_bgenix():
 
 
 def test_gwas_bolt():
-    call = f'singularity run {pth} /tools/bolt/bolt -h'
+    call = f'singularity run {pth} bolt -h'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 

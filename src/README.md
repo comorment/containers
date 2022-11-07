@@ -31,50 +31,49 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container. 
   Please keep up to date (and update the main `<containers>/README.md` when pushing new container builds):
   
-  | container         | OS/tool             | version
-  | ----------------- | ------------------- | ----------------------------------------
-  | hello.sif         | ubuntu              | 20.04
-  | hello.sif         | plink               | v1.90b6.18 64-bit (16 Jun 2020)
-  | gwas.sif          | ubuntu              | 20.04
-  | gwas.sif          | plink               | v1.90b6.18 64-bit (16 Jun 2020)
-  | gwas.sif          | plink2              | v2.00a3.6LM 64-bit Intel (14 Aug 2022)
-  | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)
-  | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05) 
-  | gwas.sif          | simu_linux          | v0.9.4
-  | gwas.sif          | bolt                | v2.3.5 March 20, 2021  
-  | gwas.sif          | gcta64              | version 1.93.2 beta Linux
-  | gwas.sif          | gctb                | 2.02
-  | gwas.sif          | qctool              | 2.0.6, revision 18b8f17
-  | gwas.sif          | king                | 2.2.9 - (c)
-  | gwas.sif          | metal               | version released on 2011-03-25
-  | gwas.sif          | vcftools            | 0.1.17
-  | gwas.sif          | bcftools            | 1.12 (using htslib 1.12)
-  | gwas.sif          | flashpca_x86-64     | 2.0
-  | gwas.sif          | regenie             | v2.0.2.gz
-  | gwas.sif          | GWAMA               | 2.2.2
-  | gwas.sif          | minimac4            | v4.1.0
-  | gwas.sif          | bgenix              | 1.1.7
-  | gwas.sif          | cat-bgen            | same version as bgenix  
-  | gwas.sif          | edit-bgen           | same version as bgenix  
-  | gwas.sif          | HTSlib              | 1.11
-  | gwas.sif          | shapeit4.2          | v4.2.2
-  | python3.sif       | ubuntu              | 20.04 (LTS)
-  | python3.sif       | python3             | python 3.10.6 + standard packages (numpy, pandas, etc.)
-  | python3.sif       | LDpred              | 1.0.11
-  | python3.sif       | python_convert      | github commit bcde562f0286f3ff271dbb54d486d4ca1d40ae36
-  | python3.sif       | plink               | v1.90b6.18 64-bit (16 Jun 2020)
-  | r.sif             | ubuntu              | 20.04
-  | r.sif             | R                   | 4.0.3 (2020-10-10) + standard packages (data.table, ggplot, etc)
-  | r.sif             | gcta64              | version 1.93.2 beta Linux
-  | r.sif             | seqminer            | zhanxw/seqminer@142204d1005553ea87e1740ff97f0286291e41f9
-  | r.sif             | rareGWAMA           | dajiangliu/rareGWAMA@72e962dae19dc07251244f6c33275ada189c2126
-  | r.sif             | GenomicSEM          | GenomicSEM/GenomicSEM@bcbbaffff5767acfc5c020409a4dc54fbf07876b
-  | r.sif             | TwoSampleMR         | MRCIEU/TwoSampleMR@c174107cfd9ba47cf2f780849a263f37ac472a0e
-  | r.sif             | GSMR                | v1.0.9
-  | r.sif             | snpStats            | v1.40.0
-  | saige.sif         | ubuntu              | 16.04
-  | saige.sif         | SAIGE               | version 0.43
-
+  | container         | OS/tool             | version                                   | license
+  | ----------------- | ------------------- | ----------------------------------------- | -------------
+  | hello.sif         | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | hello.sif         | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | gwas.sif          | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | plink2              | v2.00a3.6LM 64-bit Intel (14 Aug 2022)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05)                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | simu_linux          | v0.9.4                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bolt                | v2.4 July 22, 2022                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | gctb                | 2.02                                      | [MIT](https://opensource.org/licenses/MIT)
+  | gwas.sif          | qctool              | 2.0.6, revision 18b8f17                   | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | king                | 2.2.9 - (c)                               | [permissive](https://www.kingrelatedness.com/Download.shtml)
+  | gwas.sif          | metal               | version released on 2011-03-25            | -
+  | gwas.sif          | vcftools            | 0.1.17                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bcftools            | 1.12 (using htslib 1.12)                  | [MIT/Expat/GPLv3](https://github.com/samtools/bcftools/blob/develop/LICENSE)
+  | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | regenie             | v2.0.2.gz                                 | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | gwas.sif          | GWAMA               | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
+  | gwas.sif          | minimac4            | v4.1.0                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | cat-bgen            | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | edit-bgen           | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | HTSlib              | 1.11                                      | [MIT/Expat/Modified-BSD](https://github.com/samtools/htslib/blob/develop/LICENSE)
+  | gwas.sif          | shapeit4.2          | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
+  | python3.sif       | ubuntu              | 20.04 (LTS)                               | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | python3.sif       | python3             | python 3.10.6 + numpy, pandas, etc.       | [PSF](https://docs.python.org/3.10/license.html)
+  | python3.sif       | LDpred              | 1.0.11                                    | [MIT](https://opensource.org/licenses/MIT)
+  | python3.sif       | python_convert      | github commit bcde562                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | python3.sif       | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | r.sif             | R                   | 4.0.3 (2020-10-10) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | r.sif             | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer@142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
+  | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA@72e962dae19dc07251244f6c33275ada189c2126)  | -
+  | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM@bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR@c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
+  | r.sif             | GSMR                | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
+  | r.sif             | snpStats            | v1.40.0                                   | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | saige.sif         | ubuntu              | 16.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | saige.sif         | SAIGE               | version 0.43                              | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Feedback
 
@@ -92,8 +91,6 @@ Filesystem                         Size  Used Avail Use% Mounted on
 /dev/sda1                               20G  9.6G  9.7G  50% /
 /dev/mapper/nrec_extvol-comorment      393G  346G   28G  93% /nrec/projects
 /dev/mapper/nrec_extvol_2-comorment_2  935G  609G  279G  69% /nrec/space
-
-
 ```
 
 Both docker and singularity were configured to avoid placing cached files into local file system.

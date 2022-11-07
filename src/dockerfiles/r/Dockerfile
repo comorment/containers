@@ -7,19 +7,19 @@ ENV DEBIAN_FRONTEND noninteractive
 # Essential tools
 WORKDIR /tmp
 COPY /scripts/apt_get_essential.sh .
-RUN chmod +x apt_get_essential.sh
-RUN bash apt_get_essential.sh
+RUN bash apt_get_essential.sh && \
+    rm apt_get_essential.sh
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    libperl-dev=5.30.0-9ubuntu0.2 && \
+    libperl-dev=5.30.0-9ubuntu0.3 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # gcta (good to have this in R container because gsmr package uses gcta)
-WORKDIR /tools/gcta
-COPY /scripts/install_gcta.sh /tmp
-RUN chmod +x /tmp/install_gcta.sh
-RUN bash /tmp/install_gcta.sh
+WORKDIR /tmp/gcta
+COPY /scripts/install_gcta.sh /tmp/gcta/
+RUN bash /tmp/gcta/install_gcta.sh && \
+    rm -rf /tmp/gcta
 
 # R packages.
 # CRAN packages

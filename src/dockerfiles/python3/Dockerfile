@@ -7,13 +7,13 @@ ENV DEBIAN_FRONTEND noninteractive
 # Essential tools
 WORKDIR /tmp
 COPY /scripts/apt_get_essential.sh .
-RUN chmod +x apt_get_essential.sh
-RUN bash apt_get_essential.sh
+RUN bash apt_get_essential.sh && \
+    rm apt_get_essential.sh
 
 WORKDIR /tmp
 COPY /scripts/install_mambaforge.sh .
-RUN chmod +x install_mambaforge.sh
-RUN bash install_mambaforge.sh
+RUN bash install_mambaforge.sh && \
+    rm install_mambaforge.sh
 
 # set up python env.
 # keep the list of packages sorted alphabetically
@@ -50,10 +50,10 @@ RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir pycap==2.1.0
 
 # Plink (as python_convert depends on plink)
-WORKDIR /tools/plink
-COPY /scripts/install_plink.sh /tmp
-RUN chmod +x /tmp/install_plink.sh
-RUN bash /tmp/install_plink.sh
+WORKDIR /tmp/plink
+COPY /scripts/install_plink.sh /tmp/plink/
+RUN bash /tmp/plink/install_plink.sh && \
+    rm -rf /tmp/plink
 
 # python_convert script(s)
 WORKDIR /tools/python_convert
