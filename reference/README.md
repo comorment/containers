@@ -4,14 +4,6 @@ This folder containers publicly available reference, derived from different reso
   with reasonably realistic LD structure representing chromosome 21 in EUR population
   (chr21 is choosen because it is the shortest chromosome in human genome); the data was generated using [HapGen2 software](https://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html).
 
-* [ldsc](ldsc) folder contains certain files copied from https://alkesgroup.broadinstitute.org/LDSCORE 
-  needed to run basic LD score regression analysis.
-  Some of this data is derived, e.g. ``ldsc/1000G_EUR_Phase3_baseline_split/base`` is extracted from ``1000G_Phase3_baseline_ldscores.tgz`` using just the ``base`` column (i.e. total LD score).
-
-* [ldsc/1000G_EUR_Phase3_plink](ldsc/1000G_EUR_Phase3_plink) contains reference data for the MiXeR tool.
-  The reason for placing MiXeR data within ``ldsc`` is because it was derived from LDSC reference data
-  (``M=9997231`` SNPs, ``N=489`` individuals EUR ancestry).
-
 * [pleiofdr/9545380_ref](pleiofdr/9545380_ref) folder contains reference data for pleioFDR analysis.
   
 * [pleiofdr/demo_data](pleiofdr/demo_data) folder contains a demo dataset for pleioFDR analysis, constrained to a very few SNPs so that the analysis
