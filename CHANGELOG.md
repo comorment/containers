@@ -1,16 +1,18 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Note that CoMorMent containers are organized using several GitHub repositories:
-* https://github.com/comorment/containers - .sif files, public reference data, documentation, common scripts
-* https://github.com/comorment/gwas - source code (Dockerfile, etc)
-* https://github.com/comorment/reference - private reference data with access restricted to CoMorMent collaborator
+
+* <https://github.com/comorment/containers> - .sif files, public reference data, documentation, common scripts
+* <https://github.com/comorment/gwas> - source code (Dockerfile, etc)
+* <https://github.com/comorment/reference> - private reference data with access restricted to CoMorMent collaborator
 
 All of the above repositories are covered by this CHANGELOG. They will have the same version tags on github.
-In addition, we have repositories containing specific tools, e.g. https://github.com/comorment/HDL, 
+In addition, we have repositories containing specific tools, e.g. <https://github.com/comorment/HDL>,
 which will be covered by their own CHANGELOG.md file.
 
 To identify the version of a .sif file, run ``md5sum <container>.sif`` command and find the MD5 checksum in the list below.
@@ -20,31 +22,33 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-- add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
-- add basic GitHub actions from https://github.com/precimed/container_template.git
-- add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
-- add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
-- added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
-- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
-- replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
-- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
-- add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
-- add basic test that KING software runs in ``gwas.sif``
-- add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
-- add CHANGELOG.md (this file)
-- add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
-- add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
-- add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
-- add package ``qqman`` to ``r.sif``
-- add package ``yaml`` to ``python3.sif``
-- add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
-- add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
-- add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
-- add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
+* add source files for online documentation at <https://comorment-containers.readthedocs.io>
+* add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
+* add basic GitHub actions from <https://github.com/precimed/container_template.git>
+* add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
+* add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
+* added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
+* add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
+* replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
+* replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
+* add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
+* add basic test that KING software runs in ``gwas.sif``
+* add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas).
+* add CHANGELOG.md (this file)
+* add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
+* add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
+* add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
+* add package ``qqman`` to ``r.sif``
+* add package ``yaml`` to ``python3.sif``
+* add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
+* add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
+* add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
+* add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
 
 ### Updated
 
-- update the following containers:
+* update the following containers:
+
   ```
   ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
   627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
@@ -54,25 +58,27 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-- use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
-- use SLURM's ``cpus_per_task=1`` for SAIGE step2, because it doesn't support --nThreads (see https://github.com/saigegit/SAIGE/issues/9)
+* use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
+* use SLURM's ``cpus_per_task=1`` for SAIGE step2, because it doesn't support --nThreads (see <https://github.com/saigegit/SAIGE/issues/9>)
 
 ### Removed
 
-- removed misc. source/data files in /tools/* from container builds
-- removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
-- the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
+* removed misc. source/data files in /tools/* from container builds
+* removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
+* the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
   ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu``, ``--module-load``, ``--comorment-folder``, ``--singularity-bind``.
   Note that ``config.yaml`` file is now required.
-- ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
-- ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
-- remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
-- remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (https://github.com/comorment/mixer). This is also where you will find MiXeR's use-cases.
+* ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
+* ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
+* remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
+* remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (<https://github.com/comorment/mixer>). This is also where you will find MiXeR's use-cases.
 
 ## [1.0.0] - 2020-10-20
 
 ### Added
+
 - initial release of the following containers:
+
   ```
   70502c11d662218181ac79a846a0937a  enigma-cnv.sif
   1ddd2831fcab99371a0ff61a8b2b0970  gwas.sif
@@ -92,11 +98,11 @@ If MD5 sum is not listed for a certain release then it means that the container 
   
   | container         | tool                | version
   | ----------------- | ------------------- | ----------------------------------------
-  | hello.sif         | demo example        | 
+  | hello.sif         | demo example        |
   | gwas.sif          | plink               | v1.90b6.18 64-bit (16 Jun 2020)
   | gwas.sif          | plink2              | v2.00a2.3LM 64-bit Intel (24 Jan 2020)
   | gwas.sif          | plink2_avx2         | v2.00a2.3LM AVX2 Intel (24 Jan 2020)
-  | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05) 
+  | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05)
   | gwas.sif          | simu_linux          | Version v0.9.4
   | gwas.sif          | bolt                | v2.3.5 March 20, 2021  
   | gwas.sif          | gcta64              | version 1.93.2 beta Linux
