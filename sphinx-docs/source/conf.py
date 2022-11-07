@@ -20,8 +20,10 @@ _release = _d['VERSION']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'CoMorMent-containers'
-copyright = '2022, Richard Zetterberg, John Shorter, Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'
-author = 'Richard Zetterberg, John Shorter, Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'
+copyright = '2022, Richard Zetterberg, John Shorter, ' + \
+    'Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'
+author = 'Richard Zetterberg, John Shorter, ' +\
+    'Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'
 release = _release
 
 # -- General configuration ---------------------------------------------------
@@ -38,7 +40,6 @@ extensions = [
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
 
 
 # -- Options for HTML output -------------------------------------------------
