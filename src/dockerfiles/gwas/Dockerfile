@@ -83,7 +83,13 @@ COPY /scripts/install_vcftools.sh /tmp/vcftools/
 RUN bash /tmp/vcftools/install_vcftools.sh && \
     rm -rf /tmp/vcftools
 
-# Bcftools (installs /tools/bcftools and /tools/htslib)
+# HTSlib (dependency for bcftools & shapeit4)
+WORKDIR /tmp/htslib
+COPY /scripts/install_htslib.sh /tmp/htslib/
+RUN bash /tmp/htslib/install_htslib.sh && \
+    rm -rf /tmp/htslib
+
+# Bcftools
 WORKDIR /tmp/bcftools/
 COPY /scripts/install_bcftools.sh /tmp/bcftools/
 RUN bash /tmp/bcftools/install_bcftools.sh && \
@@ -121,9 +127,10 @@ COPY /scripts/install_bgenix.sh /tmp/bgenix/
 RUN bash /tmp/bgenix/install_bgenix.sh && \
     rm -rf /tmp/bgenix
 
-# HTSlib + shapeit4
+# shapeit4
 WORKDIR /tmp/shapeit4
 COPY /scripts/install_shapeit4.sh /tmp/shapeit4/
+COPY /scripts/patches/shapeit4.makefile.diff /tmp/shapeit4/
 RUN bash /tmp/shapeit4/install_shapeit4.sh && \
     rm -rf /tmp/shapeit4
 
