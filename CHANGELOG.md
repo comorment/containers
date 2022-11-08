@@ -60,6 +60,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Removed
 
 - removed misc. source/data files in /tools/* from container builds
+- removed ``ldsc.sif`` container, which is now included in its own GitHub repository (https://github.com/comorment/ldsc)
 - removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
 - the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
   ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu``, ``--module-load``, ``--comorment-folder``, ``--singularity-bind``.
