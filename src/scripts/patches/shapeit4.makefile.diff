@@ -1,0 +1,15 @@
+diff --git a/makefile b/makefile
+index 7a5cbd8..ef8e537 100644
+--- a/makefile
++++ b/makefile
+@@ -2,8 +2,8 @@
+ CXX=g++ -std=c++11
+ 
+ #HTSLIB LIBRARY [SPECIFY YOUR OWN PATHS]
+-HTSLIB_INC=$(HOME)/Tools/htslib-1.11
+-HTSLIB_LIB=$(HOME)/Tools/htslib-1.11/libhts.a
++HTSLIB_INC=/usr/include
++HTSLIB_LIB=/usr/lib/libhts.a
+ 
+ #BOOST IOSTREAM & PROGRAM_OPTION LIBRARIES [SPECIFY YOUR OWN PATHS]
+ BOOST_INC=/usr/include
