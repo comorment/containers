@@ -12,3 +12,15 @@ __pycache__
 # R
 .rda
 .varianceRatio.txt
+.Rhistory
+database.conf
+
+# LDpred2 tutorial script
+LDpred2_cache
+LDpred2_files
+LDpred2.pdf
+Rplots.pdf
+LDpred2.log
+LDpred2.tex
+*.rds
+*.bk

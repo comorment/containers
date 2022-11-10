@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name=LDpred2  # job name
+#SBATCH --output=LDpred2.txt  # R output
+#SBATCH --error=LDpred2.txt  # errors
+#SBATCH --account=$SBATCH_ACCOUNT  # project ID
+#SBATCH --time=00:15:00  # walltime
+#SBATCH --cpus-per-task=1  # number of CPUS for task
+#SBATCH --mem-per-cpu=2000  # memory (MB)
+#SBATCH --partition=normal
+
+# check if singularity is available, if not load it (adapt as necessary)
+if ! command -v singularity &> /dev/null
+then
+    module load singularity
+fi
+
+export SIF=$PWD/../containers/ldpred2.sif  # point to container file
+export R="singularity exec --home=$PWD:/home $SIF R"  # alias for R
+$R -e "rmarkdown::render('LDpred2.Rmd')"  # execute script
