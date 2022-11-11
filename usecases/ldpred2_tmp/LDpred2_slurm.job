@@ -14,6 +14,6 @@ then
     module load singularity
 fi
 
-export SIF=$PWD/../containers/ldpred2.sif  # point to container file
-export R="singularity exec --home=$PWD:/home $SIF R"  # alias for R
+export CONTAINER=$SIF/r.sif  # point to container file
+export R="singularity exec --home=$PWD:/home $CONTAINER R"  # alias for R
 $R -e "rmarkdown::render('LDpred2.Rmd')"  # execute script

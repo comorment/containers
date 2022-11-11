@@ -48,7 +48,7 @@ Run using [Docker](https://www.docker.com) container, e.g., for local testing/de
 In case you wish to build the image, clone the entire repository, change directory to this one and issue
 
 ```
-docker build -t ldpred2 -f ../src/dockerfiles/ldpred2/Dockerfile .
+docker build -t ldpred2 -f ../src/dockerfiles/r.sif/Dockerfile .
 ```
 
 The build may take some time, and is assigned the ID `ldpred2`.
@@ -69,8 +69,8 @@ Get familiar with Singularity:
 In order to run the example from the terminal using Singularity, issue:
 
 ```
-export SIF=$PWD/../containers/ldpred2.sif  # point to ldpred2.sif file. Modify as needed.
-export R="singularity exec --home=$PWD:/home $SIF R"  # invokes R binding the working directory as "home" directory
+export CONTAINER=$SIF/r.sif  # point to r.sif file. Modify as needed.
+export R="singularity exec --home=$PWD:/home $CONTAINER R"  # invokes R binding the working directory as "home" directory
 $R -e "rmarkdown::render('LDpred2.Rmd')"  # Run .Rmd file using R
 ```
 
@@ -88,10 +88,14 @@ first we create a job script (`LDpred2_slurm.job`) as:
 #SBATCH --cpus-per-task=1  # number of CPUS for task
 #SBATCH --mem-per-cpu=2000  # memory (MB)
 
-module load singularity  # load singularity
+# check if singularity is available, if not load it (adapt as necessary)
+if ! command -v singularity &> /dev/null
+then
+    module load singularity
+fi
 
-export SIF=$PWD/../containers/ldpred2.sif  # point to container file
-export R="singularity exec --home=$PWD:/home $SIF R"  # alias for R
+export CONTAINER=$SIF/r.sif  # point to container file
+export R="singularity exec --home=$PWD:/home $CONTAINER R"  # alias for R
 $R -e "rmarkdown::render('LDpred2.Rmd')"  # execute script
 ```
 
@@ -115,6 +119,6 @@ e.g., a `$PROJECT`, `$WORK`, `$HOME`, `$SCRATCH` or similar area.
 Syncing the files to another location may be done using the `rsync` utility 
 (here creating a local copy in the `$HOME` directory):
 ```
-rsync -avh <absolute/path/to/ldpred2> $HOME
+rsync -avh <absolute/path/to/dir> $HOME # modify as needed
 ```
-Then, all files should be present in the the directory `$HOME/ldpred2`. 
+Then, all files should be present in the the directory `$HOME/dir`. 
