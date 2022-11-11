@@ -57,10 +57,8 @@ RUN R -e "library(devtools); install_github('zhanxw/seqminer', ref='142204d10055
 
 # Misc. packages
 RUN R -e "install.packages('http://cnsgenomics.com/software/gsmr/static/gsmr_1.0.9.tar.gz', repos=NULL, type='source')"
-# version=3.12 refs to the Bioconductor package version:
-RUN R -e "BiocManager::install('zlibbioc', version='3.12')" # installs zlibbioc_1.36.0
-RUN R -e "BiocManager::install('BiocGenerics', version='3.12')" # BiocGenerics_0.36.1
-RUN R -e "BiocManager::install('snpStats', version='3.12', type='source', checkBuilt=TRUE)"  # snpStats_1.40.0
+# version=3.12 refs to the Bioconductor version, installs zlibbioc_1.36.0, BiocGenerics_0.36.1, snpStats_1.40.0:
+RUN R -e "BiocManager::install(c('zlibbioc', 'BiocGenerics', 'snpStats'), version='3.12')"
 
 WORKDIR /tools
 
