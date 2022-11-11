@@ -18,7 +18,7 @@ Additional tools are available in separate repositories:
 
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
 
-## Getting started
+## <a name="getting-started"></a>Getting started
 
 We recommend to clone this entire repository using ``git clone.``
 However, you need to enable [install Git LFS extension](https://git-lfs.github.com/).
@@ -50,8 +50,8 @@ For TSD system, a read-only copy of these containers is maintained at these loca
 /cluster/projects/p697/github/comorment
 ```
 
-Once you have a clone of this repository on your system, you may proceed with [docs/hello.md](docs/hello.md) example.
-Take a look at other README files in the [docs](docs/README.md) folder, as well as detailed use cases in [usecases](usecases/README.md) folder.
+Once you have a clone of this repository on your system, you may proceed with [docs/hello.md](https://github.com/comorment/containers/blob/main/docs/hello.md) example.
+Take a look at other README files in the [docs](https://github.com/comorment/containers/tree/main/docs/) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases/) folder.
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
@@ -84,6 +84,7 @@ make html  # make html-documentation in $PWD/_build/html/
 The resulting file(s) ``$PWD/_build/html/index.html`` can be viewed in any web browser.
 
 In order to make a pdf with the documentation, issue
+
 ```
 make pdflatex
 ```
