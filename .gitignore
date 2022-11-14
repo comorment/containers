@@ -22,5 +22,8 @@ LDpred2.pdf
 Rplots.pdf
 LDpred2.log
 LDpred2.tex
+LDpred2.aux
+LDpred2.html
 *.rds
 *.bk
+*.sbk
