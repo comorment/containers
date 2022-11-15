@@ -1,4 +1,5 @@
 require(devtools)
+devtools::install_version('argparser', version='0.7.1', repos='https://cloud.r-project.org')
 devtools::install_version('bigreadr', version='0.2.4', repos='https://cloud.r-project.org')
 devtools::install_version('bigsnpr', version='1.11.4', repos='https://cloud.r-project.org')
 devtools::install_version('BiocManager', version='1.30.18', repos='https://cloud.r-project.org')
