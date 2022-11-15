@@ -37,7 +37,6 @@ def test_r_R_rmarkdown():
         os.chdir(d)
         os.system(f"cp {os.path.join(pwd, 'tests', 'extras', 'cars.Rmd')} .")
         os.system(f"cp {os.path.join(pwd, 'tests', 'extras', 'cars.R')} .")
-        assert os.path.isfile('cars.Rmd')
         sif = os.path.join(pwd, pth)
         call = f"""singularity run --home={d} {sif} Rscript cars.R"""
         out = subprocess.run(call.split(' '))
