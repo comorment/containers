@@ -40,5 +40,7 @@ def test_r_R_rmarkdown():
         sif = os.path.join(pwd, pth)
         call = f"""singularity run --home={d} {sif} Rscript cars.R"""
         out = subprocess.run(call.split(' '))
+        pdf_output = os.path.isfile('cars.pdf')
+        os.chdir(pwd)
         assert out.returncode == 0
-        assert os.path.isfile('cars.pdf')
+        assert pdf_output
