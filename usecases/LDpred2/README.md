@@ -6,7 +6,7 @@ In order to run imputation and the LDpred2 analysis defined in the file `run_ldp
 export fileGeno=/REF/examples/prsice2/EUR.bed
 export fileImputedGeno=EUR.imputed.bed
 export filePheno=/REF/examples/prsice2/EUR.height
-export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
+export fileKeepSNPS=/REF/ldsc/w_hm3.justrs
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
 export fileOut=test.score
 
