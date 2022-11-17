@@ -4,7 +4,7 @@ apt-get update && apt-get install -y --no-install-recommends ca-certificates=202
    update-ca-certificates
 
 # (!) Keep the list below sorted (!)
-apt-get update && apt-get install -y  --no-install-recommends \
+apt-get update && apt-get install -y --no-install-recommends \
    autoconf=2.69-11.1 \
    automake=1:1.16.1-4ubuntu6 \
    build-essential=12.8ubuntu1 \
@@ -29,9 +29,9 @@ apt-get update && apt-get install -y  --no-install-recommends \
    pkg-config=0.29.1-0ubuntu4 \
    tar=1.30+dfsg-7ubuntu0.20.04.2 \
    tofrodos=1.7.13+ds-4 \
-   unzip=6.0-25ubuntu1 \
+   unzip=6.0-25ubuntu1.1 \
    vim=2:8.1.2269-1ubuntu5.9 \
-   wget=1.20.3-1ubuntu1 \
+   wget=1.20.3-1ubuntu2 \
    zlib1g-dev=1:1.2.11.dfsg-2ubuntu1.5 \
    && \
    apt-get clean && \

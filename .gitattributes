@@ -17,3 +17,5 @@ matlab/pleiofdr  filter=lfs diff=lfs merge=lfs -text
 # specific files
 reference/ldsc/w_hm3.snplist                 filter=lfs diff=lfs merge=lfs -text
 reference/pleiofdr/9545380_ref/9545380.ref   filter=lfs diff=lfs merge=lfs -text
+# misc file formats
+*.sbk filter=lfs diff=lfs merge=lfs -text

@@ -8,7 +8,28 @@
 *.pyc
 .pytest_cache
 __pycache__
+.python_history
 
 # R
 .rda
 .varianceRatio.txt
+.Rhistory
+database.conf
+
+# usecases
+*.log
+
+# usecases/LDpred2 tutorial scripts
+LDpred2_cache
+LDpred2_files
+LDpred2.pdf
+Rplots.pdf
+LDpred2.log
+LDpred2.tex
+LDpred2.aux
+LDpred2.html
+*.rds
+*.bk
+*.sbk
+usecases/LDpred2/EUR.imputed.*
+usecases/LDpred2/test.score.*
