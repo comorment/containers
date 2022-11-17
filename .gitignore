@@ -16,7 +16,10 @@ __pycache__
 .Rhistory
 database.conf
 
-# LDpred2 tutorial script
+# usecases
+*.log
+
+# usecases/LDpred2 tutorial scripts
 LDpred2_cache
 LDpred2_files
 LDpred2.pdf
@@ -28,3 +31,5 @@ LDpred2.html
 *.rds
 *.bk
 *.sbk
+usecases/LDpred2/EUR.imputed.*
+usecases/LDpred2/test.score.*
