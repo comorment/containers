@@ -5,3 +5,4 @@ The following use cases illustrate applications of CoMorMent containers:
 * [bolt-lmm_demo.md](bolt-lmm_demo.md) describes how to run bolt-lmm
 * [saige_demo.md](saige_demo.md) describes how to run Saige
 * [LDpred2](LDpred2/README.md) describes how to run PRS analyses using LDpred2
+* [LDpred2_tutorial](LDpred2_tutorial/README.md) provides a full tutorial on PRS analyses using LDpred2
