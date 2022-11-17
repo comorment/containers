@@ -22,28 +22,27 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* add source files for online documentation at <https://comorment-containers.readthedocs.io>
-* add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
-* add basic GitHub actions from <https://github.com/precimed/container_template.git>
-* add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
-* add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
-* added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
-* add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
-* replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
-* replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
-* add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
-* add basic test that KING software runs in ``gwas.sif``
-* add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas).
-* add CHANGELOG.md (this file)
-* add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
-* add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
-* add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
-* add package ``qqman`` to ``r.sif``
-* add package ``yaml`` to ``python3.sif``
-* add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
-* add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
-* add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
-* add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
+- add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
+- add basic GitHub actions from https://github.com/precimed/container_template.git
+- add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
+- add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
+- added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
+- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
+- replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
+- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
+- add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
+- add basic test that KING software runs in ``gwas.sif``
+- add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
+- add CHANGELOG.md (this file)
+- add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
+- add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
+- add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
+- add package ``qqman`` to ``r.sif``
+- add package ``yaml`` to ``python3.sif``
+- add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
+- add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
+- add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
+- add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
 
 ### Updated
 
@@ -63,9 +62,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-* removed misc. source/data files in /tools/* from container builds
-* removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
-* the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
+- removed misc. source/data files in /tools/* from container builds
+- removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
+- the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
   ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu``, ``--module-load``, ``--comorment-folder``, ``--singularity-bind``.
   Note that ``config.yaml`` file is now required.
 * ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
