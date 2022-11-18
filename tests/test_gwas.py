@@ -7,6 +7,7 @@ Test module for ``gwas.sif`` build
 import os
 import subprocess
 import tempfile
+import pytest
 
 
 pth = os.path.join('singularity', 'gwas.sif')
@@ -162,3 +163,10 @@ def test_gwas_vcftools():
     call = f'singularity run {pth} vcftools --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
+
+@pytest.mark.skip(reason="raise NotImplementedError")
+def test_gwas_ldak():
+    raise NotImplementedError
+    # call = f'singularity run {pth} ldak'
+    # out = subprocess.run(call.split(' '))
+    # assert out.returncode == 0
