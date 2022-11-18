@@ -20,6 +20,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- add ``ldak5.2.linux`` binary to ``gwas.sif``
 - add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 - add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
 - add basic GitHub actions from https://github.com/precimed/container_template.git

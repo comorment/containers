@@ -134,4 +134,10 @@ COPY /scripts/patches/shapeit4.makefile.diff /tmp/shapeit4/
 RUN bash /tmp/shapeit4/install_shapeit4.sh && \
     rm -rf /tmp/shapeit4
 
+# ldak
+WORKDIR /tmp/ldak
+COPY /scripts/install_ldak.sh /tmp/ldak
+run bash /tmp/ldak/install_ldak.sh && \
+    rm -rf /tmp/ldak
+
 WORKDIR /tools
