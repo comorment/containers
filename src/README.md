@@ -52,6 +52,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | regenie             | v2.0.2.gz                                 | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
   | gwas.sif          | GWAMA               | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
+  | gwas.sif          | ldak                | v5.2                                      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | minimac4            | v4.1.0                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)
   | gwas.sif          | cat-bgen            | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
