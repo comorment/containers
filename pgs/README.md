@@ -20,7 +20,6 @@ Before anything, define path to summary statistics file from GWAS.
 We also create a working dir in the local folder
 ```
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
-#export fileSumstats=$REFERENCE/examples/prsice2/Height.gwas.txt.gz
 export QCDIR=QC_data
 export WORKDIR=$PWD/$QCDIR
 mkdir $WORKDIR
@@ -34,6 +33,7 @@ export GZIP_EXEC="singularity exec --home=$PWD:/home $SIF/gwas.sif gzip"
 export AWK_EXEC="singularity exec --home=$PWD:/home $SIF/gwas.sif awk"
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
+export PRSICE="singularity exec --home=$PWD:/home $SIF/gwas.sif PRSice_linux"
 ```
 
 ### Standard GWAS QC 
@@ -105,7 +105,9 @@ $PLINK --bfile $INPUTDATAPATH/$DATAPREFIX \
 
 remove individuals with F coefficients that are more than 3 standard deviation (SD) units from the mean in ``R``:
 ```
-$RSCRIPT create_valid_sample.R $QCDIR/$DATAPREFIX.QC.het $QCDIR/$DATAPREFIX.valid.sample
+$RSCRIPT create_valid_sample.R \
+       $QCDIR/$DATAPREFIX.QC.het \
+       $QCDIR/$DATAPREFIX.valid.sample
 ```
 
 strand-flipping the alleles to their complementary alleles
@@ -182,6 +184,8 @@ EUR.QC.fam:	This file contains the samples that passed the basic filtering
 EUR.height:	This file contains the phenotype of the samples
 EUR.cov:	This file contains the covariates of the samples
 
+#### Preprocessing
+
 environment variables
 ```
 export QC_Sumstats_file=$QCDIR/Height.QC.gz
@@ -238,6 +242,8 @@ echo "0.4 0 0.4" >> $PLINKDIR/range_list
 echo "0.5 0 0.5" >> $PLINKDIR/range_list
 ```
 
+#### PGS calculation
+
 Calculate PGS
 ```
 $PLINK --bfile $QCDIR/$DATAPREFIX.QC \
@@ -263,8 +269,67 @@ $PLINK \
     --pca $NPCS \
     --out $PLINKDIR/$DATAPREFIX
 ```
-#
+
 ### *PRSice2
+
+Tutorial
+https://choishingwan.github.io/PRS-Tutorial/prsice/
+
+Required files:
+```
+Height.QC.gz	The post QC base data file. While PRSice-2 can automatically apply most filtering on the base file, it cannot remove duplicated SNPs
+EUR.QC.bed	This file contains the genotype data that passed the QC steps
+EUR.QC.bim	This file contains the list of SNPs that passed the QC steps
+EUR.QC.fam	This file contains the samples that passed the QC steps
+EUR.height	This file contains the phenotype data of the samples
+EUR.cov	This file contains the covariates of the samples
+EUR.eigenvec	This file contains the principal components (PCs) of the samples
+```
+
+Define environment variables
+```
+export QC_Sumstats_file=$QCDIR/Height.QC.gz
+export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.bed
+export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim
+export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam
+# export QC_Pheno_file=$QCDIR/$DATAPREFIX.height
+export Cov_file=/REF/examples/prsice2/$DATAPREFIX.cov
+export Eigenvec_file=/REF/examples/prsice2/$DATAPREFIX.eigenvec
+export Pheno_file=/REF/examples/prsice2/$DATAPREFIX.height
+```
+
+Set up working dir
+```
+export PRSICEDIR=PGS_prsice2
+mkdir $PRSICEDIR
+```
+
+Generate .covariate file combining .cov and .eigenvec input files
+```
+export Coviariate_file=$PRSICEDIR/$DATAPREFIX.covariate
+$RSCRIPT generate_covariate.R \
+       $Cov_file \
+       $Eigenvec_file \
+       $Coviariate_file
+```
+
+Run PGS analysis
+```
+$RSCRIPT PRSice.R \
+    --prsice /usr/bin/PRSice_linux \
+    --base $QC_Sumstats_file \
+    --target $QCDIR/$DATAPREFIX.QC \
+    --binary-target F \
+    --pheno $Pheno_file \
+    --cov $Cov_file \
+    --base-maf MAF:0.01 \
+    --base-info INFO:0.8 \
+    --stat OR \
+    --or \
+    --out $PRSICEDIR/$DATAPREFIX
+```
+
+
 ### *PRS-CS
 ### SBayesR
 ### SBayesS
