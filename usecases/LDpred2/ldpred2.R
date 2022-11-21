@@ -205,22 +205,12 @@ cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 if (argLdpredMode == 'inf') {
   cat ('\n### Running LDPRED2 infinitesimal model\n')
   cat('Calculating beta inf\n')
-  beta_inf <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
-  cat('Calculating PGS\n')
-  pred_inf <- big_prodVec(G, beta_inf, ind.row=ind.test, ind.col=df_beta[['_NUM_ID_']])
-  if (length(phenotype) > 1) {
-    correlation <- pcor(pred_inf, phenotype[ind.test], NULL)
-    correlation <- round(correlation, 4)
-    correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
-    cat('Correlation with phenotype in test sample:', correlation, '\n')
-  }
-  cat('Calculating PGS for all individuals\n')
-  pred_all <- big_prodVec(G, beta_inf, ind.col=df_beta[['_NUM_ID_']])
-  obj.bigSNP$fam[,nameScore] <- pred_all
+  beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
   cat('\n### Running LDPRED2 auto model\n')
-  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=30), allow_jump_sign=F, 
+  set.seed(1)
+  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=5), allow_jump_sign=F, 
                                  shrink_corr=0.95, ncores=NCORES)
   cat('Plotting')
   library(ggplot2)
@@ -239,13 +229,21 @@ if (argLdpredMode == 'inf') {
   range <- sapply(multi_auto, function(auto) diff(range(auto$corr_est)))
   # Keep chains that pass the filtering below
   keep <- (range > (0.95 * quantile(range, 0.95)))
-  beta_auto <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
-  cat('Predict in test sample\n')
-  pred_auto <- big_prodVec(G, beta_auto, ind.row=ind.test, ind.col=df_beta[["_NUM_ID_"]])
-  cat('Predict among all\n')
-  pred_all <- big_prodVec(G, beta_auto, ind.col=df_beta[['_NUM_ID_']])
-  obj.bigSNP$fam[,nameScore] <- pred_all
+  beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
 }
+
+cat('Score in test sample\n')
+pred <- big_prodVec(G, beta, ind.row=ind.test, ind.col=df_beta[["_NUM_ID_"]])
+if (length(phenotype) > 1) {
+  correlation <- pcor(pred, phenotype[ind.test], NULL)
+  correlation <- round(correlation, 4)
+  correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
+  cat('Correlation with phenotype in test sample:', correlation, '\n')
+}
+
+cat('Scoring all individuals...')
+pred_all <- big_prodVec(G, beta, ind.col=df_beta[['_NUM_ID_']])
+obj.bigSNP$fam[,nameScore] <- pred_all
 
 cat('\n### Writing fam file with PGS and phenotype\n')
 colsKeep <- c('family.ID', 'sample.ID', nameScore)
