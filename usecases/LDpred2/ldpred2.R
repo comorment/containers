@@ -220,10 +220,24 @@ if (argLdpredMode == 'inf') {
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
   cat('\n### Running LDPRED2 auto model\n')
-  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4,0.2,length.out=5), allow_jump_sign=F, 
+  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=30), allow_jump_sign=F, 
                                  shrink_corr=0.95, ncores=NCORES)
-  cat('Evaluating\n')
+  cat('Plotting')
+  library(ggplot2)
+  auto <- multi_auto[[1]]
+  plt <- plot_grid(
+    qplot(y = auto$path_p_est) + theme_bigstatsr() +
+      geom_hline(yintercept = auto$p_est, col="blue") + 
+      scale_y_log10() + labs(y = "p"),
+    qplot(y = auto$path_h2_est) + theme_bigstatsr() +
+      geom_hline(yintercept=auto$h2_est, col="blue") + 
+      labs(y = "h2"),
+    ncol=1, align="hv"
+  )
+  ggsave(plt, file=paste0(fileOutput, '.png'))
+  cat('Filtering chains\n')
   range <- sapply(multi_auto, function(auto) diff(range(auto$corr_est)))
+  # Keep chains that pass the filtering below
   keep <- (range > (0.95 * quantile(range, 0.95)))
   beta_auto <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
   cat('Predict in test sample\n')
