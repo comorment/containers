@@ -97,8 +97,8 @@ if (!is.na(filePheno)) {
 G <- obj.bigSNP$genotypes
 CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
-y <- obj.bigSNP$fam$Height
-
+phenotype <- NA
+if (!is.na(colPheno)) phenotype <- obj.bigSNP$fam[,colPheno]
 NCORES <- nb_cores()
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
@@ -152,8 +152,8 @@ if (!is.na(fileKeepSNPs)) {
 }
 
 # Testing data. Currently not used in any meaningful way
-set.seed(123)
-ind.val <- sample(nrow(G), 100) # Validation sample
+set.seed(1)
+ind.val <- sample(nrow(G), 350) # Validation sample
 ind.test <- setdiff(rows_along(G), ind.val) # Testing sample
 
 # If the statistic is an OR, convert it into a log-OR
@@ -161,9 +161,9 @@ if (argStatType == "OR") {
   cat('Converting odds-ratio to log scale\n')
   sumstats$beta <- log(sumstats$beta)
 }
+
 # Match SNPs by RSID
 df_beta <- snp_match(sumstats, map, join_by_pos=F)
-
 
 POS2 <- obj.bigSNP$map$genetic.dist
 
@@ -208,8 +208,11 @@ if (argLdpredMode == 'inf') {
   beta_inf <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
   cat('Calculating PGS\n')
   pred_inf <- big_prodVec(G, beta_inf, ind.row=ind.test, ind.col=df_beta[['_NUM_ID_']])
-
-  #print(pcor(pred_inf, y[ind.test], NULL))
+  if (length(phenotype) > 1) {
+    correlation <- pcor(pred_inf, phenotype[ind.test], NULL)
+    correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')')
+    cat('Correlation with phenotype in test sample:', correlation, '\n')
+  }
   cat('Calculating PGS for all individuals\n')
   pred_all <- big_prodVec(G, beta_inf, ind.col=df_beta[['_NUM_ID_']])
   obj.bigSNP$fam[,nameScore] <- pred_all
