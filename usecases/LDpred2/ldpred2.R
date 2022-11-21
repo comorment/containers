@@ -30,7 +30,8 @@ par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for lin
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Provid a column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
-par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3) # NEED TO IMPLEMENT
+par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
+par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
 par <- add_argument(par, "--effective-sample-size", help="Effective sample size, overrides --col-n", nargs=1)
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
@@ -63,9 +64,11 @@ if (!is.na(colPheno) & !is.na(colPhenoFromFam)) stop("Only one of --col-pheno an
 if (!is.na(colPhenoFromFam)) colPheno <- 'affection'
 # Polygenic score
 nameScore <- parsed$name_score
+# Parameters to LDpred
+parWindowSize <- parsed$window_size
+parHyperPLength <- parsed$hyper_p_length
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
-argWindowSize <- parsed$window_size
 argLdpredMode <- parsed$ldpred_mode
 argStatType <- parsed$stat_type
 setSeed <- parsed$set_seed
@@ -184,7 +187,7 @@ for (chr in chromosomes) {
   ind.chr2 <- df_beta$`_NUM_ID_`[ind.chr]
   nMarkers <- length(ind.chr2)
   if (nMarkers > 0) {
-    corr0 <- snp_cor(G, ind.col=ind.chr2, size=argWindowSize/1000,
+    corr0 <- snp_cor(G, ind.col=ind.chr2, size=parWindowSize/1000,
                    infos.pos=POS2[ind.chr2], ncores=NCORES)
     if (is.null(ld)) {
       ld <- Matrix::colSums(corr0^2)
@@ -213,8 +216,8 @@ if (argLdpredMode == 'inf') {
 } else if (argLdpredMode == 'auto') {
   cat('\n### Running LDPRED2 auto model\n')
   if (!is.na(setSeed)) set.seed(setSeed)
-  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=5), allow_jump_sign=F, 
-                                 shrink_corr=0.95, ncores=NCORES)
+  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=parHyperPLength), 
+                                 allow_jump_sign=F, shrink_corr=0.95, ncores=NCORES)
   cat('Plotting')
   library(ggplot2)
   auto <- multi_auto[[1]]
