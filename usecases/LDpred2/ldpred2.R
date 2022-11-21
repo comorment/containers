@@ -199,7 +199,7 @@ for (chr in chromosomes) {
 cat('\n### Running LD score regression\n')
 ldsc <- with(df_beta, snp_ldsc(ld, length(ld), chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
 h2_est <- ldsc[["h2"]]
-cat('SNP heritability estimated to ', h2_est, '\n')
+cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
 # LDPRED2-Inf: Infinitesimal model
 if (argLdpredMode == 'inf') {
@@ -210,7 +210,8 @@ if (argLdpredMode == 'inf') {
   pred_inf <- big_prodVec(G, beta_inf, ind.row=ind.test, ind.col=df_beta[['_NUM_ID_']])
   if (length(phenotype) > 1) {
     correlation <- pcor(pred_inf, phenotype[ind.test], NULL)
-    correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')')
+    correlation <- round(correlation, 4)
+    correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
     cat('Correlation with phenotype in test sample:', correlation, '\n')
   }
   cat('Calculating PGS for all individuals\n')
@@ -218,7 +219,7 @@ if (argLdpredMode == 'inf') {
   obj.bigSNP$fam[,nameScore] <- pred_all
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
-  cat ('Running LDPRED2 auto model\n')
+  cat('\n### Running LDPRED2 auto model\n')
   multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4,0.2,length.out=5), allow_jump_sign=F, 
                                  shrink_corr=0.95, ncores=NCORES)
   cat('Evaluating\n')
@@ -229,7 +230,7 @@ if (argLdpredMode == 'inf') {
   pred_auto <- big_prodVec(G, beta_auto, ind.row=ind.test, ind.col=df_beta[["_NUM_ID_"]])
   cat('Predict among all\n')
   pred_all <- big_prodVec(G, beta_auto, ind.col=df_beta[['_NUM_ID_']])
-  obj.bigSNP$fam$score <- pred_all
+  obj.bigSNP$fam[,nameScore] <- pred_all
 }
 
 cat('\n### Writing fam file with PGS and phenotype\n')
@@ -238,11 +239,10 @@ if (!is.na(colPheno)) colsKeep <- c(colsKeep, colPheno)
 outputData <- obj.bigSNP$fam[,colsKeep]
 # Rename to stick with plink naming
 colsKeep[1:2] <- c('FID', 'IID')
-#colnames(outputData) <- c('FID', 'IID', nameScore)
-colnames(outputData) < colsKeep
+colnames(outputData) <- colsKeep
 write.table(outputData, file=fileOutput, row.names = F, quote=F)
 # Drop temporary file
-fileRemoved <- file.remove(paste0(temp, '.sbk')) # SHOULD SILENCE THIS OUTPUT
+fileRemoved <- file.remove(paste0(temp, '.sbk'))
 
 ## Evaluation/diagnostics
 
