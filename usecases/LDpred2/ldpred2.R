@@ -29,11 +29,13 @@ par <- add_argument(par, "--col-n", help="Effective sample size. Override with -
 par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA")
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Provid a column name for the created score", nargs=1, default='score')
-# Parameters
-par <- add_argument(par, "--effective-sample-size", help="Effective sample size, overrides --col-n", nargs=1)
+# Parameters to LDpred
 par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3) # NEED TO IMPLEMENT
+# Others
+par <- add_argument(par, "--effective-sample-size", help="Effective sample size, overrides --col-n", nargs=1)
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores()-1)
+par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 
 parsed <- parse_args(par)
 ### Mandatory
@@ -66,6 +68,7 @@ argEffectiveSampleSize <- parsed$effective_sample_size
 argWindowSize <- parsed$window_size
 argLdpredMode <- parsed$ldpred_mode
 argStatType <- parsed$stat_type
+setSeed <- parsed$set_seed
 
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
@@ -152,7 +155,7 @@ if (!is.na(fileKeepSNPs)) {
 }
 
 # Testing data. Currently not used in any meaningful way
-set.seed(1)
+if (!is.na(setSeed)) set.seed(setSeed)
 ind.val <- sample(nrow(G), 350) # Validation sample
 ind.test <- setdiff(rows_along(G), ind.val) # Testing sample
 
@@ -209,7 +212,7 @@ if (argLdpredMode == 'inf') {
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
   cat('\n### Running LDPRED2 auto model\n')
-  set.seed(1)
+  if (!is.na(setSeed)) set.seed(setSeed)
   multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=5), allow_jump_sign=F, 
                                  shrink_corr=0.95, ncores=NCORES)
   cat('Plotting')
