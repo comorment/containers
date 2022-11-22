@@ -40,4 +40,12 @@ RUN Rscript github.R
 COPY /scripts/R/misc.R .
 RUN Rscript misc.R
 
+# PRSice-2.
+# The container running PRSice.R script with "--prsice PRSice_linux" 
+# argument must also contain the PRSice_linux binary)
+WORKDIR /tmp/prsice
+COPY /scripts/install_prsice.sh /tmp/prsice/
+RUN bash /tmp/prsice/install_prsice.sh && \
+    rm -rf /tmp/prsice
+
 WORKDIR /tools

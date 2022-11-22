@@ -36,5 +36,4 @@ usecases/LDpred2/test.score.*
 
 # PGS demo output 
 pgs/QC_data
-pgs/PGS_plink
-pgs/PGS_prsice2
+pgs/PGS_*

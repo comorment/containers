@@ -161,14 +161,88 @@ $PLINK --bfile $INPUTDATAPATH/$DATAPREFIX \
 ## PGS
 
 export fileGeno=/REF/examples/prsice2/EUR.bed
-export fileImputedGeno=EUR.imputed.bed
+# export fileImputedGeno=EUR.imputed.bed
+epxort file
 export filePheno=/REF/examples/prsice2/EUR.height
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
-export fileOut=test.score
 
-### *LDpred2-inf
-### *LDpred2-auto
-### LDpred2-grid
+
+### LDpred2
+
+The LDPred2 implementation has a few options, ``inf``, ``auto``, and ``grid``, 
+but shares the same input files(?)
+
+Required files:
+Height.QC.gz	The post-QCed summary statistic
+EUR.QC.bed	The genotype file after performing some basic filtering
+EUR.QC.bim	This file contains the SNPs that passed the basic filtering
+EUR.QC.fam	This file contains the samples that passed the basic filtering
+EUR.height	This file contains the phenotype of the samples
+EUR.cov	This file contains the covariates of the samples
+EUR.eigenvec	This file contains the PCs of the samples
+
+#### LDpred2-inf
+
+Infinitesimal model.
+
+```
+export LDPRED2DIR='PGS_ldpred2_inf'
+mkdir $LDPRED2DIR
+```
+
+Test score output file
+```
+export fileOut=$LDPRED2DIR/test.score
+```
+
+Input files
+```
+export QC_Sumstats_file=$QCDIR/Height.QC.gz
+export QC_Bed_file=$QCDIR/$DATAPREFIX.QC.bed
+# export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim  # not used
+# export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam  # not used
+# export QC_Pheno_file=$QCDIR/Heigh.QC.gz  # not used
+# export Cov_file=/REF/examples/prsice2/$DATAPREFIX.cov  # not used
+
+# Generate PGS using LDPRED2-inf
+$RSCRIPT ldpred2.R \
+--ldpred-mode inf \
+--file-keep-snps $fileKeepSNPS \
+--file-pheno $filePheno \
+--col-stat OR --col-stat-se SE \
+--stat-type OR \
+$QC_Bed_file $QC_Sumstats_file $fileOut
+```
+
+#### LDpred2-auto
+
+Automatic model
+
+```
+export LDPRED2DIR='PGS_ldpred2_auto'
+mkdir $LDPRED2DIR
+```
+
+Test score output file
+```
+export fileOut=$LDPRED2DIR/test.score
+```
+
+```
+export QC_Sumstats_file=$QCDIR/Height.QC.gz
+export QC_Bed_file=$QCDIR/$DATAPREFIX.QC.bed
+
+# Generate PGS using LDPRED2-inf
+$RSCRIPT ldpred2.R \
+--ldpred-mode auto \
+--file-keep-snps $fileKeepSNPS \
+--file-pheno $filePheno \
+--col-stat OR --col-stat-se SE \
+--stat-type OR \
+$QC_Bed_file $QC_Sumstats_file $fileOut
+```
+
+### *LDpred2-grid
 ### *MegaPRS
 ### *Plink
 
@@ -189,7 +263,7 @@ EUR.cov:	This file contains the covariates of the samples
 environment variables
 ```
 export QC_Sumstats_file=$QCDIR/Height.QC.gz
-export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.bed
+export QC_Bed_file=$QCDIR/$DATAPREFIX.QC.bed
 export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim
 export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam
 export QC_Pheno_file=$QCDIR/$DATAPREFIX.height
@@ -293,9 +367,9 @@ export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.bed
 export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim
 export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam
 # export QC_Pheno_file=$QCDIR/$DATAPREFIX.height
+export Pheno_file=/REF/examples/prsice2/$DATAPREFIX.height
 export Cov_file=/REF/examples/prsice2/$DATAPREFIX.cov
 export Eigenvec_file=/REF/examples/prsice2/$DATAPREFIX.eigenvec
-export Pheno_file=/REF/examples/prsice2/$DATAPREFIX.height
 ```
 
 Set up working dir
