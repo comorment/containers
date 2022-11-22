@@ -125,7 +125,7 @@ colnames(sumstats) <- colSumstats
 
 # Add effective sample size
 if (!is.na(argEffectiveSampleSize)) {
-  sustats$n_eff <- argEffectiveSampleSize
+  sumstats$n_eff <- argEffectiveSampleSize
 } else {
   colN <- tolower(colN)
   if (!colN %in% colSumstats) {
