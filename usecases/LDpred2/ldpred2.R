@@ -1,15 +1,14 @@
 # Calculate polygenic scores using ldpred2
 # this script is an adaptation of the demo script available at the bigsnpr homepage
-library(bigsnpr)
+library(bigsnpr, quietly = T)
 library(tools)
 library(argparser, quietly=T)
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
-par <- add_argument(par, "file-geno", help="Input file with genotypes")
+par <- add_argument(par, "file-geno", help="Input .rds (bigSNPR) file with genotypes")
 par <- add_argument(par, "file-sumstats", help="Input file with GWAS summary statistics")
 par <- add_argument(par, "file-output", help="Output file with calculated PGS")
 # Optional files
-par <- add_argument(par, "--file-backing", help="Filename of intermediate bigsnpr file, if file-geno is not rds this argument specifies the output name of this file")
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
 par <- add_argument(par, "--file-gene-corr", help="Filename with LD and genetic correlation, if omitted it will be estimated")
@@ -44,7 +43,7 @@ fileGeno <- parsed$file_geno
 fileSumstats <- parsed$file_sumstats
 fileOutput <- parsed$file_output
 ### Optional
-fileBacking <- parsed$file_backing
+#fileBacking <- parsed$file_backing
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
 # Sumstats file
@@ -78,21 +77,8 @@ setSeed <- parsed$set_seed
 colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
 colSumstatToGeno <- c("chr",  "rsid",   "bp",  "a0",  "a1",  "beta",  "beta_se")
 
-library(tools) # Used for file utilities
-# This creates a new genotype object in the specified directory
-if (is.na(fileBacking)) fileBacking <- basename(file_path_sans_ext(fileGeno))
-# The RDS file is used to load genotype data
-fileBackingRDS <- paste0(fileBacking, '.rds')
-# Convert the input file to the bigsnpr format
-if (!file.exists(fileBackingRDS)) {
-  cat('Creating backingfile:', fileBacking, "\n")
-  snp_readBed(fileGeno, backingfile=fileBacking)
-} else {
-  cat('Using existing backingfile:', fileBackingRDS, "\n")
-}
-
-cat('Loading backingfile\n')
-obj.bigSNP <- snp_attach(fileBackingRDS)
+cat('Loading backingfile:', fileGeno ,'\n')
+obj.bigSNP <- snp_attach(fileGeno)
 if (!is.na(filePheno)) {
   cat('Loading external phenotype in file', filePheno, '\n')
   dataPheno <- bigreadr::fread2(filePheno)
