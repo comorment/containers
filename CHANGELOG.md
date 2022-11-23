@@ -20,6 +20,26 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- additions goes here
+
+### Updated
+
+- Updates goes here
+
+### Fixed
+
+- Fixes goes here
+
+### Removed
+
+- Removals goes here
+
+## [1.0.1] - 2022-11-23
+
+Maintenance release with the following main changes since version 1.0.0: 
+
+### Added
+
 - add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 - add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
 - add basic GitHub actions from https://github.com/precimed/container_template.git
