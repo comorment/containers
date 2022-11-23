@@ -12,6 +12,9 @@ par <- add_argument(par, "file-output", help="Output file with calculated PGS")
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
 par <- add_argument(par, "--file-gene-corr", help="Filename with LD and genetic correlation, if omitted it will be estimated")
+# Directories
+par <- add_argument(par, "--dir-genetic-maps", default=tempdir(), 
+                    help="Directory containing 1000 Genomes genetic maps. Either a directory to store files to be downloaded, or a directory contaning the unpacked files.")
 # Phenotype
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
@@ -29,6 +32,7 @@ par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for lin
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Provid a column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
+par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
 par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
@@ -64,6 +68,7 @@ if (!is.na(colPhenoFromFam)) colPheno <- 'affection'
 # Polygenic score
 nameScore <- parsed$name_score
 # Parameters to LDpred
+parGeneticMapsType <- parsed$genetic_maps_type
 parWindowSize <- parsed$window_size
 parHyperPLength <- parsed$hyper_p_length
 # Others
@@ -122,6 +127,8 @@ if (sum(is.na(colReplacements)) > 0) {
 # Replace columns in sumstat data so the match bigSNP
 colSumstats[colReplacements] <- colSumstatToGeno
 colnames(sumstats) <- colSumstats
+sumstats$a0 <- toupper(sumstats$a0)
+sumstats$a1 <- toupper(sumstats$a1)
 
 # Add effective sample size
 if (!is.na(argEffectiveSampleSize)) {
@@ -157,7 +164,9 @@ if (argStatType == "OR") {
 # Match SNPs by RSID
 df_beta <- snp_match(sumstats, map, join_by_pos=F)
 
-POS2 <- obj.bigSNP$map$genetic.dist
+#POS2 <- obj.bigSNP$map$genetic.dist
+cat("Converting from phsyical position to genetic position\n")
+POS2 <- snp_asGeneticPos(CHR, POS, dir=dirGeneticMaps, ncores=NCORES, type=parGeneticMapsType)
 
 cat('\n### Calculating SNP correlation/LD using', NCORES, 'cores\n')
 temp <- tempfile(tmpdir='temp')
