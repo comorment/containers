@@ -1,0 +1,15 @@
+version: 2
+
+sphinx:
+  configuration: sphinx-docs/source/conf.py
+
+formats: all
+
+build:
+  image: latest
+
+conda:
+  environment: sphinx-docs/source/environment.yml
+
+python:
+    version: "3.8"
