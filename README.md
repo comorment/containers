@@ -1,6 +1,6 @@
 # CoMorMent-containers
 
-The goal of the [CoMorMent](https://www.comorment.uio.no) containers repository at <https://github.com/comorment/containers> is to distribute tools for GWAS and post-GWAS analysis in CoMorMent project (<http://comorment.eu/>).
+The goal of the [CoMorMent](https://www.comorment.uio.no) containers repository at <https://github.com/comorment/containers> is to distribute tools for GWAS and post-GWAS analysis in CoMorMent project ([comorment.eu](https://comorment.eu)).
 
 Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [Getting started](#getting-started) section below).
 

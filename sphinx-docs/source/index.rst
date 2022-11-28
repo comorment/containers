@@ -3,8 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CoMorMent=container's documentation!
-===============================================
+Welcome to the CoMorMent-container's documentation!
+===================================================
+
+This is the online documentation for the CoMorMent-containers project, 
+hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::
    :maxdepth: 2
