@@ -38,7 +38,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [1.1] - 2022-11-28
 
-Maintenance/feautre release with the following main changes since version 1.0.0: 
+Maintenance/feature release with the following main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0): 
 
 ### Added
 
