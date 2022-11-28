@@ -363,9 +363,9 @@ EUR.eigenvec	This file contains the principal components (PCs) of the samples
 Define environment variables
 ```
 export QC_Sumstats_file=$QCDIR/Height.QC.gz
-export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.bed
-export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim
-export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam
+# export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.bed
+# export QC_Bim_file=$QCDIR/$DATAPREFIX.QC.bim
+# export QC_Fam_file=$QCDIR/$DATAPREFIX.QC.fam
 # export QC_Pheno_file=$QCDIR/$DATAPREFIX.height
 export Pheno_file=/REF/examples/prsice2/$DATAPREFIX.height
 export Cov_file=/REF/examples/prsice2/$DATAPREFIX.cov
@@ -384,7 +384,8 @@ export Coviariate_file=$PRSICEDIR/$DATAPREFIX.covariate
 $RSCRIPT generate_covariate.R \
        $Cov_file \
        $Eigenvec_file \
-       $Coviariate_file
+       $Coviariate_file \
+       6  # number of PCs
 ```
 
 Run PGS analysis
@@ -395,7 +396,7 @@ $RSCRIPT PRSice.R \
     --target $QCDIR/$DATAPREFIX.QC \
     --binary-target F \
     --pheno $Pheno_file \
-    --cov $Cov_file \
+    --cov $Coviariate_file \
     --base-maf MAF:0.01 \
     --base-info INFO:0.8 \
     --stat OR \
