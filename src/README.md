@@ -1,35 +1,39 @@
 ## Singularity containers for GWAS and post-GWAS analysis
+
 This repository is used to develop and document singularity containers with various software and analytical tools for GWAS and post-GWAS analysis.
 
 ## Getting started
-For new users we recommend to go over introductory instructions in [docs/hello.md](docs/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
 
-If you would like to contribute to developing these containers, please see  [docs/contributing.md](docs/contributing.md).
+For new users we recommend to go over introductory instructions in [docs/hello.md](https://github.com/comorment/containers/blob/main/docs/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
 
-For a tutorial on GWAS with synthetic data, see [docs/gwas.md](docs/gwas.md).
+If you would like to contribute to developing these containers, please see  [docs/contributing.md](https://github.com/comorment/containers/blob/main/CONTRIBUTING.md).
 
-## Prerequisites (to running tutorials):
+For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.com/comorment/containers/blob/main/docs/gwas.md).
+
+## Prerequisites (to running tutorials)
+
 * download containers shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
 * download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
   and create an environmental variable ``COMORMENT_REF`` pointing to the folder containing extracted ``comorment_ref.tar.gz`` data.
-  If you want to see the content of ``comorment_ref.tar.gz`` without downloading and extracting, 
+  If you want to see the content of ``comorment_ref.tar.gz`` without downloading and extracting,
   you may take a quick look [here](https://github.com/norment/comorment_data). This is a private repository, and you need to get access.
   Please contact Oleksandr and Bayram by e-mail and send us your github user name. If you don't have it, create one [here](http://github.com/join).
 * create an empty folder called ``data``, for storing the results and intermediate files produced by running containers.
   (most instructinos mount this folder like this: ``-B data:/data``).
 
-## Description of available containers:
+## Description of available containers
+
 * ``hello`` - a hello-world introductory container
 * ``gwas`` - basic tools for gwas (``plink``, ``plink2``, ``prsice``, ``BoltLMM``)
 * ``python3`` - python3 packages distributed via [Miniforge](https://github.com/conda-forge/miniforge). This package also contains jupyter notebook.
 * ``R`` - container for R analysis (installed by native R package manager)
 * ``SAIGE`` - container for SAIGE in R
-All containers (except ``SAIGE``) have a shared layer of common utilities (``wget``, ``gzip``, etc). 
+All containers (except ``SAIGE``) have a shared layer of common utilities (``wget``, ``gzip``, etc).
 
 ## Software versions
 
-  Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container. 
-  Please keep up to date (and update the main `<containers>/README.md` when pushing new container builds):
+  Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
+  Please keep up to date (and update the main [README.md](https://github.com/comorment/containers/blob/main/README.md) when pushing new container builds):
   
   | container         | OS/tool             | version                                   | license
   | ----------------- | ------------------- | ----------------------------------------- | -------------
@@ -67,10 +71,10 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
   | r.sif             | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
   | r.sif             | R                   | 4.0.3 (2020-10-10) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | r.sif             | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer@142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
-  | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA@72e962dae19dc07251244f6c33275ada189c2126)  | -
-  | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM@bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR@c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
+  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
+  | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
+  | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR/commit/c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
   | r.sif             | GSMR                | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
   | r.sif             | snpStats            | v1.40.0                                   | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | saige.sif         | ubuntu              | 16.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
@@ -78,7 +82,7 @@ All containers (except ``SAIGE``) have a shared layer of common utilities (``wge
 
 ## Feedback
 
-If you face any issues, or if you need additional software, please let us know by creating an [issue](https://github.com/comorment/containers/issues/new). 
+If you face any issues, or if you need additional software, please let us know by creating an [issue](https://github.com/comorment/containers/issues/new).
 
 ## Note about NREC machine
 
@@ -96,60 +100,69 @@ Filesystem                         Size  Used Avail Use% Mounted on
 
 Both docker and singularity were configured to avoid placing cached files into local file system.
 For docker this involves changing ``/etc/docker/daemon.json`` file by adding this:
+
 ```
 { 
     "data-root": "/nrec/projects/docker_root"
 }
 ```
-(as described https://tienbm90.medium.com/how-to-change-docker-root-data-directory-89a39be1a70b ; you may use ``docker info`` command to check the data-root)
 
-For singularity, the configuration is described here https://sylabs.io/guides/3.6/user-guide/build_env.html
+(as described <https://tienbm90.medium.com/how-to-change-docker-root-data-directory-89a39be1a70b> ; you may use ``docker info`` command to check the data-root)
+
+For singularity, the configuration is described here <https://sylabs.io/guides/3.6/user-guide/build_env.html>
 and it was done for the root user by adding  the following line into /etc/environment
+
 ```
 export SINGULARITY_CACHEDIR="/nrec/projects/singularity_cache"
 ```
 
-Common software, such as git-lfs, is installed to /nrec/projects/bin. 
+Common software, such as git-lfs, is installed to /nrec/projects/bin.
 Therefore it's reasonable for all users of the NREC comorment instance
 to add this folder to the path by changing ``~/.bashrc`` and ``~/.bash_profile``.
+
 ```
 export PATH="/nrec/projects/bin:$PATH"
 ```
 
 A cloned version of comorment repositories is available here:
+
 ```
 /nrec/projects/github/comorment/containers
 /nrec/projects/github/comorment/reference
 ```
+
 Feel free to change these folders and use git pull / git push. TBD: currently the folder is cloned as 'ofrei' user - I'm not sure if it will actually work to pull & push. But let's figure this out.
 
 ## Testing container builds
 
-Some basic checks for the functionality of the different container builds are provided in `<containers>/tests/`, implemented in Python. 
-The tests can be executed using the [Pytest](https://docs.pytest.org) testing framework. 
+Some basic checks for the functionality of the different container builds are provided in ``<containers>/tests/``, implemented in Python.
+The tests can be executed using the [Pytest](https://docs.pytest.org) testing framework.
 
 To install Pytest in the current Python environment, issue:
+
 ```
 pip install pytest  # --user optional
 ```
 
 New virtual environment using [conda](https://docs.conda.io/en/latest/index.html):
+
 ```
 conda create -n pytest python=3 pytest -y  # creates env "pytest"
 conda activate pytest  # activates env "pytest"
 ```
 
 Then, all checks can be executed by issuing:
+
 ```
 cd <containers>
 py.test -v tests  # with verbose output
 ```
 
-Checks for individual containers (e.g., `gwas.sif`) can be executed by issuing:
+Checks for individual containers (e.g., ``gwas.sif``) can be executed by issuing:
+
 ```
 py.test -v tests/test_<container-prefix>.py
 ```
 
-Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in `<containers>/singularity/`, 
+Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in ``<containers>/singularity/``,
 not only git LFS pointer files.
-

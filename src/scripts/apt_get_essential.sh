@@ -9,7 +9,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    automake=1:1.16.1-4ubuntu6 \
    build-essential=12.8ubuntu1 \
    bzip2=1.0.8-2 \
-   cmake=3.16.3-1ubuntu1 \
+   cmake=3.16.3-1ubuntu1.20.04.1 \
    curl=7.68.0-1ubuntu2.14 \
    dos2unix=7.4.0-2 \
    gfortran=4:9.3.0-1ubuntu2 \
