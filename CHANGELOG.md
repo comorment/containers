@@ -22,6 +22,28 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- additions goes here
+
+### Updated
+
+- Updates goes here
+
+### Fixed
+
+- Fixes goes here
+
+### Removed
+
+- Removals goes here
+
+## [1.1] - 2022-11-29
+
+Maintenance/feature release with the following main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0): 
+
+### Added
+
+- add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
+- add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 - add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
 - add basic GitHub actions from https://github.com/precimed/container_template.git
 - add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
@@ -45,6 +67,15 @@ If MD5 sum is not listed for a certain release then it means that the container 
 - add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
 
 ### Updated
+
+* rebuilt the following containers following version pinning in Dockerfiles, install scripts, etc. (see above additions):
+  ```
+  bb7a8e0b977e29e03067d75d19803913  singularity/gwas.sif
+  11ac9e8fe69df07d650bd5e1e7cdeee5  singularity/hello.sif
+  c78d57397471ee802d37837ca5f8b797  singularity/python3.sif
+  c87c69d2fbab4a317f9d6bb725c76150  singularity/r.sif
+  a3f1d8411e1e3cf8670551b7f334a58d  singularity/saige.sif
+  ```
 
 * update the following containers:
 
