@@ -34,7 +34,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-- Removals goes here
+- ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime 
 
 ## [1.1] - 2022-11-29
 
