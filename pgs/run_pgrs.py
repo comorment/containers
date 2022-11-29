@@ -20,16 +20,17 @@ if __name__ == '__main__':
     # Executables in containers
     SIF = os.environ['SIF']
     PWD = os.getcwd()
-    os.environ.update(dict(
-        BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",
-        GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",
-        GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",
-        AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",
-        RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",
-        PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",
-        PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",
+    os.environ.update(
+        dict(
+            BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",
+            GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",
+            GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",
+            AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",
+            RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",
+            PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",
+            PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",
         ))
-    
+
     # QC
     os.environ.update({
         'QCDIR': 'QC_data',
@@ -41,7 +42,7 @@ if __name__ == '__main__':
         Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
         Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
         Pheno_file=f'/REF/examples/prsice2/EUR.height',
-        Input_dir=os.environ['QCDIR'], 
+        Input_dir=os.environ['QCDIR'],
         Data_prefix='EUR',
         Output_dir='PGS_prsice2',
         nPCs=6,
