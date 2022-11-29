@@ -50,6 +50,7 @@ fileOutput <- parsed$file_output
 #fileBacking <- parsed$file_backing
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
+dirGeneticMaps <- parsed$dir_genetic_maps
 # Sumstats file
 colChr <- parsed$col_chr
 colSNPID <- parsed$col_snp_id
@@ -150,11 +151,6 @@ if (!is.na(fileKeepSNPs)) {
   cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
 }
 
-# Testing data. Currently not used in any meaningful way
-if (!is.na(setSeed)) set.seed(setSeed)
-ind.val <- sample(nrow(G), 350) # Validation sample
-ind.test <- setdiff(rows_along(G), ind.val) # Testing sample
-
 # If the statistic is an OR, convert it into a log-OR
 if (argStatType == "OR") {
   cat('Converting odds-ratio to log scale\n')
@@ -164,17 +160,19 @@ if (argStatType == "OR") {
 # Match SNPs by RSID
 df_beta <- snp_match(sumstats, map, join_by_pos=F)
 
-#POS2 <- obj.bigSNP$map$genetic.dist
-cat("Converting from phsyical position to genetic position\n")
-POS2 <- snp_asGeneticPos(CHR, POS, dir=dirGeneticMaps, ncores=NCORES, type=parGeneticMapsType)
-
 cat('\n### Calculating SNP correlation/LD using', NCORES, 'cores\n')
+cat("Converting from physical position to genetic position\n")
+# Genetic maps (these are only available for chromosomes 1 to 22)
+chromosomeSet <- 1:22
+chromosomes <- unique(CHR)
+if (23 %in% chromosomes) cat('NOTE: Omitting chromosome 23 in LD estimation\n')
+validCrh <- CHR %in% chromosomeSet
+POS2 <- snp_asGeneticPos(CHR[validCrh], POS[validCrh], dir=dirGeneticMaps, ncores=NCORES, type=parGeneticMapsType)
 temp <- tempfile(tmpdir='temp')
 cat('Using file', temp, 'to store matrixes\n')
-chromosomes <- unique(CHR)
 ld <- c()
 cat('Chromosome: ')
-for (chr in chromosomes) {
+for (chr in chromosomeSet) {
   cat(chr, '...', sep='')
   # indices in df_beta
   ind.chr <- which(df_beta$chr == chr)
@@ -202,18 +200,19 @@ ldsc <- with(df_beta, snp_ldsc(ld, length(ld), chi2=(beta/beta_se)^2, sample_siz
 h2_est <- ldsc[["h2"]]
 cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
+cat('\n### Starting polygenic scoring\n')
 # LDPRED2-Inf: Infinitesimal model
 if (argLdpredMode == 'inf') {
-  cat ('\n### Running LDPRED2 infinitesimal model\n')
+  cat ('Running LDPRED2 infinitesimal model\n')
   cat('Calculating beta inf\n')
   beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
-  cat('\n### Running LDPRED2 auto model\n')
+  cat('Running LDPRED2 auto model\n')
   if (!is.na(setSeed)) set.seed(setSeed)
   multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=parHyperPLength), 
                                  allow_jump_sign=F, shrink_corr=0.95, ncores=NCORES)
-  cat('Plotting')
+  cat('Plotting diagnostics: ', fileOutput, '.png\n', sep='')
   library(ggplot2)
   auto <- multi_auto[[1]]
   plt <- plot_grid(
@@ -233,18 +232,22 @@ if (argLdpredMode == 'inf') {
   beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
 }
 
-cat('Score in test sample\n')
-pred <- big_prodVec(G, beta, ind.row=ind.test, ind.col=df_beta[["_NUM_ID_"]])
-if (length(phenotype) > 1) {
-  correlation <- pcor(pred, phenotype[ind.test], NULL)
-  correlation <- round(correlation, 4)
-  correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
-  cat('Correlation with phenotype in test sample:', correlation, '\n')
-}
-
 cat('Scoring all individuals...')
+# Count missingness over individuals for each SNP
+nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
+nMissingGenotypes <- sum(nMissingGenotypes > 0)
+if (nMissingGenotypes > 0) {
+  warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by random.\n')
+  G <- snp_fastImputeSimple(G, method='random',ncores = NCORES)
+}
 pred_all <- big_prodVec(G, beta, ind.col=df_beta[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
+if (length(phenotype) > 1) {
+  correlation <- pcor(pred_all, phenotype[ind.test], NULL)
+  correlation <- round(correlation, 4)
+  correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
+  cat('Correlation with phenotype:', correlation, '\n')
+}
 
 cat('\n### Writing fam file with PGS and phenotype\n')
 colsKeep <- c('family.ID', 'sample.ID', nameScore)
