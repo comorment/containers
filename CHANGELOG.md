@@ -36,6 +36,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 - MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
   MAGMA reference files are also moved to this repository.
+- enigma-cnv.sif and enigma-cnv.sif is moved to https://github.com/comorment/iPsychCNV
+  enigma-cnv.sif is also available here: in https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers
+- tryggve_query.sif  is moved to https://github.com/comorment/Tryggve_psych
 - ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime. 
   pleioFDR reference files are also moved to this repository.
 
