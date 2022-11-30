@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Note that CoMorMent containers are organized using several GitHub repositories:
 
 * <https://github.com/comorment/containers> - .sif files, public reference data, documentation, common scripts
-* <https://github.com/comorment/gwas> - source code (Dockerfile, etc)
 * <https://github.com/comorment/reference> - private reference data with access restricted to CoMorMent collaborator
 
 All of the above repositories are covered by this CHANGELOG. They will have the same version tags on github.
@@ -34,13 +33,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-- MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
-  MAGMA reference files are also moved to this repository.
-- enigma-cnv.sif and enigma-cnv.sif is moved to https://github.com/comorment/iPsychCNV
-  enigma-cnv.sif is also available here: in https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers
-- tryggve_query.sif  is moved to https://github.com/comorment/Tryggve_psych
-- ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime. 
-  pleioFDR reference files are also moved to this repository.
+- removals goes here
 
 ## [1.1] - 2022-11-29
 
@@ -160,6 +153,15 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 * ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
 * remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
 * remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (<https://github.com/comorment/mixer>). This is also where you will find MiXeR's use-cases.
+* MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
+  MAGMA reference files are also moved to this repository.
+* enigma-cnv.sif and enigma-cnv.sif is moved to https://github.com/comorment/iPsychCNV
+  enigma-cnv.sif is also available here: in https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers
+* tryggve_query.sif  is moved to https://github.com/comorment/Tryggve_psych
+* ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime.
+  pleioFDR reference files are also moved to this repository.
+
+
 
 ## [1.0.0] - 2020-10-20
 
