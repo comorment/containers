@@ -14,12 +14,12 @@ apt-get update && \
 pip3 install --no-cache-dir cget==0.2.0
 
 # install Minimac4
-git clone --depth 1 -b v4.1.0 https://github.com/statgen/Minimac4.git && \
-cd Minimac4 && \
-cget install -f ./requirements.txt && \
-mkdir build && cd build && \
-cmake -DCMAKE_TOOLCHAIN_FILE=../cget/cget/cget.cmake .. && \
-make && \
+git clone --depth 1 -b v4.1.0 https://github.com/statgen/Minimac4.git
+cd Minimac4
+cget install -f ./requirements.txt
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cget/cget/cget.cmake ..
+make -j4
 cp minimac4 /bin
 
 # remove cget, python-pip etc. used to build Minimac4

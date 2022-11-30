@@ -36,6 +36,35 @@ if __name__ == '__main__':
         'QCDIR': 'QC_data',
     })
 
+    # Plink
+    plink = pgrs.PGS_Plink(
+        Cov_file='/REF/examples/prsice2/EUR.cov',
+        Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
+        Pheno_file=f'/REF/examples/prsice2/EUR.height',
+        Input_dir=os.environ['QCDIR'],
+        Data_prefix='EUR',
+        Output_dir='PGS_plink',
+    )
+    # run preprocessing steps for plink
+    for call in plink.get_str(mode='preprocessing'):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True)
+        assert proc.returncode == 0    
+
+    # run basic plink PGS
+    for call in plink.get_str(mode='basic'):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
+
+    # run plink PGS with population stratification
+    for call in plink.get_str(mode='stratification'):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
+
+    # raise Exception
+
     # PRSice-2
     prsice2 = pgrs.PGS_PRSice2(
         Cov_file='/REF/examples/prsice2/EUR.cov',
@@ -50,10 +79,8 @@ if __name__ == '__main__':
         INFO=0.8
     )
 
-    print(prsice2.get_str())
-
     for call in prsice2.get_str():
         print(f'evaluating: {call}')
         # os.system(cmd)
-        proc = subprocess.run(call.split(' '))
+        proc = subprocess.run(call, shell=True)
         assert proc.returncode == 0
