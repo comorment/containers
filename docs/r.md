@@ -19,7 +19,3 @@ singularity shell --home $PWD:/home $SIF/r.sif
 ```
 and then follow the official tutorial https://cnsgenomics.com/software/gsmr/ . 
 Note that ``gcta64`` tool is also include in ``r.sif`` container, as the tutorial depends on it.
-
-For LAVA, the example data is  (``https://github.com/josefin-werme/LAVA/tree/main/vignettes``) is availabel within ``$COMORMENT/containers/reference/example/lava`` folder. The folder also has a README file explaining how to trigger this analysis.
-The ``ldblock`` tool (https://github.com/cadeleeuw/lava-partitioning) is also included in ``r.sif`` container.
-
