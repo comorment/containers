@@ -1,9 +1,8 @@
 # Calculate polygenic scores using ldpred2
 # this script is an adaptation of the demo script available at the bigsnpr homepage
 library(bigsnpr, quietly = T)
-#options("bigstatsr.ncores.max")
-#nb_cores()
 options(bigstatsr.check.parallel.blas = FALSE)
+options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
 par <- arg_parser('Calculate polygenic scores using ldpred2')
@@ -21,39 +20,47 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
 # Phenotype
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
-# Sumstats file. The defaults follow PRSICE2.
-par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR")
-par <- add_argument(par, "--col-snp-id", help="SNP ID (RSID) column", default="SNP")
-par <- add_argument(par, "--col-A1", help="Effective allele column", default="A1")
-par <- add_argument(par, "--col-A2", help="Noneffective allele column", default="A2")
-par <- add_argument(par, "--col-bp", help="SNP position column", default="BP")
-par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA")
-par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="BETA_SE")
-par <- add_argument(par, "--col-pvalue", help="P-value column", default="P")
-par <- add_argument(par, "--col-n", help="Effective sample size. Override with --sample-size", default="N")
-par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA")
+# Genotype
+par <- add_argument(par, "--geno-impute", help="Imputation method for missing genotypes (preimpute genotypes to avoid warning).", 
+                    nargs=1, default="mean0")
+# Sumstats file.
+par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR", nargs=1)
+par <- add_argument(par, "--col-snp-id", help="SNP ID (RSID) column", default="SNP", nargs=1)
+par <- add_argument(par, "--col-A1", help="Effective allele column", default="A1", nargs=1)
+par <- add_argument(par, "--col-A2", help="Noneffective allele column", default="A2", nargs=1)
+par <- add_argument(par, "--col-bp", help="SNP position column", default="BP", nargs=1)
+par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA", nargs=1)
+par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="BETA_SE", nargs=1)
+par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nargs=1)
+par <- add_argument(par, "--col-n", help="Effective sample size. Override with --sample-size", default="N", nargs=1)
+par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA", nargs=1)
+par <- add_argument(par, "--effective-sample-size", help="Effective sample size, if unavailable in sumstats (--col-n)", nargs=1)
 # Polygenic score
-par <- add_argument(par, "--name-score", help="Provid a column name for the created score", nargs=1, default='score')
+par <- add_argument(par, "--name-score", help="Set column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
 par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
-par <- add_argument(par, "--effective-sample-size", help="Effective sample size, overrides --col-n", nargs=1)
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores()-1)
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 
 parsed <- parse_args(par)
+
 ### Mandatory
 fileGeno <- parsed$file_geno
 fileSumstats <- parsed$file_sumstats
 fileOutput <- parsed$file_output
 ### Optional
-#fileBacking <- parsed$file_backing
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
+### Directories
 dirGeneticMaps <- parsed$dir_genetic_maps
+### Genotype
+genoImpute <- parsed$geno_impute
+genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
+if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
 # Sumstats file
 colChr <- parsed$col_chr
 colSNPID <- parsed$col_snp_id
@@ -78,6 +85,8 @@ parHyperPLength <- parsed$hyper_p_length
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
 argLdpredMode <- parsed$ldpred_mode
+validModes <- c('inf', 'auto')
+if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", paste0(validModes, collapse=', '))
 argStatType <- parsed$stat_type
 setSeed <- parsed$set_seed
 
@@ -240,8 +249,8 @@ cat('Scoring all individuals...')
 nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
 nMissingGenotypes <- sum(nMissingGenotypes > 0)
 if (nMissingGenotypes > 0) {
-  warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by random.\n')
-  G <- snp_fastImputeSimple(G, method='random',ncores = NCORES)
+  warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
+  G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
 }
 pred_all <- big_prodVec(G, beta, ind.col=df_beta[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
