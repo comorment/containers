@@ -1,3 +1,0 @@
-LAVA_s2500_m25_f1_w200.blocks filter=lfs diff=lfs merge=lfs -text
-ldblock[[:space:]]manual.pdf filter=lfs diff=lfs merge=lfs -text
-blocks_s2500_m25_f1_w200.GRCh37_hg19.locfile filter=lfs diff=lfs merge=lfs -text
