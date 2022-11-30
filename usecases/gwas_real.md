@@ -10,7 +10,6 @@ Input files:
   --pheno-file moba.pheno
   --geno-fit-file moba.hm3.withoutFID
   --geno-file /cluster/projects/p697/genotype/MoBa_98k_post-imputationQC/98k-ec-eur-fin-batch-basic-qc-withoutFID
-  --bfile-ld "$COMORMENT/containers/reference/magma/g1000_eur/g1000_eur"
   --fam moba.hm3.withoutFID.fam
   --singularity-bind "$COMORMENT/containers/reference:/REF:ro,/cluster/projects/p697:/cluster/projects/p697"
   --covar PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 genotyping_batch YOB Sex
