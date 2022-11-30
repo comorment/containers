@@ -216,7 +216,7 @@ for (chr in chromosomeSet) {
 nrMissingLDs <- sum(is.na(ld))
 if (nrMissingLDs > 0) {
   details <- ifelse(genoLDSample > 0, paste0(genoLDSample, ' individuals used, which may be too small'))
-  stop('Missing LD blocks! ', details)
+  stop('Missing LD blocks (', nrMissingLDs,')! ', details)
 }
 warnings()
 sum(is.na(ld))
