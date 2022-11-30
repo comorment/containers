@@ -34,7 +34,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-- ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime 
+- MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
+  MAGMA reference files are also moved to this repository.
+- ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime. 
+  pleioFDR reference files are also moved to this repository.
 
 ## [1.1] - 2022-11-29
 
