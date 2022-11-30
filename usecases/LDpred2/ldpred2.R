@@ -21,6 +21,7 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
 # Genotype
+par <- add_argument(par, "--geno-ld-sample", help="Draw N random individuals when performing LD estimation.", nargs=1, default=0)
 par <- add_argument(par, "--geno-impute", help="Imputation method for missing genotypes (preimpute genotypes to avoid warning).", 
                     nargs=1, default="mean0")
 # Sumstats file.
@@ -58,6 +59,7 @@ filePheno <- parsed$file_pheno
 ### Directories
 dirGeneticMaps <- parsed$dir_genetic_maps
 ### Genotype
+genoLDSample <- parsed$geno_ld_sample
 genoImpute <- parsed$geno_impute
 genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
 if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
@@ -173,6 +175,11 @@ if (argStatType == "OR") {
 df_beta <- snp_match(sumstats, map, join_by_pos=F)
 
 cat('\n### Calculating SNP correlation/LD using', NCORES, 'cores\n')
+individualSample <- rows_along(G)
+if (genoLDSample > 0) {
+  cat('Drawing', genoLDSample, 'individuals at random\n')
+  individualSample <- sample(nrow(G), genoLDSample)
+}
 cat("Converting from physical position to genetic position\n")
 # Genetic maps (these are only available for chromosomes 1 to 22)
 chromosomeSet <- 1:22
@@ -192,7 +199,7 @@ for (chr in chromosomeSet) {
   ind.chr2 <- df_beta$`_NUM_ID_`[ind.chr]
   nMarkers <- length(ind.chr2)
   if (nMarkers > 0) {
-    corr0 <- snp_cor(G, ind.col=ind.chr2, size=parWindowSize/1000,
+    corr0 <- snp_cor(G, ind.col=ind.chr2, ind.row=individualSample, size=parWindowSize/1000,
                    infos.pos=POS2[ind.chr2], ncores=NCORES)
     if (is.null(ld)) {
       ld <- Matrix::colSums(corr0^2)
@@ -206,7 +213,14 @@ for (chr in chromosomeSet) {
     df_beta <- df_beta[df_beta$chr != chr,]
   }
 }
-
+nrMissingLDs <- sum(is.na(ld))
+if (nrMissingLDs > 0) {
+  details <- ifelse(genoLDSample > 0, paste0(genoLDSample, ' individuals used, which may be too small'))
+  stop('Missing LD blocks! ', details)
+}
+warnings()
+sum(is.na(ld))
+str(ld)
 cat('\n### Running LD score regression\n')
 ldsc <- with(df_beta, snp_ldsc(ld, length(ld), chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
 h2_est <- ldsc[["h2"]]
