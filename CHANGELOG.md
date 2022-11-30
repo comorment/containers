@@ -82,12 +82,6 @@ Maintenance/feature release with the following main software incorporated into e
   | r.sif             | snpStats            | v1.40.0                                   | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | saige.sif         | ubuntu              | 16.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
   | saige.sif         | SAIGE               | version 0.43                              | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | enigma-cnv.sif    | PennCNV             | version 1.0.5                             | -
-  | ldsc.sif          | LDSC                | version 1.0.1                             | -
-  | ipsychcnv.sif     | ????                | missing Dockerfile                        | -
-  | matlabruntime.sif | ????                | work in progress                          | -
-  | regenie.sif       | ????                | ?                                         | -
-  | regenie3.sif      | ????                | ?                                         | -
 
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
