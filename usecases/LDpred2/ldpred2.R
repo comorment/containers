@@ -1,6 +1,9 @@
 # Calculate polygenic scores using ldpred2
 # this script is an adaptation of the demo script available at the bigsnpr homepage
 library(bigsnpr, quietly = T)
+#options("bigstatsr.ncores.max")
+#nb_cores()
+options(bigstatsr.check.parallel.blas = FALSE)
 library(tools)
 library(argparser, quietly=T)
 par <- arg_parser('Calculate polygenic scores using ldpred2')
