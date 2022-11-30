@@ -5,7 +5,6 @@ The ``r.sif`` container has multiple tools related based on R:
     GenomicSEM             # https://github.com/GenomicSEM/GenomicSEM
     TwoSampleMR            # https://github.com/MRCIEU/TwoSampleMR
     GSMR                   # https://cnsgenomics.com/software/gsmr
-    LAVA                   # https://github.com/josefin-werme/LAVA
 ```
 
 In addition several standard R packages are also included (e.g. data.table, ggplot2, rmarkdown, etc.
