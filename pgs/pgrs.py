@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Run-script for polygenic (risk) score calculations using containerized applications.
+# Codes for running polygenic (risk) score calculations using containerized applications.
 # For usage, cf. this folder's README
 #
 #
@@ -82,6 +82,7 @@ class BasePGRS(abc.ABC):
             path for output files (<path>)
         **kwargs
         """
+        # set attributes
         self.Sumstats_file = Sumstats_file
         self.Pheno_file = Pheno_file
         self.Input_dir = Input_dir
@@ -89,6 +90,12 @@ class BasePGRS(abc.ABC):
         self.Output_dir = Output_dir
 
         self.kwargs = kwargs
+
+        # check if Output_dir exist. Create if missing.
+        if os.path.isdir(self.Output_dir):
+            pass
+        else:
+            os.mkdir(self.Output_dir)
 
     @abc.abstractmethod
     def get_str(self):
@@ -179,30 +186,27 @@ class PGS_Plink(BasePGRS):
                 '.'.join(os.path.split(
                     self.Sumstats_file)[-1].split('.')[:-1] 
                     + ['transformed']))
-
-        # check if Output_dir exist. Create if missing.
-        if os.path.isdir(self.Output_dir):
-            pass
-        else:
-            os.mkdir(self.Output_dir)
+        self._range_list_file = os.path.join(self.Output_dir, 'range_list')
         
     def _preprocessing_update_effect_size(self):
         '''
-        Generate string which will be included in job script
+        Return string which can be included in job script
         for generating file with updated effect size
         '''
-        self._preprocessing_update_effect_size_str = ' '.join([
+        command = ' '.join([
             os.environ['RSCRIPT'],
             'update_effect_size.R',
             self.Sumstats_file,
             self._transformed_file])
+        
+        return command
     
     def _preprocessing_clumping(self):
         '''
-        Generate string which will be included in job script
+        Generate string which can be included in job script
         for clumping (generating .clumped file)
         '''
-        self._preprocessing_clumping_str = ' '.join([
+        command = ' '.join([
             os.environ['PLINK'], 
             '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'),
             '--clump-p1', str(self.clump_p1),
@@ -213,36 +217,42 @@ class PGS_Plink(BasePGRS):
             '--clump-field', 'P',
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
             ])
+
+        return command
     
     def _preprocessing_extract_index_SNP_ID(self):
         '''
         Extract index SNP ID to (generating .valid.snp file)
         '''
-        self._preprocessing_extract_index_SNP_ID_str = ' '.join([
+        command = ' '.join([
             os.environ['AWK_EXEC'],
             "'NR!=1{print $3}'",
             os.path.join(self.Output_dir, self.Data_prefix + '.clumped'),
             '>',
             os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
             ])
+
+        return command
     
     def _preprocessing_extract_p_values(self):
         '''
         Extract P-values (generating SNP.pvalue file)
         '''
-        self._preprocessing_extract_p_values_str = ' '.join([
+        command = ' '.join([
             os.environ['AWK_EXEC'], 
             "'{print $3,$8}'",
             self._transformed_file,
             '>', 
             os.path.join(self.Output_dir, 'SNP.pvalue'),
         ])
+
+        return command
     
     def _write_range_list_file(self):
         '''
         Write range_list file in output directory
         '''
-        with open(os.path.join(self.Output_dir, 'range_list'), 'wt') as f:
+        with open(self._range_list_file, 'wt') as f:
             for v in self.range_list:
                 f.write(f'{v} 0 {v}\n')
 
@@ -250,7 +260,7 @@ class PGS_Plink(BasePGRS):
         '''
         Generate string for basic plink run
         '''
-        self._run_plink_basic_str = ' '.join([
+        command = ' '.join([
             os.environ['PLINK'],
             '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'),
             '--score', self._transformed_file, ' '.join([str(x) for x in self.score_args]),
@@ -258,6 +268,8 @@ class PGS_Plink(BasePGRS):
             '--extract', os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
+
+        return command
     
     def _run_plink_w_stratification(self):
         tmp_str_0 = ' '.join([
@@ -276,7 +288,7 @@ class PGS_Plink(BasePGRS):
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
 
-        self._run_plink_w_stratification_str = '\n'.join([tmp_str_0, tmp_str_1])
+        return '\n'.join([tmp_str_0, tmp_str_1])
 
     def get_str(self, mode='basic'):
         '''
@@ -292,24 +304,18 @@ class PGS_Plink(BasePGRS):
         assert mode in ['preprocessing', 'basic', 'stratification'], mssg
 
         if mode == 'preprocessing':
-            self._preprocessing_update_effect_size()
-            self._preprocessing_clumping()
-            self._preprocessing_extract_index_SNP_ID()
-            self._preprocessing_extract_p_values()
-            statements = [
-                self._preprocessing_update_effect_size_str,
-                self._preprocessing_clumping_str,
-                self._preprocessing_extract_index_SNP_ID_str,
-                self._preprocessing_extract_p_values_str,
+            commands = [
+                self._preprocessing_update_effect_size(),
+                self._preprocessing_clumping(),
+                self._preprocessing_extract_index_SNP_ID(),
+                self._preprocessing_extract_p_values()
             ]
-            return statements
+            return commands
         elif mode == 'basic':
             self._write_range_list_file()
-            self._run_plink_basic()
-            return [self._run_plink_basic_str]
+            return [self._run_plink_basic()]
         elif mode == 'stratification':
-            self._run_plink_w_stratification()
-            return [self._run_plink_w_stratification_str]
+            return [self._run_plink_w_stratification()]
 
 
 class PGS_PRSice2(BasePGRS):
@@ -379,19 +385,13 @@ class PGS_PRSice2(BasePGRS):
             self.Output_dir,
             self.Data_prefix + '.covariate')
 
-        # check if Output_dir exist. Create if missing.
-        if os.path.isdir(self.Output_dir):
-            pass
-        else:
-            os.mkdir(self.Output_dir)
-
     def _generate_covariance_str(self):
         '''
         Generate string which will be included in job script
         for generating .covariate file combining .cov and .eigenvec
         input files.
         '''
-        self._covariance_str = ' '.join([
+        command = ' '.join([
             os.environ['RSCRIPT'],
             'generate_covariate.R',
             self.Cov_file,
@@ -399,13 +399,15 @@ class PGS_PRSice2(BasePGRS):
             self.Covariance_file,
             str(self.nPCs)])
 
+        return command
+
     def _generate_run_str(self):
         '''
         Generate string which will be included in job script
         for running the PRSice2 analasis script
         '''
 
-        self._run_str = ' '.join([
+        command = ' '.join([
             os.environ['RSCRIPT'], 'PRSice.R',
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
@@ -423,8 +425,11 @@ class PGS_PRSice2(BasePGRS):
         # deal with kwargs
         if len(self.kwargs) > 0:
             for key, value in self.kwargs.items():
-                self._run_str = ' '.join(
-                    [self._run_str, f'--{key} {value or ""}'])
+                command = ' '.join(
+                    [command, f'--{key} {value or ""}'])
+
+        return command
+
 
     def get_str(self):
         '''
@@ -438,7 +443,8 @@ class PGS_PRSice2(BasePGRS):
         self._generate_covariance_str()
         self._generate_run_str()
 
-        return [self._covariance_str, self._run_str]
+        return [self._generate_covariance_str(),
+                self._generate_run_str()]
 
 
 if __name__ == '__main__':
