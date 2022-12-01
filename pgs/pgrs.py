@@ -64,7 +64,8 @@ class BasePGRS(abc.ABC):
                  Pheno_file='',
                  Input_dir='',
                  Data_prefix='',
-                 Output_dir='',                
+                 Output_dir='',   
+                 Cov_file='',             
                 **kwargs):
         """
         Parameters
@@ -80,6 +81,8 @@ class BasePGRS(abc.ABC):
             file prefix for QC'd .bed, .bim, .fam files
         Output_dir: str
             path for output files (<path>)
+        Cov_file: str
+            path to covariance file (.cov)
         **kwargs
         """
         # set attributes
@@ -88,6 +91,7 @@ class BasePGRS(abc.ABC):
         self.Input_dir = Input_dir
         self.Data_prefix = Data_prefix
         self.Output_dir = Output_dir
+        self.Cov_file = Cov_file
 
         self.kwargs = kwargs
 
@@ -165,9 +169,9 @@ class PGS_Plink(BasePGRS):
                          Input_dir=Input_dir,
                          Data_prefix=Data_prefix,
                          Output_dir=Output_dir,
+                         Cov_file=Cov_file,
                          **kwargs)
         # set attributes
-        self.Cov_file = Cov_file
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -210,6 +214,10 @@ class PGS_Plink(BasePGRS):
         '''
         Generate string which can be included in job script
         for clumping (generating .clumped file)
+
+        Returns
+        -------
+        str
         '''
         command = ' '.join([
             os.environ['PLINK'], 
@@ -228,6 +236,10 @@ class PGS_Plink(BasePGRS):
     def _preprocessing_extract_index_SNP_ID(self):
         '''
         Extract index SNP ID to (generating .valid.snp file)
+
+        Returns
+        -------
+        str
         '''
         command = ' '.join([
             os.environ['AWK_EXEC'],
@@ -242,6 +254,10 @@ class PGS_Plink(BasePGRS):
     def _preprocessing_extract_p_values(self):
         '''
         Extract P-values (generating SNP.pvalue file)
+
+        Returns
+        -------
+        str
         '''
         command = ' '.join([
             os.environ['AWK_EXEC'], 
@@ -264,6 +280,10 @@ class PGS_Plink(BasePGRS):
     def _run_plink_basic(self):
         '''
         Generate string for basic plink run
+
+        Returns
+        -------
+        str
         '''
         command = ' '.join([
             os.environ['PLINK'],
@@ -280,6 +300,10 @@ class PGS_Plink(BasePGRS):
         '''
         Account for (population) stratification using PCs, 
         creating .eigenvec file
+
+        Returns
+        -------
+        str
         '''
         # First, perform pruning
         tmp_str_0 = ' '.join([
@@ -301,18 +325,14 @@ class PGS_Plink(BasePGRS):
         return '\n'.join([tmp_str_0, tmp_str_1])
 
     def _find_best_fit_prs(self):
+        '''
+        Generate command for running find_best_fit_prs.R script, 
+        producing 
 
-        # par <- add_argument(par, "file_pheno", help="Input file with phenotypes")
-        # par <- add_argument(par, "file_eigenvec", help=".eigenvec input file")
-        # par <- add_argument(par, "file_cov", help=".cov input file")
-        # par <- add_argument(par, "data_prefix", help='file prefix')
-        # par <- add_argument(par, "thresholds", type="list", default=[0.001, 0.05], 
-        #                     help="list of threshold values")
-        # par <- add_argument(par, "nPCs", type="integer", default=6, 
-        #                     help="Integer number of Principal Components (PCs)")
-        # par <- add_argument(par, "results_file", help="Output file with best-fit results")
-
-        # range_list_str = ','.join([str(x) for x in self.range_list])
+        Returns
+        -------
+        str
+        '''
         command = ' '.join([
             os.environ['RSCRIPT'], 'find_best_fit_prs.R',
             self.Pheno_file, 
@@ -321,7 +341,7 @@ class PGS_Plink(BasePGRS):
             os.path.join(self.Output_dir, self.Data_prefix),
             ','.join([str(x) for x in self.range_list]),
             str(self.nPCs),
-            os.path.join(self.Output_dir, 'best_fit_prs.txt')
+            os.path.join(self.Output_dir, 'best_fit_prs.csv')
         ])
 
         return command
@@ -333,7 +353,9 @@ class PGS_Plink(BasePGRS):
         mode: str
             'basic' or 'stratification'
 
-        Returns: list of str
+        Returns: 
+        --------
+        list of str
             line by line statements for analysis
         '''
         mssg = 'mode must be "preprocessing", "basic", or "stratification"'
@@ -361,7 +383,6 @@ class PGS_PRSice2(BasePGRS):
     Helper class for setting up PRSice-2 PRS analysis.
     Inherited from class ``BasePGRS``
     """
-
     def __init__(self,
                  Sumstats_file='',
                  Pheno_file='',
@@ -410,9 +431,9 @@ class PGS_PRSice2(BasePGRS):
                          Input_dir=Input_dir,
                          Data_prefix=Data_prefix,
                          Output_dir=Output_dir,
+                         Cov_file=Cov_file,
                          **kwargs)
         # set attributes
-        self.Cov_file = Cov_file
         self.Eigenvec_file = Eigenvec_file
         self.nPCs = nPCs
         self.MAF = MAF
@@ -428,6 +449,10 @@ class PGS_PRSice2(BasePGRS):
         Generate string which will be included in job script
         for generating .covariate file combining .cov and .eigenvec
         input files.
+
+        Returns
+        -------
+        str
         '''
         command = ' '.join([
             os.environ['RSCRIPT'],
@@ -443,8 +468,11 @@ class PGS_PRSice2(BasePGRS):
         '''
         Generate string which will be included in job script
         for running the PRSice2 analasis script
-        '''
 
+        Returns
+        -------
+        str
+        '''
         command = ' '.join([
             os.environ['RSCRIPT'], 'PRSice.R',
             '--prsice /usr/bin/PRSice_linux',

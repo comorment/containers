@@ -39,11 +39,18 @@ if __name__ == '__main__':
     # Plink
     plink = pgrs.PGS_Plink(
         Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
-        Pheno_file=f'/REF/examples/prsice2/EUR.height',
+        Pheno_file='/REF/examples/prsice2/EUR.height',
         Input_dir=os.environ['QCDIR'],
         Data_prefix='EUR',
         Output_dir='PGS_plink',
         Cov_file='/REF/examples/prsice2/EUR.cov',
+        clump_p1=1,
+        clump_r2=0.1,
+        clump_kb=250,
+        range_list=[0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5],
+        strat_indep_pairwise=[250, 50, 0.25],
+        nPCs=6,
+        score_args=[3, 4, 12, 'header'],
     )
     # run preprocessing steps for plink
     for call in plink.get_str(mode='preprocessing'):
@@ -63,17 +70,16 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    raise Exception
 
     # PRSice-2
     prsice2 = pgrs.PGS_PRSice2(
-        Cov_file='/REF/examples/prsice2/EUR.cov',
-        Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
         Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
         Pheno_file=f'/REF/examples/prsice2/EUR.height',
         Input_dir=os.environ['QCDIR'],
         Data_prefix='EUR',
         Output_dir='PGS_prsice2',
+        Cov_file='/REF/examples/prsice2/EUR.cov',
+        Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
         nPCs=6,
         MAF=0.01,
         INFO=0.8

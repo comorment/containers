@@ -12,7 +12,7 @@ par <- add_argument(par, "thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5",
                     help="comma-sep list of threshold values")
 par <- add_argument(par, "nPCs", type="integer", default=6, 
                     help="Integer number of Principal Components (PCs)")
-par <- add_argument(par, "results_file", help="Output file with best-fit results")
+par <- add_argument(par, "results_file", help="Output file with best-fit results (.csv)")
 
 parsed <- parse_args(par)
 
@@ -46,4 +46,4 @@ for(i in p.threshold){
 # print result
 print(prs.result[which.max(prs.result$R2),])
 # write
-write.table(prs.result[which.max(prs.result$R2),], parsed$results_file)
+write.table(prs.result[which.max(prs.result$R2),], parsed$results_file, sep=',')
