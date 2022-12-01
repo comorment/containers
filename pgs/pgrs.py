@@ -116,6 +116,7 @@ class PGS_Plink(BasePGRS):
                  Input_dir='',
                  Data_prefix='',
                  Output_dir='',
+                 Cov_file='',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -138,6 +139,8 @@ class PGS_Plink(BasePGRS):
             file prefix for QC'd .bed, .bim, .fam files
         Output_dir: str
             path for output files (<path>)
+        Cov_file: str
+            path to covariance file (.cov)
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
         clump_r2: float
@@ -164,6 +167,8 @@ class PGS_Plink(BasePGRS):
                          Output_dir=Output_dir,
                          **kwargs)
         # set attributes
+        self.Cov_file = Cov_file
+
         # clumping params
         self.clump_p1 = clump_p1
         self.clump_r2 = clump_r2
@@ -264,7 +269,7 @@ class PGS_Plink(BasePGRS):
             os.environ['PLINK'],
             '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'),
             '--score', self._transformed_file, ' '.join([str(x) for x in self.score_args]),
-            '--q-score-range', os.path.join(self.Output_dir, 'range_list'), os.path.join(self.Output_dir, 'SNP.pvalue'),
+            '--q-score-range', self._range_list_file, os.path.join(self.Output_dir, 'SNP.pvalue'),
             '--extract', os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
@@ -272,6 +277,11 @@ class PGS_Plink(BasePGRS):
         return command
     
     def _run_plink_w_stratification(self):
+        '''
+        Account for (population) stratification using PCs, 
+        creating .eigenvec file
+        '''
+        # First, perform pruning
         tmp_str_0 = ' '.join([
             os.environ['PLINK'], 
             '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'), 
@@ -289,6 +299,32 @@ class PGS_Plink(BasePGRS):
         ])
 
         return '\n'.join([tmp_str_0, tmp_str_1])
+
+    def _find_best_fit_prs(self):
+
+        # par <- add_argument(par, "file_pheno", help="Input file with phenotypes")
+        # par <- add_argument(par, "file_eigenvec", help=".eigenvec input file")
+        # par <- add_argument(par, "file_cov", help=".cov input file")
+        # par <- add_argument(par, "data_prefix", help='file prefix')
+        # par <- add_argument(par, "thresholds", type="list", default=[0.001, 0.05], 
+        #                     help="list of threshold values")
+        # par <- add_argument(par, "nPCs", type="integer", default=6, 
+        #                     help="Integer number of Principal Components (PCs)")
+        # par <- add_argument(par, "results_file", help="Output file with best-fit results")
+
+        # range_list_str = ','.join([str(x) for x in self.range_list])
+        command = ' '.join([
+            os.environ['RSCRIPT'], 'find_best_fit_prs.R',
+            self.Pheno_file, 
+            os.path.join(self.Output_dir, self.Data_prefix + '.eigenvec'), 
+            self.Cov_file, 
+            os.path.join(self.Output_dir, self.Data_prefix),
+            ','.join([str(x) for x in self.range_list]),
+            str(self.nPCs),
+            os.path.join(self.Output_dir, 'best_fit_prs.txt')
+        ])
+
+        return command
 
     def get_str(self, mode='basic'):
         '''
@@ -315,7 +351,9 @@ class PGS_Plink(BasePGRS):
             self._write_range_list_file()
             return [self._run_plink_basic()]
         elif mode == 'stratification':
-            return [self._run_plink_w_stratification()]
+            return [self._run_plink_w_stratification(), 
+                    self._find_best_fit_prs()
+            ]
 
 
 class PGS_PRSice2(BasePGRS):

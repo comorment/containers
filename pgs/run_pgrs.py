@@ -38,12 +38,12 @@ if __name__ == '__main__':
 
     # Plink
     plink = pgrs.PGS_Plink(
-        Cov_file='/REF/examples/prsice2/EUR.cov',
         Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
         Pheno_file=f'/REF/examples/prsice2/EUR.height',
         Input_dir=os.environ['QCDIR'],
         Data_prefix='EUR',
         Output_dir='PGS_plink',
+        Cov_file='/REF/examples/prsice2/EUR.cov',
     )
     # run preprocessing steps for plink
     for call in plink.get_str(mode='preprocessing'):
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    # raise Exception
+    raise Exception
 
     # PRSice-2
     prsice2 = pgrs.PGS_PRSice2(
