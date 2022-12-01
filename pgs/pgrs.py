@@ -59,7 +59,7 @@ class BasePGRS(abc.ABC):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def __init__(self, 
+    def __init__(self,
                  Sumstats_file='',
                  Pheno_file='',
                  Input_dir='',
@@ -103,7 +103,6 @@ class PGS_Plink(BasePGRS):
     Helper class for setting up Plink PRS analysis.
     Inherited from class ``BasePGRS``
     """
-
     def __init__(self, 
                  Sumstats_file='',
                  Pheno_file='',
@@ -320,13 +319,13 @@ class PGS_PRSice2(BasePGRS):
     """
 
     def __init__(self,
-                 Cov_file='',
-                 Eigenvec_file='',
                  Sumstats_file='',
                  Pheno_file='',
                  Input_dir='',
                  Data_prefix='',
                  Output_dir='',
+                 Cov_file='',
+                 Eigenvec_file='',
                  nPCs=6,
                  MAF=0.01,
                  INFO=0.8,
@@ -334,10 +333,6 @@ class PGS_PRSice2(BasePGRS):
         '''
         Parameters
         ----------
-        Cov_file: str
-            path to covariance file (.cov)
-        Eigenvec_file: str
-            path to eigenvec file (.eig)
         Sumstats_file: str
             summary statistics file (.gz)
         Pheno_file: str
@@ -349,6 +344,10 @@ class PGS_PRSice2(BasePGRS):
             file prefix for QC'd .bed, .bim, .fam files
         Output_dir: str
             path for output files (<path>)
+        Cov_file: str
+            path to covariance file (.cov)
+        Eigenvec_file: str
+            path to eigenvec file (.eig)
         nPCs: int
             number of Principal Components (PCs) to include
             in covariate generation
