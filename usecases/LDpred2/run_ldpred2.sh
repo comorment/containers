@@ -4,7 +4,7 @@
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
-$RSCRIPT $CONTAINERS/usecases/LDpred2/createBackingFile.R $fileGeno $fileGenoRDS
+$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
