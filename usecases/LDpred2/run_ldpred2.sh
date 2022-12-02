@@ -3,10 +3,8 @@
 # Create shortcut environment variable for Rscript 
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
-# Impute missing genotypes in $fileGeno
-# impute.R is only for testing purposes and using the simplest imputation method in bigsnpr
-if [ -f $fileImputedGeno ]; then rm $(basename $fileImputedGeno .bed).*; fi
-$RSCRIPT impute.R $fileGeno $fileImputedGeno
+# Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
+$RSCRIPT $CONTAINERS/usecases/LDpred2/createBackingFile.R $fileGeno $fileGenoRDS
 
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
@@ -15,7 +13,7 @@ $RSCRIPT ldpred2.R \
  --file-pheno $filePheno \
  --col-stat OR --col-stat-se SE \
  --stat-type OR \
- $fileImputedGeno $fileSumstats $fileOut.inf
+ $fileGenoRDS $fileSumstats $fileOut.inf
 
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
@@ -24,4 +22,4 @@ $RSCRIPT ldpred2.R \
  --file-pheno $filePheno \
  --col-stat OR --col-stat-se SE \
  --stat-type OR \
- $fileImputedGeno $fileSumstats $fileOut.auto
+ $fileGenoRDS $fileSumstats $fileOut.auto
