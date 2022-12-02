@@ -218,9 +218,7 @@ if (nrMissingLDs > 0) {
   details <- ifelse(genoLDSample > 0, paste0(genoLDSample, ' individuals used, which may be too small'))
   stop('Missing LD blocks (', nrMissingLDs,')! ', details)
 }
-warnings()
-sum(is.na(ld))
-str(ld)
+
 cat('\n### Running LD score regression\n')
 ldsc <- with(df_beta, snp_ldsc(ld, length(ld), chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
 h2_est <- ldsc[["h2"]]
