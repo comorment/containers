@@ -283,6 +283,3 @@ colnames(outputData) <- colsKeep
 write.table(outputData, file=fileOutput, row.names = F, quote=F)
 # Drop temporary file
 fileRemoved <- file.remove(paste0(temp, '.sbk'))
-
-## Evaluation/diagnostics
-

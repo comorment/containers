@@ -2,11 +2,13 @@
 ## Note
 # The script will echo output when an exit code does not equal the expected.
 # But it seems that container errors are not captured
-export LC_ALL=C
+# Output is not echoed for an expected error
+
+export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 export DIR_SIF=$DIR_BASE/singularity
-export DIR_TESTS=$DIR_BASE/tests/ldpred2
+export DIR_TESTS=$DIR_BASE/usecases/LDpred2_example
 export DIR_SCRIPTS=$DIR_BASE/usecases/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
 
@@ -59,7 +61,7 @@ if [ $? -eq 0 ]; then exit; fi
 dump=$( { $LDP --ldpred-mode inf --geno-ld-sample 500 $fileOutputSNPR $fileSumstats $fileOut.inf; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
-## TEST: Complete runs of --ldpred-mode gien in $LDPRED_MODES
+## TEST: Complete runs of --ldpred-mode given by $LDPRED_MODES
 for MODE in $LDPRED_MODES; do
  echo "Testing mode $MODE"
  dump=$( { $LDP --ldpred-mode $MODE $fileOutputSNPR $fileSumstats $fileOut.inf; } 2>&1 )
