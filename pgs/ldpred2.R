@@ -5,6 +5,7 @@ options(bigstatsr.check.parallel.blas = FALSE)
 options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
+library(parallel)
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
 par <- add_argument(par, "file-geno", help="Input .rds (bigSNPR) file with genotypes")
@@ -44,7 +45,7 @@ par <- add_argument(par, "--window-size", help="Window size in centimorgans, use
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
-par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available", default=nb_cores())
+par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available number", default=detectCores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 
 parsed <- parse_args(par)
@@ -116,7 +117,7 @@ CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
 phenotype <- NA
 if (!is.na(colPheno)) phenotype <- obj.bigSNP$fam[,colPheno]
-NCORES <- nb_cores()
+NCORES <- parsed$cores #nb_cores()
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
