@@ -6,6 +6,11 @@ The method is explained in the publication:
 
 - Florian Privé, Julyan Arbel, Bjarni J Vilhjálmsson, LDpred2: better, faster, stronger, Bioinformatics, Volume 36, Issue 22-23, 1 December 2020, Pages 5424–5431, https://doi.org/10.1093/bioinformatics/btaa1029
 
+## Prerequisites
+
+LDpred2 uses genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) to convert each SNPs physical position to genomic position.
+LDpred2 will try to download these which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
+the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
 
 ## Running LDpred2 analysis
 
