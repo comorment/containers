@@ -33,7 +33,7 @@ par <- add_argument(par, "--col-bp", help="SNP position column", default="BP", n
 par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA", nargs=1)
 par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="BETA_SE", nargs=1)
 par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nargs=1)
-par <- add_argument(par, "--col-n", help="Effective sample size. Override with --sample-size", default="N", nargs=1)
+par <- add_argument(par, "--col-n", help="Effective sample size. Override with --effective-sample-size", default="N", nargs=1)
 par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA", nargs=1)
 par <- add_argument(par, "--effective-sample-size", help="Effective sample size, if unavailable in sumstats (--col-n)", nargs=1)
 # Polygenic score
@@ -86,6 +86,11 @@ parWindowSize <- parsed$window_size
 parHyperPLength <- parsed$hyper_p_length
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
+print(argEffectiveSampleSize)
+if (!is.na(argEffectiveSampleSize)) {
+  argEffectiveSampleSize <- as.numeric(argEffectiveSampleSize)
+  if (!is.numeric(argEffectiveSampleSize)) stop('Effective sample size needs to be numeric, received: ', argEffectiveSampleSize)
+}
 argLdpredMode <- parsed$ldpred_mode
 validModes <- c('inf', 'auto')
 if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", paste0(validModes, collapse=', '))
