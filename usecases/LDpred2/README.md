@@ -6,14 +6,19 @@ The method is explained in the publication:
 
 - Florian Privé, Julyan Arbel, Bjarni J Vilhjálmsson, LDpred2: better, faster, stronger, Bioinformatics, Volume 36, Issue 22-23, 1 December 2020, Pages 5424–5431, https://doi.org/10.1093/bioinformatics/btaa1029
 
+## Prerequisites
+
+LDpred2 uses genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) to convert each SNPs physical position to genomic position.
+LDpred2 will try to download these which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
+the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
 
 ## Running LDpred2 analysis
 
-In order to run imputation and the LDpred2 analysis defined in the file `run_ldpred2.sh`, issue:  
+In order to run the LDpred2 analysis defined in the file `run_ldpred2.sh`, issue:  
 ```
 # point to input/output files
 export fileGeno=/REF/examples/prsice2/EUR.bed
-export fileImputedGeno=EUR.imputed.bed
+export fileGenoRDS=EUR.rds
 export filePheno=/REF/examples/prsice2/EUR.height
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
@@ -31,8 +36,6 @@ bash run_ldpred2.sh
 
 ## Output
 
-The imputation output is stored as plink binary files (``.bed``, ``.bim``, ``.fam`` files) with prefix ``EUR.imputed`` in this directory
-
 The main LDpred2 output files are ``test.score.auto`` and ``test.score.inf`` put in this directory. 
 The files are text files with tables formatted as 
 ```
@@ -44,7 +47,7 @@ HG00100 HG00100 NA -1.8332542097235e+100
 ...
 ```
 
-The ``ldpred2.R`` script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR.imputed`` in this directory.
+The ``run_ldpred2.sh`` script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`` in this directory.
 
 
 ## Slurm job
@@ -69,7 +72,7 @@ fi
 
 # point to input/output files
 export fileGeno=/REF/examples/prsice2/EUR.bed
-export fileImputedGeno=EUR.imputed.bed
+export fileGenoRDS=EUR.rds
 export filePheno=/REF/examples/prsice2/EUR.height
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz

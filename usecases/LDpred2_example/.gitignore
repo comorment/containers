@@ -1,0 +1,10 @@
+# Store data converted from plink to bigsnpr
+data/
+!data/README
+# Gentic maps
+maps/
+!maps/README
+output/
+!output/README
+temp/
+!temp/README
