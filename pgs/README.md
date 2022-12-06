@@ -162,7 +162,7 @@ $PLINK --bfile $INPUTDATAPATH/$DATAPREFIX \
 
 export fileGeno=/REF/examples/prsice2/EUR.bed
 # export fileImputedGeno=EUR.imputed.bed
-epxort file
+export file
 export filePheno=/REF/examples/prsice2/EUR.height
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 

@@ -65,8 +65,7 @@ class BasePGRS(abc.ABC):
                  Input_dir='',
                  Data_prefix='',
                  Output_dir='',   
-                 Cov_file='',             
-                **kwargs):
+                 **kwargs):
         """
         Parameters
         ----------
@@ -81,8 +80,6 @@ class BasePGRS(abc.ABC):
             file prefix for QC'd .bed, .bim, .fam files
         Output_dir: str
             path for output files (<path>)
-        Cov_file: str
-            path to covariance file (.cov)
         **kwargs
         """
         # set attributes
@@ -91,7 +88,6 @@ class BasePGRS(abc.ABC):
         self.Input_dir = Input_dir
         self.Data_prefix = Data_prefix
         self.Output_dir = Output_dir
-        self.Cov_file = Cov_file
 
         self.kwargs = kwargs
 
@@ -128,6 +124,7 @@ class PGS_Plink(BasePGRS):
                  strat_indep_pairwise=[250, 50, 0.25],
                  nPCs=6,
                  score_args=[3, 4, 12, 'header'],
+                 QC_postfix='.QC',
                  **kwargs):
         '''
         Parameters
@@ -162,6 +159,8 @@ class PGS_Plink(BasePGRS):
             plink --pca parameter value (default: 6)
         score_args: list
             plink --score arguments (default: [3, 4, 12, 'header'])
+        QC_postfix: str
+            file postfix assumed to be included in QC data. Default: '.QC' 
         **kwargs
         '''
         super().__init__(Sumstats_file=Sumstats_file,
@@ -169,9 +168,10 @@ class PGS_Plink(BasePGRS):
                          Input_dir=Input_dir,
                          Data_prefix=Data_prefix,
                          Output_dir=Output_dir,
-                         Cov_file=Cov_file,
                          **kwargs)
         # set attributes
+        self.Cov_file = Cov_file
+        self.QC_postfix = QC_postfix
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -221,7 +221,7 @@ class PGS_Plink(BasePGRS):
         '''
         command = ' '.join([
             os.environ['PLINK'], 
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'),
+            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.QC_postfix),
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
@@ -287,7 +287,7 @@ class PGS_Plink(BasePGRS):
         '''
         command = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'),
+            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.QC_postfix),
             '--score', self._transformed_file, ' '.join([str(x) for x in self.score_args]),
             '--q-score-range', self._range_list_file, os.path.join(self.Output_dir, 'SNP.pvalue'),
             '--extract', os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
@@ -308,7 +308,7 @@ class PGS_Plink(BasePGRS):
         # First, perform pruning
         tmp_str_0 = ' '.join([
             os.environ['PLINK'], 
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'), 
+            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.QC_postfix), 
             '--indep-pairwise', ' '.join([str(x) for x in self.strat_indep_pairwise]),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
@@ -316,7 +316,7 @@ class PGS_Plink(BasePGRS):
         # Then we calculate the first N PCs
         tmp_str_1 = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + '.QC'), 
+            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.QC_postfix), 
             '--extract', os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
             '--pca', str(self.nPCs),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
@@ -431,9 +431,9 @@ class PGS_PRSice2(BasePGRS):
                          Input_dir=Input_dir,
                          Data_prefix=Data_prefix,
                          Output_dir=Output_dir,
-                         Cov_file=Cov_file,
                          **kwargs)
         # set attributes
+        self.Cov_file = Cov_file
         self.Eigenvec_file = Eigenvec_file
         self.nPCs = nPCs
         self.MAF = MAF
@@ -511,6 +511,281 @@ class PGS_PRSice2(BasePGRS):
 
         return [self._generate_covariance_str(),
                 self._generate_run_str()]
+
+
+
+class PGS_LDpred2(BasePGRS):
+    """
+    Helper class for setting up LDpred2 PRS analysis.
+    Inherited from class ``BasePGRS``
+    """
+    def __init__(self,
+                 Sumstats_file='',
+                 Pheno_file='',
+                 Input_dir='',
+                 Data_prefix='',
+                 Output_dir='',
+                 method='inf',
+                 keep_SNPs_file='',
+                 col_stat='OR', 
+                 col_stat_se='SE',
+                 stat_type='OR',
+                **kwargs):
+        '''
+        Parameters
+        ----------
+        Sumstats_file: str
+            summary statistics file (.gz)
+        Pheno_file: str
+            phenotype file (for instance, .height)
+        Input_dir: str
+            path containing .bed, .bim, .fam files
+            (</ENV/path/to/data/>)
+        Data_prefix: str
+            file prefix for .bed, .bim, .fam files
+        Output_dir: str
+            path for output files (<path>)
+        method: str
+            LDpred2 method, either "inf" (default) or "auto"
+        keep_SNPs_file: str
+            path
+        col_stat: str
+            'OR'
+        col_stat_se: str
+            'SE'
+        stat_type: str
+            'OR'
+        **kwargs
+            dict of additional keyword/arguments pairs parsed to
+            the LDpred2.R script (see file for full set of options).
+            If the option is only a flag without value, set value
+            as None-type or empty string.
+        '''
+        super().__init__(Sumstats_file=Sumstats_file,
+                         Pheno_file=Pheno_file,
+                         Input_dir=Input_dir,
+                         Data_prefix=Data_prefix,
+                         Output_dir=Output_dir,
+                         **kwargs)
+
+        # set attributes
+        self.method = method
+        self.keep_SNPs_file = keep_SNPs_file
+        self.col_stat = col_stat
+        self.col_stat_se = col_stat_se
+        self.stat_type = stat_type
+
+        # inferred attributes
+        self._bed_file = os.path.join(self.Input_dir, 
+                                      self.Data_prefix + '.bed')
+        self._rds_file = os.path.join(self.Output_dir, self.Data_prefix + '.rds')
+        self._file_out = os.path.join(self.Output_dir, f'test.score')
+
+    def _run_createBackingFile(self):
+        # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
+        command = ' '.join([
+            os.environ['RSCRIPT'], 
+            'createBackingFile.R',
+            self._bed_file, 
+            os.path.join(self.Output_dir, self.Data_prefix)
+        ])
+        return command
+
+    def get_str(self, create_backing_file=True):
+        '''
+        Public method to create commands
+        
+        Parameters
+        ----------
+        create_backing_file: bool
+            if True (default), prepend statements for running the 
+            ``createBackingFile.R`` script
+
+        Returns
+        -------
+        list of str
+            list of command line statements for analysis run
+        '''
+        tmp_cmd1 = ' '.join([
+            os.environ['RSCRIPT'], 'ldpred2.R',
+            '--ldpred-mode', self.method,
+            '--file-keep-snps', self.keep_SNPs_file,
+            '--file-pheno', self.Pheno_file,
+            '--col-stat', self.col_stat, 
+            '--col-stat-se', self.col_stat_se,
+            '--stat-type', self.stat_type,
+            self._rds_file,
+            self.Sumstats_file,
+            self._file_out, 
+            ])
+
+        # deal with kwargs
+        if len(self.kwargs) > 0:
+            for key, value in self.kwargs.items():
+                tmp_cmd1 = ' '.join(
+                    [tmp_cmd1, f'--{key} {value or ""}'])
+
+        if create_backing_file:
+            tmp_cmd0 = self._run_createBackingFile()
+            return [tmp_cmd0, tmp_cmd1]
+        else:
+            return [tmp_cmd1]
+
+
+class Standard_GWAS_QC(object):
+    def __init__(self,
+                 Sumstats_file='',
+                 Pheno_file='',
+                 Input_dir='',
+                 Data_prefix='',
+                 Output_dir='',
+                 Phenotype='Height',
+                 QC_postfix='.QC',
+                 **kwargs):
+
+        super().__init__(Sumstats_file=Sumstats_file,
+                         Pheno_file=Pheno_file,
+                         Input_dir=Input_dir,
+                         Data_prefix=Data_prefix,
+                         Output_dir=Output_dir,
+                         **kwargs)
+        self.Phenotype = Phenotype
+        self.QC_postfix = QC_postfix
+
+    def get_str(self):
+        '''
+        Standard GWAS QC
+        '''
+        command = []
+        # Filter summary statistics file, zip output.
+        cmd = ' '.join([
+            os.environ['GUNZIP_EXEC'], '-c', self.Sumstats_file, '|\\',
+            os.environ['AWK_EXEC'], "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'", '|\\',
+            os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + '.gz')
+        ])
+        command += [cmd]
+
+        # Remove duplicates
+        cmd = ' '.join([
+            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + '.gz'), '|\\',
+            os.environ['AWK_EXEC'], "'{seen[$3]++; if(seen[$3]==1){ print}}'", '|\\',
+            os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + 'nodup.gz')
+        ])
+        command += [cmd]
+
+        # Retain nonambiguous SNPs:
+        cmd = ' '.join([
+            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + 'nodup.gz'), '|\\',
+            os.environ['AWK_EXEC'], """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""", '|\\',
+            os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + f'{self.QC_postfix}.gz')
+        ])
+        command += [cmd]
+
+        ### QC target data
+        # Modified from
+        # https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
+
+        # Standard GWAS QC. First export some environment variables:
+        # export INPUTDATAPATH=/REF/examples/prsice2
+        # export DATAPREFIX=EUR
+
+        # 
+        cmd = ' '.join([
+            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--maf', '0.01',
+            '--hwe', '1e-6',
+            '--geno', '0.01',
+            '--mind', '0.01',
+            '--write-snplist',
+            '--make-just-fam',
+            '--out', os.path.join(self.Output_dir, self.Data_prefix) + self.QC_postfix
+            ])
+        command += [cmd]
+
+        # Prune to remove highly correlated SNPs
+        cmd = ' '.join([
+        os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.fam'),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.snplist'),
+            '--indep-pairwise', '200 50 0.25',
+            '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix),
+        ])
+        command += [cmd]
+
+        # Compute heterozygosity rates, generating the EUR.QC.het file:
+        cmd = ' '.join([
+            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.prune.in'),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.fam'),
+            '--het',
+            '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix)
+        ])
+        command += [cmd]
+
+
+        # remove individuals with F coefficients that are more than 3 standard deviation (SD) units from the mean in ``R``:
+        cmd = ' '.join([
+            os.environ('RSCRIPT'), 'create_valid_sample.R',
+            os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.het'),
+            os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
+            ])
+        command += [cmd]
+        
+        # strand-flipping the alleles to their complementary alleles
+        cmd = ' '.join([
+            os.environ('RSCRIPT'), 'strand_flipping.R',
+            os.path.join(self.Input_dir, self.Data_prefix + '.bim'),
+            os.path.join(self.Output_dir, self.Phenotype + f'{self.QC_postfix}.gz'),
+            os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.snplist'),
+            os.path.join(self.Output_dir, self.Data_prefix + '.a1'),
+            os.path.join(self.Output_dir, self.Data_prefix + '.mismatch')
+        ])
+        command += [cmd]
+
+
+        # Sex-check pre-pruning, generating EUR.QC.sexcheck:
+        cmd = ' '.join([
+            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.prune.in'),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
+            '--check-sex',
+            '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix)
+        ])
+        command += [cmd]
+
+        # Assign individuals as biologically male if F-statistic is > 0.8; biologically female if F < 0.2:
+        cmd = ' '.join([
+            os.environ('RSCRIPT'), 'create_QC_valid.R',
+            os.path.join(self.Output_dir, self.Data_prefix, '.valid.sample'),
+            os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.sexcheck'),
+            os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.valid')
+        ])
+        command += [cmd]
+
+        # Relatedness pruning of individuals that have a first or second degree relative
+        cmd = ' '.join([
+            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.prune.in'),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.valid'),
+            '--rel-cutoff', '0.125',
+            '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix)
+        ])
+        command += [cmd]
+
+        # Generate a QC'ed data set, creating .ai and .mismatch files:
+        cmd = ' '.join([
+            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            '--make-bed',
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.rel.id'),
+            '--out', os.path.join(self.Output_dir, self.Data_prefix, self.QC_postfix),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.snplist'),
+            '--a1-allele', os.path.join(self.Output_dir, self.Data_prefix, '.a1'),
+            '--exclude', os.path.join(self.Output_dir, self.Data_prefix + '.mismatch')
+        ])
+        command += [cmd]
+
+        return command
+
 
 
 if __name__ == '__main__':

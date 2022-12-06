@@ -1,5 +1,4 @@
-
-
+# run script
 import os
 import pgrs
 import subprocess
@@ -32,9 +31,61 @@ if __name__ == '__main__':
         ))
 
     # QC
-    os.environ.update({
-        'QCDIR': 'QC_data',
-    })
+    # os.environ.update({
+    #     'QCDIR': 'QC_data',
+    # })
+
+    # Standard GWAS QC
+
+    qc = pgrs.Standard_GWAS_QC(
+        Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Input_dir='/REF/examples/prsice2',
+        Data_prefix='EUR',
+        Output_dir='QC_data',
+        Phenotype='Height',
+    )
+    for call in qc.get_str(create_backing_file=True):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
+
+    raise Exception
+
+
+
+    # LDpred2 infinitesimal model
+    ldpred2_inf = pgrs.PGS_LDpred2(
+        Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
+        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Input_dir=qc.Output_dir,
+        Data_prefix='EUR.QC',
+        Output_dir='PGS_LDpred2_inf',
+        method='inf',
+        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs', 
+    )
+    # run preprocessing steps for plink
+    for call in ldpred2_inf.get_str(create_backing_file=True):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
+    
+
+    # LDpred2 automatic model
+    ldpred2_auto = pgrs.PGS_LDpred2(
+        Sumstats_file=os.path.join(os.environ['QCDIR'], 'Height.QC.gz'),
+        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Input_dir=qc.Output_dir,
+        Data_prefix='EUR.QC',
+        Output_dir='PGS_LDpred2_auto',
+        method='auto',
+        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs', 
+    )
+    # run preprocessing steps for plink
+    for call in ldpred2_auto.get_str(create_backing_file=True):
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
 
     # Plink
     plink = pgrs.PGS_Plink(
