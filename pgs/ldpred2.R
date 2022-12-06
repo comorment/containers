@@ -33,7 +33,7 @@ par <- add_argument(par, "--col-bp", help="SNP position column", default="BP", n
 par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA", nargs=1)
 par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="BETA_SE", nargs=1)
 par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nargs=1)
-par <- add_argument(par, "--col-n", help="Effective sample size. Override with --sample-size", default="N", nargs=1)
+par <- add_argument(par, "--col-n", help="Effective sample size. Override with --effective-sample-size", default="N", nargs=1)
 par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA", nargs=1)
 par <- add_argument(par, "--effective-sample-size", help="Effective sample size, if unavailable in sumstats (--col-n)", nargs=1)
 # Polygenic score
@@ -44,7 +44,7 @@ par <- add_argument(par, "--window-size", help="Window size in centimorgans, use
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
-par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores()-1)
+par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 
 parsed <- parse_args(par)
@@ -86,6 +86,11 @@ parWindowSize <- parsed$window_size
 parHyperPLength <- parsed$hyper_p_length
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
+print(argEffectiveSampleSize)
+if (!is.na(argEffectiveSampleSize)) {
+  argEffectiveSampleSize <- as.numeric(argEffectiveSampleSize)
+  if (!is.numeric(argEffectiveSampleSize)) stop('Effective sample size needs to be numeric, received: ', argEffectiveSampleSize)
+}
 argLdpredMode <- parsed$ldpred_mode
 validModes <- c('inf', 'auto')
 if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", paste0(validModes, collapse=', '))
@@ -239,13 +244,13 @@ if (argLdpredMode == 'inf') {
   cat('Plotting diagnostics: ', fileOutput, '.png\n', sep='')
   library(ggplot2)
   auto <- multi_auto[[1]]
+  dta <- data.frame(path_p_est=auto$path_p_est, path_h2_est=auto$path_h2_est, x=1:length(auto$path_p_est))
   plt <- plot_grid(
-    qplot(y = auto$path_p_est) + theme_bigstatsr() +
-      geom_hline(yintercept = auto$p_est, col="blue") + 
-      scale_y_log10() + labs(y = "p"),
-    qplot(y = auto$path_h2_est) + theme_bigstatsr() +
-      geom_hline(yintercept=auto$h2_est, col="blue") + 
-      labs(y = "h2"),
+    ggplot(dta, aes(y=path_p_est, x=x)) + geom_point() + theme_bigstatsr() + 
+      geom_hline(aes(yintercept=auto$p_est), col="blue") + 
+      scale_y_log10() + labs(y="p"),
+    ggplot(dta, aes(y=path_h2_est, x=x)) + geom_point() + theme_bigstatsr() + 
+      geom_hline(aes(yintercept=auto$h2_est), col="blue") + labs(y="h2"),
     ncol=1, align="hv"
   )
   ggsave(plt, file=paste0(fileOutput, '.png'))

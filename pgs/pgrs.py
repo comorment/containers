@@ -60,11 +60,11 @@ class BasePGRS(abc.ABC):
 
     @abc.abstractmethod
     def __init__(self,
-                 Sumstats_file='',
-                 Pheno_file='',
-                 Input_dir='',
-                 Data_prefix='',
-                 Output_dir='',   
+                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Input_dir='/REF/examples/prsice2',
+                 Data_prefix='EUR',
+                 Output_dir='qc-output',   
                  **kwargs):
         """
         Parameters
@@ -111,12 +111,12 @@ class PGS_Plink(BasePGRS):
     Inherited from class ``BasePGRS``
     """
     def __init__(self, 
-                 Sumstats_file='',
-                 Pheno_file='',
-                 Input_dir='',
-                 Data_prefix='',
-                 Output_dir='',
-                 Cov_file='',
+                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Input_dir='QC_data',
+                 Data_prefix='EUR',
+                 Output_dir='PGS_plink',
+                 Cov_file='/REF/examples/prsice2/EUR.cov',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -384,13 +384,13 @@ class PGS_PRSice2(BasePGRS):
     Inherited from class ``BasePGRS``
     """
     def __init__(self,
-                 Sumstats_file='',
-                 Pheno_file='',
-                 Input_dir='',
-                 Data_prefix='',
-                 Output_dir='',
-                 Cov_file='',
-                 Eigenvec_file='',
+                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Input_dir='QC_data',
+                 Data_prefix='EUR',
+                 Output_dir='PGS_prsice2',
+                 Cov_file='/REF/examples/prsice2/EUR.cov',
+                 Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  nPCs=6,
                  MAF=0.01,
                  INFO=0.8,
@@ -520,17 +520,17 @@ class PGS_LDpred2(BasePGRS):
     Inherited from class ``BasePGRS``
     """
     def __init__(self,
-                 Sumstats_file='',
-                 Pheno_file='',
-                 Input_dir='',
-                 Data_prefix='',
-                 Output_dir='',
+                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Input_dir='QC_data',
+                 Data_prefix='EUR',
+                 Output_dir='PGS_ldpred2_inf',
                  method='inf',
-                 keep_SNPs_file='',
+                 keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
                  col_stat='OR', 
                  col_stat_se='SE',
                  stat_type='OR',
-                **kwargs):
+                 **kwargs):
         '''
         Parameters
         ----------
@@ -632,17 +632,22 @@ class PGS_LDpred2(BasePGRS):
             return [tmp_cmd1]
 
 
-class Standard_GWAS_QC(object):
+class Standard_GWAS_QC(BasePGRS):
     def __init__(self,
-                 Sumstats_file='',
-                 Pheno_file='',
-                 Input_dir='',
+                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Input_dir='/REF/examples/prsice2',
                  Data_prefix='',
                  Output_dir='',
                  Phenotype='Height',
                  QC_postfix='.QC',
                  **kwargs):
-
+        '''
+        Common GWAS QC steps. 
+        
+        Based on the tutorial
+        https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
+        '''
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
                          Input_dir=Input_dir,
@@ -652,6 +657,12 @@ class Standard_GWAS_QC(object):
         self.Phenotype = Phenotype
         self.QC_postfix = QC_postfix
 
+        # check if Output_dir exist. Create if missing.
+        if os.path.isdir(self.Output_dir):
+            pass
+        else:
+            os.mkdir(self.Output_dir)
+
     def get_str(self):
         '''
         Standard GWAS QC
@@ -659,24 +670,24 @@ class Standard_GWAS_QC(object):
         command = []
         # Filter summary statistics file, zip output.
         cmd = ' '.join([
-            os.environ['GUNZIP_EXEC'], '-c', self.Sumstats_file, '|\\',
-            os.environ['AWK_EXEC'], "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'", '|\\',
+            os.environ['GUNZIP_EXEC'], '-c', self.Sumstats_file, '|\\\n',
+            os.environ['AWK_EXEC'], "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'", '|\\\n',
             os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + '.gz')
         ])
         command += [cmd]
 
         # Remove duplicates
         cmd = ' '.join([
-            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + '.gz'), '|\\',
-            os.environ['AWK_EXEC'], "'{seen[$3]++; if(seen[$3]==1){ print}}'", '|\\',
-            os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + 'nodup.gz')
+            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + '.gz'), '|\\\n',
+            os.environ['AWK_EXEC'], "'{seen[$3]++; if(seen[$3]==1){ print}}'", '|\\\n',
+            os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + '.nodup.gz')
         ])
         command += [cmd]
 
         # Retain nonambiguous SNPs:
         cmd = ' '.join([
-            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + 'nodup.gz'), '|\\',
-            os.environ['AWK_EXEC'], """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""", '|\\',
+            os.environ['GUNZIP_EXEC'], '-c', os.path.join(self.Output_dir, self.Phenotype + '.nodup.gz'), '|\\\n',
+            os.environ['AWK_EXEC'], """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""", '|\\\n',
             os.environ['GZIP_EXEC'], '->', os.path.join(self.Output_dir, self.Phenotype + f'{self.QC_postfix}.gz')
         ])
         command += [cmd]
@@ -684,12 +695,6 @@ class Standard_GWAS_QC(object):
         ### QC target data
         # Modified from
         # https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
-
-        # Standard GWAS QC. First export some environment variables:
-        # export INPUTDATAPATH=/REF/examples/prsice2
-        # export DATAPREFIX=EUR
-
-        # 
         cmd = ' '.join([
             os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
             '--maf', '0.01',
@@ -725,7 +730,7 @@ class Standard_GWAS_QC(object):
 
         # remove individuals with F coefficients that are more than 3 standard deviation (SD) units from the mean in ``R``:
         cmd = ' '.join([
-            os.environ('RSCRIPT'), 'create_valid_sample.R',
+            os.environ['RSCRIPT'], 'create_valid_sample.R',
             os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.het'),
             os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
             ])
@@ -733,7 +738,7 @@ class Standard_GWAS_QC(object):
         
         # strand-flipping the alleles to their complementary alleles
         cmd = ' '.join([
-            os.environ('RSCRIPT'), 'strand_flipping.R',
+            os.environ['RSCRIPT'], 'strand_flipping.R',
             os.path.join(self.Input_dir, self.Data_prefix + '.bim'),
             os.path.join(self.Output_dir, self.Phenotype + f'{self.QC_postfix}.gz'),
             os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.snplist'),
@@ -755,18 +760,18 @@ class Standard_GWAS_QC(object):
 
         # Assign individuals as biologically male if F-statistic is > 0.8; biologically female if F < 0.2:
         cmd = ' '.join([
-            os.environ('RSCRIPT'), 'create_QC_valid.R',
-            os.path.join(self.Output_dir, self.Data_prefix, '.valid.sample'),
-            os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.sexcheck'),
-            os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.valid')
+            os.environ['RSCRIPT'], 'create_QC_valid.R',
+            os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
+            os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.sexcheck'),
+            os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.valid')
         ])
         command += [cmd]
 
         # Relatedness pruning of individuals that have a first or second degree relative
         cmd = ' '.join([
             os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
-            '--extract', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.prune.in'),
-            '--keep', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.valid'),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.prune.in'),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.valid'),
             '--rel-cutoff', '0.125',
             '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix)
         ])
@@ -776,16 +781,15 @@ class Standard_GWAS_QC(object):
         cmd = ' '.join([
             os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
             '--make-bed',
-            '--keep', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.rel.id'),
-            '--out', os.path.join(self.Output_dir, self.Data_prefix, self.QC_postfix),
-            '--extract', os.path.join(self.Output_dir, self.Data_prefix, f'{self.QC_postfix}.snplist'),
-            '--a1-allele', os.path.join(self.Output_dir, self.Data_prefix, '.a1'),
+            '--keep', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.rel.id'),
+            '--out', os.path.join(self.Output_dir, self.Data_prefix + self.QC_postfix),
+            '--extract', os.path.join(self.Output_dir, self.Data_prefix + f'{self.QC_postfix}.snplist'),
+            '--a1-allele', os.path.join(self.Output_dir, self.Data_prefix + '.a1'),
             '--exclude', os.path.join(self.Output_dir, self.Data_prefix + '.mismatch')
         ])
         command += [cmd]
 
         return command
-
 
 
 if __name__ == '__main__':
