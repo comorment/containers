@@ -239,13 +239,13 @@ if (argLdpredMode == 'inf') {
   cat('Plotting diagnostics: ', fileOutput, '.png\n', sep='')
   library(ggplot2)
   auto <- multi_auto[[1]]
+  dta <- data.frame(path_p_est=auto$path_p_est, path_h2_est=auto$path_h2_est, x=1:length(auto$path_p_est))
   plt <- plot_grid(
-    qplot(y = auto$path_p_est) + theme_bigstatsr() +
-      geom_hline(yintercept = auto$p_est, col="blue") + 
-      scale_y_log10() + labs(y = "p"),
-    qplot(y = auto$path_h2_est) + theme_bigstatsr() +
-      geom_hline(yintercept=auto$h2_est, col="blue") + 
-      labs(y = "h2"),
+    ggplot(dta, aes(y=path_p_est, x=x)) + geom_point() + theme_bigstatsr() + 
+      geom_hline(aes(yintercept=auto$p_est), col="blue") + 
+      scale_y_log10() + labs(y="p"),
+    ggplot(dta, aes(y=path_h2_est, x=x)) + geom_point() + theme_bigstatsr() + 
+      geom_hline(aes(yintercept=auto$h2_est), col="blue") + labs(y="h2"),
     ncol=1, align="hv"
   )
   ggsave(plt, file=paste0(fileOutput, '.png'))
