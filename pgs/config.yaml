@@ -1,0 +1,42 @@
+# parameters to pass for SLURM jobs
+slurm:
+  job_name: pgs
+  account: p697_norment
+  time: "01:00:00"
+  cpus_per_task: 16
+  mem_per_cpu: 8000M
+
+  # list of modules to load in SLURM jobs
+  module_load:
+    - singularity/3.7.1
+
+# folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers
+comorment_folder: "/cluster/projects/p697/github/comorment"
+
+# SINGULARITY_BIND variable to set in SLURM scripts
+singularity_bind: "$COMORMENT/containers/reference:/REF:ro"
+
+
+## Parameters specific to each PGS calculating tool:
+# Plink
+plink:
+  clump_p1: 1
+  clump_r2: 0.1
+  clump_kb: 250
+  range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
+  strat_indep_pairwise: [250, 50, 0.25]
+  nPCs: 6
+  score_args: [3, 4, 12, 'header']
+
+# PRSice-2
+prsice2:
+  nPCs: 6
+  MAF: 0.01
+  INFO: 0.8
+
+# LDpred2
+ldpred2:
+  col_stat: 'OR'
+  col_stat_se: 'SE'
+  stat_type: 'OR'
+

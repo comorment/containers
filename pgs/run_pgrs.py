@@ -1,7 +1,13 @@
-# run script
+#!/usr/bin/env python3
+# run script for PGS calling the class definitions in pgrs.py directly
+
+# package imports
 import os
 import pgrs
 import subprocess
+import yaml
+import pandas as pd
+
 
 if __name__ == '__main__':
     # enviroment variables for test runs
@@ -28,55 +34,73 @@ if __name__ == '__main__':
             RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",
             PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",
             PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",
+            PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",
+
         ))
 
+    # load config.yaml file as dict
+    with open("config.yaml", 'r') as stream:
+        config = yaml.safe_load(stream)
+
+    # input
+    Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
+    Pheno_file = '/REF/examples/prsice2/EUR.height'
+    # Input_dir='/REF/examples/prsice2',
+    Data_prefix = 'EUR'
+    Phenotype = 'Height'
+    Data_postfix = '.QC'
+
+    # method specific input
+    Cov_file = '/REF/examples/prsice2/EUR.cov'
+    Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
+    keep_SNPs_file = '/REF/hapmap3/w_hm3.justrs'
+
     #######################################
-    # Standard GWAS QC. 
-    # Note: This will perform the QC steps from 
-    # https://choishingwan.github.io/PRS-Tutorial/ 
+    # Standard GWAS QC.
+    # Note: This will perform the QC steps from
+    # https://choishingwan.github.io/PRS-Tutorial/
     # but is probably not something you would apply without caution.
     #######################################
 
     # output dir for QC'd data.
     QC_data = 'QC_data'
 
+    """
+    # perform some basic QC steps in
     qc = pgrs.Standard_GWAS_QC(
-        Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Sumstats_file=Sumstats_file,
+        Pheno_file=Pheno_file,
         Input_dir='/REF/examples/prsice2',
-        Data_prefix='EUR',
+        Data_prefix=Data_prefix,
+        Data_postfix=Data_postfix,
         Output_dir=QC_data,
-        Phenotype='Height',
+        Phenotype=Phenotype,
     )
     for call in qc.get_str():
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-
+    """
 
     #######################################
     # Plink
     #######################################
     plink = pgrs.PGS_Plink(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
-        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Pheno_file=Pheno_file,
         Input_dir=QC_data,
-        Data_prefix='EUR',
+        Data_prefix=Data_prefix,
+        Data_postfix=Data_postfix,
         Output_dir='PGS_plink',
-        Cov_file='/REF/examples/prsice2/EUR.cov',
-        clump_p1=1,
-        clump_r2=0.1,
-        clump_kb=250,
-        range_list=[0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5],
-        strat_indep_pairwise=[250, 50, 0.25],
-        nPCs=6,
-        score_args=[3, 4, 12, 'header'],
+        Cov_file=Cov_file,
+        **config['plink'],
     )
+
     # run preprocessing steps for plink
     for call in plink.get_str(mode='preprocessing'):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True)
-        assert proc.returncode == 0    
+        assert proc.returncode == 0
 
     # run basic plink PGS
     for call in plink.get_str(mode='basic'):
@@ -89,6 +113,10 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+    
+    # write "standard" test.score file
+    plink.post_run()
+
 
 
     #######################################
@@ -96,56 +124,63 @@ if __name__ == '__main__':
     #######################################
     prsice2 = pgrs.PGS_PRSice2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
-        Pheno_file=f'/REF/examples/prsice2/EUR.height',
+        Pheno_file=Pheno_file,
         Input_dir=QC_data,
-        Data_prefix='EUR',
+        Data_prefix=Data_prefix,
+        Data_postfix=Data_postfix,
         Output_dir='PGS_prsice2',
-        Cov_file='/REF/examples/prsice2/EUR.cov',
-        Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
-        nPCs=6,
-        MAF=0.01,
-        INFO=0.8
+        Cov_file=Cov_file,
+        Eigenvec_file=Eigenvec_file,
+        **config['prsice2'],
     )
+
+    # run commands
     for call in prsice2.get_str():
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+    
+    # write "standard" test.score file
+    prsice2.post_run()
 
-
+    
     #######################################
     # LDpred2 infinitesimal model
     #######################################
     ldpred2_inf = pgrs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
-        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Pheno_file=Pheno_file,
         Input_dir=QC_data,
-        Data_prefix='EUR.QC',
+        Data_prefix=Data_prefix,
+        Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_inf',
         method='inf',
-        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs', 
+        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
+        **config['ldpred2']
     )
     # run
     for call in ldpred2_inf.get_str(create_backing_file=True):
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
 
     #######################################
     # LDpred2 automatic model
     #######################################
     ldpred2_auto = pgrs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
-        Pheno_file='/REF/examples/prsice2/EUR.height',
+        Pheno_file=Pheno_file,
         Input_dir=QC_data,
-        Data_prefix='EUR.QC',
+        Data_prefix=Data_prefix,
+        Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_auto',
         method='auto',
-        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs', 
+        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
+        **config['ldpred2']
     )
     # run
     for call in ldpred2_auto.get_str(create_backing_file=True):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-
+    
