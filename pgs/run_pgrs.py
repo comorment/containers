@@ -6,7 +6,6 @@ import os
 import pgrs
 import subprocess
 import yaml
-import pandas as pd
 
 
 if __name__ == '__main__':
@@ -27,14 +26,14 @@ if __name__ == '__main__':
     PWD = os.getcwd()
     os.environ.update(
         dict(
-            BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",
-            GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",
-            GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",
-            AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",
-            RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",
-            PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",
-            PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",
-            PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",
+            BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",  # noqa: E501
+            GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",  # noqa: E501
+            GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",  # noqa: E501
+            AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",  # noqa: E501
+            RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",  # noqa: E501
+            PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
+            PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",  # noqa: E501
+            PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
 
         ))
 
@@ -65,7 +64,6 @@ if __name__ == '__main__':
     # output dir for QC'd data.
     QC_data = 'QC_data'
 
-    
     # perform some basic QC steps in
     qc = pgrs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
@@ -80,7 +78,6 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
 
     #######################################
     # Plink
@@ -113,11 +110,9 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
     # write "standard" test.score file
     plink.post_run()
-
-
 
     #######################################
     # PRSice-2
@@ -139,11 +134,10 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
     # write "standard" test.score file
     prsice2.post_run()
 
-    
     #######################################
     # LDpred2 infinitesimal model
     #######################################
@@ -183,4 +177,3 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
