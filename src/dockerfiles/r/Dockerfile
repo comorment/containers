@@ -40,4 +40,6 @@ RUN Rscript github.R
 COPY /scripts/R/misc.R .
 RUN Rscript misc.R
 
+ENV LC_ALL="C"
+
 WORKDIR /tools
