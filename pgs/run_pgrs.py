@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # output dir for QC'd data.
     QC_data = 'QC_data'
 
-    """
+    
     # perform some basic QC steps in
     qc = pgrs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    """
+    
 
     #######################################
     # Plink
