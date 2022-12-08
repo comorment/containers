@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-# Codes for running polygenic (risk) score calculations using containerized applications.
+# Codes for running polygenic (risk) score calculations using
+# containerized applications.
 # For usage, cf. this folder's README
 #
 #
 # Related Issue: https://github.com/comorment/containers/issues/17
-# 
+#
 # Supported tools:
 # *LDpred2 (auto, inf)
 # *Plink
 # *PRSice2
-# 
+#
 # Not yet supported tools:
-# Lassosum/Lassosum2 
+# Lassosum/Lassosum2
 # LDpred2 (grid)
 # MegaPRS
 # PRS-CS
@@ -24,11 +25,14 @@ import pandas as pd
 
 _MAJOR = "1"
 _MINOR = "0"
-# On main and in a nightly release the patch should be one ahead of the last
+# On main and in a nightly release the patch should be one
+# ahead of the last
 # released build.
 _PATCH = ""
-# This is mainly for nightly builds which have the suffix ".dev$DATE". See
-# https://semver.org/#is-v123-a-semantic-version for the semantics.
+# This is mainly for nightly builds which have the
+# suffix ".dev$DATE". See
+# https://semver.org/#is-v123-a-semantic-version for the
+# semantics.
 _SUFFIX = "dev"
 
 VERSION_SHORT = "{0}.{1}".format(_MAJOR, _MINOR)
@@ -36,14 +40,16 @@ VERSION = "{0}.{1}.{2}{3}".format(_MAJOR, _MINOR, _PATCH, _SUFFIX)
 
 __version__ = VERSION
 
-MASTHEAD = "***********************************************************************\n"
+MASTHEAD = "*************************************************\n"
 MASTHEAD += "* pgrs.py: pipeline for PGRS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
-MASTHEAD += "* (C) 2022 Espen Hagen, Oleksandr Frei, Bayram Akdeniz and Alexey A. Shadrin\n"
-MASTHEAD += "* Norwegian Centre for Mental Disorders Research / University of Oslo\n"
+MASTHEAD += "* (C) 2022 Espen Hagen, Oleksandr Frei, \n"
+MASTHEAD += "* Bayram Akdeniz and Alexey A. Shadrin\n"
+MASTHEAD += "* Norwegian Centre for Mental Disorders Research\n"
+MASTHEAD += "* University of Oslo\n"
 MASTHEAD += "* Centre for Bioinformatics / University of Oslo\n"
 MASTHEAD += "* GNU General Public License v3\n"
-MASTHEAD += "***********************************************************************\n"
+MASTHEAD += "************************************************\n"
 
 
 def convert_dict_to_str(d, key_prefix='--'):
@@ -67,7 +73,9 @@ def convert_dict_to_str(d, key_prefix='--'):
         for key, value in d.items():
             if hasattr(value, '__iter__'):
                 cmd = ' '.join(
-                    [cmd, f'{key_prefix}{key} {" ".join([str(v) for v in value])}'])
+                    [cmd,
+                     f'{key_prefix}{key} {" ".join([str(v) for v in value])}'
+                     ])
             else:
                 cmd = ' '.join(
                     [cmd, f'{key_prefix}{key} {str(value) or ""}'])
@@ -244,7 +252,9 @@ class PGS_Plink(BasePGRS):
         '''
         command = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+            '--bfile',
+            os.path.join(self.Input_dir,
+                         self.Data_prefix + self.Data_postfix),
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
@@ -310,11 +320,18 @@ class PGS_Plink(BasePGRS):
         '''
         command = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
-            '--score', self._transformed_file, ' '.join([str(x) for x in self.score_args]),
-            '--q-score-range', self._range_list_file, os.path.join(self.Output_dir, 'SNP.pvalue'),
-            '--extract', os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
-            '--out', os.path.join(self.Output_dir, self.Data_prefix)
+            '--bfile',
+            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+            '--score',
+            self._transformed_file,
+            ' '.join([str(x) for x in self.score_args]),
+            '--q-score-range',
+            self._range_list_file,
+            os.path.join(self.Output_dir, 'SNP.pvalue'),
+            '--extract',
+            os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
+            '--out',
+            os.path.join(self.Output_dir, self.Data_prefix)
         ])
 
         return command
@@ -331,16 +348,21 @@ class PGS_Plink(BasePGRS):
         # First, perform pruning
         tmp_str_0 = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
-            '--indep-pairwise', ' '.join([str(x) for x in self.strat_indep_pairwise]),
+            '--bfile',
+            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+            '--indep-pairwise',
+            ' '.join([str(x) for x in self.strat_indep_pairwise]),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
 
         # Then we calculate the first N PCs
         tmp_str_1 = ' '.join([
             os.environ['PLINK'],
-            '--bfile', os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
-            '--extract', os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
+            '--bfile',
+            os.path.join(self.Input_dir,
+                         self.Data_prefix + self.Data_postfix),
+            '--extract',
+            os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
             '--pca', str(self.nPCs),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
@@ -399,22 +421,28 @@ class PGS_Plink(BasePGRS):
             return [self._run_plink_w_stratification(),
                     self._find_best_fit_prs()
                     ]
-    
+
     def post_run(self):
         '''
-        Read best-fit predictions and export standardized ``test.score`` file 
+        Read best-fit predictions and export standardized ``test.score`` file
         to Output_dir
         '''
-        best_fit = pd.read_csv(os.path.join(self.Output_dir, 'best_fit_prs.csv'))
-
-        scores = pd.read_csv(
+        best_fit = pd.read_csv(
             os.path.join(
-                self.Output_dir, 
-                f"{self.Data_prefix}.{best_fit['Threshold'].values[0]}.profile"), 
+                self.Output_dir,
+                'best_fit_prs.csv'))
+
+        f = f"{self.Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
+        scores = pd.read_csv(
+            os.path.join(self.Output_dir, f),
             delim_whitespace=True,
-            usecols=['IID', 'FID', 'SCORE'])
+            usecols=[
+                'IID',
+                'FID',
+                'SCORE'])
         scores.rename(columns={'SCORE': 'score'}, inplace=True)
-        scores.to_csv(os.path.join(self.Output_dir, 'test.score'), sep=' ')
+        scores.to_csv(os.path.join(self.Output_dir, 'test.score'),
+                      sep=' ', index=False)
 
 
 class PGS_PRSice2(BasePGRS):
@@ -517,18 +545,21 @@ class PGS_PRSice2(BasePGRS):
         -------
         str
         '''
+        target = os.path.join(
+            self.Input_dir,
+            self.Data_prefix + self.Data_postfix)
         command = ' '.join([
             os.environ['RSCRIPT'], 'PRSice.R',
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
-            f'--target {os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix)}',
-            f'--binary-target F',
+            f'--target {target}',
+            '--binary-target F',
             f'--pheno {self.Pheno_file}',
             f'--cov {self.Covariance_file}',
             f'--base-maf MAF:{self.MAF}',
             f'--base-info INFO:{self.INFO}',
-            f'--stat OR',
-            f'--or',
+            '--stat OR',
+            '--or',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
         ])
 
@@ -554,16 +585,25 @@ class PGS_PRSice2(BasePGRS):
 
         return [self._generate_covariance_str(),
                 self._generate_run_str()]
+
     def post_run(self):
         '''
-        Read predictions and export standardized ``test.score`` file 
+        Read predictions and export standardized ``test.score`` file
         to Output_dir
         '''
-        scores = pd.read_csv(os.path.join(self.Output_dir, self.Data_prefix + '.best'), 
-                             delim_whitespace=True, 
-                             usecols=['IID', 'FID', 'PRS'])
+        scores = pd.read_csv(
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix +
+                '.best'),
+            delim_whitespace=True,
+            usecols=[
+                'IID',
+                'FID',
+                'PRS'])
         scores.rename(columns={'PRS': 'score'}, inplace=True)
-        scores.to_csv(os.path.join(self.Output_dir, 'test.score'), sep=' ')
+        scores.to_csv(os.path.join(self.Output_dir, 'test.score'),
+                      sep=' ', index=False)
 
 
 class PGS_LDpred2(BasePGRS):
@@ -643,7 +683,7 @@ class PGS_LDpred2(BasePGRS):
             self.Data_prefix +
             self.Data_postfix +
             '.rds')
-        self._file_out = os.path.join(self.Output_dir, f'test.score')
+        self._file_out = os.path.join(self.Output_dir, 'test.score')
 
     def _run_createBackingFile(self):
         # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
@@ -713,10 +753,10 @@ class Standard_GWAS_QC(BasePGRS):
                  Output_dir='QC_data',
                  Phenotype='Height',
                  Data_postfix='.QC',
-                 QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6, 'geno': 0.01, 'mind': 0.01},
+                 QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
+                                   'geno': 0.01, 'mind': 0.01},
                  QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]},
                  QC_relatedness_prune_kwargs={'rel-cutoff': 0.125},
-
                  **kwargs):
         '''
         Parameters
@@ -807,7 +847,7 @@ class Standard_GWAS_QC(BasePGRS):
                     '.nodup.gz'),
                 '|\\\n',
                 os.environ['AWK_EXEC'],
-                """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""",
+                """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""",  # noqa: E501
                 '|\\\n',
                 os.environ['GZIP_EXEC'],
                 '->',
@@ -821,10 +861,15 @@ class Standard_GWAS_QC(BasePGRS):
         # Modified from
         # https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
         cmd = ' '.join([
-            os.environ['PLINK'], '--bfile', os.path.join(self.Input_dir, self.Data_prefix),
+            os.environ['PLINK'],
+            '--bfile',
+            os.path.join(self.Input_dir, self.Data_prefix),
             '--write-snplist',
             '--make-just-fam',
-            '--out', os.path.join(self.Output_dir, self.Data_prefix) + self.Data_postfix
+            '--out',
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix) + self.Data_postfix
         ])
         cmd = ' '.join([cmd, convert_dict_to_str(self.QC_target_kwargs)])
         command += [cmd]
@@ -886,8 +931,12 @@ class Standard_GWAS_QC(BasePGRS):
         # deviation (SD) units from the mean in ``R``:
         cmd = ' '.join([
             os.environ['RSCRIPT'], 'create_valid_sample.R',
-            os.path.join(self.Output_dir, self.Data_prefix + self.Data_postfix + '.het'),
-            os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix + self.Data_postfix + '.het'),
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix + '.valid.sample'),
         ])
         command += [cmd]
 
@@ -895,8 +944,10 @@ class Standard_GWAS_QC(BasePGRS):
         cmd = ' '.join([
             os.environ['RSCRIPT'], 'strand_flipping.R',
             os.path.join(self.Input_dir, self.Data_prefix + '.bim'),
-            os.path.join(self.Output_dir, self.Phenotype + self.Data_postfix + '.gz'),
-            os.path.join(self.Output_dir, self.Data_prefix + self.Data_postfix + '.snplist'),
+            os.path.join(self.Output_dir,
+                         self.Phenotype + self.Data_postfix + '.gz'),
+            os.path.join(self.Output_dir,
+                         self.Data_prefix + self.Data_postfix + '.snplist'),
             os.path.join(self.Output_dir, self.Data_prefix + '.a1'),
             os.path.join(self.Output_dir, self.Data_prefix + '.mismatch')
         ])
@@ -932,10 +983,15 @@ class Standard_GWAS_QC(BasePGRS):
         # biologically female if F < 0.2:
         cmd = ' '.join([
             os.environ['RSCRIPT'], 'create_QC_valid.R',
-            os.path.join(self.Output_dir, self.Data_prefix + '.valid.sample'),
-            os.path.join(self.Output_dir,
-                         self.Data_prefix + self.Data_postfix + '.sexcheck'),
-            os.path.join(self.Output_dir, self.Data_prefix + self.Data_postfix + '.valid')
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix + '.valid.sample'),
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix + self.Data_postfix + '.sexcheck'),
+            os.path.join(
+                self.Output_dir,
+                self.Data_prefix + self.Data_postfix + '.valid')
         ])
         command += [cmd]
 
