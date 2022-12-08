@@ -3,13 +3,18 @@
 # For usage, cf. this folder's README
 #
 #
-# https://github.com/comorment/containers/issues/17
-# MegaPRS
+# Related Issue: https://github.com/comorment/containers/issues/17
+# 
+# Supported tools:
 # *LDpred2 (auto, inf)
-# LDpred2 (grid)
 # *Plink
-# PRS-CS
 # *PRSice2
+# 
+# Not yet supported tools:
+# Lassosum/Lassosum2 
+# LDpred2 (grid)
+# MegaPRS
+# PRS-CS
 # SBayesR
 # SBayesS
 
@@ -410,6 +415,7 @@ class PGS_Plink(BasePGRS):
             usecols=['IID', 'FID', 'SCORE'])
         scores.rename(columns={'SCORE': 'score'}, inplace=True)
         scores.to_csv(os.path.join(self.Output_dir, 'test.score'), sep=' ')
+
 
 class PGS_PRSice2(BasePGRS):
     """

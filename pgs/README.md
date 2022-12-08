@@ -20,8 +20,9 @@ More on PGS: https://choishingwan.github.io/PRS-Tutorial/
 $ python run_pgrs.py
 ```
 
-> **_NOTE:_**  The script does not require any other packages than Python built in ones, so any Python installation should do. 
+> **_NOTE:_**  The script may require other packages than Python builtins, such as ``pandas``.  
 It is possible to use the ``python3.sif`` container however:
 ```
 $ singularity run <path/to/containers>/singularity/python3.sif python run_pgrs.py
 ```
+
