@@ -45,6 +45,7 @@ def test_r_R_rmarkdown():
         assert out.returncode == 0
         assert pdf_output
 
+
 def test_r_gcta():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
@@ -54,6 +55,7 @@ def test_r_gcta():
         call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
+
 
 def test_r_prsice():
     call = f'singularity run {pth} PRSice_linux --version'

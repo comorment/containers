@@ -2,8 +2,6 @@ import os
 import subprocess
 
 if __name__ == '__main__':
-    # singularity exec --home=$PWD:/home singularity/python3.sif jupyter-server
-
     # enviroment variables for test runs
     os.environ.update(dict(
         CONTAINERS=os.path.split(os.getcwd())[0],
@@ -21,7 +19,8 @@ if __name__ == '__main__':
     PWD = os.getcwd()
     os.environ.update(
         dict(
-            JUPYTER_SERVER=f"singularity exec --home={PWD}:/home {SIF}/python3.sif jupyter-server",
+            JUPYTER_SERVER=f"singularity exec --home={PWD}:/home {SIF}/python3.sif jupyter-server",  # noqa: E501
         ))
 
     subprocess.run(os.environ['JUPYTER_SERVER'], shell=True)
+c

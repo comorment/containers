@@ -164,6 +164,7 @@ def test_gwas_vcftools():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
+
 @pytest.mark.skip(reason="raise NotImplementedError")
 def test_gwas_ldak():
     raise NotImplementedError
