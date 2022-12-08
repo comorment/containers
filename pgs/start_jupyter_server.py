@@ -23,4 +23,3 @@ if __name__ == '__main__':
         ))
 
     subprocess.run(os.environ['JUPYTER_SERVER'], shell=True)
-c
