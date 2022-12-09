@@ -45,6 +45,7 @@ def test_r_R_rmarkdown():
         assert out.returncode == 0
         assert pdf_output
 
+
 # py.test tests/test_r.py -k test_r_bigsnpr
 def test_r_bigsnpr():
     pwd = os.getcwd()
@@ -55,4 +56,3 @@ def test_r_bigsnpr():
         call = f"""singularity run --home={d} {sif} Rscript bigsnpr.R"""
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
-
