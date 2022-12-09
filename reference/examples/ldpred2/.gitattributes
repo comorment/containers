@@ -1,0 +1,15 @@
+g1000_eur_chr21to22_hm3rnd2.bed filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd2.log filter=lfs diff=lfs merge=lfs -text
+hm3_rand_v2.justrs filter=lfs diff=lfs merge=lfs -text
+simu.1.causals filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd1.log filter=lfs diff=lfs merge=lfs -text
+simu.pheno filter=lfs diff=lfs merge=lfs -text
+hm3_rand_v1.justrs filter=lfs diff=lfs merge=lfs -text
+map_hm3_plus.justrs filter=lfs diff=lfs merge=lfs -text
+trait1.sumstats.gz filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd1.bed filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd1.bim filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd1.fam filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd2.bim filter=lfs diff=lfs merge=lfs -text
+g1000_eur_chr21to22_hm3rnd2.fam filter=lfs diff=lfs merge=lfs -text
+simu.log filter=lfs diff=lfs merge=lfs -text

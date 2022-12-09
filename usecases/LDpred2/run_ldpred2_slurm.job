@@ -1,0 +1,50 @@
+#!/bin/bash
+#SBATCH --job-name=LDpred2  # job name
+#SBATCH --output=LDpred2.txt  # output
+#SBATCH --error=LDpred2.txt  # errors
+#SBATCH --account=$SBATCH_ACCOUNT  # project ID
+#SBATCH --time=00:15:00  # walltime
+#SBATCH --cpus-per-task=1  # number of CPUS for task
+#SBATCH --mem-per-cpu=2000  # memory (MB)
+#SBATCH --partition=normal
+
+# check if singularity is available, if not load it (adapt as necessary)
+if ! command -v singularity &> /dev/null
+then
+    module load singularity
+fi
+
+export fileGeno=/REF/examples/prsice2/EUR.bed
+export fileGenoRDS=EUR.rds
+export filePheno=/REF/examples/prsice2/EUR.height
+export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
+export fileOut=Height
+export colPheno=Height
+
+# set environmental variables. Replace $COMORMENT with 
+# the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
+export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
+export SIF=$COMORMENT/containers/singularity
+export REFERENCE=$COMORMENT/containers/reference
+export LDPRED2_REF=$COMORMENT/ldpred2_ref
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+
+export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+
+# run tasks
+$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+
+# Generate PGS usign LDPRED-inf
+$RSCRIPT ldpred2.R \
+ --ldpred-mode inf \
+ --file-pheno $filePheno --col-pheno $colPheno \
+ --col-stat OR --col-stat-se SE --stat-type OR \
+ $fileGenoRDS $fileSumstats $fileOut.inf
+
+# Generate PGS using LDPRED2-auto
+$RSCRIPT ldpred2.R \
+ --ldpred-mode auto \
+ --file-pheno $filePheno --col-pheno $colPheno \
+ --col-stat OR --col-stat-se SE --stat-type OR \
+ $fileGenoRDS $fileSumstats $fileOut.auto
+
