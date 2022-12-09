@@ -81,6 +81,58 @@ def convert_dict_to_str(d, key_prefix='--'):
                     [cmd, f'{key_prefix}{key} {str(value) or ""}'])
     return cmd
 
+def post_run_plink(Output_dir, Data_prefix, best_fit_file='best_fit_prs.csv', score_file='test.score'):
+        '''
+        Read best-fit predictions and export standardized ``test.score`` file
+        to Output_dir from class PGS_Plink output
+
+        Parameters
+        ----------
+        Output_dir: path
+            path to output directory
+        Data_prefix: str
+            standard file name prefix (for .bed, .bim, .fam, etc.)
+        best_fit_file: str
+            .csv file in ``Output_dir`` with best fit Threshold value. Default: 'best_fit_prs.csv'
+        score_file: str
+            test score file in ``Output_dir``. Default: 'test.score'
+        '''
+        best_fit = pd.read_csv(
+            os.path.join(
+                Output_dir,
+                best_fit_file))
+
+        f = f"{Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
+        scores = pd.read_csv(
+            os.path.join(Output_dir, f),
+            delim_whitespace=True,
+            usecols=['IID', 'FID', 'SCORE'])
+        scores.rename(columns={'SCORE': 'score'}, inplace=True)
+        scores.to_csv(os.path.join(Output_dir, score_file),
+                      sep=' ', index=False)
+
+def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
+    '''
+    Read best-fit predictions and export standardized ``test.score`` file
+    to Output_dir from class PGS_PRSice2 output
+
+    Parameters
+    ----------
+    Output_dir: path
+        path to output directory
+    Data_prefix: str
+        standard file name prefix (for .bed, .bim, .fam, etc.)
+    score_file: str
+        test score file in ``Output_dir``. Default: 'test.score'
+    '''
+    scores = pd.read_csv(
+        os.path.join(Output_dir, Data_prefix + '.best'),
+        delim_whitespace=True,
+        usecols=['IID', 'FID', 'PRS'])
+    scores.rename(columns={'PRS': 'score'}, inplace=True)
+    scores.to_csv(os.path.join(Output_dir, 'test.score'),
+                    sep=' ', index=False)
+
 
 class BasePGRS(abc.ABC):
     """Base PGRS object declaration with some
@@ -391,6 +443,15 @@ class PGS_Plink(BasePGRS):
 
         return command
 
+    def _generate_post_run_str(self):
+        arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
+        cmd = ' '.join([
+            os.environ['PYTHON'], '-c', 
+            f"""'from pgrs import post_run_plink; post_run_plink({arg})'"""
+        ])
+        return cmd
+
+
     def get_str(self, mode='basic'):
         '''
         Parameters
@@ -416,33 +477,12 @@ class PGS_Plink(BasePGRS):
             return commands
         elif mode == 'basic':
             self._write_range_list_file()
-            return [self._run_plink_basic()]
+            return [self._run_plink_basic(), self._generate_post_run_str()]
         elif mode == 'stratification':
             return [self._run_plink_w_stratification(),
-                    self._find_best_fit_prs()
+                    self._find_best_fit_prs(), 
+                    self._generate_post_run_str()
                     ]
-
-    def post_run(self):
-        '''
-        Read best-fit predictions and export standardized ``test.score`` file
-        to Output_dir
-        '''
-        best_fit = pd.read_csv(
-            os.path.join(
-                self.Output_dir,
-                'best_fit_prs.csv'))
-
-        f = f"{self.Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
-        scores = pd.read_csv(
-            os.path.join(self.Output_dir, f),
-            delim_whitespace=True,
-            usecols=[
-                'IID',
-                'FID',
-                'SCORE'])
-        scores.rename(columns={'SCORE': 'score'}, inplace=True)
-        scores.to_csv(os.path.join(self.Output_dir, 'test.score'),
-                      sep=' ', index=False)
 
 
 class PGS_PRSice2(BasePGRS):
@@ -571,6 +611,14 @@ class PGS_PRSice2(BasePGRS):
 
         return command
 
+    def _generate_post_run_str(self):
+        arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
+        cmd = ' '.join([
+            os.environ['PYTHON'], '-c', 
+            f"""'from pgrs import post_run_prsice2; post_run_prsice2({arg})'"""
+        ])
+        return cmd
+
     def get_str(self):
         '''
         Public method to create commands
@@ -580,30 +628,9 @@ class PGS_PRSice2(BasePGRS):
         list of str
             list of command line statements for analysis run
         '''
-        self._generate_covariance_str()
-        self._generate_run_str()
-
         return [self._generate_covariance_str(),
-                self._generate_run_str()]
-
-    def post_run(self):
-        '''
-        Read predictions and export standardized ``test.score`` file
-        to Output_dir
-        '''
-        scores = pd.read_csv(
-            os.path.join(
-                self.Output_dir,
-                self.Data_prefix +
-                '.best'),
-            delim_whitespace=True,
-            usecols=[
-                'IID',
-                'FID',
-                'PRS'])
-        scores.rename(columns={'PRS': 'score'}, inplace=True)
-        scores.to_csv(os.path.join(self.Output_dir, 'test.score'),
-                      sep=' ', index=False)
+                self._generate_run_str(), 
+                self._generate_post_run_str()]
 
 
 class PGS_LDpred2(BasePGRS):

@@ -41,7 +41,7 @@ if __name__ == '__main__':
     with open("config.yaml", 'r') as stream:
         config = yaml.safe_load(stream)
 
-    # input
+    # input (shared)
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
     Pheno_file = '/REF/examples/prsice2/EUR.height'
     # Input_dir='/REF/examples/prsice2',
@@ -58,12 +58,13 @@ if __name__ == '__main__':
     # Standard GWAS QC.
     # Note: This will perform the QC steps from
     # https://choishingwan.github.io/PRS-Tutorial/
-    # but is probably not something you would apply without caution.
+    # but is probably something you would apply with caution.
     #######################################
 
     # output dir for QC'd data.
     QC_data = 'QC_data'
 
+    
     # perform some basic QC steps in
     qc = pgrs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
@@ -78,6 +79,7 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+    
 
     #######################################
     # Plink
@@ -111,8 +113,6 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    # write "standard" test.score file
-    plink.post_run()
 
     #######################################
     # PRSice-2
@@ -135,8 +135,6 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    # write "standard" test.score file
-    prsice2.post_run()
 
     #######################################
     # LDpred2 infinitesimal model
