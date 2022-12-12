@@ -66,7 +66,7 @@ genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
 if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
 # Sumstats file
 chr2use <- parsed$chr2use
-if (is.na(chr2use)) chr2use <- 1:22
+if (any(is.na(chr2use))) chr2use <- 1:22
 
 colChr <- parsed$col_chr
 colSNPID <- parsed$col_snp_id
