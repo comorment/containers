@@ -17,6 +17,7 @@ devtools::install_version('reghelper', version='1.1.1', repos='https://cloud.r-p
 devtools::install_version('remotes', version='2.4.2', repos='https://cloud.r-project.org')
 devtools::install_version('rmarkdown', version='2.17', repos='https://cloud.r-project.org')
 devtools::install_version('runonce', version='0.2.3', repos='https://cloud.r-project.org')
+devtools::install_version('stringr', version='1.5.0', repos='https://cloud.r-project.org')
 devtools::install_version('survey', version='4.1-1', repos='https://cloud.r-project.org')
 devtools::install_version('tibble', version='3.1.8', repos='https://cloud.r-project.org')
 devtools::install_version('tidyr', version='1.2.1', repos='https://cloud.r-project.org')

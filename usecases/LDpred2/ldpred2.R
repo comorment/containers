@@ -5,65 +5,69 @@ options(bigstatsr.check.parallel.blas = FALSE)
 options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
+library(stringr)
+
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
-par <- add_argument(par, "file-geno", help="Input .rds (bigSNPR) file with genotypes")
-par <- add_argument(par, "file-sumstats", help="Input file with GWAS summary statistics")
-par <- add_argument(par, "file-output", help="Output file with calculated PGS")
+par <- add_argument(par, "--geno-file", help="Input .rds (bigSNPR) file with genotypes")
+par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statistics")
+par <- add_argument(par, "--out", help="Output file with calculated PGS")
+
 # Optional files
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
-par <- add_argument(par, "--file-gene-corr", help="Filename with LD and genetic correlation, if omitted it will be estimated")
-# Directories
-par <- add_argument(par, "--dir-genetic-maps", default=tempdir(), 
-                    help="Directory containing 1000 Genomes genetic maps. Either a directory to store files to be downloaded, or a directory contaning the unpacked files.")
+par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
+par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
+
 # Phenotype
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
 # Genotype
-par <- add_argument(par, "--geno-ld-sample", help="Draw N random individuals when performing LD estimation.", nargs=1, default=0)
 par <- add_argument(par, "--geno-impute", help="Imputation method for missing genotypes (preimpute genotypes to avoid warning).", 
                     nargs=1, default="mean0")
 # Sumstats file.
+par <- add_argument(par, "--chr2use", help="list of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
 par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR", nargs=1)
 par <- add_argument(par, "--col-snp-id", help="SNP ID (RSID) column", default="SNP", nargs=1)
 par <- add_argument(par, "--col-A1", help="Effective allele column", default="A1", nargs=1)
 par <- add_argument(par, "--col-A2", help="Noneffective allele column", default="A2", nargs=1)
 par <- add_argument(par, "--col-bp", help="SNP position column", default="BP", nargs=1)
 par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA", nargs=1)
-par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="BETA_SE", nargs=1)
+par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="SE", nargs=1)
 par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nargs=1)
 par <- add_argument(par, "--col-n", help="Effective sample size. Override with --effective-sample-size", default="N", nargs=1)
-par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio", default="BETA", nargs=1)
+par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio)", default="BETA", nargs=1)
 par <- add_argument(par, "--effective-sample-size", help="Effective sample size, if unavailable in sumstats (--col-n)", nargs=1)
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Set column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
-par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
-par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores()-1)
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
+par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes)", nargs=0)
 
 parsed <- parse_args(par)
 
 ### Mandatory
-fileGeno <- parsed$file_geno
-fileSumstats <- parsed$file_sumstats
-fileOutput <- parsed$file_output
+fileGeno <- parsed$geno_file
+fileSumstats <- parsed$sumstats
+fileOutput <- parsed$out
+fileLD <- parsed$ld_file
+fileMetaLD <- parsed$ld_meta_file
+
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
-### Directories
-dirGeneticMaps <- parsed$dir_genetic_maps
 ### Genotype
-genoLDSample <- parsed$geno_ld_sample
 genoImpute <- parsed$geno_impute
-genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
+genoImputeValid <- c('mode', 'mean0', 'mean2', 'random', 'skip')
 if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
 # Sumstats file
+chr2use <- parsed$chr2use
+if (any(is.na(chr2use))) chr2use <- 1:22
+
 colChr <- parsed$col_chr
 colSNPID <- parsed$col_snp_id
 colA1 <- parsed$col_A1
@@ -76,17 +80,16 @@ colN <- parsed$col_n
 # Column pheno (needs to account for when phenotype is stored in the fam file)
 colPheno <- parsed$col_pheno
 colPhenoFromFam <- parsed$col_pheno_from_fam
+mergeByRsid <- !is.na(parsed$merge_by_rsid)
 if (!is.na(colPheno) & !is.na(colPhenoFromFam)) stop("Only one of --col-pheno and --col-pheno-from-fam should be provided")
 if (!is.na(colPhenoFromFam)) colPheno <- 'affection'
 # Polygenic score
 nameScore <- parsed$name_score
 # Parameters to LDpred
-parGeneticMapsType <- parsed$genetic_maps_type
-parWindowSize <- parsed$window_size
 parHyperPLength <- parsed$hyper_p_length
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
-print(argEffectiveSampleSize)
+
 if (!is.na(argEffectiveSampleSize)) {
   argEffectiveSampleSize <- as.numeric(argEffectiveSampleSize)
   if (!is.numeric(argEffectiveSampleSize)) stop('Effective sample size needs to be numeric, received: ', argEffectiveSampleSize)
@@ -100,7 +103,7 @@ setSeed <- parsed$set_seed
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
 colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
-colSumstatToGeno <- c("chr",  "rsid",   "bp",  "a0",  "a1",  "beta",  "beta_se")
+colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a0",  "a1",  "beta",  "beta_se")
 
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
@@ -114,9 +117,10 @@ if (!is.na(filePheno)) {
 G <- obj.bigSNP$genotypes
 CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
-phenotype <- NA
-if (!is.na(colPheno)) phenotype <- obj.bigSNP$fam[,colPheno]
 NCORES <- nb_cores()
+
+cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
+map_ldref <- readRDS(fileMetaLD)
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
@@ -176,56 +180,56 @@ if (argStatType == "OR") {
   sumstats$beta <- log(sumstats$beta)
 }
 
-# Match SNPs by RSID
-df_beta <- snp_match(sumstats, map, join_by_pos=F)
+if (TRUE) {
+  cat('Filtering SNPs based on --chr2use\n')
+  nSNPsBefore <- nrow(sumstats)
+  sumstats <- sumstats[sumstats$chr %in% chr2use,]
+  nSNPsAfter <- nrow(sumstats)
+  cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
+}
 
-cat('\n### Calculating SNP correlation/LD using', NCORES, 'cores\n')
-individualSample <- rows_along(G)
-if (genoLDSample > 0) {
-  cat('Drawing', genoLDSample, 'individuals at random\n')
-  individualSample <- sample(nrow(G), genoLDSample)
-}
-cat("Converting from physical position to genetic position\n")
-# Genetic maps (these are only available for chromosomes 1 to 22)
-chromosomeSet <- 1:22
-chromosomes <- unique(CHR)
-if (23 %in% chromosomes) cat('NOTE: Omitting chromosome 23 in LD estimation\n')
-validCrh <- CHR %in% chromosomeSet
-POS2 <- snp_asGeneticPos(CHR[validCrh], POS[validCrh], dir=dirGeneticMaps, ncores=NCORES, type=parGeneticMapsType)
-temp <- tempfile(tmpdir='temp')
-cat('Using file', temp, 'to store matrixes\n')
-ld <- c()
-cat('Chromosome: ')
-for (chr in chromosomeSet) {
-  cat(chr, '...', sep='')
-  # indices in df_beta
+# match sumstats to genotypes
+# (df_beta is quite an ugly name for GWAS sumstats, but let it be so 
+# for consistency with original LDpred2 tutorial)
+cat('Matching sumstats to genotypes\n')
+df_beta <- snp_match(sumstats, map, join_by_pos=!mergeByRsid, match.min.prop=0)
+drops <- c("_NUM_ID_.ss", "_NUM_ID_", "rsid.ss")
+df_beta <- df_beta[ , !(names(df_beta) %in% drops)]
+
+cat('Matching sumstats to LD reference\n')
+df_beta <- snp_match(df_beta, map_ldref, join_by_pos=!mergeByRsid, match.min.prop=0)  # this adds af_UKBB and ld columns
+drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
+df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
+
+cat('\n### Loading LD reference from ', fileLD, '\n')
+tmp <- tempfile(tmpdir = "tmp-data")
+ld_size <- 0; corr <- NULL
+for (chr in chr2use) {
+  ## indices in 'df_beta' corresponding to a particular 'chr'
   ind.chr <- which(df_beta$chr == chr)
-  # indices in G
+  if (length(ind.chr) == 0) next
+  ## indices in 'map_ldref'
   ind.chr2 <- df_beta$`_NUM_ID_`[ind.chr]
-  nMarkers <- length(ind.chr2)
-  if (nMarkers > 0) {
-    corr0 <- snp_cor(G, ind.col=ind.chr2, ind.row=individualSample, size=parWindowSize/1000,
-                   infos.pos=POS2[ind.chr2], ncores=NCORES)
-    if (is.null(ld)) {
-      ld <- Matrix::colSums(corr0^2)
-      corr <- as_SFBM(corr0, temp)
-    } else {
-      ld <- c(ld, Matrix::colSums(corr0^2))
-      corr$add_columns(corr0, nrow(corr))
-    }
+  ## indices in 'corr_chr'
+  ind.chr3 <- match(ind.chr2, which(map_ldref$chr == chr))
+
+  num_ldref_snps <- sum(map_ldref$chr == chr)
+  ld_size <- ld_size + num_ldref_snps
+
+  fileLD_chr <- str_replace(fileLD, "@", toString(chr))
+  cat(fileLD_chr, ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
+
+  corr_chr <- readRDS(fileLD_chr)[ind.chr3, ind.chr3]
+
+  if (is.null(corr)) {
+    corr <- as_SFBM(corr_chr, tmp, compact = TRUE)
   } else {
-    cat('\nSkipped chromosome ', chr, '. Reason: Nr of SNPs was ', nMarkers, '\n', sep='')
-    df_beta <- df_beta[df_beta$chr != chr,]
+    corr$add_columns(corr_chr, nrow(corr))
   }
-}
-nrMissingLDs <- sum(is.na(ld))
-if (nrMissingLDs > 0) {
-  details <- ifelse(genoLDSample > 0, paste0(genoLDSample, ' individuals used, which may be too small'))
-  stop('Missing LD blocks (', nrMissingLDs,')! ', details)
 }
 
 cat('\n### Running LD score regression\n')
-ldsc <- with(df_beta, snp_ldsc(ld, length(ld), chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
+ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
 h2_est <- ldsc[["h2"]]
 cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
@@ -261,20 +265,29 @@ if (argLdpredMode == 'inf') {
   beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
 }
 
-cat('Scoring all individuals...')
-# Count missingness over individuals for each SNP
-nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
-nMissingGenotypes <- sum(nMissingGenotypes > 0)
-if (nMissingGenotypes > 0) {
-  warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
-  G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
+if (genoImpute != 'skip') {
+  cat('Imputing missing genotypes...\n')
+  # Count missingness over individuals for each SNP
+  nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
+  nMissingGenotypes <- sum(nMissingGenotypes > 0)
+  if (nMissingGenotypes > 0) {
+    warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
+    G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
+  }
 }
-pred_all <- big_prodVec(G, beta, ind.col=df_beta[['_NUM_ID_']])
+
+cat('Scoring all individuals...\n')
+# find which SNPs to use, and whether we need to flip their sign
+map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
+map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
+
+pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
-if (length(phenotype) > 1) {
-  correlation <- pcor(pred_all, phenotype[ind.test], NULL)
+
+if (!is.na(colPheno)) {
+  phenotype <- obj.bigSNP$fam[,colPheno]
+  correlation <- cor(pred_all, phenotype, use="pairwise.complete.obs")
   correlation <- round(correlation, 4)
-  correlation <- paste0(correlation[1], ' (', correlation[2], ', ', correlation[3],')') # Why is this inverted compared to the tutorial?
   cat('Correlation with phenotype:', correlation, '\n')
 }
 
@@ -287,4 +300,4 @@ colsKeep[1:2] <- c('FID', 'IID')
 colnames(outputData) <- colsKeep
 write.table(outputData, file=fileOutput, row.names = F, quote=F)
 # Drop temporary file
-fileRemoved <- file.remove(paste0(temp, '.sbk'))
+fileRemoved <- file.remove(paste0(tmp, '.sbk'))
