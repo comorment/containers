@@ -5,15 +5,20 @@ options(bigstatsr.check.parallel.blas = FALSE)
 options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
+library(stringr)
 
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
 par <- add_argument(par, "--geno-file", help="Input .rds (bigSNPR) file with genotypes")
 par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statistics")
 par <- add_argument(par, "--out", help="Output file with calculated PGS")
+
 # Optional files
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
+par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
+par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
+
 # Phenotype
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
@@ -49,6 +54,9 @@ parsed <- parse_args(par)
 fileGeno <- parsed$geno_file
 fileSumstats <- parsed$sumstats
 fileOutput <- parsed$out
+fileLD <- parsed$ld_file
+fileMetaLD <- parsed$ld_meta_file
+
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
@@ -58,7 +66,7 @@ genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
 if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
 # Sumstats file
 chr2use <- parsed$chr2use
-if (is.na(chr2use)) chr2use=1:22
+if (is.na(chr2use)) chr2use <- 1:22
 
 colChr <- parsed$col_chr
 colSNPID <- parsed$col_snp_id
@@ -111,8 +119,8 @@ CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
 NCORES <- nb_cores()
 
-cat('\n### Reading LD reference meta-file from /ldpred2_ref/map_hm3_plus.rds\n')
-map_ldref <- readRDS("/ldpred2_ref/map_hm3_plus.rds")
+cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
+map_ldref <- readRDS(fileMetaLD)
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
@@ -193,9 +201,9 @@ df_beta <- snp_match(df_beta, map_ldref, join_by_pos=!mergeByRsid)  # this adds 
 drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
 
-cat('\n### Loading LD reference from /ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds\n')
+cat('\n### Loading LD reference from ', fileLD, '\n')
 tmp <- tempfile(tmpdir = "tmp-data")
-ld_size=0; corr=NULL
+ld_size <- 0; corr <- NULL
 for (chr in chr2use) {
   ## indices in 'df_beta' corresponding to a particular 'chr'
   ind.chr <- which(df_beta$chr == chr)
@@ -205,12 +213,13 @@ for (chr in chr2use) {
   ## indices in 'corr_chr'
   ind.chr3 <- match(ind.chr2, which(map_ldref$chr == chr))
 
-  num_ldref_snps = sum(map_ldref$chr == chr)
-  ld_size = ld_size + num_ldref_snps
+  num_ldref_snps <- sum(map_ldref$chr == chr)
+  ld_size <- ld_size + num_ldref_snps
 
-  cat(chr, ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
+  fileLD_chr <- str_replace(fileLD, "@", chr)
+  cat(fileLD_chr, ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
 
-  corr_chr <- readRDS(paste0("/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr", chr, ".rds"))[ind.chr3, ind.chr3]
+  corr_chr <- readRDS(fileLD_chr)[ind.chr3, ind.chr3]
 
   if (is.null(corr)) {
     corr <- as_SFBM(corr_chr, tmp, compact = TRUE)
