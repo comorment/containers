@@ -113,6 +113,22 @@ HG00100 HG00100 NA -1.8332542097235e+100
 
 The script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`` in this directory.
 
+## Handling missing genotypes
+
+By default LDpred2.R script will impute missing genotypes bigsnpr's ``mean0`` method from [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
+This is done because otherwise bigsnpr returns an error (``Error: You can't have missing values in 'X'.``).
+Imputing missing values, however, can be very slow, and eventually we want to include this in ``createBackingFile.R`` step, so this is done once, rather then as part of every ``LDpred2.R`` invocation.
+
+For now, as a workaround, you may fall back to plink's ``fill-missing-a2`` option, then
+re-run ``createBackingFile.R``, and include ``--geno-impute skip`` in your ``LDpred2.R`` command:
+
+```
+plink --bfile EUR --fill-missing-a2 --make-bed --out EUR.nomiss
+$RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
+$RSCRIPT ldpred2.R --geno-file EUR.nomiss.rds --geno-impute skip ...
+```
+
+
 
 ## Slurm job
 

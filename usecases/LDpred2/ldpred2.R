@@ -62,7 +62,7 @@ fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
 ### Genotype
 genoImpute <- parsed$geno_impute
-genoImputeValid <- c('mode', 'mean0', 'mean2', 'random')
+genoImputeValid <- c('mode', 'mean0', 'mean2', 'random', 'skip')
 if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
 # Sumstats file
 chr2use <- parsed$chr2use
@@ -192,12 +192,12 @@ if (TRUE) {
 # (df_beta is quite an ugly name for GWAS sumstats, but let it be so 
 # for consistency with original LDpred2 tutorial)
 cat('Matching sumstats to genotypes\n')
-df_beta <- snp_match(sumstats, map, join_by_pos=!mergeByRsid)
+df_beta <- snp_match(sumstats, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 drops <- c("_NUM_ID_.ss", "_NUM_ID_", "rsid.ss")
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]
 
 cat('Matching sumstats to LD reference\n')
-df_beta <- snp_match(df_beta, map_ldref, join_by_pos=!mergeByRsid)  # this adds af_UKBB and ld columns
+df_beta <- snp_match(df_beta, map_ldref, join_by_pos=!mergeByRsid, match.min.prop=0)  # this adds af_UKBB and ld columns
 drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
 
@@ -216,7 +216,7 @@ for (chr in chr2use) {
   num_ldref_snps <- sum(map_ldref$chr == chr)
   ld_size <- ld_size + num_ldref_snps
 
-  fileLD_chr <- str_replace(fileLD, "@", chr)
+  fileLD_chr <- str_replace(fileLD, "@", toString(chr))
   cat(fileLD_chr, ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
 
   corr_chr <- readRDS(fileLD_chr)[ind.chr3, ind.chr3]
@@ -265,18 +265,21 @@ if (argLdpredMode == 'inf') {
   beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
 }
 
-cat('Scoring all individuals...')
-# Count missingness over individuals for each SNP
-nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
-nMissingGenotypes <- sum(nMissingGenotypes > 0)
-if (nMissingGenotypes > 0) {
-  warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
-  G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
+if (genoImpute != 'skip') {
+  cat('Imputing missing genotypes...\n')
+  # Count missingness over individuals for each SNP
+  nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
+  nMissingGenotypes <- sum(nMissingGenotypes > 0)
+  if (nMissingGenotypes > 0) {
+    warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
+    G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
+  }
 }
 
+cat('Scoring all individuals...\n')
 # find which SNPs to use, and whether we need to flip their sign
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
-map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid)
+map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 
 pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
