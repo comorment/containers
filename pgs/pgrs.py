@@ -23,6 +23,7 @@ import abc
 import os
 import pandas as pd
 
+
 _MAJOR = "1"
 _MINOR = "0"
 # On main and in a nightly release the patch should be one
@@ -228,8 +229,8 @@ class PGS_Plink(BasePGRS):
             path for output files (<path>)
         Cov_file: str
             path to covariance file (.cov)
-        Eigenvec_file: str
-            path to eigenvec file (.eig)
+        Eigenvec_file: str or None
+            None, or path to eigenvec file (.eigenvec)
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
         clump_r2: float
@@ -257,7 +258,12 @@ class PGS_Plink(BasePGRS):
                          **kwargs)
         # set attributes
         self.Cov_file = Cov_file
-        self.Eigenvec_file = Eigenvec_file  # TODO: Implement!
+        if Eigenvec_file is None:
+            self.Eigenvec_file = os.path.join(
+                self.Output_dir, 
+                self.Data_prefix + '.eigenvec')
+        else:
+            self.Eigenvec_file = Eigenvec_file
         self.Data_postfix = Data_postfix
 
         # clumping params
@@ -395,35 +401,56 @@ class PGS_Plink(BasePGRS):
     def _run_plink_w_stratification(self):
         '''
         Account for (population) stratification using PCs,
-        creating .eigenvec file
+        creating .eigenvec file. 
+        If class parameter Eigenvec_file is set and file exist, 
+        this function will not return commands to compute 
+        a new eigenvec file.
 
         Returns
         -------
-        str
+        list of str
         '''
-        # First, perform pruning
-        tmp_str_0 = ' '.join([
-            os.environ['PLINK'],
-            '--bfile',
-            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
-            '--indep-pairwise',
-            ' '.join([str(x) for x in self.strat_indep_pairwise]),
-            '--out', os.path.join(self.Output_dir, self.Data_prefix)
-        ])
+        # skip this step if Eigenvec_file argument is specified and file exist.
+        if os.path.isfile(self.Eigenvec_file):
+            print(f'Eigenvec_file {self.Eigenvec_file} exists. ' +
+                  'To compute, set Eigenvec_file=None')
+            # check that number of PCs match with class input
+            eigenvec_df = pd.read_csv(
+                self.Eigenvec_file, 
+                delim_whitespace=True, header=None, nrows=1)
+            nPCs = eigenvec_df.columns.size - 2
+            if nPCs != self.nPCs:
+                mssg = (
+                    f'The number of PCs in {self.Eigenvec_file} nPCs={nPCs} ' + 
+                    f'while <pgrs.PGS_Plink instance>.nPCs={self.nPCs}. ' + 
+                    f'Instantiate class pgrs.PGS_Plink with nPCs={self.Eigenvec_file} ' +
+                    '(confer config.yaml file with settings).')
+                raise ValueError(mssg)
+            return []
+        else:
+            # First, perform pruning
+            tmp_str_0 = ' '.join([
+                os.environ['PLINK'],
+                '--bfile',
+                os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+                '--indep-pairwise',
+                ' '.join([str(x) for x in self.strat_indep_pairwise]),
+                '--out', os.path.join(self.Output_dir, self.Data_prefix)
+            ])
 
-        # Then we calculate the first N PCs
-        tmp_str_1 = ' '.join([
-            os.environ['PLINK'],
-            '--bfile',
-            os.path.join(self.Input_dir,
-                         self.Data_prefix + self.Data_postfix),
-            '--extract',
-            os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
-            '--pca', str(self.nPCs),
-            '--out', os.path.join(self.Output_dir, self.Data_prefix)
-        ])
+            # Then we calculate the first N PCs
+            tmp_str_1 = ' '.join([
+                os.environ['PLINK'],
+                '--bfile',
+                os.path.join(self.Input_dir,
+                            self.Data_prefix + self.Data_postfix),
+                '--extract',
+                os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
+                '--pca', str(self.nPCs),
+                '--out', os.path.join(self.Output_dir, self.Data_prefix)
+            ])
 
-        return '\n'.join([tmp_str_0, tmp_str_1])
+            return '\n'.join([tmp_str_0, tmp_str_1])
 
     def _find_best_fit_prs(self):
         '''
@@ -437,7 +464,7 @@ class PGS_Plink(BasePGRS):
         command = ' '.join([
             os.environ['RSCRIPT'], 'find_best_fit_prs.R',
             self.Pheno_file,
-            os.path.join(self.Output_dir, self.Data_prefix + '.eigenvec'),
+            self.Eigenvec_file,
             self.Cov_file,
             os.path.join(self.Output_dir, self.Data_prefix),
             ','.join([str(x) for x in self.range_list]),
