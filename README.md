@@ -16,7 +16,12 @@ The history of changes is available in the [CHANGELOG.md](https://github.com/com
 
 Additional tools are available in separate repositories:
 
+* <https://github.com/comorment/ldsc> - LD score regression
+* <https://github.com/comorment/mixer> - cross-trait MiXeR analysis
+* <https://github.com/comorment/popcorn> - cross-ancestry genetic correlations
+* <https://github.com/comorment/magma> - MAGMA, LAVA, lava-partitioning tools
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
+* <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``gwas.sif`` ([more info](usecases/LDpred2/README.md)).
 
 ## <a name="getting-started"></a>Getting started
 
@@ -43,11 +48,11 @@ git clone --depth 1 https://github.com/comorment/containers.git
 NB! Please add ``--depth 1`` to your command as shown above. This will limit the amount of data transfered from github to your machine.
 
 For TSD system, a read-only copy of these containers is maintained at these locations
-(please read /cluster/projects/pNN/github/README.md file before using these copies):
+(please read github/README.md file before using these copies):
 
 ```
 /cluster/projects/p33/github/comorment
-/cluster/projects/p697/github/comorment
+/ess/p697/data/durable/s3-api/github/comorment
 ```
 
 Once you have a clone of this repository on your system, you may proceed with [docs/hello.md](https://github.com/comorment/containers/blob/main/docs/hello.md) example.
@@ -57,7 +62,7 @@ To simplify instructions throughout this repository we use certain variables (it
 
 * ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub. Cloning ``reference`` repository is optional, and it's only needed for internal work within the CoMorMent project - for normal use you may proceed without it.
 * ``$SIF`` refers to ``$COMORMENT/containers/singularity`` folder, containing singulairty containers (the ``.sif`` files)
-* ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/containers/matlab:/MATLAB:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2`` and ``/MATLAB``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most of the exmples don't require private reference data.
+* ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most (if not all) of the exmples don't require private reference data.
 * We assume that all containers run with ``--home $PWD:/home``, mounting current folder mounted as ``/home`` within container
 * We also recommend using ``--contain`` argument to better isolate container from the environment in your host machine. If you choose not to mount ``--home $PWD:/home``, you may want to add ``--no-home`` argument.
 
