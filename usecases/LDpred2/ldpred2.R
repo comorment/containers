@@ -26,7 +26,7 @@ par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file
 par <- add_argument(par, "--geno-impute", help="Imputation method for missing genotypes (preimpute genotypes to avoid warning).", 
                     nargs=1, default="mean0")
 # Sumstats file.
-par <- add_argument(par, "--chr2use", help="list of chromosomes to use", nargs=Inf)
+par <- add_argument(par, "--chr2use", help="list of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
 par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR", nargs=1)
 par <- add_argument(par, "--col-snp-id", help="SNP ID (RSID) column", default="SNP", nargs=1)
 par <- add_argument(par, "--col-A1", help="Effective allele column", default="A1", nargs=1)
