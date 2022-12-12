@@ -22,6 +22,42 @@ LDpred2 will try to download these which will cause an error without an internet
 the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
  -->
 
+## Running LDpred2 analysis - synthetic example (chr21 and chr22)
+
+The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
+This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather then clone the entire repo.
+
+```
+# point to input/output files
+export fileGeno=/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed
+export fileGenoRDS=g1000_eur_chr21to22_hm3rnd1.rds
+export filePheno=/REF/examples/ldpred2/simu.pheno
+export fileSumstats=/REF/examples/ldpred2/trait1.sumstats.gz
+export fileOut=simu
+export colPheno=trait1
+
+# set environmental variables. Replace "<path/to/comorment>" with 
+# the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
+export COMORMENT=<path/to/comorment>
+export SIF=$COMORMENT/containers/singularity
+export REFERENCE=$COMORMENT/containers/reference
+export LDPRED2_REF=$COMORMENT/ldpred2_ref
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+
+export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+
+# convert genotype to LDpred2 format
+$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+
+$RSCRIPT ldpred2.R --ldpred-mode inf \
+ --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno \
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
+
+$RSCRIPT ldpred2.R --ldpred-mode auto \
+ --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno  \
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
+```
+
 ## Running LDpred2 analysis - height example
 
 The following set of commands gives an example of how to apply LDpred2 on a demo height data:
@@ -77,33 +113,6 @@ HG00100 HG00100 NA -1.8332542097235e+100
 
 The script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`` in this directory.
 
-
-## Running LDpred2 analysis - synthetic example (chr21 and chr22)
-
-The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
-
-```
-# point to input/output files
-export fileGeno=/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed
-export fileGenoRDS=g1000_eur_chr21to22_hm3rnd1.rds
-export filePheno=/REF/examples/ldpred2/simu.pheno
-export fileSumstats=/REF/examples/ldpred2/trait1.sumstats.gz
-export fileOut=simu
-export colPheno=trait1
-
-# NB! remember to set environmental variables as in the previous example on height data
-
-# convert genotype to LDpred2 format
-$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
-
-$RSCRIPT ldpred2.R --ldpred-mode inf \
- --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
-
-$RSCRIPT ldpred2.R --ldpred-mode auto \
- --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno  \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
-```
 
 ## Slurm job
 
