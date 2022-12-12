@@ -201,6 +201,7 @@ class PGS_Plink(BasePGRS):
                  Data_postfix='.QC',
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
+                 Eigenvec_file='/REF/examples/prsice2/',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -227,6 +228,8 @@ class PGS_Plink(BasePGRS):
             path for output files (<path>)
         Cov_file: str
             path to covariance file (.cov)
+        Eigenvec_file: str
+            path to eigenvec file (.eig)
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
         clump_r2: float
@@ -254,6 +257,7 @@ class PGS_Plink(BasePGRS):
                          **kwargs)
         # set attributes
         self.Cov_file = Cov_file
+        self.Eigenvec_file = Eigenvec_file  # TODO: Implement!
         self.Data_postfix = Data_postfix
 
         # clumping params
@@ -671,13 +675,13 @@ class PGS_LDpred2(BasePGRS):
         method: str
             LDpred2 method, either "inf" (default) or "auto"
         keep_SNPs_file: str
-            path
+            File with RSIDs of SNPs to keep
         col_stat: str
-            'OR'
+            Effect estimate column. Default: 'OR'
         col_stat_se: str
-            'SE'
+            Effect estimate standard error column. Default: 'SE'
         stat_type: str
-            'OR'
+            Effect estimate type (BETA for linear, OR for odds-ratio. Default: 'OR'
         **kwargs
             dict of additional keyword/arguments pairs parsed to
             the LDpred2.R script (see file for full set of options).

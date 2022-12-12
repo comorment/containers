@@ -26,7 +26,7 @@ if __name__ == '__main__':
     PWD = os.getcwd()
     os.environ.update(
         dict(
-            BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",  # noqa: E501
+            # BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",  # noqa: E501
             GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",  # noqa: E501
             GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",  # noqa: E501
             AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",  # noqa: E501
@@ -46,13 +46,14 @@ if __name__ == '__main__':
     Pheno_file = '/REF/examples/prsice2/EUR.height'
     # Input_dir='/REF/examples/prsice2',
     Data_prefix = 'EUR'
-    Phenotype = 'Height'
     Data_postfix = '.QC'
 
     # method specific input
     Cov_file = '/REF/examples/prsice2/EUR.cov'
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
     keep_SNPs_file = '/REF/hapmap3/w_hm3.justrs'
+
+    
 
     #######################################
     # Standard GWAS QC.
@@ -64,6 +65,8 @@ if __name__ == '__main__':
     # output dir for QC'd data.
     QC_data = 'QC_data'
 
+    # QC params
+    Phenotype = 'Height'
     
     # perform some basic QC steps in
     qc = pgrs.Standard_GWAS_QC(

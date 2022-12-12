@@ -17,7 +17,7 @@ comorment_folder: "/cluster/projects/p697/github/comorment"
 singularity_bind: "$COMORMENT/containers/reference:/REF:ro"
 
 
-## Parameters specific to each PGS calculating tool:
+## Parameters specific to each PGS calculating tool (refer documentation of each tool):
 # Plink
 plink:
   clump_p1: 1
