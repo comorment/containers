@@ -118,17 +118,8 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
   bb7a8e0b977e29e03067d75d19803913  singularity/gwas.sif
   11ac9e8fe69df07d650bd5e1e7cdeee5  singularity/hello.sif
   c78d57397471ee802d37837ca5f8b797  singularity/python3.sif
-  c87c69d2fbab4a317f9d6bb725c76150  singularity/r.sif
+  e8f26b23a8b44f15f3dfff2b02623780  singularity/r.sif
   a3f1d8411e1e3cf8670551b7f334a58d  singularity/saige.sif
-  ```
-
-* update the following containers:
-
-  ```
-  ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
-  627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
-  ec2824fc1ad8673739b219864c1b4097  python3.sif (add yaml package)
-  5c830470a2ee3562974d1e2890d52315  python3.sif (remove mixer package)
   ```
 
 ### Fixed
