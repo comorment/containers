@@ -8,9 +8,9 @@ library(argparser, quietly=T)
 
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
-par <- add_argument(par, "file-geno", help="Input .rds (bigSNPR) file with genotypes")
-par <- add_argument(par, "file-sumstats", help="Input file with GWAS summary statistics")
-par <- add_argument(par, "file-output", help="Output file with calculated PGS")
+par <- add_argument(par, "--geno-file", help="Input .rds (bigSNPR) file with genotypes")
+par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statistics")
+par <- add_argument(par, "--out", help="Output file with calculated PGS")
 # Optional files
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
@@ -46,9 +46,9 @@ par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default 
 parsed <- parse_args(par)
 
 ### Mandatory
-fileGeno <- parsed$file_geno
-fileSumstats <- parsed$file_sumstats
-fileOutput <- parsed$file_output
+fileGeno <- parsed$geno_file
+fileSumstats <- parsed$sumstats
+fileOutput <- parsed$out
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno

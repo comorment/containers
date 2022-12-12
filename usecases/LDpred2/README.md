@@ -52,14 +52,14 @@ $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
  --file-pheno $filePheno --col-pheno $colPheno \
  --col-stat OR --col-stat-se SE --stat-type OR \
- $fileGenoRDS $fileSumstats $fileOut.inf
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
 
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
  --file-pheno $filePheno --col-pheno $colPheno \
  --col-stat OR --col-stat-se SE --stat-type OR \
- $fileGenoRDS $fileSumstats $fileOut.auto
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
 ```
 
 ## Output
@@ -98,11 +98,11 @@ $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 
 $RSCRIPT ldpred2.R --ldpred-mode inf \
  --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno \
-  $fileGenoRDS $fileSumstats $fileOut.inf
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
 
 $RSCRIPT ldpred2.R --ldpred-mode auto \
  --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno  \
-  $fileGenoRDS $fileSumstats $fileOut.auto
+ --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
 ```
 
 ## Slurm job

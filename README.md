@@ -44,7 +44,7 @@ Now you're all set to clone this repository (note that adding ``--depth 1`` to y
 git clone --depth 1 https://github.com/comorment/containers.git
 ```
 
-At this point you may want to run the following find&grep command to check that all git lfs files were downloaded successfully (i.e. you got an actual content of each file, and not just its git lfs reference). The command searches for all files within $COMORMENT folder which contain something like ``oid sha`` string, which likely indicates that git lfs file hasn't been downloaded.
+At this point you may want to run the following find&grep command to check that all git lfs files were downloaded successfully (i.e. you got an actual content of each file, and not just its git lfs reference). The command searches for and lists all files within $COMORMENT folder which contain a string like ``oid sha``, likely indicating that git lfs file hasn't been downloaded.
 If the following commands doesn't find any files that you're good to go. Otherwise you may want to re-run your ``git clone`` commands or investigate why the're failing to download the actual file.
 ```
 find $COMORMENT -type f -not -path '*/.*' -exec sh -c 'head -c 100 "{}" | if grep -H "oid sha"; then echo {}; fi ' \; | grep -v "oid sha256"
