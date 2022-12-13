@@ -61,3 +61,15 @@ def test_r_prsice():
     call = f'singularity run {pth} PRSice_linux --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
+
+
+# py.test tests/test_r.py -k test_r_bigsnpr
+def test_r_bigsnpr():
+    pwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system(f"cp {os.path.join(pwd, 'tests', 'extras', 'bigsnpr.R')} .")
+        sif = os.path.join(pwd, pth)
+        call = f"""singularity run --home={d} {sif} Rscript bigsnpr.R"""
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0

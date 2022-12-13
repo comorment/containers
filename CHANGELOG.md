@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Note that CoMorMent containers are organized using several GitHub repositories:
 
 * <https://github.com/comorment/containers> - .sif files, public reference data, documentation, common scripts
-* <https://github.com/comorment/gwas> - source code (Dockerfile, etc)
 * <https://github.com/comorment/reference> - private reference data with access restricted to CoMorMent collaborator
 
 All of the above repositories are covered by this CHANGELOG. They will have the same version tags on github.
@@ -34,11 +33,57 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-- Removals goes here
+- removals goes here
 
-## [1.1] - 2022-11-29
+## [1.1] - 2022-12-01
 
-Maintenance/feature release with the following main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0): 
+Maintenance/feature release with the following main software incorporated into each container: 
+
+  | container         | OS/tool             | version                                   | license
+  | ----------------- | ------------------- | ----------------------------------------- | -------------
+  | hello.sif         | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | hello.sif         | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | gwas.sif          | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | plink2              | v2.00a3.6LM 64-bit Intel (14 Aug 2022)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05)                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | simu_linux          | v0.9.4                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bolt                | v2.4 July 22, 2022                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | gctb                | 2.02                                      | [MIT](https://opensource.org/licenses/MIT)
+  | gwas.sif          | qctool              | 2.0.6, revision 18b8f17                   | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | king                | 2.2.9 - (c)                               | [permissive](https://www.kingrelatedness.com/Download.shtml)
+  | gwas.sif          | metal               | version released on 2011-03-25            | -
+  | gwas.sif          | vcftools            | 0.1.17                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bcftools            | 1.12 (using htslib 1.12)                  | [MIT/Expat/GPLv3](https://github.com/samtools/bcftools/blob/develop/LICENSE)
+  | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | regenie             | v2.0.2.gz                                 | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | gwas.sif          | GWAMA               | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
+  | gwas.sif          | minimac4            | v4.1.0                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | cat-bgen            | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | edit-bgen           | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | HTSlib              | 1.12                                      | [MIT/Expat/Modified-BSD](https://github.com/samtools/htslib/blob/develop/LICENSE)
+  | gwas.sif          | shapeit4.2          | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
+  | python3.sif       | ubuntu              | 20.04 (LTS)                               | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | python3.sif       | python3             | python 3.10.6 + numpy, pandas, etc.       | [PSF](https://docs.python.org/3.10/license.html)
+  | python3.sif       | LDpred              | 1.0.11                                    | [MIT](https://opensource.org/licenses/MIT)
+  | python3.sif       | python_convert      | github commit bcde562                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | python3.sif       | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | r.sif             | R                   | 4.0.5 (2021-03-31) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | r.sif             | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
+  | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
+  | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR/commit/c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
+  | r.sif             | GSMR                | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
+  | r.sif             | snpStats            | v1.40.0                                   | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | saige.sif         | ubuntu              | 16.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | saige.sif         | SAIGE               | version 0.43                              | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+
+Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
 
@@ -73,17 +118,8 @@ Maintenance/feature release with the following main changes since release versio
   bb7a8e0b977e29e03067d75d19803913  singularity/gwas.sif
   11ac9e8fe69df07d650bd5e1e7cdeee5  singularity/hello.sif
   c78d57397471ee802d37837ca5f8b797  singularity/python3.sif
-  c87c69d2fbab4a317f9d6bb725c76150  singularity/r.sif
+  e8f26b23a8b44f15f3dfff2b02623780  singularity/r.sif
   a3f1d8411e1e3cf8670551b7f334a58d  singularity/saige.sif
-  ```
-
-* update the following containers:
-
-  ```
-  ec089544b13d3eb39f13728f8584dcde  saige.sif   (update to SAIGE v0.44.6.5)
-  627734a5c74c94bd69453d0366aced5a  r.sif       (add qqman package)
-  ec2824fc1ad8673739b219864c1b4097  python3.sif (add yaml package)
-  5c830470a2ee3562974d1e2890d52315  python3.sif (remove mixer package)
   ```
 
 ### Fixed
@@ -102,6 +138,15 @@ Maintenance/feature release with the following main changes since release versio
 * ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
 * remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
 * remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (<https://github.com/comorment/mixer>). This is also where you will find MiXeR's use-cases.
+* MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
+  MAGMA reference files are also moved to this repository.
+* enigma-cnv.sif and enigma-cnv.sif is moved to https://github.com/comorment/iPsychCNV
+  enigma-cnv.sif is also available here: in https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers
+* tryggve_query.sif  is moved to https://github.com/comorment/Tryggve_psych
+* ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime.
+  pleioFDR reference files are also moved to this repository.
+
+
 
 ## [1.0.0] - 2020-10-20
 
