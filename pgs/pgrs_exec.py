@@ -112,13 +112,25 @@ os.environ.update(
 
     ))
 
+
 # load config.yaml file as dict
 with open("config.yaml", 'r') as f:
     config = yaml.safe_load(f)
 
-# print input and config dicts
-print(args_dict, '\n')
-print(config, '\n')
+
+# job file headers
+bash_header = '''#\!/bin/sh'''
+jobname = '-'.join([config['slurm']['job_name'], parsed_args.method])
+slurm_header = f'''#!/bin/sh
+#SBATCH --job-name={jobname}
+#SBATCH --output={os.path.join(parsed_args.Output_dir, jobname + '.txt')}
+#SBATCH --error={os.path.join(parsed_args.Output_dir, jobname + '.txt')}
+#SBATCH --account=$SBATCH_ACCOUNT  # project ID
+#SBATCH --time={config['slurm']['time']}
+#SBATCH --cpus-per-task={config['slurm']['cpus_per_task']}
+#SBATCH --mem-per-cpu={config['slurm']['mem_per_cpu']}
+#SBATCH --partition={config['slurm']['partition']}\n
+'''
 
 
 # create PGRS instances and commands 
@@ -170,9 +182,27 @@ if parsed_args.runtype == 'subprocess':
         assert proc.returncode == 0
 elif parsed_args.runtype == 'sh':
     # write bash script
-    raise NotImplementedError
+    jobdir = 'bash_scripts'
+    if not os.path.isdir(jobdir):
+        os.mkdir(jobdir)
+    
+    with open(os.path.join(jobdir, f'{parsed_args.method}.sh'), 'w') as f:
+        f.writelines('\n'.join([bash_header] + commands))
+    
+        mssg = f'wrote {f.name}. To run, issue:\n$ bash {f.name}'
+        print(mssg)
+
 elif parsed_args.runtype == 'slurm':
-    # write slurm jobscript
-    raise NotImplementedError
+    # write bash script
+    jobdir = 'slurm_job_scripts'
+    if not os.path.isdir(jobdir):
+        os.mkdir(jobdir)
+    
+    with open(os.path.join(jobdir, f'{parsed_args.method}.job'), 'w') as f:
+        f.writelines('\n'.join([slurm_header] + commands))
+    
+        mssg = f'wrote {f.name}. To submit job, issue:\n$ bash {f.name}'
+        print(mssg)
 else:
-    raise NotImplementedError('runtype not implemented')
+    raise NotImplementedError(
+        f'runtype {parsed_args.runtype} not implemented')
