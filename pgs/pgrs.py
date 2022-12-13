@@ -135,7 +135,7 @@ def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
                     sep=' ', index=False)
 
 
-class BasePGRS(abc.ABC):
+class BasePGS(abc.ABC):
     """Base PGRS object declaration with some
     shared properties for subclassing
     """
@@ -188,10 +188,10 @@ class BasePGRS(abc.ABC):
         raise NotImplementedError
 
 
-class PGS_Plink(BasePGRS):
+class PGS_Plink(BasePGS):
     """
     Helper class for setting up Plink PRS analysis.
-    Inherited from class ``BasePGRS``
+    Inherited from class ``BasePGS``
     """
 
     def __init__(self,
@@ -516,10 +516,10 @@ class PGS_Plink(BasePGRS):
                     ]
 
 
-class PGS_PRSice2(BasePGRS):
+class PGS_PRSice2(BasePGS):
     """
     Helper class for setting up PRSice-2 PRS analysis.
-    Inherited from class ``BasePGRS``
+    Inherited from class ``BasePGS``
     """
 
     def __init__(self,
@@ -664,10 +664,10 @@ class PGS_PRSice2(BasePGRS):
                 self._generate_post_run_str()]
 
 
-class PGS_LDpred2(BasePGRS):
+class PGS_LDpred2(BasePGS):
     """
     Helper class for setting up LDpred2 PRS analysis.
-    Inherited from class ``BasePGRS``
+    Inherited from class ``BasePGS``
     """
 
     def __init__(self,
@@ -794,10 +794,10 @@ class PGS_LDpred2(BasePGRS):
             return [tmp_cmd1]
 
 
-class Standard_GWAS_QC(BasePGRS):
+class Standard_GWAS_QC(BasePGS):
     '''
     Helper class for common GWAS QC.
-    Inherited from class ``BasePGRS``
+    Inherited from class ``BasePGS``
 
     Based on the tutorial
     https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
