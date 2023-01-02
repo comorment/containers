@@ -22,6 +22,7 @@
 import abc
 import os
 import pandas as pd
+import numpy as np
 
 
 _MAJOR = "1"
@@ -72,7 +73,7 @@ def convert_dict_to_str(d, key_prefix='--'):
     cmd = ''
     if len(d) > 0:
         for key, value in d.items():
-            if hasattr(value, '__iter__'):
+            if isinstance(value, (tuple ,list, np.ndarray)):
                 cmd = ' '.join(
                     [cmd,
                      f'{key_prefix}{key} {" ".join([str(v) for v in value])}'
@@ -81,6 +82,22 @@ def convert_dict_to_str(d, key_prefix='--'):
                 cmd = ' '.join(
                     [cmd, f'{key_prefix}{key} {str(value) or ""}'])
     return cmd
+
+def extract_variables(df, variables, pheno_dict_map, log):
+    cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
+    other_vars =  ['FID', 'IID'] + [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
+
+    dummies=df[other_vars]
+    for var in cat_vars:
+        new = pd.get_dummies(df[var], prefix=var)
+        dummies = dummies.join(new)
+
+        #drop most frequent variable for ref category
+        drop_col = df.groupby([var]).size().idxmax()
+        dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
+
+        log.log('Variable {} will be extracted as dummie, dropping {} label (most frequent)'.format(var, drop_col))
+    return dummies.copy()
 
 def post_run_plink(Output_dir, Data_prefix, best_fit_file='best_fit_prs.csv', score_file='test.score'):
         '''
@@ -134,6 +151,37 @@ def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
     scores.to_csv(os.path.join(Output_dir, 'test.score'),
                     sep=' ', index=False)
 
+def df_colums_to_file(source_file, output_file, usecols=None, delim_whitespace=True, delimiter=None, **kwargs):
+    '''Extract columns from dataframe (.csv) on file to output_file
+
+    Parameters
+    ----------
+    source_file: file path
+        .csv (or similar) input file read by pandas.read_csv.
+    output_file: file path
+        output file to be written
+    usecols: list of str or None
+        columns to read and write
+    delim_whitespace: bool
+        parsed to df.read_csv. Default: True
+    delimiter: None or str
+        delimiter. Default: None
+    **kwargs
+        keyword arguments parsed to pd.read_csv()
+    '''
+    # read
+    df = pd.read_csv(
+        source_file, 
+        usecols=usecols, 
+        delim_whitespace=delim_whitespace, 
+        delimiter=delimiter,
+        **kwargs)
+    # reorder
+    if usecols is not None:
+        df = df[usecols]
+    # write
+    df.to_csv(output_file, sep=' ' if delim_whitespace else delimiter, index=False)
+    
 
 class BasePGS(abc.ABC):
     """Base PGRS object declaration with some
@@ -203,6 +251,7 @@ class PGS_Plink(BasePGS):
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/',
+                 Phenotype='Height',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -231,6 +280,8 @@ class PGS_Plink(BasePGS):
             path to covariance file (.cov)
         Eigenvec_file: str or None
             None, or path to eigenvec file (.eigenvec)
+        Phenotype: str
+            default: 'Height'
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
         clump_r2: float
@@ -257,14 +308,24 @@ class PGS_Plink(BasePGS):
                          Output_dir=Output_dir,
                          **kwargs)
         # set attributes
-        self.Cov_file = Cov_file
-        if Eigenvec_file is None:
+        if Cov_file is None or Eigenvec_file is None:
+            self.Cov_file = os.path.join(
+                self.Output_dir, 
+                self.Data_prefix + '.')
             self.Eigenvec_file = os.path.join(
                 self.Output_dir, 
                 self.Data_prefix + '.eigenvec')
         else:
+            for fpath in [Cov_file, Eigenvec_file]:
+                try:
+                    assert os.path.isfile(fpath)
+                except AssertionError:
+                    print(f'file {fpath} may not exist\n')
+            
+            self.Cov_file = Cov_file
             self.Eigenvec_file = Eigenvec_file
         self.Data_postfix = Data_postfix
+        self.Phenotype = Phenotype
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -303,11 +364,15 @@ class PGS_Plink(BasePGS):
 
         return command
 
-    def _preprocessing_clumping(self):
+    def _preprocessing_clumping(self, update_effect_size):
         '''
         Generate string which can be included in job script
         for clumping (generating .clumped file)
 
+        Parameters
+        ----------
+        update_effect_size: bool
+            if False, use Sumstats_file for --clump param
         Returns
         -------
         str
@@ -315,12 +380,11 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             os.environ['PLINK'],
             '--bfile',
-            os.path.join(self.Input_dir,
-                         self.Data_prefix + self.Data_postfix),
+            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
-            '--clump', self._transformed_file,
+            '--clump', self._transformed_file if update_effect_size else self.Sumstats_file,
             '--clump-snp-field', 'SNP',
             '--clump-field', 'P',
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
@@ -346,22 +410,34 @@ class PGS_Plink(BasePGS):
 
         return command
 
-    def _preprocessing_extract_p_values(self):
+    def _preprocessing_extract_p_values(self, update_effect_size):
         '''
         Extract P-values (generating SNP.pvalue file)
+
+        Parameters
+        ----------
+        update_effect_size: bool
+            if False, use Sumstats_file as input
 
         Returns
         -------
         str
         '''
-        command = ' '.join([
-            os.environ['AWK_EXEC'],
-            "'{print $3,$8}'",
-            self._transformed_file,
-            '>',
-            os.path.join(self.Output_dir, 'SNP.pvalue'),
+        command = ''
+        if not update_effect_size:
+            # unzip Sumstats file to Output_dir allowing parsing 
+            # it to Plink using --score
+            command += ' '.join([
+                os.environ['PYTHON'],
+                '-c', 
+                f"""'import pgrs; pgrs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""
+                '\n'
+            ])
+        command += ' '.join([
+            os.environ['PYTHON'],
+            '-c', 
+            f"""'import pgrs; pgrs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""
         ])
-
         return command
 
     def _write_range_list_file(self):
@@ -413,7 +489,7 @@ class PGS_Plink(BasePGS):
         # skip this step if Eigenvec_file argument is specified and file exist.
         if os.path.isfile(self.Eigenvec_file):
             print(f'Eigenvec_file {self.Eigenvec_file} exists. ' +
-                  'To compute, set Eigenvec_file=None')
+                  'To get instructions to compute, set Eigenvec_file=None')
             # check that number of PCs match with class input
             eigenvec_df = pd.read_csv(
                 self.Eigenvec_file, 
@@ -426,7 +502,7 @@ class PGS_Plink(BasePGS):
                     f'Instantiate class pgrs.PGS_Plink with nPCs={self.Eigenvec_file} ' +
                     '(confer config.yaml file with settings).')
                 raise ValueError(mssg)
-            return []
+            return ''
         else:
             # First, perform pruning
             tmp_str_0 = ' '.join([
@@ -442,8 +518,7 @@ class PGS_Plink(BasePGS):
             tmp_str_1 = ' '.join([
                 os.environ['PLINK'],
                 '--bfile',
-                os.path.join(self.Input_dir,
-                            self.Data_prefix + self.Data_postfix),
+                os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
                 '--extract',
                 os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
                 '--pca', str(self.nPCs),
@@ -466,6 +541,7 @@ class PGS_Plink(BasePGS):
             self.Pheno_file,
             self.Eigenvec_file,
             self.Cov_file,
+            self.Phenotype,
             os.path.join(self.Output_dir, self.Data_prefix),
             ','.join([str(x) for x in self.range_list]),
             str(self.nPCs),
@@ -483,12 +559,14 @@ class PGS_Plink(BasePGS):
         return cmd
 
 
-    def get_str(self, mode='basic'):
+    def get_str(self, mode='basic', update_effect_size=False):
         '''
         Parameters
         ----------
         mode: str
             'basic' or 'stratification'
+        update_effect_size: bool
+            if True, compute PGRS using OR
 
         Returns:
         --------
@@ -497,23 +575,30 @@ class PGS_Plink(BasePGS):
         '''
         mssg = 'mode must be "preprocessing", "basic", or "stratification"'
         assert mode in ['preprocessing', 'basic', 'stratification'], mssg
-
+        commands = []
         if mode == 'preprocessing':
-            commands = [
-                self._preprocessing_update_effect_size(),
-                self._preprocessing_clumping(),
+            commands += [
+                self._preprocessing_update_effect_size() if update_effect_size else None,
+                self._preprocessing_clumping(update_effect_size),
                 self._preprocessing_extract_index_SNP_ID(),
-                self._preprocessing_extract_p_values()
+                self._preprocessing_extract_p_values(update_effect_size)
             ]
             return commands
-        elif mode == 'basic':
+        elif mode in ['basic', 'stratification']:
             self._write_range_list_file()
-            return [self._run_plink_basic(), self._generate_post_run_str()]
-        elif mode == 'stratification':
-            return [self._run_plink_w_stratification(),
+            commands += [self._run_plink_basic()]
+            if mode == 'basic':
+                commands += [
                     self._find_best_fit_prs(), 
-                    self._generate_post_run_str()
-                    ]
+                    self._generate_post_run_str()]
+            elif mode == 'stratification':
+                commands += [self._run_plink_w_stratification(),
+                        self._find_best_fit_prs(), 
+                        self._generate_post_run_str()
+                        ]
+            return commands
+        else:
+            raise NotImplementedError
 
 
 class PGS_PRSice2(BasePGS):
@@ -534,6 +619,7 @@ class PGS_PRSice2(BasePGS):
                  nPCs=6,
                  MAF=0.01,
                  INFO=0.8,
+                 stat='OR',
                  **kwargs):
         '''
         Parameters
@@ -580,6 +666,7 @@ class PGS_PRSice2(BasePGS):
         self.nPCs = nPCs
         self.MAF = MAF
         self.INFO = INFO
+        self.stat = stat
         self.Data_postfix = Data_postfix
 
         # inferred
@@ -610,15 +697,13 @@ class PGS_PRSice2(BasePGS):
     def _generate_run_str(self):
         '''
         Generate string which will be included in job script
-        for running the PRSice2 analasis script
+        for running the PRSice2 analysis script
 
         Returns
         -------
         str
         '''
-        target = os.path.join(
-            self.Input_dir,
-            self.Data_prefix + self.Data_postfix)
+        target = os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix)
         command = ' '.join([
             os.environ['RSCRIPT'], 'PRSice.R',
             '--prsice /usr/bin/PRSice_linux',
@@ -629,7 +714,7 @@ class PGS_PRSice2(BasePGS):
             f'--cov {self.Covariance_file}',
             f'--base-maf MAF:{self.MAF}',
             f'--base-info INFO:{self.INFO}',
-            '--stat OR',
+            f'--stat {self.stat}',
             '--or',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
         ])
@@ -678,7 +763,8 @@ class PGS_LDpred2(BasePGS):
                  Data_postfix='.QC',
                  Output_dir='PGS_ldpred2_inf',
                  method='inf',
-                 keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
+                 fileGeno='/REF/examples/prsice2/EUR.bed',
+                 fileGenoRDS='EUR.rds',
                  col_stat='OR',
                  col_stat_se='SE',
                  stat_type='OR',
@@ -701,8 +787,10 @@ class PGS_LDpred2(BasePGS):
             path for output files (<path>)
         method: str
             LDpred2 method, either "inf" (default) or "auto"
-        keep_SNPs_file: str
-            File with RSIDs of SNPs to keep
+        fileGeno: str
+            .bed input file
+        fileGenoRDS: str
+            base name for .rds file output
         col_stat: str
             Effect estimate column. Default: 'OR'
         col_stat_se: str
@@ -724,23 +812,14 @@ class PGS_LDpred2(BasePGS):
 
         # set attributes
         self.method = method
-        self.keep_SNPs_file = keep_SNPs_file
+        self.fileGeno = fileGeno
+        self.fileGenoRDS = fileGenoRDS
         self.col_stat = col_stat
         self.col_stat_se = col_stat_se
         self.stat_type = stat_type
         self.Data_postfix = Data_postfix
 
-        # inferred attributes
-        self._bed_file = os.path.join(
-            self.Input_dir,
-            self.Data_prefix +
-            self.Data_postfix +
-            '.bed')
-        self._rds_file = os.path.join(
-            self.Output_dir,
-            self.Data_prefix +
-            self.Data_postfix +
-            '.rds')
+        # inferred
         self._file_out = os.path.join(self.Output_dir, 'test.score')
 
     def _run_createBackingFile(self):
@@ -748,8 +827,8 @@ class PGS_LDpred2(BasePGS):
         command = ' '.join([
             os.environ['RSCRIPT'],
             'createBackingFile.R',
-            self._bed_file,
-            os.path.join(self.Output_dir, self.Data_prefix + self.Data_postfix)
+            self.fileGeno,
+            self.fileGenoRDS
         ])
         return command
 
@@ -761,7 +840,7 @@ class PGS_LDpred2(BasePGS):
         ----------
         create_backing_file: bool
             if True (default), prepend statements for running the
-            ``createBackingFile.R`` script
+            ``createBackingFile.R`` script, generating fileGenoRDS
 
         Returns
         -------
@@ -771,21 +850,18 @@ class PGS_LDpred2(BasePGS):
         tmp_cmd1 = ' '.join([
             os.environ['RSCRIPT'], 'ldpred2.R',
             '--ldpred-mode', self.method,
-            '--file-keep-snps', self.keep_SNPs_file,
             '--file-pheno', self.Pheno_file,
             '--col-stat', self.col_stat,
             '--col-stat-se', self.col_stat_se,
             '--stat-type', self.stat_type,
-            self._rds_file,
-            self.Sumstats_file,
-            self._file_out,
+            '--geno-file', self.fileGenoRDS,
+            '--sumstats', self.Sumstats_file,
+            '--out', self._file_out,
         ])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
-            for key, value in self.kwargs.items():
-                tmp_cmd1 = ' '.join(
-                    [tmp_cmd1, f'--{key} {value or ""}'])
+            tmp_cmd1 = ' '.join([tmp_cmd1, convert_dict_to_str(self.kwargs)])
 
         if create_backing_file:
             tmp_cmd0 = self._run_createBackingFile()
@@ -834,7 +910,7 @@ class Standard_GWAS_QC(BasePGS):
             default: 'Height'
         Data_postfix: str
             default: '.QC'
-        QC_target_args: dict
+        QC_target_kwargs: dict
             key, values
         QC_prune_kwargs: dict
             keys, values
@@ -937,9 +1013,7 @@ class Standard_GWAS_QC(BasePGS):
             [
                 os.environ['PLINK'],
                 '--bfile',
-                os.path.join(
-                    self.Input_dir,
-                    self.Data_prefix),
+                os.path.join(self.Input_dir, self.Data_prefix),
                 '--keep',
                 os.path.join(
                     self.Output_dir,
