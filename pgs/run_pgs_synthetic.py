@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # input (shared)
     Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     Pheno_file = '/REF/examples/ldpred2/simu.pheno'
-    Input_dir= '/REF/examples/ldpred2'  # None # '/REF/examples/prsice2',
+    Input_dir= '/REF/examples/ldpred2'
     Data_prefix = 'g1000_eur_chr21to22_hm3rnd1'
     Data_postfix = ''
 
@@ -60,8 +60,6 @@ if __name__ == '__main__':
     fileGenoRDS = 'g1000_eur_chr21to22_hm3rnd1.rds'
 
     # method specific input
-    # Eigenval_file = 'g1000_eur_chr21to22_hm3rnd1.eigenval'
-    # Eigenvec_file = 'g1000_eur_chr21to22_hm3rnd1.eigenvec'
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
     
 
