@@ -250,7 +250,7 @@ class PGS_Plink(BasePGS):
                  Data_postfix='.QC',
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
-                 Eigenvec_file='/REF/examples/prsice2/',
+                 Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  Phenotype='Height',
                  clump_p1=1,
                  clump_r2=0.1,
@@ -583,7 +583,7 @@ class PGS_Plink(BasePGS):
                 self._preprocessing_extract_index_SNP_ID(),
                 self._preprocessing_extract_p_values(update_effect_size)
             ]
-            return commands
+            return list(filter(lambda item: item is not None, commands))
         elif mode in ['basic', 'stratification']:
             self._write_range_list_file()
             commands += [self._run_plink_basic()]
@@ -715,7 +715,6 @@ class PGS_PRSice2(BasePGS):
             f'--base-maf MAF:{self.MAF}',
             f'--base-info INFO:{self.INFO}',
             f'--stat {self.stat}',
-            '--or',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
         ])
 

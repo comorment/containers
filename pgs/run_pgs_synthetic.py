@@ -60,22 +60,28 @@ if __name__ == '__main__':
     fileGenoRDS = 'g1000_eur_chr21to22_hm3rnd1.rds'
 
     # method specific input
-    Eigenval_file = 'g1000_eur_chr21to22_hm3rnd1.eigenval'
-    Eigenvec_file = 'g1000_eur_chr21to22_hm3rnd1.eigenvec'
+    # Eigenval_file = 'g1000_eur_chr21to22_hm3rnd1.eigenval'
+    # Eigenvec_file = 'g1000_eur_chr21to22_hm3rnd1.eigenvec'
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
-    # keep_SNPs_file = None
-
+    
 
     # update ldpred2 config:
     config['ldpred2'].update({
-        'col_stat': 'BETA', 'col_stat_se': 'SE', 'stat_type': 'BETA',
-        'col-pheno': 'trait1', 'chr2use': [21, 22]
+        'col_stat': 'BETA', 
+        'col_stat_se': 'SE', 
+        'stat_type': 'BETA',
+        'col-pheno': 'trait1', 
+        'chr2use': [21, 22]
     })
 
+    # update prsice2 config
     config['prsice2'].update({
-        'stat': 'BETA'
+        'stat': 'BETA',
+        'beta': ''
     })
+    del config['prsice2']['or']
 
+    # update plink config
     config['plink'].update({
         'score_args': [9, 1, 3, 'header']  # SNP, A1, BETA
     })
@@ -84,10 +90,26 @@ if __name__ == '__main__':
     #######################################
     # Preprocessing
     #######################################
-
-    # TODO: create g1000....eigenval/eigenvec files
+    Create <Data_prefix>.eigenval/eigenvec files using plink
+    written to this directory
     '''
+    call = ' '.join(
+        [os.environ['PLINK'],
+         '--bfile', os.path.join(Input_dir, Data_prefix),
+         '--pca', str(config['plink']['nPCs']),
+         '--out', Data_prefix
+        ]
+    )
     
+    print(f'evaluating: {call}')
+    proc = subprocess.run(call, shell=True)
+    assert proc.returncode == 0
+
+    # file names
+    Eigenval_file = f'{Data_prefix}.eigenval'
+    Eigenvec_file = f'{Data_prefix}.eigenvec'
+
+
     #######################################
     # Plink
     #######################################

@@ -35,6 +35,7 @@ prsice2:
   MAF: 0.01
   INFO: 0.8
   stat: 'OR'
+  or: ''
 
 # LDpred2
 ldpred2:
