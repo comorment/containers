@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Frei
+    given-names: Oleksandr
+    orcid: https://orcid.org/0000-0002-6427-2625
+  - family-names: Akdeniz
+    given-names: Bayram
+    orcid: https://orcid.org/0000-0002-9493-3105
+  - family-names: Hagen
+    given-names: Espen
+    orcid: https://orcid.org/0000-0002-1321-5970
+  - family-names: Zetterberg
+    given-names: Richard
+    orcid: https://orcid.org/0000-0002-4284-4063
+  - family-names: Shorter
+    given-names: John
+    orcid: https://orcid.org/0000-0003-4732-5526
+title: "CoMorMent-Containers"
+version: 1.1
+doi: 10.5281/zenodo.7385621
+date-released: 2022-12-01

@@ -21,7 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-- additions goes here
+- Added status badges and citation.cff file 
 
 ### Updated
 
