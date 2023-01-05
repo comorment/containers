@@ -279,13 +279,13 @@ def make_regenie_commands(args, logistic, step):
 
     return (cmd + cmd_step1) if step==1 else (cmd + cmd_step2)
 
-def make_saige_commands(args, logistic, step):
+def make_saige_commands(args, logistic, step, log):
     geno_fit_file = args.geno_fit_file
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
 
     use_chunks = (args.chunk_size_bp is not None)
     if use_chunks:
-        bim = read_bim(args, args.bim)
+        bim = read_bim(args, args.bim, log)
         chunk_def = {'chr':[], 'chunk':[], 'num_snps_in_chunk':[], 'a':[], 'b':[]}
         chunk_index = 0
         for chr_label in args.chr2use:
@@ -503,7 +503,7 @@ export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
            singularity_bind = args.config_object['singularity_bind'])
 
 def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
-    fam = read_fam(args, args.fam)
+    fam = read_fam(args, args.fam, log)
     pheno, pheno_dict = read_comorment_pheno(args, args.pheno_file, args.dict_file)
     pheno_dict_map = dict(zip(pheno_dict['FIELD'], pheno_dict['TYPE']))
 
@@ -656,12 +656,12 @@ def execute_gwas(args, log):
         num_jobs = append_job(args, commands, None, num_jobs+1, cmd_file, submit_jobs)
 
     if 'saige' in args.analysis:
-        command, _ = make_saige_commands(args, logistic, step=1)
+        command, _ = make_saige_commands(args, logistic, step=1, log=log)
         num_jobs = append_job(args, [command], None, num_jobs+1, cmd_file, submit_jobs)
 
         cpus_per_task = args.config_object['slurm']['cpus_per_task']
         args.config_object['slurm']['cpus_per_task'] = args.config_object['saige']['cpus_per_task_stage2']
-        command, array_spec = make_saige_commands(args, logistic, step=2)
+        command, array_spec = make_saige_commands(args, logistic, step=2, log=log)
         num_jobs = append_job(args, [command], array_spec, num_jobs+1, cmd_file, submit_jobs)
         args.config_object['slurm']['cpus_per_task'] = cpus_per_task
 
@@ -872,13 +872,13 @@ class Logger(object):
             with open(self.fh + '.error', 'w') as error_fh:
                 error_fh.write(str(msg).rstrip() + '\n')
 
-def read_bim(args, bim_file):
+def read_bim(args, bim_file, log):
     log.log('reading {}...'.format(bim_file))
     bim = pd.read_csv(bim_file, delim_whitespace=True, header=None, names='CHR SNP GP BP A1 A2'.split())
     log.log('done, {} rows, {} cols'.format(len(bim), bim.shape[1]))
     return bim
 
-def read_iid_from_keep_or_remove_file(args, fname):
+def read_iid_from_keep_or_remove_file(args, fname, log):
     log.log('reading {}...'.format(fname))
     df = pd.read_csv(fname, delim_whitespace=True, header=None, comment='#', dtype=str)
     col_idx = 0 if (len(df.columns) == 1) else 1
@@ -888,7 +888,7 @@ def read_iid_from_keep_or_remove_file(args, fname):
         raise(ValueError(f'no IIDs found in {fname} file'))
     return iid
 
-def read_fam(args, fam_file):
+def read_fam(args, fam_file, log):
     log.log('reading {}...'.format(fam_file))
     fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
     log.log('done, {} rows, {} cols'.format(len(fam), fam.shape[1]))
@@ -961,9 +961,9 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     # filter phenotype file according to --keep and --remove
     keep = set(); remove = set()
     for fname in args.keep:
-        keep = keep.union(read_iid_from_keep_or_remove_file(args, fname))
+        keep = keep.union(read_iid_from_keep_or_remove_file(args, fname, log))
     for fname in args.remove:
-        remove = remove.union(read_iid_from_keep_or_remove_file(args, fname))
+        remove = remove.union(read_iid_from_keep_or_remove_file(args, fname, log))
 
     if len(keep) > 0:
         pheno = pheno[pheno['IID'].isin(keep)]
