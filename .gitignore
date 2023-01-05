@@ -35,6 +35,7 @@ LDpred2.html
 *.rds
 *.bk
 *.sbk
+*.error
 usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
 

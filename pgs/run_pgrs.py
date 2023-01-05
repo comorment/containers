@@ -14,11 +14,19 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
-        REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference')
+        
     ))
     os.environ.update(dict(
-        SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF'
+        COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
+        SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
+        REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference'),
+        LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref')
+    ))
+    os.environ.update(dict(
+        
+    ))
+    os.environ.update(dict(
+        SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF,{os.environ["LDPRED2_REF"]}:/ldpred2_ref'
     ))
 
     # Executables in containers
@@ -49,17 +57,31 @@ if __name__ == '__main__':
     Data_postfix = '.QC'
 
     # method specific input
+    # Plink, PRSice2
     Cov_file = '/REF/examples/prsice2/EUR.cov'
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
-    keep_SNPs_file = '/REF/hapmap3/w_hm3.justrs'
-
     
+    # LDpred2
+    # fileGeno = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed'
+    # fileGenoRDS = 'g1000_eur_chr21to22_hm3rnd1.rds'
+    fileGeno = 'QC_data/EUR.QC.bed'
+    fileGenoRDS = 'EUR.rds'  # 'map_hm3_plus.rds'
+    
+    # update ldpred2 config:
+    config['ldpred2'].update({
+        # 'col_stat': 'BETA', 
+        # 'col_stat_se': 'SE', 
+        # 'stat_type': 'BETA',
+        # 'col-pheno': 'Height', 
+        # 'chr2use': [21, 22]
+    })
+
 
     #######################################
     # Standard GWAS QC.
     # Note: This will perform the QC steps from
     # https://choishingwan.github.io/PRS-Tutorial/
-    # but is probably something you would apply with caution.
+    # but is probably something you should apply with caution.
     #######################################
 
     # output dir for QC'd data.
@@ -68,7 +90,8 @@ if __name__ == '__main__':
     # QC params
     Phenotype = 'Height'
     
-    # perform some basic QC steps in
+    
+    # perform some basic QC steps
     qc = pgrs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
@@ -95,11 +118,13 @@ if __name__ == '__main__':
         Data_postfix=Data_postfix,
         Output_dir='PGS_plink',
         Cov_file=Cov_file,
+        Eigenvec_file=Eigenvec_file,
+        Phenotype=Phenotype,
         **config['plink'],
     )
 
     # run preprocessing steps for plink
-    for call in plink.get_str(mode='preprocessing'):
+    for call in plink.get_str(mode='preprocessing', update_effect_size=True):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True)
         assert proc.returncode == 0
@@ -145,12 +170,13 @@ if __name__ == '__main__':
     ldpred2_inf = pgrs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
-        Input_dir=QC_data,
+        Input_dir=None,
         Data_prefix=Data_prefix,
         Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_inf',
         method='inf',
-        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
+        fileGeno=fileGeno,  # '/REF/examples/prsice2/EUR.bed',
+        fileGenoRDS=fileGenoRDS,  # 'EUR.rds',
         **config['ldpred2']
     )
     # run
@@ -165,12 +191,13 @@ if __name__ == '__main__':
     ldpred2_auto = pgrs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
-        Input_dir=QC_data,
+        Input_dir=None,
         Data_prefix=Data_prefix,
         Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_auto',
         method='auto',
-        keep_SNPs_file='/REF/hapmap3/w_hm3.justrs',
+        fileGeno=fileGeno,  # '/REF/examples/prsice2/EUR.bed',
+        fileGenoRDS=fileGenoRDS,  # 'EUR.rds',
         **config['ldpred2']
     )
     # run
