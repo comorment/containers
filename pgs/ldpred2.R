@@ -117,7 +117,7 @@ if (!is.na(filePheno)) {
 G <- obj.bigSNP$genotypes
 CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
-NCORES <- nb_cores()
+NCORES <- parsed$cores
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
