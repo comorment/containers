@@ -44,7 +44,7 @@ par <- add_argument(par, "--name-score", help="Set column name for the created s
 par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
 # Others
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
-par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores()-1)
+par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes)", nargs=0)
 
@@ -117,7 +117,7 @@ if (!is.na(filePheno)) {
 G <- obj.bigSNP$genotypes
 CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
-NCORES <- nb_cores()
+NCORES <- parsed$cores
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
