@@ -42,12 +42,11 @@ if __name__ == '__main__':
             PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
             PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",  # noqa: E501
             PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
-
         ))
 
     # load config.yaml file as dict
-    with open("config.yaml", 'r') as stream:
-        config = yaml.safe_load(stream)
+    with open("config.yaml", 'r') as f:
+        config = yaml.safe_load(f)
 
     # input (shared)
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
@@ -62,18 +61,23 @@ if __name__ == '__main__':
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
     
     # LDpred2
-    # fileGeno = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed'
-    # fileGenoRDS = 'g1000_eur_chr21to22_hm3rnd1.rds'
     fileGeno = 'QC_data/EUR.QC.bed'
-    fileGenoRDS = 'EUR.rds'  # 'map_hm3_plus.rds'
+    fileGenoRDS = 'EUR.rds'
     
     # update ldpred2 config:
+    # find suitable number of cores
+    ncores = int(
+        subprocess.run(
+            'nproc --all', 
+            shell=True, 
+            check=True, 
+            capture_output=True
+            ).stdout.decode())
+    if ncores > config['ldpred2']['cores']:
+        ncores = config['ldpred2']['cores']
     config['ldpred2'].update({
-        # 'col_stat': 'BETA', 
-        # 'col_stat_se': 'SE', 
-        # 'stat_type': 'BETA',
-        # 'col-pheno': 'Height', 
-        # 'chr2use': [21, 22]
+        # key: value
+        'cores': ncores
     })
 
 
@@ -89,7 +93,6 @@ if __name__ == '__main__':
 
     # QC params
     Phenotype = 'Height'
-    
     
     # perform some basic QC steps
     qc = pgrs.Standard_GWAS_QC(
@@ -175,8 +178,8 @@ if __name__ == '__main__':
         Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_inf',
         method='inf',
-        fileGeno=fileGeno,  # '/REF/examples/prsice2/EUR.bed',
-        fileGenoRDS=fileGenoRDS,  # 'EUR.rds',
+        fileGeno=fileGeno,
+        fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )
     # run
@@ -184,6 +187,7 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+
 
     #######################################
     # LDpred2 automatic model
@@ -196,8 +200,8 @@ if __name__ == '__main__':
         Data_postfix=Data_postfix,
         Output_dir='PGS_LDpred2_auto',
         method='auto',
-        fileGeno=fileGeno,  # '/REF/examples/prsice2/EUR.bed',
-        fileGenoRDS=fileGenoRDS,  # 'EUR.rds',
+        fileGeno=fileGeno,
+        fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )
     # run

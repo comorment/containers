@@ -62,14 +62,24 @@ if __name__ == '__main__':
     # method specific input
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
     
-
     # update ldpred2 config:
+    # find suitable number of cores
+    ncores = int(
+        subprocess.run(
+            'nproc --all', 
+            shell=True, 
+            check=True, 
+            capture_output=True
+            ).stdout.decode())
+    if ncores > config['ldpred2']['cores']:
+        ncores = config['ldpred2']['cores']
     config['ldpred2'].update({
         'col_stat': 'BETA', 
         'col_stat_se': 'SE', 
         'stat_type': 'BETA',
         'col-pheno': 'trait1', 
-        'chr2use': [21, 22]
+        'chr2use': [21, 22],
+        'cores': ncores
     })
 
     # update prsice2 config
@@ -84,13 +94,11 @@ if __name__ == '__main__':
         'score_args': [9, 1, 3, 'header']  # SNP, A1, BETA
     })
 
-    '''
     #######################################
     # Preprocessing
     #######################################
-    Create <Data_prefix>.eigenval/eigenvec files using plink
-    written to this directory
-    '''
+    # Create <Data_prefix>.eigenval/eigenvec files using plink
+    # written to this directory
     call = ' '.join(
         [os.environ['PLINK'],
          '--bfile', os.path.join(Input_dir, Data_prefix),
@@ -131,22 +139,18 @@ if __name__ == '__main__':
             proc = subprocess.run(call, shell=True)
             assert proc.returncode == 0
 
-    
     # run basic plink PGS
-    '''
     for call in plink.get_str(mode='basic'):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
     
-    '''
     # run plink PGS with population stratification
     for call in plink.get_str(mode='stratification'):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
-    # raise Exception
+
 
     #######################################
     # PRSice-2

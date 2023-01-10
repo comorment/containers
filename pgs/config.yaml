@@ -42,5 +42,5 @@ ldpred2:
   col_stat: 'OR'
   col_stat_se: 'SE'
   stat_type: 'OR'
-  cores: 16
+  cores: 8
 
