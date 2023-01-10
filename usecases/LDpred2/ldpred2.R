@@ -217,7 +217,7 @@ for (chr in chr2use) {
   ld_size <- ld_size + num_ldref_snps
 
   fileLD_chr <- str_replace(fileLD, "@", toString(chr))
-  cat(fileLD_chr, ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
+  cat('\t', basename(fileLD_chr), ': loading LD for', length(ind.chr),  'out of', num_ldref_snps, 'SNPs\n')
 
   corr_chr <- readRDS(fileLD_chr)[ind.chr3, ind.chr3]
 
