@@ -35,15 +35,6 @@ NCORES <- parsed$cores
 
 obj.bigSNP <- snp_attach(parsed$geno_file)
 
-if (!is.na(fileKeepSNPs)) {
-  cat('Filtering ',nrow(obj.bigSNP$map),' SNPs...')
-  keepSNPs <- read.table(fileKeepSNPs)
-  sbs <- which(obj.bigSNP$map$marker.ID %in% keepSNPs[,1])
-  fileSnpSub <- snp_subset(obj.bigSNP, ind.col=sbs)
-  obj.bigSNP <- snp_attach(fileSnpSub)
-  cat('retained', nrow(obj.bigSNP$map), 'SNPs\n')
-}
-
 G <- obj.bigSNP$genotypes
 CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
@@ -63,10 +54,21 @@ if (is.null(GD)) stop('Genetic distance is not available')
 MAP <- MAP[,c('chromosome', 'marker.ID', 'physical.pos', 'allele1', 'allele2')]
 colnames(MAP) <- c('chr', 'rsid', 'pos', 'a0', 'a1')
 
+keepSNPs <- c()
+if (!is.na(fileKeepSNPs)) {
+  cat('Filtering ',nrow(obj.bigSNP$map),' SNPs...')
+  keepSNPs <- read.table(fileKeepSNPs)[,1]
+  #sbs <- which(obj.bigSNP$map$marker.ID %in% SNPlist[,1])
+  #keepSNPs <- SNPlist
+  #fileSnpSub <- snp_subset(obj.bigSNP, ind.col=sbs)
+  #obj.bigSNP <- snp_attach(fileSnpSub)
+  cat('retained', nrow(obj.bigSNP$map), 'SNPs\n')
+}
 if (!is.na(fileSumstats)) {
   cat('Filtering on SNPs in sumstats\n')
   fileSumstats <- read.table(fileSumstats, header=T, sep=',')
-  sums <- snp_match(fileSumstats, MAP, join_by_pos = F)
+  keepSNPs <- c(keepSNPs, fileSumstats$rsid)
+  #sums <- snp_match(fileSumstats, MAP, join_by_pos = F)
   #MAP <- subset(MAP, rsid %in% fileSumstats$rsid) 
   cat('Retained', nrow(MAP), 'SNPs\n')
 }
@@ -79,12 +81,14 @@ chromosomes <- unique(CHR)
 ld <- c()
 MAP$ld <- NA
 cat('Chromosome: ')
+snps <- MAP$rsid %in% keepSNPs
 for (chr in chromosomes) {
   cat(chr, '...', sep='')
   # indices in sums
-  ind.chr <- which(sums$chr == chr)
+  ind.chr2 <- which(MAP$chr == chr & snps)
+  #ind.chr <- which(sums$chr == chr)
   # indices in G
-  ind.chr2 <- sums$`_NUM_ID_`[ind.chr]
+  #ind.chr2 <- sums$`_NUM_ID_`[ind.chr]
   nMarkers <- length(ind.chr2)
 
   corr0 <- snp_cor(G, ind.col=ind.chr2, size=argWindowSize/1000,

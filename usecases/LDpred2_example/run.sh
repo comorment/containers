@@ -46,15 +46,16 @@ dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR
 if [ $? -eq 1 ]; then exit; fi
 
 ### LD
-# LD estimation
+# LD estimation --file-keep-snps $fileKeepSNPS
 LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file $fileOutputSNPR \
-  --file-keep-snps $fileKeepSNPS \
+  --sumstats $fileInputSumStats  \
+  --dir-genetic-maps $DIR_TESTS/maps/ \
   --file-ld-blocks $DIR_TESTS/output/ld/ld-chr@.rds \
   --file-ld-map $DIR_TESTS/output/ld/map.rds
 "
 $LDE
 
-LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
+LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --ld-file $DIR_TESTS/output/ld/ld-chr@.rds \
   --ld-meta-file $DIR_TESTS/output/ld/map.rds \
   --merge-by-rsid \
