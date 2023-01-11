@@ -17,7 +17,7 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
 par <- add_argument(par, "--chr2use", help="list of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
-par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statistics")
+par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
 par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
 par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores())
 
@@ -26,7 +26,9 @@ fileLDBlocks <- parsed$file_ld_blocks
 if (!dir.exists(dirname(fileLDBlocks))) dir.create(dirname(fileLDBlocks))
 fileLDMap <- parsed$file_ld_map
 fileKeepSNPs <- parsed$file_keep_snps
-fileSumstats <- parsed$sumstats
+# Sumstats file
+fileSumstats <- parsed$sumstats[1]
+columnRsidSumstats <- parsed$sumstats[2]
 dirGeneticMaps <- parsed$dir_genetic_maps
 argGeneticMapsType <- parsed$genetic_maps_type
 argWindowSize <- parsed$window_size
@@ -54,25 +56,21 @@ if (is.null(GD)) stop('Genetic distance is not available')
 MAP <- MAP[,c('chromosome', 'marker.ID', 'physical.pos', 'allele1', 'allele2')]
 colnames(MAP) <- c('chr', 'rsid', 'pos', 'a0', 'a1')
 
-keepSNPs <- c()
+SNPs <- MAP$rsid
 if (!is.na(fileKeepSNPs)) {
-  cat('Filtering ',nrow(obj.bigSNP$map),' SNPs...')
+  cat('Reading SNPs from --file-keep-snps:', fileKeepSNPs, '\n')
   keepSNPs <- read.table(fileKeepSNPs)[,1]
-  #sbs <- which(obj.bigSNP$map$marker.ID %in% SNPlist[,1])
-  #keepSNPs <- SNPlist
-  #fileSnpSub <- snp_subset(obj.bigSNP, ind.col=sbs)
-  #obj.bigSNP <- snp_attach(fileSnpSub)
-  cat('retained', nrow(obj.bigSNP$map), 'SNPs\n')
+  cat('Read', length(keepSNPs), 'SNPs\n')
+  SNPs <- SNPs[SNPs %in% keepSNPs]
 }
 if (!is.na(fileSumstats)) {
-  cat('Filtering on SNPs in sumstats\n')
+  cat('Reading SNPs from sumstat file --sumstats:', fileSumstats, '\n')
   fileSumstats <- read.table(fileSumstats, header=T, sep=',')
-  keepSNPs <- c(keepSNPs, fileSumstats$rsid)
-  #sums <- snp_match(fileSumstats, MAP, join_by_pos = F)
-  #MAP <- subset(MAP, rsid %in% fileSumstats$rsid) 
-  cat('Retained', nrow(MAP), 'SNPs\n')
+  cat('Read', nrow(fileSumstats), 'SNPs\n')
+  SNPs <- SNPs[SNPs %in% fileSumstats[,columnRsidSumstats]]
 }
-#MAP$NUM_ID <- rows_along(MAP)
+useSNPs <- MAP$rsid %in% SNPs
+cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
 
 cat('Calculating SNP correlation/LD using', NCORES, 'cores\n')
 temp <- tempfile(tmpdir='temp')
@@ -81,21 +79,26 @@ chromosomes <- unique(CHR)
 ld <- c()
 MAP$ld <- NA
 cat('Chromosome: ')
-snps <- MAP$rsid %in% keepSNPs
 for (chr in chromosomes) {
   cat(chr, '...', sep='')
-  # indices in sums
-  ind.chr2 <- which(MAP$chr == chr & snps)
+  # indices in G
+  indices.G <- which(MAP$chr == chr & useSNPs)
   #ind.chr <- which(sums$chr == chr)
   # indices in G
   #ind.chr2 <- sums$`_NUM_ID_`[ind.chr]
-  nMarkers <- length(ind.chr2)
+  nDataPoints <- sum(indices.G)
+  # This could probably be a higher nr. I put this here to ensure that filtering
+  # works and that the resulting MAP has NA's in it.
+  if (nDataPoints == 0) {
+    cat('\nSkipping chromosome', chr,'. Reason: 0 SNPs available\n')
+    next
+  }
 
-  corr0 <- snp_cor(G, ind.col=ind.chr2, size=argWindowSize/1000,
-                   infos.pos=GD[ind.chr2], ncores=NCORES)
+  corr0 <- snp_cor(G, ind.col=indices.G, size=argWindowSize/1000,
+                   infos.pos=GD[indices.G], ncores=NCORES)
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   ldE <- Matrix::colSums(corr0^2)
-  MAP$ld[ind.chr2] <- ldE
+  MAP$ld[indices.G] <- ldE
   saveRDS(corr0, file=fileName)
 }
 cat('\n')
