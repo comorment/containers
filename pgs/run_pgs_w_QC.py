@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# run script for PGS calling the class definitions in pgrs.py directly
+# run script for PGS calling the class definitions in pgs/pgs.py directly
 
 # package imports
 import os
-import pgrs
 import subprocess
 import yaml
+from pgs import pgs
 
 
 if __name__ == '__main__':
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     Phenotype = 'Height'
     
     # perform some basic QC steps
-    qc = pgrs.Standard_GWAS_QC(
+    qc = pgs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
         Input_dir='/REF/examples/prsice2',
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     #######################################
     # Plink
     #######################################
-    plink = pgrs.PGS_Plink(
+    plink = pgs.PGS_Plink(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
         Input_dir=QC_data,
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     #######################################
     # PRSice-2
     #######################################
-    prsice2 = pgrs.PGS_PRSice2(
+    prsice2 = pgs.PGS_PRSice2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
         Input_dir=QC_data,
@@ -168,7 +168,7 @@ if __name__ == '__main__':
     #######################################
     # LDpred2 infinitesimal model
     #######################################
-    ldpred2_inf = pgrs.PGS_LDpred2(
+    ldpred2_inf = pgs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
         Input_dir=None,
@@ -189,7 +189,7 @@ if __name__ == '__main__':
     #######################################
     # LDpred2 automatic model
     #######################################
-    ldpred2_auto = pgrs.PGS_LDpred2(
+    ldpred2_auto = pgs.PGS_LDpred2(
         Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
         Pheno_file=Pheno_file,
         Input_dir=None,

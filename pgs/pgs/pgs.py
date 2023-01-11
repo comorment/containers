@@ -43,7 +43,7 @@ VERSION = "{0}.{1}.{2}{3}".format(_MAJOR, _MINOR, _PATCH, _SUFFIX)
 __version__ = VERSION
 
 MASTHEAD = "*************************************************\n"
-MASTHEAD += "* pgrs.py: pipeline for PGRS analysis\n"
+MASTHEAD += "* pgs.py: pipeline for PGRS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
 MASTHEAD += "* (C) 2022 Espen Hagen, Oleksandr Frei, \n"
 MASTHEAD += "* Bayram Akdeniz and Alexey A. Shadrin\n"
@@ -426,13 +426,13 @@ class PGS_Plink(BasePGS):
             command += ' '.join([
                 os.environ['PYTHON'],
                 '-c', 
-                f"""'import pgrs; pgrs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""
+                f"""'from pgs import pgs; pgs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""
                 '\n'
             ])
         command += ' '.join([
             os.environ['PYTHON'],
             '-c', 
-            f"""'import pgrs; pgrs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""
+            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""
         ])
         return command
 
@@ -494,8 +494,8 @@ class PGS_Plink(BasePGS):
             if nPCs != self.nPCs:
                 mssg = (
                     f'The number of PCs in {self.Eigenvec_file} nPCs={nPCs} ' + 
-                    f'while <pgrs.PGS_Plink instance>.nPCs={self.nPCs}. ' + 
-                    f'Instantiate class pgrs.PGS_Plink with nPCs={self.Eigenvec_file} ' +
+                    f'while <pgs.PGS_Plink instance>.nPCs={self.nPCs}. ' + 
+                    f'Instantiate class pgs.PGS_Plink with nPCs={self.Eigenvec_file} ' +
                     '(confer config.yaml file with settings).')
                 raise ValueError(mssg)
             return ''
@@ -550,7 +550,7 @@ class PGS_Plink(BasePGS):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
             os.environ['PYTHON'], '-c', 
-            f"""'from pgrs import post_run_plink; post_run_plink({arg})'"""
+            f"""'from pgs.pgs import post_run_plink; post_run_plink({arg})'"""
         ])
         return cmd
 
@@ -722,7 +722,7 @@ class PGS_PRSice2(BasePGS):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
             os.environ['PYTHON'], '-c', 
-            f"""'from pgrs import post_run_prsice2; post_run_prsice2({arg})'"""
+            f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""
         ])
         return cmd
 
