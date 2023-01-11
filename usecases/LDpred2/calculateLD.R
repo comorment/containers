@@ -15,7 +15,7 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
                     help="Directory containing 1000 Genomes genetic maps. Either a directory to store files to be downloaded, or a directory contaning the unpacked files.")
 # Optional arguments
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
-par <- add_argument(par, "--chr2use", help="list of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
+par <- add_argument(par, "--chr2use", help="List of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
 par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
@@ -29,6 +29,8 @@ fileKeepSNPs <- parsed$file_keep_snps
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
+chr2use <- parsed$chr2use
+if (any(is.na(chr2use))) chr2use <- 1:22
 dirGeneticMaps <- parsed$dir_genetic_maps
 argGeneticMapsType <- parsed$genetic_maps_type
 argWindowSize <- parsed$window_size
@@ -75,19 +77,14 @@ cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
 cat('Calculating SNP correlation/LD using', NCORES, 'cores\n')
 temp <- tempfile(tmpdir='temp')
 cat('Using file', temp, 'to store matrixes\n')
-chromosomes <- unique(CHR)
-ld <- c()
 MAP$ld <- NA
 cat('Chromosome: ')
-for (chr in chromosomes) {
+for (chr in chr2use) {
   cat(chr, '...', sep='')
   # indices in G
   indices.G <- which(MAP$chr == chr & useSNPs)
-  #ind.chr <- which(sums$chr == chr)
-  # indices in G
-  #ind.chr2 <- sums$`_NUM_ID_`[ind.chr]
   nDataPoints <- sum(indices.G)
-  # This could probably be a higher nr. I put this here to ensure that filtering
+  # nDataPoints could probably be a higher nr. I put this here to ensure that filtering
   # works and that the resulting MAP has NA's in it.
   if (nDataPoints == 0) {
     cat('\nSkipping chromosome', chr,'. Reason: 0 SNPs available\n')
@@ -97,8 +94,8 @@ for (chr in chromosomes) {
   corr0 <- snp_cor(G, ind.col=indices.G, size=argWindowSize/1000,
                    infos.pos=GD[indices.G], ncores=NCORES)
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
-  ldE <- Matrix::colSums(corr0^2)
-  MAP$ld[indices.G] <- ldE
+  ld <- Matrix::colSums(corr0^2)
+  MAP$ld[indices.G] <- ld
   saveRDS(corr0, file=fileName)
 }
 cat('\n')
