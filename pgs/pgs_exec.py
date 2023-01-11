@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# run script wrapping the class definitions in pgrs.py as a command line tool
+# run script wrapping the class definitions in pgs/pgs.py as a command line tool
 
 # package imports
 import os
 import sys
-import pgrs
+from pgs import pgs
 import subprocess
 import yaml
 import argparse
@@ -18,12 +18,12 @@ runtype_choices = ['sh', 'slurm', 'subprocess']
 
 # shared
 parser = argparse.ArgumentParser(
-    prog='PGRS', 
-    description="A pipeline for PGRS analysis")
+    prog='PGS', 
+    description="A pipeline for PGS analysis")
+# subparser = parser.add_subparsers(dest='method') 
 parser.add_argument(
     "--Sumstats_file", type=str, 
     default=os.path.join("QC_data", 'Height.QC.gz'), 
-    # default="/REF/examples/prsice2/Height.gwas.txt.gz", 
     help="summary statistics file")
 parser.add_argument(
     "--Pheno_file", type=str, 
@@ -38,9 +38,6 @@ parser.add_argument(
     default="EUR", 
     help="file prefix for .bed, .bim, .fam, etc. files")
 parser.add_argument(
-    "--Data_postfix", type=str, 
-    default=".QC", help="")
-parser.add_argument(
     "--Output_dir", type=str,
     help="Output file directory",
     default="PGS_prsice2")
@@ -48,7 +45,7 @@ parser.add_argument(
 # runtime specific
 parser.add_argument(
     "--method", type=str, 
-    help="Method for PGRS", 
+    help="Method for PGS", 
     default='prsice2', 
     choices=method_choices)
 parser.add_argument(
@@ -74,7 +71,14 @@ parser.add_argument(
 
 
 # NameSpace object
-parsed_args = parser.parse_args(sys.argv[1:])
+parsed_args, unknowns = parser.parse_known_args(sys.argv[1:])
+
+# TODO: Find neater way of handling kwargs
+assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
+if len(unknowns) > 0:
+    print(f'arguments that will override config.yaml for method {parsed_args.method}:')
+    print(unknowns, '\n')
+
 args_dict = vars(parsed_args)
 
 # check that method is allowed:
@@ -109,13 +113,20 @@ os.environ.update(
         PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
         PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",  # noqa: E501
         PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
-
     ))
 
 
 # load config.yaml file as dict
 with open("config.yaml", 'r') as f:
     config = yaml.safe_load(f)
+
+# update config with additional kwargs
+if len(unknowns) > 0:
+    d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
+    config[parsed_args.method].update(d)
+    if parsed_args.method == 'prsice2':
+        if 'beta' in d.keys():
+            del config['prsice2']['or']
 
 
 # job file headers
@@ -133,12 +144,12 @@ slurm_header = f'''#!/bin/sh
 '''
 
 
-# create PGRS instances and commands 
+# create PGS instances and commands 
 if parsed_args.method == 'plink':
     args_dict_plink = args_dict.copy()
     for key in ['method', 'runtype', 'keep_SNPs_file']:
         args_dict_plink.pop(key)
-    pgs = pgrs.PGS_Plink(
+    pgs = pgs.PGS_Plink(
         **args_dict_plink,
         **config['plink'])
     commands = pgs.get_str(mode='preprocessing') + pgs.get_str(mode='stratification')
@@ -146,7 +157,7 @@ elif parsed_args.method == 'prsice2':
     args_dict_prsice2 = args_dict.copy()
     for key in ['method', 'runtype', 'keep_SNPs_file']:
         args_dict_prsice2.pop(key)
-    pgs = pgrs.PGS_PRSice2(
+    pgs = pgs.PGS_PRSice2(
         **args_dict_prsice2,
         **config['prsice2']
     )
@@ -155,7 +166,7 @@ elif parsed_args.method == 'ldpred2-inf':
     args_dict_ldpred2 = args_dict.copy()
     for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file']:
         args_dict_ldpred2.pop(key)
-    pgs = pgrs.PGS_LDpred2(
+    pgs = pgs.PGS_LDpred2(
         method='inf',
         **args_dict_ldpred2,
         **config['ldpred2']
@@ -165,7 +176,7 @@ elif parsed_args.method == 'ldpred2-auto':
     args_dict_ldpred2 = args_dict.copy()
     for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file']:
         args_dict_ldpred2.pop(key)
-    pgs = pgrs.PGS_LDpred2(
+    pgs = pgs.PGS_LDpred2(
         method='auto',
         **args_dict_ldpred2,
         **config['ldpred2']
