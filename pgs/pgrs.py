@@ -247,7 +247,6 @@ class PGS_Plink(BasePGS):
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Input_dir='QC_data',
                  Data_prefix='EUR',
-                 Data_postfix='.QC',
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
@@ -272,8 +271,6 @@ class PGS_Plink(BasePGS):
             (</ENV/path/to/data/>)
         Data_prefix: str
             file prefix for QC'd .bed, .bim, .fam files
-        Data_postfix: str
-            file postfix assumed to be included in QC data. Default: '.QC'
         Output_dir: str
             path for output files (<path>)
         Cov_file: str
@@ -324,7 +321,6 @@ class PGS_Plink(BasePGS):
             
             self.Cov_file = Cov_file
             self.Eigenvec_file = Eigenvec_file
-        self.Data_postfix = Data_postfix
         self.Phenotype = Phenotype
 
         # clumping params
@@ -380,7 +376,7 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             os.environ['PLINK'],
             '--bfile',
-            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+            os.path.join(self.Input_dir, self.Data_prefix),
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
@@ -459,7 +455,7 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             os.environ['PLINK'],
             '--bfile',
-            os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+            os.path.join(self.Input_dir, self.Data_prefix),
             '--score',
             self._transformed_file,
             ' '.join([str(x) for x in self.score_args]),
@@ -508,7 +504,7 @@ class PGS_Plink(BasePGS):
             tmp_str_0 = ' '.join([
                 os.environ['PLINK'],
                 '--bfile',
-                os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+                os.path.join(self.Input_dir, self.Data_prefix),
                 '--indep-pairwise',
                 ' '.join([str(x) for x in self.strat_indep_pairwise]),
                 '--out', os.path.join(self.Output_dir, self.Data_prefix)
@@ -518,7 +514,7 @@ class PGS_Plink(BasePGS):
             tmp_str_1 = ' '.join([
                 os.environ['PLINK'],
                 '--bfile',
-                os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix),
+                os.path.join(self.Input_dir, self.Data_prefix),
                 '--extract',
                 os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
                 '--pca', str(self.nPCs),
@@ -612,7 +608,6 @@ class PGS_PRSice2(BasePGS):
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Input_dir='QC_data',
                  Data_prefix='EUR',
-                 Data_postfix='.QC',
                  Output_dir='PGS_prsice2',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
@@ -633,8 +628,6 @@ class PGS_PRSice2(BasePGS):
             (</ENV/path/to/data/>)
         Data_prefix: str
             file prefix for QC'd .bed, .bim, .fam files
-        Data_postfix: str
-            file postfix assumed to be included in QC data. Default: '.QC'
         Output_dir: str
             path for output files (<path>)
         Cov_file: str
@@ -667,7 +660,6 @@ class PGS_PRSice2(BasePGS):
         self.MAF = MAF
         self.INFO = INFO
         self.stat = stat
-        self.Data_postfix = Data_postfix
 
         # inferred
         self.Covariance_file = os.path.join(
@@ -703,7 +695,7 @@ class PGS_PRSice2(BasePGS):
         -------
         str
         '''
-        target = os.path.join(self.Input_dir, self.Data_prefix + self.Data_postfix)
+        target = os.path.join(self.Input_dir, self.Data_prefix)
         command = ' '.join([
             os.environ['RSCRIPT'], 'PRSice.R',
             '--prsice /usr/bin/PRSice_linux',
@@ -759,7 +751,6 @@ class PGS_LDpred2(BasePGS):
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Input_dir='QC_data',
                  Data_prefix='EUR',
-                 Data_postfix='.QC',
                  Output_dir='PGS_ldpred2_inf',
                  method='inf',
                  fileGeno='/REF/examples/prsice2/EUR.bed',
@@ -780,8 +771,6 @@ class PGS_LDpred2(BasePGS):
             (</ENV/path/to/data/>)
         Data_prefix: str
             file prefix for .bed, .bim, .fam files
-        Data_postfix: str
-            file postfix assumed to be included in QC data. Default: '.QC'
         Output_dir: str
             path for output files (<path>)
         method: str
@@ -816,7 +805,6 @@ class PGS_LDpred2(BasePGS):
         self.col_stat = col_stat
         self.col_stat_se = col_stat_se
         self.stat_type = stat_type
-        self.Data_postfix = Data_postfix
 
         # inferred
         self._file_out = os.path.join(self.Output_dir, 'test.score')
