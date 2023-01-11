@@ -97,7 +97,11 @@ echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
 dump=$( { $LDE --file-keep-snps $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
-# Test no restrictions on snps (similar to tutorial
+echo "Test sampling individuals (400)"
+dump=$( { $LDE --sample-individuals 400 --file-keep-snps $fileKeepSNPS; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
+echo "Test no restrictions on snps (similar to tutorial"
 dump=$( { $LDE; } 2>&1 )
 # Use this LD to run LDpred
 LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
@@ -109,3 +113,4 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --geno-file $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 dump=$( { $LDP; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+

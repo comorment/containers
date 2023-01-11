@@ -9,17 +9,18 @@ par <- arg_parser('Calculate linkage disequillibrium (LD) using bigSNPr')
 # Mandatory arguments
 par <- add_argument(par, "--geno-file", nargs=1, help="Input .rds (bigSNPR) file with genotypes")
 par <- add_argument(par, "--file-ld-blocks", nargs=1, default="LD_with_blocks_chr@.rds", help="Template name of output files using @ to indicate chromosome nr")
-par <- add_argument(par, "--file-ld-map", nargs=1, default="map.rds", help="Name of LD map file")
+par <- add_argument(par, "--file-ld-map", nargs=1, default="map.rds", help="Name of outputted LD map file")
 # Directories
 par <- add_argument(par, "--dir-genetic-maps", default=tempdir(), 
                     help="Directory containing 1000 Genomes genetic maps. Either a directory to store files to be downloaded, or a directory contaning the unpacked files.")
 # Optional arguments
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
-par <- add_argument(par, "--chr2use", help="List of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
+par <- add_argument(par, "--sample-individuals", nargs=1, help="Specify a number of individuals to draw at random")
+par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
-par <- add_argument(par, "--window-size", help="Window size in centimorgans, used for LD calculation", default=3)
-par <- add_argument(par, "--cores", help="Specify the number of processor cores to use, otherwise use the available - 1", default=nb_cores())
+par <- add_argument(par, "--window-size", default=3, nargs=1, help="Window size in centimorgans, used for LD calculation")
+par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
 
 parsed <- parse_args(par)
 fileLDBlocks <- parsed$file_ld_blocks
@@ -29,6 +30,9 @@ fileKeepSNPs <- parsed$file_keep_snps
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
+# Sample individuals
+sampleIndividuals <- parsed$sample_individuals
+# Chromosomes to use
 chr2use <- parsed$chr2use
 if (any(is.na(chr2use))) chr2use <- 1:22
 dirGeneticMaps <- parsed$dir_genetic_maps
@@ -74,6 +78,13 @@ if (!is.na(fileSumstats)) {
 useSNPs <- MAP$rsid %in% SNPs
 cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
 
+individualSample <- rows_along(G)
+if (!is.na(sampleIndividuals)) {
+  cat('Drawing', sampleIndividuals, 'individuals at random\n')
+  if (nrow(G) < sampleIndividuals) stop('Requsted sample size is greater than the available:', nrow(G))
+  individualSample <- sample(nrow(G), sampleIndividuals)
+}
+
 cat('Calculating SNP correlation/LD using', NCORES, 'cores\n')
 temp <- tempfile(tmpdir='temp')
 cat('Using file', temp, 'to store matrixes\n')
@@ -91,7 +102,7 @@ for (chr in chr2use) {
     next
   }
 
-  corr0 <- snp_cor(G, ind.col=indices.G, size=argWindowSize/1000,
+  corr0 <- snp_cor(G, ind.col=indices.G, ind.row=individualSample, size=argWindowSize/1000,
                    infos.pos=GD[indices.G], ncores=NCORES)
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   ld <- Matrix::colSums(corr0^2)
