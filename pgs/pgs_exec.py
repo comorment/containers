@@ -74,10 +74,10 @@ parser.add_argument(
 parsed_args, unknowns = parser.parse_known_args(sys.argv[1:])
 
 # TODO: Find neater way of handling kwargs
-assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
 if len(unknowns) > 0:
     print(f'arguments that will override config.yaml for method {parsed_args.method}:')
     print(unknowns, '\n')
+assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
 
 args_dict = vars(parsed_args)
 
@@ -93,11 +93,15 @@ os.environ.update(dict(
     CONTAINERS=os.path.split(os.getcwd())[0],
 ))
 os.environ.update(dict(
+    COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
     SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
     REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference')
 ))
 os.environ.update(dict(
-    SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF'
+    LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref'),
+))
+os.environ.update(dict(
+        SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF,{os.environ["LDPRED2_REF"]}:/ldpred2_ref'  # noqa: E501
 ))
 
 # Executables in containers
@@ -123,7 +127,7 @@ with open("config.yaml", 'r') as f:
 # update config with additional kwargs
 if len(unknowns) > 0:
     d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
-    config[parsed_args.method].update(d)
+    config[parsed_args.method.split('-')[0]].update(d)
     if parsed_args.method == 'prsice2':
         if 'beta' in d.keys():
             del config['prsice2']['or']
@@ -143,6 +147,15 @@ slurm_header = f'''#!/bin/sh
 #SBATCH --partition={config['slurm']['partition']}\n
 '''
 
+# environment variables for sh and slurm scripts
+env_keys = [
+    'COMORMENT', 'CONTAINERS', 'SIF', 'REFERENCE', 'LDPRED2_REF',
+    'SINGULARITY_BIND', 'GUNZIP_EXEC', 'GZIP_EXEC', 'AWK_EXEC', 
+    'RSCRIPT', 'PLINK', 'PRSICE', 'PYTHON'
+    ]
+env_variables_list = []
+for key in env_keys:
+    env_variables_list += [f'export {key}="{os.environ[key]}"']
 
 # create PGS instances and commands 
 if parsed_args.method == 'plink':
@@ -164,7 +177,7 @@ elif parsed_args.method == 'prsice2':
     commands = pgs.get_str()
 elif parsed_args.method == 'ldpred2-inf':
     args_dict_ldpred2 = args_dict.copy()
-    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file']:
+    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file', 'keep_SNPs_file']:
         args_dict_ldpred2.pop(key)
     pgs = pgs.PGS_LDpred2(
         method='inf',
@@ -174,7 +187,7 @@ elif parsed_args.method == 'ldpred2-inf':
     commands = pgs.get_str(create_backing_file=True)
 elif parsed_args.method == 'ldpred2-auto':
     args_dict_ldpred2 = args_dict.copy()
-    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file']:
+    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file', 'keep_SNPs_file']:
         args_dict_ldpred2.pop(key)
     pgs = pgs.PGS_LDpred2(
         method='auto',
@@ -198,7 +211,7 @@ elif parsed_args.runtype == 'sh':
         os.mkdir(jobdir)
     
     with open(os.path.join(jobdir, f'{parsed_args.method}.sh'), 'w') as f:
-        f.writelines('\n'.join([bash_header] + commands))
+        f.writelines('\n'.join([bash_header] + env_variables_list + commands))
     
         mssg = f'wrote {f.name}. To run, issue:\n$ bash {f.name}'
         print(mssg)
@@ -210,9 +223,9 @@ elif parsed_args.runtype == 'slurm':
         os.mkdir(jobdir)
     
     with open(os.path.join(jobdir, f'{parsed_args.method}.job'), 'w') as f:
-        f.writelines('\n'.join([slurm_header] + commands))
+        f.writelines('\n'.join([slurm_header] + env_variables_list + commands))
     
-        mssg = f'wrote {f.name}. To submit job, issue:\n$ bash {f.name}'
+        mssg = f'wrote {f.name}. To submit job to the job queue, issue:\n$ sbatch {f.name}'
         print(mssg)
 else:
     raise NotImplementedError(

@@ -67,8 +67,32 @@ python3 pgs_exec.py \
     --runtype 'subprocess' \
     --Cov_file '/REF/examples/prsice2/EUR.cov' \
     --Eigenvec-file 'g1000_eur_chr21to22_hm3rnd1.eigenvec' \
-    stat 'BETA' \
-    beta ''
+    'stat' 'BETA' \
+    'beta' ''
 ```
 > **_NOTE:_**  The last two lines will override settings for ``method: prsice2`` in ``config.yaml`` file, being parsed to the ``PRSice2.r`` script
 
+Example w. LDpred2-inf via shell (``sh``) script on synthetic dataset (``pgs_exec_example_2.sh``):
+```
+python3 pgs_exec.py \
+    --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
+    --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
+    --Input_dir '' \
+    --Data_prefix 'g1000_eur_chr21to22_hm3rnd1' \
+    --Output_dir 'PGS_synthetic_LDpred2_inf' \
+    --method 'ldpred2-inf' \
+    --runtype 'sh' \
+    'fileGeno' '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed' \
+    'fileGenoRDS' 'g1000_eur_chr21to22_hm3rnd1.rds' \
+    'col_stat' 'BETA' \
+    'col_stat_se' 'SE' \
+    'stat_type' 'BETA' \
+    'col-pheno' 'trait1' 'chr2use' '21,22' \
+    'cores' '4'
+```
+Which generates a shell script that can be run as 
+```
+bash bash_scripts/ldpred-inf.sh
+```
+
+> **_NOTE_** Replacing ``--runtype 'sh'`` with ``--runtype 'slurm'`` and ``'ldpred2-inf'`` by ``'ldpred2-auto'`` generates a slurm jobscript which can be submitted by issuing ``bash slurm_job_scripts/ldpred2-auto.job`` (cf. ``pgs_exec_example_3.sh``)
