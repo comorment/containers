@@ -374,7 +374,8 @@ def pass_arguments_along(args, args_list):
 def make_figures_commands(args):
     cmd = ''
     for pheno in args.pheno:
-        Rcmd = 'library(data.table);library(qqman);library(ggplot2);library(GWASTools);'
+        Rcmd = 'library(data.table);library(qqman);library(ggplot2);'
+        Rcmd += 'library(GWASTools);'
         Rcmd += 'df=read.table("{out}_{pheno}.gz", header=TRUE);'.format(out=args.out, pheno=pheno)
         Rcmd += 'png("{out}_{pheno}.qq.png", width=600, unit="px", pointsize=12, bg="white");'.format(out=args.out, pheno=pheno)
         Rcmd += 'qqPlot(df$P, ci=T, main="{pheno}");'.format(pheno=pheno)
