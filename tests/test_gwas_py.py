@@ -40,6 +40,7 @@ def test_gwas_py_plink():
         ]
         assert all(map(os.path.isfile, expected_files))
         assert out.returncode == 0
+        os.chdir(cwd)
 
 
 def test_gwas_py_regenie():
@@ -68,6 +69,7 @@ def test_gwas_py_regenie():
         ]
         assert all(map(os.path.isfile, expected_files))
         assert out.returncode == 0
+        os.chdir(cwd)
 
 
 def test_gwas_py_saige():
@@ -96,3 +98,4 @@ def test_gwas_py_saige():
         ]
         assert all(map(os.path.isfile, expected_files))
         assert out.returncode == 0
+        os.chdir(cwd)
