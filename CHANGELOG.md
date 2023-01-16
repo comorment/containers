@@ -22,6 +22,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 - Added status badges and citation.cff file 
+- Added tests for ``gwas.py``
 
 ### Updated
 
