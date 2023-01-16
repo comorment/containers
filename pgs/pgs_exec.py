@@ -20,7 +20,64 @@ runtype_choices = ['sh', 'slurm', 'subprocess']
 parser = argparse.ArgumentParser(
     prog='PGS', 
     description="A pipeline for PGS analysis")
-# subparser = parser.add_subparsers(dest='method') 
+
+# first argument for method
+parser.add_argument(
+    "--method", type=str, 
+    help="Method for PGS", 
+    default='prsice2', 
+    choices=method_choices,
+    action='store',
+    )
+# create subparsers object
+subparsers = parser.add_subparsers(dest='method') 
+subparsers.required = True
+
+
+# method specific parsers
+# method plink:
+parser_plink = subparsers.add_parser('plink')
+parser_plink.add_argument(
+    "--Cov_file", type=str,
+    help="covariance file (for method plink)",
+    default="/REF/examples/prsice2/EUR.cov"
+)
+parser_plink.add_argument(
+    "--Eigenvec-file", type=str,
+    help="eigenvec file (for method plink)",
+    default="/REF/examples/prsice2/EUR.eigenvec"
+)
+# method prsice2:
+parser_prsice2 = subparsers.add_parser('prsice2')
+parser_prsice2.add_argument(
+    "--Cov_file", type=str,
+    help="covariance file (for method prsice2)",
+    default="/REF/examples/prsice2/EUR.cov"
+)
+parser_prsice2.add_argument(
+    "--Eigenvec-file", type=str,
+    help="eigenvec file (for method prsice2)",
+    default="/REF/examples/prsice2/EUR.eigenvec"
+)
+# method ldpred2-inf:
+parser_ldpred2_inf = subparsers.add_parser('ldpred2-inf')
+parser_ldpred2_inf.add_argument(
+    "--keep_SNPs_file", type=str,
+    help="File with RSIDs of SNPs to keep (for method ldpred2-inf)",
+    default="/REF/hapmap3/w_hm3.justrs"
+)
+
+# method ldpred2-auto:
+parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
+parser_ldpred2_auto.add_argument(
+    "--keep_SNPs_file", type=str,
+    help="File with RSIDs of SNPs to keep (for method ldpred2-auto)",
+    default="/REF/hapmap3/w_hm3.justrs"
+)
+
+
+
+# shared arguments
 parser.add_argument(
     "--Sumstats_file", type=str, 
     default=os.path.join("QC_data", 'Height.QC.gz'), 
@@ -44,48 +101,27 @@ parser.add_argument(
 
 # runtime specific
 parser.add_argument(
-    "--method", type=str, 
-    help="Method for PGS", 
-    default='prsice2', 
-    choices=method_choices)
-parser.add_argument(
     '--runtype', type=str,
     help=f"operation mode",
     default='subprocess',
     choices=runtype_choices
 )
 
-# method specific
-parser.add_argument(
-    "--Cov_file", type=str,
-    help="covariance file (for method=[plink, prsice2])",
-    default="/REF/examples/prsice2/EUR.cov")
-parser.add_argument(
-    "--Eigenvec-file", type=str,
-    help="eigenvec file (for method=[plink, prsice2])",
-    default="/REF/examples/prsice2/EUR.eigenvec")
-parser.add_argument(
-    "--keep_SNPs_file", type=str,
-    help="File with RSIDs of SNPs to keep (for method=[ldpred2-inf, ldpred2-auto])",
-    default="/REF/hapmap3/w_hm3.justrs")
 
 
 # NameSpace object
 parsed_args, unknowns = parser.parse_known_args(sys.argv[1:])
 
-# TODO: Find neater way of handling kwargs
+# TODO: Find neater way of handling additional kwargs
 if len(unknowns) > 0:
     print(f'arguments that will override config.yaml for method {parsed_args.method}:')
     print(unknowns, '\n')
 assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
 
-args_dict = vars(parsed_args)
-
-# check that method is allowed:
-try:
-    assert parsed_args.method in method_choices
-except AssertionError as ae:
-    raise NotImplementedError('method {parsed_args.method} not in {method_choices}')
+# convert to dict, remove skipped key/value pairs
+args_dict = vars(parsed_args).copy()
+for key in ['method', 'runtype']:
+        args_dict.pop(key)
 
 
 # enviroment variables for test runs
@@ -157,41 +193,31 @@ env_variables_list = []
 for key in env_keys:
     env_variables_list += [f'export {key}="{os.environ[key]}"']
 
-# create PGS instances and commands 
+# create PGS instances and commands
+
+
 if parsed_args.method == 'plink':
-    args_dict_plink = args_dict.copy()
-    for key in ['method', 'runtype', 'keep_SNPs_file']:
-        args_dict_plink.pop(key)
     pgs = pgs.PGS_Plink(
-        **args_dict_plink,
+        **args_dict,
         **config['plink'])
     commands = pgs.get_str(mode='preprocessing') + pgs.get_str(mode='stratification')
 elif parsed_args.method == 'prsice2':
-    args_dict_prsice2 = args_dict.copy()
-    for key in ['method', 'runtype', 'keep_SNPs_file']:
-        args_dict_prsice2.pop(key)
     pgs = pgs.PGS_PRSice2(
-        **args_dict_prsice2,
+        **args_dict,
         **config['prsice2']
     )
     commands = pgs.get_str()
 elif parsed_args.method == 'ldpred2-inf':
-    args_dict_ldpred2 = args_dict.copy()
-    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file', 'keep_SNPs_file']:
-        args_dict_ldpred2.pop(key)
     pgs = pgs.PGS_LDpred2(
         method='inf',
-        **args_dict_ldpred2,
+        **args_dict,
         **config['ldpred2']
     )
     commands = pgs.get_str(create_backing_file=True)
 elif parsed_args.method == 'ldpred2-auto':
-    args_dict_ldpred2 = args_dict.copy()
-    for key in ['method', 'runtype', 'Cov_file', 'Eigenvec_file', 'keep_SNPs_file']:
-        args_dict_ldpred2.pop(key)
     pgs = pgs.PGS_LDpred2(
         method='auto',
-        **args_dict_ldpred2,
+        **args_dict,
         **config['ldpred2']
     )
     commands = pgs.get_str(create_backing_file=True)

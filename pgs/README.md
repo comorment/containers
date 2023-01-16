@@ -63,8 +63,8 @@ python3 pgs_exec.py \
     --Input_dir '/REF/examples/ldpred2' \
     --Data_prefix 'g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_prsice2' \
-    --method prsice2 \
     --runtype 'subprocess' \
+    'prsice2' \
     --Cov_file '/REF/examples/prsice2/EUR.cov' \
     --Eigenvec-file 'g1000_eur_chr21to22_hm3rnd1.eigenvec' \
     'stat' 'BETA' \
@@ -80,8 +80,8 @@ python3 pgs_exec.py \
     --Input_dir '' \
     --Data_prefix 'g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_LDpred2_inf' \
-    --method 'ldpred2-inf' \
     --runtype 'sh' \
+    'ldpred2-inf' \
     'fileGeno' '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed' \
     'fileGenoRDS' 'g1000_eur_chr21to22_hm3rnd1.rds' \
     'col_stat' 'BETA' \
