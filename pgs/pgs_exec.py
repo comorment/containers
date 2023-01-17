@@ -62,7 +62,7 @@ parser_prsice2.add_argument(
 # method ldpred2-inf:
 parser_ldpred2_inf = subparsers.add_parser('ldpred2-inf')
 parser_ldpred2_inf.add_argument(
-    "--keep_SNPs_file", type=str,
+    "--file_keep_snps", type=str,
     help="File with RSIDs of SNPs to keep (for method ldpred2-inf)",
     default="/REF/hapmap3/w_hm3.justrs"
 )
@@ -70,7 +70,7 @@ parser_ldpred2_inf.add_argument(
 # method ldpred2-auto:
 parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
 parser_ldpred2_auto.add_argument(
-    "--keep_SNPs_file", type=str,
+    "--file_keep_snps", type=str,
     help="File with RSIDs of SNPs to keep (for method ldpred2-auto)",
     default="/REF/hapmap3/w_hm3.justrs"
 )

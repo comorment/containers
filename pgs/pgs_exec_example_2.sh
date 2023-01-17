@@ -9,6 +9,7 @@ python3 pgs_exec.py \
     --Output_dir 'PGS_synthetic_LDpred2_inf' \
     --runtype 'sh' \
     'ldpred2-inf' \
+    --file_keep_snps '/REF/hapmap3/w_hm3.justrs' \
     'fileGeno' '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed' \
     'fileGenoRDS' 'g1000_eur_chr21to22_hm3rnd1.rds' \
     'col_stat' 'BETA' \

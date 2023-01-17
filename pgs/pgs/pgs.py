@@ -758,6 +758,7 @@ class PGS_LDpred2(BasePGS):
                  col_stat='OR',
                  col_stat_se='SE',
                  stat_type='OR',
+                 file_keep_snps='/REF/hapmap3/w_hm3.justrs',
                  **kwargs):
         '''
         Parameters
@@ -785,6 +786,8 @@ class PGS_LDpred2(BasePGS):
             Effect estimate standard error column. Default: 'SE'
         stat_type: str
             Effect estimate type (BETA for linear, OR for odds-ratio. Default: 'OR'
+        file_keep_snps: str
+            
         **kwargs
             dict of additional keyword/arguments pairs parsed to
             the LDpred2.R script (see file for full set of options).
@@ -805,6 +808,7 @@ class PGS_LDpred2(BasePGS):
         self.col_stat = col_stat
         self.col_stat_se = col_stat_se
         self.stat_type = stat_type
+        self.file_keep_snps = file_keep_snps
 
         # inferred
         self._file_out = os.path.join(self.Output_dir, 'test.score')
@@ -843,6 +847,7 @@ class PGS_LDpred2(BasePGS):
             '--stat-type', self.stat_type,
             '--geno-file', self.fileGenoRDS,
             '--sumstats', self.Sumstats_file,
+            '--file-keep-snps', self.file_keep_snps,
             '--out', self._file_out,
         ])
 
