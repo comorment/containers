@@ -22,10 +22,15 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 - Added status badges and citation.cff file 
+- Added package ``GWASTools`` to ``r.sif``. 
+- Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
 
 ### Updated
 
-- Updates goes here
+* Rebuilt the R container
+  ```
+  23d195a10b84603b15d0e8c42df40fbd  singularity/r.sif
+  ```
 
 ### Fixed
 
