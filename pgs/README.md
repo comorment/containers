@@ -40,9 +40,7 @@ Run, create bash and slurm job scripts for different PGS tools
 Get a list of options:
 ```
 $ python3 pgs_exec.py --help
-usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--Sumstats_file SUMSTATS_FILE] [--Pheno_file PHENO_FILE] [--Input_dir INPUT_DIR]
-           [--Data_prefix DATA_PREFIX] [--Output_dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}]
-           {plink,prsice2,ldpred2-inf,ldpred2-auto} ...
+usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--Sumstats_file SUMSTATS_FILE] [--Pheno_file PHENO_FILE] [--Geno_file GENO_FILE] [--Output_dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}] {plink,prsice2,ldpred2-inf,ldpred2-auto} ...
 
 A pipeline for PGS analysis
 
@@ -57,10 +55,8 @@ optional arguments:
                         summary statistics file
   --Pheno_file PHENO_FILE
                         Phenotype file
-  --Input_dir INPUT_DIR
-                        input file directory
-  --Data_prefix DATA_PREFIX
-                        file prefix for .bed, .bim, .fam, etc. files
+  --Geno_file GENO_FILE
+                        file path to .bed, .bim, .fam, etc. files
   --Output_dir OUTPUT_DIR
                         Output file directory
   --runtype {sh,slurm,subprocess}
@@ -72,8 +68,7 @@ Example w. PRSice2 as subprocess on synthetic dataset (``pgs_exec_example_1.sh``
 python3 pgs_exec.py \
     --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \  # common
     --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
-    --Input_dir '/REF/examples/ldpred2' \
-    --Data_prefix 'g1000_eur_chr21to22_hm3rnd1' \
+    --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_prsice2' \
     --runtype 'subprocess' \
     'prsice2' \  # method
@@ -89,8 +84,7 @@ Example w. LDpred2-inf via shell (``sh``) script on synthetic dataset (``pgs_exe
 python3 pgs_exec.py \
     --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
     --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
-    --Input_dir '' \
-    --Data_prefix 'g1000_eur_chr21to22_hm3rnd1' \
+    --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_LDpred2_inf' \
     --runtype 'sh' \
     'ldpred2-inf' \

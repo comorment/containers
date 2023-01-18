@@ -51,12 +51,11 @@ if __name__ == '__main__':
     # input (shared)
     Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     Pheno_file = '/REF/examples/ldpred2/simu.pheno'
-    Input_dir= '/REF/examples/ldpred2'
-    Data_prefix = 'g1000_eur_chr21to22_hm3rnd1'
+    Geno_file= '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
     Data_postfix = ''
 
     # LDpred2 specific
-    fileGeno = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed'
+    # fileGeno = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed'
     fileGenoRDS = 'g1000_eur_chr21to22_hm3rnd1.rds'
 
     # method specific input
@@ -99,9 +98,11 @@ if __name__ == '__main__':
     #######################################
     # Create <Data_prefix>.eigenval/eigenvec files using plink
     # written to this directory
+    # TODO: move out
+    Data_prefix = os.path.split(Geno_file)[-1]
     call = ' '.join(
         [os.environ['PLINK'],
-         '--bfile', os.path.join(Input_dir, Data_prefix),
+         '--bfile', Geno_file,
          '--pca', str(config['plink']['nPCs']),
          '--out', Data_prefix
         ]
@@ -112,7 +113,7 @@ if __name__ == '__main__':
     assert proc.returncode == 0
 
     # file names
-    Eigenval_file = f'{Data_prefix}.eigenval'
+    # Eigenval_file = f'{Data_prefix}.eigenval'
     Eigenvec_file = f'{Data_prefix}.eigenvec'
 
 
@@ -122,8 +123,7 @@ if __name__ == '__main__':
     plink = pgs.PGS_Plink(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
-        Input_dir=Input_dir,
-        Data_prefix=Data_prefix,
+        Geno_file=Geno_file,
         Output_dir='PGS_synthetic_plink',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
@@ -157,8 +157,7 @@ if __name__ == '__main__':
     prsice2 = pgs.PGS_PRSice2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
-        Input_dir=Input_dir,
-        Data_prefix=Data_prefix,
+        Geno_file=Geno_file,
         Output_dir='PGS_synthetic_prsice2',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
@@ -178,11 +177,9 @@ if __name__ == '__main__':
     ldpred2_inf = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
-        Input_dir=None,
-        Data_prefix=Data_prefix,
+        Geno_file=Geno_file,
         Output_dir='PGS_synthetic_LDpred2_inf',
         method='inf',
-        fileGeno=fileGeno,
         fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )
@@ -199,11 +196,9 @@ if __name__ == '__main__':
     ldpred2_auto = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
-        Input_dir=Input_dir,
-        Data_prefix=Data_prefix,
+        Geno_file=Geno_file,
         Output_dir='PGS_synthetic_LDpred2_auto',
         method='auto',
-        fileGeno=fileGeno,
         fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )

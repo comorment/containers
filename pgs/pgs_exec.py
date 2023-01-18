@@ -87,13 +87,9 @@ parser.add_argument(
     default="/REF/examples/prsice2/EUR.height", 
     help="Phenotype file")
 parser.add_argument(
-    "--Input_dir", type=str,
-    help="input file directory",
-    default="QC_data")
-parser.add_argument(
-    "--Data_prefix", type=str, 
+    "--Geno_file", type=str, 
     default="EUR", 
-    help="file prefix for .bed, .bim, .fam, etc. files")
+    help="file path to .bed, .bim, .fam, etc. files")
 parser.add_argument(
     "--Output_dir", type=str,
     help="Output file directory",
@@ -230,6 +226,7 @@ if parsed_args.runtype == 'subprocess':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+
 elif parsed_args.runtype == 'sh':
     # write bash script
     jobdir = 'bash_scripts'

@@ -14,16 +14,12 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        
-    ))
-    os.environ.update(dict(
         COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
         SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
         REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference'),
-        LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref')
     ))
     os.environ.update(dict(
-        
+        LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref')        
     ))
     os.environ.update(dict(
         SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF,{os.environ["LDPRED2_REF"]}:/ldpred2_ref'
@@ -51,8 +47,7 @@ if __name__ == '__main__':
     # input (shared)
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
     Pheno_file = '/REF/examples/prsice2/EUR.height'
-    # Input_dir='/REF/examples/prsice2',
-    Data_prefix = 'EUR'
+    Geno_file='/REF/examples/prsice2/EUR'
     Data_postfix = '.QC'
 
     # method specific input
@@ -61,7 +56,6 @@ if __name__ == '__main__':
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
     
     # LDpred2
-    fileGeno = 'QC_data/EUR.QC.bed'
     fileGenoRDS = 'EUR.rds'
     
     # update ldpred2 config:
@@ -98,8 +92,7 @@ if __name__ == '__main__':
     qc = pgs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
-        Input_dir='/REF/examples/prsice2',
-        Data_prefix=Data_prefix,
+        Geno_file=Geno_file,
         Data_postfix=Data_postfix,
         Output_dir=QC_data,
         Phenotype=Phenotype,
@@ -110,14 +103,20 @@ if __name__ == '__main__':
         assert proc.returncode == 0
     
 
+    # "Cleaned" Geno_file from QC step
+    Geno_file_post_QC = os.path.join(
+        qc.Output_dir, 
+        qc.Data_prefix + qc.Data_postfix)
+    # "Cleaned" summary statistics
+    Sumstats_file_post_QC = os.path.join(QC_data, 'Height.QC.gz')
+
     #######################################
     # Plink
     #######################################
     plink = pgs.PGS_Plink(
-        Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
+        Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
-        Input_dir=QC_data,
-        Data_prefix=Data_prefix + Data_postfix,
+        Geno_file=Geno_file_post_QC,
         Output_dir='PGS_plink',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
@@ -148,10 +147,9 @@ if __name__ == '__main__':
     # PRSice-2
     #######################################
     prsice2 = pgs.PGS_PRSice2(
-        Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
+        Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
-        Input_dir=QC_data,
-        Data_prefix=Data_prefix + Data_postfix,
+        Geno_file=Geno_file_post_QC,
         Output_dir='PGS_prsice2',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
@@ -169,13 +167,11 @@ if __name__ == '__main__':
     # LDpred2 infinitesimal model
     #######################################
     ldpred2_inf = pgs.PGS_LDpred2(
-        Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
+        Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
-        Input_dir=None,
-        Data_prefix=Data_prefix + Data_postfix,
+        Geno_file=Geno_file_post_QC,
         Output_dir='PGS_LDpred2_inf',
         method='inf',
-        fileGeno=fileGeno,
         fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )
@@ -190,13 +186,11 @@ if __name__ == '__main__':
     # LDpred2 automatic model
     #######################################
     ldpred2_auto = pgs.PGS_LDpred2(
-        Sumstats_file=os.path.join(QC_data, 'Height.QC.gz'),
+        Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
-        Input_dir=None,
-        Data_prefix=Data_prefix + Data_postfix,
+        Geno_file=Geno_file_post_QC,
         Output_dir='PGS_LDpred2_auto',
         method='auto',
-        fileGeno=fileGeno,
         fileGenoRDS=fileGenoRDS,
         **config['ldpred2']
     )
