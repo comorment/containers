@@ -165,7 +165,3 @@ py.test -v tests/test_<container-prefix>.py
 
 Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in ``<containers>/singularity/``,
 not only git LFS pointer files.
-
-Also note that some tests may require outside files, that is, the private [reference](https://github.com/comorment/reference) GitHub repository,
-checked out in the same directory as this ``containers`` repository. If you need access, contact us.
-
