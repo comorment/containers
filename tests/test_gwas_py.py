@@ -12,10 +12,7 @@ p3_sif = os.path.abspath(os.path.join("singularity", "python3.sif"))
 cwd = os.getcwd()
 ref = os.path.join(cwd, "reference", "examples", "regenie")
 
-os.environ["SINGULARITY_BIND"] = (
-    f"{os.path.join(cwd,'reference')}:/REF:ro,"
-    f" {os.path.join(cwd, '..', 'reference')}:/REF2:ro"
-)
+os.environ["SINGULARITY_BIND"] = f"{os.path.join(cwd,'reference')}:/REF:ro"
 os.environ["COMORMENT"] = f"{os.path.join(cwd, '..')}"
 
 
