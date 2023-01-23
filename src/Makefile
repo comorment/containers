@@ -1,9 +1,9 @@
 all: hello.sif gwas.sif python3.sif r.sif saige.sif
 
 %.sif: dockerfiles/%/Dockerfile
-	docker build -t $* -f dockerfiles/$*/Dockerfile . && \
-	scripts/convert_docker_image_to_singularity.sh $* && \
-	scripts/move_singularity_file.sh $*
+	docker build -t $* -f dockerfiles/$*/Dockerfile . | tee logs/$*.log && \
+	scripts/convert_docker_image_to_singularity.sh $*  | tee -a logs/$*.log && \
+	scripts/move_singularity_file.sh $* | tee -a logs/$*.log
 
 # Example commands executed by this make file
 # 
@@ -17,3 +17,4 @@ all: hello.sif gwas.sif python3.sif r.sif saige.sif
 #     scripts/convert_docker_image_to_singularity.sh gwas && \       # produces gwas.sif
 #     scripts/move_singularity_file.sh gwas         # moves gwas.sif to ../singularity/.
 #
+# Build logs are stored in the ./logs/ directory
