@@ -48,4 +48,10 @@ COPY /scripts/install_prsice.sh /tmp/prsice/
 RUN bash /tmp/prsice/install_prsice.sh && \
     rm -rf /tmp/prsice
 
+# few more deps
+WORKDIR /tmp/
+COPY /scripts/R/nora.R .
+RUN Rscript nora.R
+
+
 WORKDIR /tools
