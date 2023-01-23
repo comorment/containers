@@ -375,9 +375,10 @@ def make_figures_commands(args):
     cmd = ''
     for pheno in args.pheno:
         Rcmd = 'library(data.table);library(qqman);library(ggplot2);'
+        Rcmd += 'library(GWASTools);'
         Rcmd += 'df=read.table("{out}_{pheno}.gz", header=TRUE);'.format(out=args.out, pheno=pheno)
         Rcmd += 'png("{out}_{pheno}.qq.png", width=600, unit="px", pointsize=12, bg="white");'.format(out=args.out, pheno=pheno)
-        Rcmd += 'qq(df$P, main="{pheno}");'.format(pheno=pheno)
+        Rcmd += 'qqPlot(df$P, ci=T, main="{pheno}");'.format(pheno=pheno)
         Rcmd += 'dev.off();'
         Rcmd += 'df=df[df$P < 0.05, ];'
         Rcmd += 'png("{out}_{pheno}.manh.png", width=1200, unit="px", pointsize=12, bg="white");'.format(out=args.out, pheno=pheno)

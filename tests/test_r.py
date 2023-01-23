@@ -72,4 +72,5 @@ def test_r_bigsnpr():
         sif = os.path.join(pwd, pth)
         call = f"""singularity run --home={d} {sif} Rscript bigsnpr.R"""
         out = subprocess.run(call.split(' '))
+        os.chdir(pwd)
         assert out.returncode == 0
