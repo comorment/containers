@@ -165,3 +165,9 @@ py.test -v tests/test_<container-prefix>.py
 
 Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in ``<containers>/singularity/``,
 not only git LFS pointer files.
+
+# Git clone ignoring lfs 
+
+https://stackoverflow.com/questions/42019529/how-to-clone-pull-a-git-repository-ignoring-lfs
+
+GIT_LFS_SKIP_SMUDGE=1 git clone git@github.com:comorment/containers.git
