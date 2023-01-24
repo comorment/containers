@@ -73,7 +73,7 @@ def convert_dict_to_str(d, key_prefix='--'):
     cmd = ''
     if len(d) > 0:
         for key, value in d.items():
-            if isinstance(value, (tuple ,list, np.ndarray)):
+            if isinstance(value, (tuple, list, np.ndarray)):
                 cmd = ' '.join(
                     [cmd,
                      f'{key_prefix}{key} {" ".join([str(v) for v in value])}'
@@ -83,51 +83,62 @@ def convert_dict_to_str(d, key_prefix='--'):
                     [cmd, f'{key_prefix}{key} {str(value) or ""}'])
     return cmd
 
+
 def extract_variables(df, variables, pheno_dict_map, log):
     cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
-    other_vars =  ['FID', 'IID'] + [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
+    other_vars = ['FID', 'IID'] + \
+        [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
 
-    dummies=df[other_vars]
+    dummies = df[other_vars]
     for var in cat_vars:
         new = pd.get_dummies(df[var], prefix=var)
         dummies = dummies.join(new)
 
-        #drop most frequent variable for ref category
+        # drop most frequent variable for ref category
         drop_col = df.groupby([var]).size().idxmax()
         dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
 
-        log.log('Variable {} will be extracted as dummie, dropping {} label (most frequent)'.format(var, drop_col))
+        log.log(
+            f'Variable {var} will be extracted as dummy, ' +
+            f'dropping {drop_col} label (most frequent)')
     return dummies.copy()
 
-def post_run_plink(Output_dir, Data_prefix, best_fit_file='best_fit_prs.csv', score_file='test.score'):
-        '''
-        Read best-fit predictions and export standardized ``test.score`` file
-        to Output_dir from class PGS_Plink output
 
-        Parameters
-        ----------
-        Output_dir: path
-            path to output directory
-        Data_prefix: str
-            standard file name prefix (for .bed, .bim, .fam, etc.)
-        best_fit_file: str
-            .csv file in ``Output_dir`` with best fit Threshold value. Default: 'best_fit_prs.csv'
-        score_file: str
-            test score file in ``Output_dir``. Default: 'test.score'
-        '''
-        best_fit = pd.read_csv(
-            os.path.join(
-                Output_dir,
-                best_fit_file))
+def post_run_plink(
+        Output_dir,
+        Data_prefix,
+        best_fit_file='best_fit_prs.csv',
+        score_file='test.score'):
+    '''
+    Read best-fit predictions and export standardized ``test.score`` file
+    to Output_dir from class PGS_Plink output
 
-        f = f"{Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
-        scores = pd.read_csv(
-            os.path.join(Output_dir, f),
-            delim_whitespace=True,
-            usecols=['IID', 'FID', 'SCORE'])
-        scores.rename(columns={'SCORE': 'score'}, inplace=True)
-        scores.to_csv(os.path.join(Output_dir, score_file),
-                      sep=' ', index=False)
+    Parameters
+    ----------
+    Output_dir: path
+        path to output directory
+    Data_prefix: str
+        standard file name prefix (for .bed, .bim, .fam, etc.)
+    best_fit_file: str
+        .csv file in ``Output_dir`` with best fit Threshold value.
+        Default: 'best_fit_prs.csv'
+    score_file: str
+        test score file in ``Output_dir``. Default: 'test.score'
+    '''
+    best_fit = pd.read_csv(
+        os.path.join(
+            Output_dir,
+            best_fit_file))
+
+    f = f"{Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
+    scores = pd.read_csv(
+        os.path.join(Output_dir, f),
+        delim_whitespace=True,
+        usecols=['IID', 'FID', 'SCORE'])
+    scores.rename(columns={'SCORE': 'score'}, inplace=True)
+    scores.to_csv(os.path.join(Output_dir, score_file),
+                  sep=' ', index=False)
+
 
 def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
     '''
@@ -149,9 +160,16 @@ def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
         usecols=['IID', 'FID', 'PRS'])
     scores.rename(columns={'PRS': 'score'}, inplace=True)
     scores.to_csv(os.path.join(Output_dir, 'test.score'),
-                    sep=' ', index=False)
+                  sep=' ', index=False)
 
-def df_colums_to_file(source_file, output_file, usecols=None, delim_whitespace=True, delimiter=None, **kwargs):
+
+def df_colums_to_file(
+        source_file,
+        output_file,
+        usecols=None,
+        delim_whitespace=True,
+        delimiter=None,
+        **kwargs):
     '''Extract columns from dataframe (.csv) on file to output_file
 
     Parameters
@@ -171,17 +189,20 @@ def df_colums_to_file(source_file, output_file, usecols=None, delim_whitespace=T
     '''
     # read
     df = pd.read_csv(
-        source_file, 
-        usecols=usecols, 
-        delim_whitespace=delim_whitespace, 
+        source_file,
+        usecols=usecols,
+        delim_whitespace=delim_whitespace,
         delimiter=delimiter,
         **kwargs)
     # reorder
     if usecols is not None:
         df = df[usecols]
     # write
-    df.to_csv(output_file, sep=' ' if delim_whitespace else delimiter, index=False)
-    
+    df.to_csv(
+        output_file,
+        sep=' ' if delim_whitespace else delimiter,
+        index=False)
+
 
 class BasePGS(abc.ABC):
     """Base PGRS object declaration with some
@@ -222,7 +243,7 @@ class BasePGS(abc.ABC):
         self.Pheno_file = Pheno_file
         self.Geno_file = Geno_file
         self.Output_dir = Output_dir
-        
+
         self.kwargs = kwargs
 
         # inferred
@@ -315,10 +336,10 @@ class PGS_Plink(BasePGS):
         # set attributes
         if Cov_file is None or Eigenvec_file is None:
             self.Cov_file = os.path.join(
-                self.Output_dir, 
+                self.Output_dir,
                 self.Data_prefix + '.')
             self.Eigenvec_file = os.path.join(
-                self.Output_dir, 
+                self.Output_dir,
                 self.Data_prefix + '.eigenvec')
         else:
             for fpath in [Cov_file, Eigenvec_file]:
@@ -326,7 +347,7 @@ class PGS_Plink(BasePGS):
                     assert os.path.isfile(fpath)
                 except AssertionError:
                     print(f'file {fpath} may not exist\n')
-            
+
             self.Cov_file = Cov_file
             self.Eigenvec_file = Eigenvec_file
         self.Phenotype = Phenotype
@@ -388,7 +409,9 @@ class PGS_Plink(BasePGS):
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
-            '--clump', self._transformed_file if update_effect_size else self.Sumstats_file,
+            '--clump',
+            (self._transformed_file
+                if update_effect_size else self.Sumstats_file),
             '--clump-snp-field', 'SNP',
             '--clump-field', 'P',
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
@@ -429,18 +452,18 @@ class PGS_Plink(BasePGS):
         '''
         command = ''
         if not update_effect_size:
-            # unzip Sumstats file to Output_dir allowing parsing 
+            # unzip Sumstats file to Output_dir allowing parsing
             # it to Plink using --score
             command += ' '.join([
                 os.environ['PYTHON'],
-                '-c', 
-                f"""'from pgs import pgs; pgs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""
+                '-c',
+                f"""'from pgs import pgs; pgs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""  # noqa: 501
                 '\n'
             ])
         command += ' '.join([
             os.environ['PYTHON'],
-            '-c', 
-            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""
+            '-c',
+            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""  # noqa: 501
         ])
         return command
 
@@ -481,9 +504,9 @@ class PGS_Plink(BasePGS):
     def _run_plink_w_stratification(self):
         '''
         Account for (population) stratification using PCs,
-        creating .eigenvec file. 
-        If class parameter Eigenvec_file is set and file exist, 
-        this function will not return commands to compute 
+        creating .eigenvec file.
+        If class parameter Eigenvec_file is set and file exist,
+        this function will not return commands to compute
         a new eigenvec file.
 
         Returns
@@ -496,15 +519,15 @@ class PGS_Plink(BasePGS):
                   'To get instructions to compute, set Eigenvec_file=None')
             # check that number of PCs match with class input
             eigenvec_df = pd.read_csv(
-                self.Eigenvec_file, 
+                self.Eigenvec_file,
                 delim_whitespace=True, header=None, nrows=1)
             nPCs = eigenvec_df.columns.size - 2
             if nPCs != self.nPCs:
                 mssg = (
-                    f'The number of PCs in {self.Eigenvec_file} nPCs={nPCs} ' + 
-                    f'while <pgs.PGS_Plink instance>.nPCs={self.nPCs}. ' + 
-                    f'Instantiate class pgs.PGS_Plink with nPCs={self.Eigenvec_file} ' +
-                    '(confer config.yaml file with settings).')
+                    f'The number of PCs in {self.Eigenvec_file} nPCs={nPCs} ' +
+                    f'while <pgs.PGS_Plink instance>.nPCs={self.nPCs}. ' +
+                    f'Inst. class pgs.PGS_Plink w. nPCs={self.Eigenvec_file}' +
+                    ' (confer config.yaml file with settings).')
                 raise ValueError(mssg)
             return ''
         else:
@@ -557,11 +580,10 @@ class PGS_Plink(BasePGS):
     def _generate_post_run_str(self):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
-            os.environ['PYTHON'], '-c', 
+            os.environ['PYTHON'], '-c',
             f"""'from pgs.pgs import post_run_plink; post_run_plink({arg})'"""
         ])
         return cmd
-
 
     def get_str(self, mode='basic', update_effect_size=False):
         '''
@@ -582,24 +604,24 @@ class PGS_Plink(BasePGS):
         commands = []
         if mode == 'preprocessing':
             commands += [
-                self._preprocessing_update_effect_size() if update_effect_size else None,
+                (self._preprocessing_update_effect_size()
+                    if update_effect_size else None),
                 self._preprocessing_clumping(update_effect_size),
                 self._preprocessing_extract_index_SNP_ID(),
-                self._preprocessing_extract_p_values(update_effect_size)
-            ]
+                self._preprocessing_extract_p_values(update_effect_size)]
             return list(filter(lambda item: item is not None, commands))
         elif mode in ['basic', 'stratification']:
             self._write_range_list_file()
             commands += [self._run_plink_basic()]
             if mode == 'basic':
                 commands += [
-                    self._find_best_fit_prs(), 
+                    self._find_best_fit_prs(),
                     self._generate_post_run_str()]
             elif mode == 'stratification':
                 commands += [self._run_plink_w_stratification(),
-                        self._find_best_fit_prs(), 
-                        self._generate_post_run_str()
-                        ]
+                             self._find_best_fit_prs(),
+                             self._generate_post_run_str()
+                             ]
             return commands
         else:
             raise NotImplementedError
@@ -659,7 +681,7 @@ class PGS_PRSice2(BasePGS):
         '''
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
-                         Geno_file = Geno_file,
+                         Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
         # set attributes
@@ -730,8 +752,8 @@ class PGS_PRSice2(BasePGS):
     def _generate_post_run_str(self):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
-            os.environ['PYTHON'], '-c', 
-            f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""
+            os.environ['PYTHON'], '-c',
+            f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""  # noqa: E501
         ])
         return cmd
 
@@ -745,7 +767,7 @@ class PGS_PRSice2(BasePGS):
             list of command line statements for analysis run
         '''
         return [self._generate_covariance_str(),
-                self._generate_run_str(), 
+                self._generate_run_str(),
                 self._generate_post_run_str()]
 
 
@@ -788,9 +810,10 @@ class PGS_LDpred2(BasePGS):
         col_stat_se: str
             Effect estimate standard error column. Default: 'SE'
         stat_type: str
-            Effect estimate type (BETA for linear, OR for odds-ratio. Default: 'OR'
+            Effect estimate type (BETA for linear, OR for odds-ratio.
+            Default: 'OR'
         file_keep_snps: str
-            
+
         **kwargs
             dict of additional keyword/arguments pairs parsed to
             the LDpred2.R script (see file for full set of options).
