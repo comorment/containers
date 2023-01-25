@@ -32,4 +32,4 @@ print(summary(simple.fit))
 sink()
 
 # write <out>.csv
-write.table(glance(simple.fit), paste(parsed$out, '.csv'))
+write.table(glance(simple.fit), paste(parsed$out, '.csv', sep=""))
