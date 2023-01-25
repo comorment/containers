@@ -87,6 +87,10 @@ parser.add_argument(
     default="/REF/examples/prsice2/EUR.height", 
     help="Phenotype file")
 parser.add_argument(
+    "--Phenotype", type=str, 
+    default="Height", 
+    help="Phenotype name (must be a column header in Pheno_file)")
+parser.add_argument(
     "--Geno_file", type=str, 
     default="EUR", 
     help="file path to .bed, .bim, .fam, etc. files")

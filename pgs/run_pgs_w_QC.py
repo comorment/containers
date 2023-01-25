@@ -47,6 +47,7 @@ if __name__ == '__main__':
     # input (shared)
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
     Pheno_file = '/REF/examples/prsice2/EUR.height'
+    Phenotype = 'Height'
     Geno_file='/REF/examples/prsice2/EUR'
     Data_postfix = '.QC'
 
@@ -84,18 +85,15 @@ if __name__ == '__main__':
 
     # output dir for QC'd data.
     QC_data = 'QC_data'
-
-    # QC params
-    Phenotype = 'Height'
     
     # perform some basic QC steps
     qc = pgs.Standard_GWAS_QC(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file,
         Data_postfix=Data_postfix,
         Output_dir=QC_data,
-        Phenotype=Phenotype,
     )
     for call in qc.get_str():
         print(f'\nevaluating: {call}\n')
@@ -116,11 +114,11 @@ if __name__ == '__main__':
     plink = pgs.PGS_Plink(
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file_post_QC,
         Output_dir='PGS_plink',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
-        Phenotype=Phenotype,
         **config['plink'],
     )
 
@@ -149,6 +147,7 @@ if __name__ == '__main__':
     prsice2 = pgs.PGS_PRSice2(
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file_post_QC,
         Output_dir='PGS_prsice2',
         Cov_file=Cov_file,
@@ -169,6 +168,7 @@ if __name__ == '__main__':
     ldpred2_inf = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file_post_QC,
         Output_dir='PGS_LDpred2_inf',
         method='inf',
@@ -188,6 +188,7 @@ if __name__ == '__main__':
     ldpred2_auto = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file_post_QC,
         Output_dir='PGS_LDpred2_auto',
         method='auto',

@@ -214,6 +214,7 @@ class BasePGS(abc.ABC):
     def __init__(self,
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Phenotype='Height',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='qc-output',
                  **kwargs):
@@ -224,6 +225,8 @@ class BasePGS(abc.ABC):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
+        Phenotype: str
+            phenotype name (must be a column header in ``Pheno_file``)
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -241,6 +244,7 @@ class BasePGS(abc.ABC):
         # set attributes
         self.Sumstats_file = Sumstats_file
         self.Pheno_file = Pheno_file
+        self.Phenotype = Phenotype
         self.Geno_file = Geno_file
         self.Output_dir = Output_dir
 
@@ -272,11 +276,11 @@ class PGS_Plink(BasePGS):
     def __init__(self,
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Phenotype='Height',
                  Geno_file='QC_data/EUR',
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
-                 Phenotype='Height',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -292,6 +296,8 @@ class PGS_Plink(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
+        Phenotype: str
+            phenotype name (must be a column header in ``Pheno_file``)
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -301,8 +307,6 @@ class PGS_Plink(BasePGS):
             path to covariance file (.cov)
         Eigenvec_file: str or None
             None, or path to eigenvec file (.eigenvec)
-        Phenotype: str
-            default: 'Height'
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
         clump_r2: float
@@ -330,6 +334,7 @@ class PGS_Plink(BasePGS):
         '''
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
+                         Phenotype=Phenotype,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -350,7 +355,6 @@ class PGS_Plink(BasePGS):
 
             self.Cov_file = Cov_file
             self.Eigenvec_file = Eigenvec_file
-        self.Phenotype = Phenotype
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -554,9 +558,9 @@ class PGS_Plink(BasePGS):
 
             return '\n'.join([tmp_str_0, tmp_str_1])
 
-    def _find_best_fit_prs(self):
+    def _find_best_fit_pgs(self):
         '''
-        Generate command for running find_best_fit_prs.R script,
+        Generate command for running find_best_fit_pgs.R script,
         producing
 
         Returns
@@ -564,7 +568,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['RSCRIPT'], 'find_best_fit_prs.R',
+            os.environ['RSCRIPT'], 'find_best_fit_pgs.R',
             self.Pheno_file,
             self.Eigenvec_file,
             self.Cov_file,
@@ -582,6 +586,23 @@ class PGS_Plink(BasePGS):
         cmd = ' '.join([
             os.environ['PYTHON'], '-c',
             f"""'from pgs.pgs import post_run_plink; post_run_plink({arg})'"""
+        ])
+        return cmd
+
+    def _evaluate_model_str(self):
+        '''
+        Return callable string for fitting a simple
+        linear model between PGS score and phenotype data
+        using R stats::lm, printing stats::lm.fit.summary output
+        to file
+        '''
+        cmd = ' '.join([
+            os.environ['RSCRIPT'],
+            'eval_model.R',
+            '--pheno-file', self.Pheno_file,
+            '--phenotype', self.Phenotype,
+            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--out', os.path.join(self.Output_dir, 'test_summary')
         ])
         return cmd
 
@@ -615,12 +636,14 @@ class PGS_Plink(BasePGS):
             commands += [self._run_plink_basic()]
             if mode == 'basic':
                 commands += [
-                    self._find_best_fit_prs(),
-                    self._generate_post_run_str()]
+                    self._find_best_fit_pgs(),
+                    self._generate_post_run_str(),
+                    self._evaluate_model_str()]
             elif mode == 'stratification':
                 commands += [self._run_plink_w_stratification(),
-                             self._find_best_fit_prs(),
-                             self._generate_post_run_str()
+                             self._find_best_fit_pgs(),
+                             self._generate_post_run_str(),
+                             self._evaluate_model_str()
                              ]
             return commands
         else:
@@ -636,6 +659,7 @@ class PGS_PRSice2(BasePGS):
     def __init__(self,
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Phenotype='Height',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='PGS_prsice2',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
@@ -652,6 +676,8 @@ class PGS_PRSice2(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
+        Phenotype: str
+            phenotype name (must be a column header in ``Pheno_file``)
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -681,6 +707,7 @@ class PGS_PRSice2(BasePGS):
         '''
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
+                         Phenotype=Phenotype,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -757,6 +784,23 @@ class PGS_PRSice2(BasePGS):
         ])
         return cmd
 
+    def _evaluate_model_str(self):
+        '''
+        Return callable string for fitting a simple
+        linear model between PGS score and phenotype data
+        using R stats::lm, printing stats::lm.fit.summary output
+        to file
+        '''
+        cmd = ' '.join([
+            os.environ['RSCRIPT'],
+            'eval_model.R',
+            '--pheno-file', self.Pheno_file,
+            '--phenotype', self.Phenotype,
+            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--out', os.path.join(self.Output_dir, 'test_summary')
+        ])
+        return cmd
+
     def get_str(self):
         '''
         Public method to create commands
@@ -768,7 +812,8 @@ class PGS_PRSice2(BasePGS):
         '''
         return [self._generate_covariance_str(),
                 self._generate_run_str(),
-                self._generate_post_run_str()]
+                self._generate_post_run_str(),
+                self._evaluate_model_str()]
 
 
 class PGS_LDpred2(BasePGS):
@@ -780,6 +825,7 @@ class PGS_LDpred2(BasePGS):
     def __init__(self,
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
+                 Phenotype='Height',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='PGS_ldpred2_inf',
                  method='inf',
@@ -796,6 +842,8 @@ class PGS_LDpred2(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
+        Phenotype: str
+            phenotype name (must be a column header in ``Pheno_file``)
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -822,6 +870,7 @@ class PGS_LDpred2(BasePGS):
         '''
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
+                         Phenotype=Phenotype,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -847,6 +896,23 @@ class PGS_LDpred2(BasePGS):
             self.fileGenoRDS
         ])
         return command
+
+    def _evaluate_model_str(self):
+        '''
+        Return callable string for fitting a simple
+        linear model between PGS score and phenotype data
+        using R stats::lm, printing stats::lm.fit.summary output
+        to file
+        '''
+        cmd = ' '.join([
+            os.environ['RSCRIPT'],
+            'eval_model.R',
+            '--pheno-file', self.Pheno_file,
+            '--phenotype', self.Phenotype,
+            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--out', os.path.join(self.Output_dir, 'test_summary')
+        ])
+        return cmd
 
     def get_str(self, create_backing_file=True):
         '''
@@ -880,11 +946,12 @@ class PGS_LDpred2(BasePGS):
         if len(self.kwargs) > 0:
             tmp_cmd1 = ' '.join([tmp_cmd1, convert_dict_to_str(self.kwargs)])
 
+        # return calls
         if create_backing_file:
             tmp_cmd0 = self._run_createBackingFile()
-            return [tmp_cmd0, tmp_cmd1]
+            return [tmp_cmd0, tmp_cmd1, self._evaluate_model_str()]
         else:
-            return [tmp_cmd1]
+            return [tmp_cmd1, self._evaluate_model_str()]
 
 
 class Standard_GWAS_QC(BasePGS):

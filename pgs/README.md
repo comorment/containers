@@ -68,6 +68,7 @@ Example w. PRSice2 as subprocess on synthetic dataset (``pgs_exec_example_1.sh``
 python3 pgs_exec.py \
     --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \  # common
     --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
+    --Phenotype 'trait1' \
     --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_prsice2' \
     --runtype 'subprocess' \
@@ -84,6 +85,7 @@ Example w. LDpred2-inf via shell (``sh``) script on synthetic dataset (``pgs_exe
 python3 pgs_exec.py \
     --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
     --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
+    --Phenotype 'trait1' \
     --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_LDpred2_inf' \
     --runtype 'sh' \

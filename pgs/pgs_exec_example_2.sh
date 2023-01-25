@@ -4,6 +4,7 @@
 python3 pgs_exec.py \
     --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
     --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
+    --Phenotype 'trait1' \
     --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
     --Output_dir 'PGS_synthetic_LDpred2_inf' \
     --runtype 'sh' \

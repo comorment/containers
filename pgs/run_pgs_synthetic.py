@@ -51,6 +51,7 @@ if __name__ == '__main__':
     # input (shared)
     Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     Pheno_file = '/REF/examples/ldpred2/simu.pheno'
+    Phenotype = 'trait1'
     Geno_file= '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
     Data_postfix = ''
 
@@ -123,11 +124,11 @@ if __name__ == '__main__':
     plink = pgs.PGS_Plink(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file,
         Output_dir='PGS_synthetic_plink',
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
-        Phenotype='trait1',
         **config['plink'],
     )
 
@@ -157,6 +158,7 @@ if __name__ == '__main__':
     prsice2 = pgs.PGS_PRSice2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file,
         Output_dir='PGS_synthetic_prsice2',
         Cov_file=Cov_file,
@@ -177,6 +179,7 @@ if __name__ == '__main__':
     ldpred2_inf = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file,
         Output_dir='PGS_synthetic_LDpred2_inf',
         method='inf',
@@ -196,6 +199,7 @@ if __name__ == '__main__':
     ldpred2_auto = pgs.PGS_LDpred2(
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
+        Phenotype=Phenotype,
         Geno_file=Geno_file,
         Output_dir='PGS_synthetic_LDpred2_auto',
         method='auto',
