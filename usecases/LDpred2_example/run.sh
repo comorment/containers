@@ -62,7 +62,7 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
-  --geno-file $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
+  --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 
 echo "TEST error: Bad ldpred mode"
 dump=$( { $LDP --ldpred-mode infinite; } 2>&1 )
@@ -81,7 +81,7 @@ done
 
 echo "### Testing LD estimation with calculateLD.R and use in ldpred2.R"
 # Basic command to perform LD estimation
-LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file $fileOutputSNPR \
+LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file-rds $fileOutputSNPR \
   --dir-genetic-maps $DIR_TESTS/maps/ \
   --file-ld-blocks $DIR_TESTS/output/ld/ld-chr@.rds \
   --file-ld-map $DIR_TESTS/output/ld/map.rds
@@ -110,7 +110,7 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
-  --geno-file $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
+  --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 dump=$( { $LDP; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
