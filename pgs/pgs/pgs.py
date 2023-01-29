@@ -418,6 +418,7 @@ class PGS_Plink(BasePGS):
                 if update_effect_size else self.Sumstats_file),
             '--clump-snp-field', 'SNP',
             '--clump-field', 'P',
+            '--threads', str(self.kwargs['threads']),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
 
@@ -499,6 +500,7 @@ class PGS_Plink(BasePGS):
             os.path.join(self.Output_dir, 'SNP.pvalue'),
             '--extract',
             os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
+            '--threads', str(self.kwargs['threads']),
             '--out',
             os.path.join(self.Output_dir, self.Data_prefix)
         ])
@@ -860,7 +862,8 @@ class PGS_LDpred2(BasePGS):
         stat_type: str
             Effect estimate type (BETA for linear, OR for odds-ratio.
             Default: 'OR'
-        file_keep_snps: str
+        file_keep_snps: str or None
+            File with RSIDs of SNPs to keep (optional)
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
@@ -938,9 +941,10 @@ class PGS_LDpred2(BasePGS):
             '--stat-type', self.stat_type,
             '--geno-file', self.fileGenoRDS,
             '--sumstats', self.Sumstats_file,
-            '--file-keep-snps', self.file_keep_snps,
             '--out', self._file_out,
         ])
+        if self.file_keep_snps is not None:
+            tmp_cmd1 = ' '.join([tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
 
         # deal with kwargs
         if len(self.kwargs) > 0:

@@ -28,6 +28,7 @@ plink:
   strat_indep_pairwise: [250, 50, 0.25]
   nPCs: 6
   score_args: [3, 4, 12, 'header']
+  threads: 8
 
 # PRSice-2
 prsice2:
@@ -36,6 +37,7 @@ prsice2:
   INFO: 0.8
   stat: 'OR'
   or: ''
+  thread: 8
 
 # LDpred2
 ldpred2:
