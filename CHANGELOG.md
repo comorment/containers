@@ -35,7 +35,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-- Fixes goes here
+- ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
 
 ### Removed
 

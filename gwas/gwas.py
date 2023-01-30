@@ -550,10 +550,18 @@ def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
 
         for col in args.variance_standardize:
             if (col not in pheno.columns) or (pheno_dict_map[col] != 'CONTINUOUS'):
-                raise ValueError('Can not apply --variance-standardize to {}, column is missing or its type is other than CONTINUOUS'.fromat(col))
+                raise ValueError(
+                    f"Can not apply --variance-standardize to {col},"
+                    " column is missing or its type is other than CONTINUOUS"
+                )
 
             mean = np.nanmean(pheno[col].values)
             std = np.nanstd(pheno[col].values, ddof=1)
+            if np.isclose(std, 0, atol=1e-6):
+                raise ValueError(
+                    "Can not apply --variance-standardize to"
+                    f" {col}, column has no variation"
+                    )
             log.log('phenotype {} has mean {:.5f} and std {:.5f}. Normalizing to 0.0 mean and 1.0 std'.format(col, mean, std))
             pheno[col] = (pheno[col].values - mean) / std
 
