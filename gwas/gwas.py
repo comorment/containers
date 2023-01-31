@@ -949,6 +949,15 @@ def append_job(args, commands, array_spec, slurm_job_index, cmd_file, submit_job
 
     return slurm_job_index
 
+def rename_iid_column(log, pheno_dict, pheno):
+    if np.sum(pheno_dict['TYPE'] == 'IID') != 1: raise(ValueError('Exacly one column in the dictionary file must be marked as IID'))
+    iid_column_name = pheno_dict.loc['FIELD', pheno_dict['TYPE'] == 'IID'][0]
+    if iid_column_name not in pheno.columns: raise(ValueError(f'IID column ({iid_column_name}) not present in --pheno-file'))
+    if (iid_column_name !=  'IID') and ('IID' in pheno.columns):
+        log.log(f'WARNING: .dict file defines that IID column must be named {iid_column_name}, however --pheno-file has both IID and {iid_column_name} columns. The column named "IID" will be ignored.')
+        del pheno['IID']
+    pheno.rename(columns={iid_column_name:'IID'}, inplace=True)
+
 def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
     pheno = pd.read_csv(pheno_file, sep=args.pheno_sep, dtype=str)
@@ -968,8 +977,7 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     extra_values = list(set(pheno_dict['TYPE'].values).difference({'IID', 'CONTINUOUS', 'BINARY', 'NOMINAL'}))
     if len(extra_values) > 0: raise(ValueError('TYPE column in --dict can only have IID, CONTINUOUS, BINARY and NOMINAL - found other values, e.g. {}'.format(extra_values[0])))
 
-    # validation logic for pheno file
-    if 'IID' not in pheno: raise(ValueError('IID column not present in --pheno-file'))
+    rename_iid_column(log, pheno_dict, pheno)
     if np.any(pheno['IID'].duplicated()): raise(ValueError('IID column has duplicated values in --pheno-file'))
     missing_cols = [str(c) for c in pheno.columns if (c not in pheno_dict['FIELD'].values)]
     if missing_cols: raise(ValueError('--pheno-file columns not present in --dict: {}'.format(', '.join(missing_cols))))
