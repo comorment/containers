@@ -67,7 +67,12 @@ as long all subjects have a unique IID across cohorts.
 
 The phenotype file must include a subject IID column, containing identifiers that matches the IID in genetic data
 (i.e. the ``IID`` column in plink ``.fam`` files).
-The file must contain all covariates needed for GWAS analysis, including age, sex, principal genetic components, 
+If ``FID`` column is included in the phenotype file it will be simply ignored.
+All subjects should be uniquely identified by their ``IID``.
+This is against plink specification for the ``.fam`` file, however other software may not support
+subject identification through a pair of (FID, IID). Because of this we require all subject IIDs to be unique across families.
+
+The phenotype file must contain all covariates needed for GWAS analysis, including age, sex, principal genetic components, 
 and other confounters such as genetic batch or plate, if needed. Column names in the phenotype file must be unique. 
 It is OK to include other relevant columns in the phenotype file - a GWAS analysis can be customized to use a subset of columns, 
 as well as a subset of subjects.

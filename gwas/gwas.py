@@ -77,7 +77,11 @@ def parse_args(args):
         help="Delimiter to use when reading --pheno-file (',' ';' $' ', $'\\t' or 'delim-whitespace', the later triggers delim_whitespace=True option in pandas")
     pheno_parser.add_argument("--dict-sep", default=None, type=str, choices=[None, ',', 'comma', ';', 'semicolon', '\t', 'tab', ' ', 'space', 'delim-whitespace'],
         help="Delimiter to use when reading --dict-file; by default uses delimiter provided to --pheno-sep")
-    pheno_parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, use by gwas.py script to pre-filter phenotype information (--pheno) with the set of individuals available in the genetic file (--geno-file / --geno-fit-file). Optional when either --geno-file (or --geno-fit-file) is in plink's format, otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
+    pheno_parser.add_argument("--fam", type=str, default=None, help="an argument pointing to a plink's .fam file, "
+        "use by gwas.py script to pre-filter "
+        "phenotype information (--pheno) with the set of individuals available in the genetic file "
+        "(--geno-file / --geno-fit-file). Optional when either --geno-file (or --geno-fit-file) is in plink's format, "
+        "otherwise required - but IID in this file must be consistent with identifiers of the genetic file.")
     pheno_parser.add_argument("--bim", type=str, default=None, help="an optional argument pointing to a plink's .bim file, used by gwas.py script whenever it needs to know genomic positions or marker names (for example, this is needed when SAIGE GWAS uses --chunk-size-bp option)")
     pheno_parser.add_argument("--pheno", type=str, default=[], nargs='+', help="target phenotypes to run GWAS (must be columns of the --pheno-file")
     pheno_parser.add_argument("--covar", type=str, default=[], nargs='+', help="covariates to control for (must be columns of the --pheno-file); individuals with missing values for any covariates will be excluded not just from <out>.covar, but also from <out>.pheno file")
@@ -119,8 +123,17 @@ def parser_pgrs_add_arguments(args, func, parser):
 
 def parser_gwas_add_arguments(args, func, parser):
     # genetic files to use. All must share the same set of individuals. Currently this assumption is not validated.
-    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: (1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. Note that a full name of .bed (or .bgen, .pgen, .vcf, .or .vcf.gz) file is expected here. Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
-    parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model. Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, and it is your responsibility to follow this assumption). Optional for standard association analysis (e.g. if for plink's glm). The argument supports the same file types as the --geno-file argument. Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
+    parser.add_argument("--geno-file", type=str, default=None, help="required argument pointing to a genetic file: "
+        "(1) plink's .bed file, or (2) .bgen file, or (3) .pgen file, or (4) .vcf file. "
+        "Note that a full name of .bed (or .bgen, .pgen, .vcf, .or .vcf.gz) file is expected here, including file extension. "
+        "Corresponding files should have standard names, e.g. for plink's format it is expected that .fam and .bim file "
+        "can be obtained by replacing .bed extension accordingly. supports '@' as a place holder for chromosome labels")
+    parser.add_argument("--geno-fit-file", type=str, default=None, help="genetic file to use in a first stage of mixed effect model "
+        "(required for regenie and saige, optional for standard association analysis, e.g. if for plink's glm). "
+        "Expected to have the same set of individuals as --geno-file (this is NOT validated by the gwas.py script, "
+        "and it is your responsibility to follow this assumption). "
+        "The argument supports the same file types as the --geno-file argument. "
+        "Noes not support '@' (because mixed effect tools typically expect a single file at the first stage.")
     parser.add_argument("--chr2use", type=str, default='1-22', help="Chromosome ids to use "
          "(e.g. 1,2,3 or 1-4,12,16-20). Used when '@' is present in --geno-file, and allows to specify for which chromosomes to run the association testing.")
     parser.add_argument("--chunk-size-bp", type=int, default=None, help="chunk size (in base pairs); used when GWAS is done with SAIGE; require --bim argument")
@@ -153,6 +166,9 @@ def parser_merge_saige_add_arguments(args, func, parser):
     parser.add_argument("--chunks", type=int, default=None, help="How many chunks to merge; mutually exclusive with --chr2use")
     parser.set_defaults(func=func)
 
+# extract 'variables' from 'df' and return a new dataframe with extracted variables
+# for categorical variables, dummie variables are created
+# 'FID' and 'IID' are always extracted
 def extract_variables(df, variables, pheno_dict_map, log):
     cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
     other_vars =  ['FID', 'IID'] + [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
@@ -566,6 +582,7 @@ def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
             pheno[col] = (pheno[col].values - mean) / std
 
     if not join_covar_into_pheno:
+        # this is for saige which expects covariates in a separate file 
         log.log("extracting covariates...")
         if args.covar:
             covar_output = extract_variables(pheno, args.covar, pheno_dict_map, log)
