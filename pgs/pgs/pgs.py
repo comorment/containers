@@ -253,11 +253,8 @@ class BasePGS(abc.ABC):
         # inferred
         self.Data_prefix = os.path.split(self.Geno_file)[-1]
 
-        # check if Output_dir exist. Create if missing.
-        if os.path.isdir(self.Output_dir):
-            pass
-        else:
-            os.mkdir(self.Output_dir)
+        # create Output_dir
+        os.makedirs(self.Output_dir, exist_ok=True)
 
     @abc.abstractmethod
     def get_str(self):
@@ -1044,11 +1041,8 @@ class Standard_GWAS_QC(BasePGS):
         self.QC_prune_kwargs = QC_prune_kwargs
         self.QC_relatedness_prune_kwargs = QC_relatedness_prune_kwargs
 
-        # check if Output_dir exist. Create if missing.
-        if os.path.isdir(self.Output_dir):
-            pass
-        else:
-            os.mkdir(self.Output_dir)
+        # create Output_dir
+        os.makedirs(self.Output_dir, exist_ok=True)
 
     def get_str(self):
         '''

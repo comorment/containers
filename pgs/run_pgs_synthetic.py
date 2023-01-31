@@ -125,7 +125,7 @@ if __name__ == '__main__':
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
         Geno_file=Geno_file,
-        Output_dir='PGS_synthetic_plink',
+        Output_dir=os.path.join('results', 'PGS_synthetic_plink'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['plink'],
@@ -164,7 +164,7 @@ if __name__ == '__main__':
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
         Geno_file=Geno_file,
-        Output_dir='PGS_synthetic_prsice2',
+        Output_dir=os.path.join('results', 'PGS_synthetic_prsice2'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['prsice2'],
@@ -182,58 +182,32 @@ if __name__ == '__main__':
     proc = subprocess.run(call, shell=True, check=True)
     assert proc.returncode == 0
 
-    #######################################
-    # LDpred2 infinitesimal model
-    #######################################
-    ldpred2_inf = pgs.PGS_LDpred2(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Geno_file=Geno_file,
-        Output_dir='PGS_synthetic_LDpred2_inf',
-        method='inf',
-        fileGenoRDS=fileGenoRDS,
-        **config['ldpred2']
-    )
-    # run
-    for call in ldpred2_inf.get_str(create_backing_file=True):
+    ############################################
+    # LDpred2 infinitesimal and automatic models
+    ############################################
+    for method in ['inf', 'auto']:
+        ldpred2 = pgs.PGS_LDpred2(
+            Sumstats_file=Sumstats_file,
+            Pheno_file=Pheno_file,
+            Phenotype=Phenotype,
+            Geno_file=Geno_file,
+            Output_dir=os.path.join(
+                'results', f'PGS_synthetic_LDpred2_{method}'),
+            method=method,
+            fileGenoRDS=fileGenoRDS,
+            **config['ldpred2']
+        )
+        # run
+        for call in ldpred2.get_str(create_backing_file=True):
+            print(f'\nevaluating: {call}\n')
+            proc = subprocess.run(call, shell=True, check=True)
+            assert proc.returncode == 0
+
+        # post run model evaluation
+        call = ldpred2.get_model_evaluation_str(
+            Eigenvec_file=Eigenvec_file,
+            nPCs=6,
+            Cov_file=Cov_file)
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-
-    # post run model evaluation
-    call = ldpred2_inf.get_model_evaluation_str(
-        Eigenvec_file=Eigenvec_file,
-        nPCs=6,
-        Cov_file=Cov_file)
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
-
-    #######################################
-    # LDpred2 automatic model
-    #######################################
-    ldpred2_auto = pgs.PGS_LDpred2(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Geno_file=Geno_file,
-        Output_dir='PGS_synthetic_LDpred2_auto',
-        method='auto',
-        fileGenoRDS=fileGenoRDS,
-        **config['ldpred2']
-    )
-    # run
-    for call in ldpred2_auto.get_str(create_backing_file=True):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
-
-    # post run model evaluation
-    call = ldpred2_auto.get_model_evaluation_str(
-        Eigenvec_file=Eigenvec_file,
-        nPCs=6,
-        Cov_file=Cov_file)
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0

@@ -45,6 +45,9 @@ linear.fit <- lm(reg.formula, data=df[,-c("FID", "IID")])
 print(summary(linear.fit))
 print(glance(linear.fit))
 
+# TODO: export deltas w. model fit without "score" column
+
+
 # write <out>.txt)
 sink(paste(parsed$out, '.txt'))
 print(summary(linear.fit))

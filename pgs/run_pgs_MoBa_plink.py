@@ -66,7 +66,7 @@ if __name__ == '__main__':
     Data_postfix = ''
 
     # output dir
-    Output_dir = 'PGS_MoBa_plink'
+    Output_dir = os.path.join('results', 'PGS_MoBa_plink')
 
     # method specific input
     Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
@@ -88,8 +88,7 @@ if __name__ == '__main__':
     #######################################
     # some faffing around to produce files that
     # Plink will accept
-    if not os.path.isdir(Output_dir):
-        os.mkdir(Output_dir)
+    os.makedirs(Output_dir, exist_ok=True)
 
     # extract precomputed PCs from Pheno_file
     call = ' '.join(

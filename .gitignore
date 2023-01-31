@@ -42,6 +42,7 @@ usecases/LDpred2/test.score.*
 # PGS demo output 
 pgs/QC_data
 pgs/PGS_*
+pgs/results/*
 
 # Jupyter+IPython
 .cache

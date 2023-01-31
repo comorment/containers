@@ -81,6 +81,12 @@ if __name__ == '__main__':
     if ncores > config['ldpred2']['cores']:
         ncores = config['ldpred2']['cores']
 
+    # output directories
+    Output_dirs = {
+        'inf': os.path.join('results', 'PGS_MoBa_LDpred2_inf'),
+        'auto': os.path.join('results', 'PGS_MoBa_LDpred2_auto')
+    }
+
     # Update ldpred2 config
     config['ldpred2'].update({
         'col_stat': 'BETA',
@@ -97,12 +103,11 @@ if __name__ == '__main__':
     #######################################
     # some faffing around to produce files for
     # post run model evaluation
-    for Output_dir in ['PGS_MoBa_LDpred2_inf', 'PGS_MoBa_LDpred2_auto']:
+    for Output_dir in Output_dirs.values():
         Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
         Cov_file = os.path.join(Output_dir, 'master_file.cov')
 
-        if not os.path.isdir(Output_dir):
-            os.mkdir(Output_dir)
+        os.makedirs(Output_dir, exist_ok=True)
 
         # extract precomputed PCs from Pheno_file
         call = ' '.join(
@@ -130,58 +135,34 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    #######################################
-    # LDpred2 infinitesimal model
-    #######################################
-    ldpred2_inf = pgs.PGS_LDpred2(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Geno_file=Geno_file,
-        Output_dir='PGS_MoBa_LDpred2_inf',
-        method='inf',
-        fileGenoRDS=fileGenoRDS,
-        **config['ldpred2']
-    )
-    # run
-    for call in ldpred2_inf.get_str(create_backing_file=True):
+    ###########################################
+    # run LDpred2 infinitesimal and auto model
+    ###########################################
+
+    # iterate over methods (inf or auto)
+    for method, Output_dir in Output_dirs.items():
+        # instantiate
+        ldpred2 = pgs.PGS_LDpred2(
+            Sumstats_file=Sumstats_file,
+            Pheno_file=Pheno_file,
+            Phenotype=Phenotype,
+            Geno_file=Geno_file,
+            Output_dir=Output_dirs,
+            method=method,
+            fileGenoRDS=fileGenoRDS,
+            **config['ldpred2']
+        )
+        # run
+        for call in ldpred2.get_str(create_backing_file=True):
+            print(f'\nevaluating: {call}\n')
+            proc = subprocess.run(call, shell=True, check=True)
+            assert proc.returncode == 0
+
+        # post run model evaluation
+        call = ldpred2.get_model_evaluation_str(
+            Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
+            nPCs=str(config['plink']['nPCs']),
+            Cov_file=os.path.join(Output_dir, 'master_file.cov'))
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-
-    # post run model evaluation
-    call = ldpred2_inf.get_model_evaluation_str(
-        Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
-        nPCs=str(config['plink']['nPCs']),
-        Cov_file=os.path.join(Output_dir, 'master_file.cov'))
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
-
-    #######################################
-    # LDpred2 automatic model
-    #######################################
-    ldpred2_auto = pgs.PGS_LDpred2(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Geno_file=Geno_file,
-        Output_dir='PGS_MoBa_LDpred2_auto',
-        method='auto',
-        fileGenoRDS=fileGenoRDS,
-        **config['ldpred2']
-    )
-    # run
-    for call in ldpred2_auto.get_str(create_backing_file=True):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
-
-    # post run model evaluation
-    call = ldpred2_auto.get_model_evaluation_str(
-        Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
-        nPCs=str(config['plink']['nPCs']),
-        Cov_file=os.path.join(Output_dir, 'master_file.cov'))
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
