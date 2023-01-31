@@ -94,7 +94,7 @@ if __name__ == '__main__':
     # extract precomputed PCs from Pheno_file
     call = ' '.join(
         [os.environ['RSCRIPT'],
-         'generate_eigenvec.R',
+         os.path.join('Rscripts', 'generate_eigenvec.R'),
          '--pheno-file', Pheno_file,
          '--eigenvec-file', Eigenvec_file,
          '--pca', str(config['plink']['nPCs'])
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     # write .cov file with FID IID SEX columns
     call = ' '.join([
         os.environ['RSCRIPT'],
-        'extract_columns.R',
+        os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', Pheno_file,
         '--columns', 'FID', 'IID', 'SEX',
         '--output-file', Cov_file,
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     Pheno_file_plink = os.path.join(Output_dir, f'master_file.{Phenotype}')
     call = ' '.join([
         os.environ['RSCRIPT'],
-        'extract_columns.R',
+        os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', Pheno_file,
         '--columns', 'FID', 'IID', Phenotype,
         '--output-file', Pheno_file_plink,

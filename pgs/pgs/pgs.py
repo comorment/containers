@@ -387,7 +387,7 @@ class PGS_Plink(BasePGS):
         '''
         command = ' '.join([
             os.environ['RSCRIPT'],
-            'update_effect_size.R',
+            os.path.join('Rscripts', 'update_effect_size.R'),
             self.Sumstats_file,
             self._transformed_file])
 
@@ -562,7 +562,7 @@ class PGS_Plink(BasePGS):
 
     def _find_best_fit_pgs(self):
         '''
-        Generate command for running find_best_fit_pgs.R script,
+        Generate command for running ``Rscripts/find_best_fit_pgs.R`` script,
         producing
 
         Returns
@@ -570,7 +570,8 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['RSCRIPT'], 'find_best_fit_pgs.R',
+            os.environ['RSCRIPT'], 
+            os.path.join('Rscripts', 'find_best_fit_pgs.R'),
             self.Pheno_file,
             self.Eigenvec_file,
             self.Cov_file,
@@ -604,7 +605,7 @@ class PGS_Plink(BasePGS):
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
-            'eval_model.R',
+            os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
@@ -702,7 +703,7 @@ class PGS_PRSice2(BasePGS):
             base-INFO upper threshold value (0.8)
         **kwargs
             dict of additional keyword/arguments pairs parsed to
-            the PRSice.R script (see file for full set of options).
+            the Rscripts/PRSice.R script (see file for full set of options).
             If the option is only a flag without value, set value
             as None-type or empty string.
 
@@ -742,7 +743,7 @@ class PGS_PRSice2(BasePGS):
         '''
         command = ' '.join([
             os.environ['RSCRIPT'],
-            'generate_covariate.R',
+            os.path.join('Rscripts', 'generate_covariate.R'),
             self.Cov_file,
             self.Eigenvec_file,
             self.Covariance_file,
@@ -761,7 +762,8 @@ class PGS_PRSice2(BasePGS):
         '''
         target = self.Geno_file
         command = ' '.join([
-            os.environ['RSCRIPT'], 'PRSice.R',
+            os.environ['RSCRIPT'], 
+            os.path.join('Rscripts', 'PRSice.R'),
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
             f'--target {target}',
@@ -804,7 +806,7 @@ class PGS_PRSice2(BasePGS):
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
-            'eval_model.R',
+            os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
@@ -878,7 +880,7 @@ class PGS_LDpred2(BasePGS):
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
-            the LDpred2.R script (see file for full set of options).
+            the ``Rscripts/ldpred2.R`` script (see file for full set of options).
             If the option is only a flag without value, set value
             as None-type or empty string.
         '''
@@ -905,7 +907,7 @@ class PGS_LDpred2(BasePGS):
         # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
         command = ' '.join([
             os.environ['RSCRIPT'],
-            'createBackingFile.R',
+            os.path.join('Rscripts', 'createBackingFile.R'),
             self._fileGeno,
             self.fileGenoRDS
         ])
@@ -933,7 +935,7 @@ class PGS_LDpred2(BasePGS):
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
-            'eval_model.R',
+            os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
@@ -952,7 +954,7 @@ class PGS_LDpred2(BasePGS):
         ----------
         create_backing_file: bool
             if True (default), prepend statements for running the
-            ``createBackingFile.R`` script, generating fileGenoRDS
+            ``Rscripts/createBackingFile.R`` script, generating fileGenoRDS
 
         Returns
         -------
@@ -960,7 +962,8 @@ class PGS_LDpred2(BasePGS):
             list of command line statements for analysis run
         '''
         tmp_cmd1 = ' '.join([
-            os.environ['RSCRIPT'], 'ldpred2.R',
+            os.environ['RSCRIPT'], 
+            os.path.join('Rscripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
             '--file-pheno', self.Pheno_file,
             '--col-stat', self.col_stat,
@@ -1171,7 +1174,8 @@ class Standard_GWAS_QC(BasePGS):
         # remove individuals with F coefficients that are more than 3 standard
         # deviation (SD) units from the mean in ``R``:
         cmd = ' '.join([
-            os.environ['RSCRIPT'], 'create_valid_sample.R',
+            os.environ['RSCRIPT'],
+            os.path.join('Rscripts', 'create_valid_sample.R'),
             os.path.join(
                 self.Output_dir,
                 self.Data_prefix + self.Data_postfix + '.het'),
@@ -1183,7 +1187,8 @@ class Standard_GWAS_QC(BasePGS):
 
         # strand-flipping the alleles to their complementary alleles
         cmd = ' '.join([
-            os.environ['RSCRIPT'], 'strand_flipping.R',
+            os.environ['RSCRIPT'], 
+            os.path.join('Rscripts', 'strand_flipping.R'),
             self.Geno_file + '.bim',
             os.path.join(self.Output_dir,
                          self.Phenotype + self.Data_postfix + '.gz'),
@@ -1221,7 +1226,8 @@ class Standard_GWAS_QC(BasePGS):
         # Assign individuals as biologically male if F-statistic is > 0.8;
         # biologically female if F < 0.2:
         cmd = ' '.join([
-            os.environ['RSCRIPT'], 'create_QC_valid.R',
+            os.environ['RSCRIPT'], 
+            os.path.join('Rscripts', 'create_QC_valid.R'),
             os.path.join(
                 self.Output_dir,
                 self.Data_prefix + '.valid.sample'),
