@@ -87,6 +87,7 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 
 ### Added
 
+- add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
 - add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
 - add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 - add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
