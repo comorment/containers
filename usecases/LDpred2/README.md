@@ -15,12 +15,46 @@ This README assumes the following two repositories are git cloned.
 We also assume the following commands are executed from the current folder
 (the one containing [createBackingFile.R](createBackingFile.R) and [ldpred2.R](ldpred2.R) scripts).
 
-<!--
+### Optional: Estimating linkage disequillibrium (LD)
 
-LDpred2 uses genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) to convert each SNPs physical position to genomic position.
-LDpred2 will try to download these which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
+LDpred2 uses the LD structure when calculating polygenic scores. By default, the LDpred2.R script uses LD structure based on European samples provided by the LDpred2 authors.
+To instead calculate LD on your own, the ``calculateLD.R`` script can be used. The output from this script can then be used as input to ``LDpred2.R``.
+
+To use, ``calculateLD.R``, you need to download genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) to convert each SNPs physical position to genomic position.
+If you don't provide these files, LDpred2 will try to download these automatically which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
 the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
- -->
+
+The example script below will output one file per chromosome (``output/ld-chr-1.rds``, ``output/ld-chr-2.rds``, ...) and a "map" indicating the SNPs used in LD estimation (``output/map.rds``).
+The flag ``--sumstats`` can be used to filter SNPs to use where the first argument is the file and the second the column name or position of the RSID of the SNP (ie it does not neeed to be a proper
+sumstats file).
+```
+# point to input/output files
+export fileGeno=/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed
+export fileGenoRDS=g1000_eur_chr21to22_hm3rnd1.rds
+export filePheno=/REF/examples/ldpred2/simu.pheno
+export fileSumstats=/REF/examples/ldpred2/trait1.sumstats.gz
+export fileOutLD=ld-chr-@.rds
+export fileOutLDMap=ld-map.rds
+
+# set environmental variables. Replace "<path/to/comorment>" with 
+# the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
+export COMORMENT=<path/to/comorment>
+export SIF=$COMORMENT/containers/singularity
+export REFERENCE=$COMORMENT/containers/reference
+export LDPRED2_REF=$COMORMENT/ldpred2_ref
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+
+export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+
+# convert genotype to LDpred2 format
+$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+
+$RSCRIPT calculateLD.R --geno-file-rds $fileGenoRDS \
+ --dir-genetic-maps 100genomes/maps \
+ --chr2use 21 22  --sumstats $fileSumstats SNP \
+ --file-ld-blocks $fileOutLD --file-ld-map $fileOutLDMap
+```
+
 
 ## Running LDpred2 analysis - synthetic example (chr21 and chr22)
 
