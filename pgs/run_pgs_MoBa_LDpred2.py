@@ -14,7 +14,7 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        
+
     ))
     os.environ.update(dict(
         COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
@@ -34,7 +34,6 @@ if __name__ == '__main__':
             f'{os.environ["SUMSTATS"]}:/SUMSTATS',
         ])
     ))
-
 
     # Executables in containers
     SIF = os.environ['SIF']
@@ -67,16 +66,16 @@ if __name__ == '__main__':
 
     # LDpred2 specific
     fileGenoRDS = 'MoBaPsychGen_v1-500kSNPs-child.rds'
-    
+
     # find suitable number of cores
     if 'SLURM_NTASKS' in os.environ:
         ncores = int(os.environ['SLURM_NTASKS'])
     else:
         ncores = int(
             subprocess.run(
-                'nproc --all', 
-                shell=True, 
-                check=True, 
+                'nproc --all',
+                shell=True,
+                check=True,
                 capture_output=True
             ).stdout.decode())
     if ncores > config['ldpred2']['cores']:
@@ -84,8 +83,8 @@ if __name__ == '__main__':
 
     # Update ldpred2 config
     config['ldpred2'].update({
-        'col_stat': 'BETA', 
-        'col_stat_se': 'SE', 
+        'col_stat': 'BETA',
+        'col_stat_se': 'SE',
         'stat_type': 'BETA',
         # 'chr2use': list(range(1,23)),
         'cores': ncores,
@@ -93,24 +92,43 @@ if __name__ == '__main__':
         'file_keep_snps': None,
     })
 
-    '''
-    # extract pheno file with FID, IID, <phenotype> columns
-    Pheno_file_ldpred2 = os.path.join('PGS_MoBa_LDpred2_inf', f'master_file.{Phenotype}')
-    call  = ' '.join([
-        os.environ['RSCRIPT'],
-        'extract_columns.R',
-        '--input-file', Pheno_file,
-        '--columns', 'FID', 'IID', Phenotype,
-        '--output-file', Pheno_file_ldpred2,
-        '--header', 'T',
-        '--na', 'NA',
-        '--sep', '" "',
-    ])
-    print(f'evaluating: {call}')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
-    '''
+    #######################################
+    # Preprocessing
+    #######################################
+    # some faffing around to produce files for
+    # post run model evaluation
+    for Output_dir in ['PGS_MoBa_LDpred2_inf', 'PGS_MoBa_LDpred2_auto']:
+        Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
+        Cov_file = os.path.join(Output_dir, 'master_file.cov')
 
+        if not os.path.isdir(Output_dir):
+            os.mkdir(Output_dir)
+
+        # extract precomputed PCs from Pheno_file
+        call = ' '.join(
+            [os.environ['RSCRIPT'],
+                'generate_eigenvec.R',
+                '--pheno-file', Pheno_file,
+                '--eigenvec-file', Eigenvec_file,
+                '--pca', str(config['plink']['nPCs'])
+             ]
+        )
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
+
+        # write .cov file with FID IID SEX columns
+        call = ' '.join([
+            os.environ['RSCRIPT'],
+            'extract_columns.R',
+            '--input-file', Pheno_file,
+            '--columns', 'FID', 'IID', 'SEX',
+            '--output-file', Cov_file,
+            '--header', 'T',
+        ])
+        print(f'evaluating: {call}')
+        proc = subprocess.run(call, shell=True, check=True)
+        assert proc.returncode == 0
 
     #######################################
     # LDpred2 infinitesimal model
@@ -131,7 +149,15 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
-    
+    # post run model evaluation
+    call = ldpred2_inf.get_model_evaluation_str(
+        Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
+        nPCs=str(config['plink']['nPCs']),
+        Cov_file=os.path.join(Output_dir, 'master_file.cov'))
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
+
     #######################################
     # LDpred2 automatic model
     #######################################
@@ -150,4 +176,12 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
+    # post run model evaluation
+    call = ldpred2_auto.get_model_evaluation_str(
+        Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
+        nPCs=str(config['plink']['nPCs']),
+        Cov_file=os.path.join(Output_dir, 'master_file.cov'))
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0

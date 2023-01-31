@@ -591,12 +591,16 @@ class PGS_Plink(BasePGS):
         ])
         return cmd
 
-    def _evaluate_model_str(self):
+    def get_model_evaluation_str(self):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
         using R stats::lm, printing stats::lm.fit.summary output
         to file
+
+        Returns
+        -------
+        str
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
@@ -604,6 +608,9 @@ class PGS_Plink(BasePGS):
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--nPCs', f'{self.nPCs}',
+            '--eigenvec-file', self.Eigenvec_file,
+            '--covariate-file', self.Cov_file,
             '--out', os.path.join(self.Output_dir, 'test_summary')
         ])
         return cmd
@@ -639,14 +646,11 @@ class PGS_Plink(BasePGS):
             if mode == 'basic':
                 commands += [
                     self._find_best_fit_pgs(),
-                    self._generate_post_run_str(),
-                    self._evaluate_model_str()]
+                    self._generate_post_run_str()]
             elif mode == 'stratification':
                 commands += [self._run_plink_w_stratification(),
                              self._find_best_fit_pgs(),
-                             self._generate_post_run_str(),
-                             self._evaluate_model_str()
-                             ]
+                             self._generate_post_run_str()]
             return commands
         else:
             raise NotImplementedError
@@ -786,12 +790,17 @@ class PGS_PRSice2(BasePGS):
         ])
         return cmd
 
-    def _evaluate_model_str(self):
+    def get_model_evaluation_str(self):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
         using R stats::lm, printing stats::lm.fit.summary output
         to file
+
+        Returns
+        -------
+        str
+
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
@@ -799,6 +808,9 @@ class PGS_PRSice2(BasePGS):
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--nPCs', f'{self.nPCs}',
+            '--eigenvec-file', self.Eigenvec_file,
+            '--covariate-file', self.Cov_file,
             '--out', os.path.join(self.Output_dir, 'test_summary')
         ])
         return cmd
@@ -814,8 +826,7 @@ class PGS_PRSice2(BasePGS):
         '''
         return [self._generate_covariance_str(),
                 self._generate_run_str(),
-                self._generate_post_run_str(),
-                self._evaluate_model_str()]
+                self._generate_post_run_str()]
 
 
 class PGS_LDpred2(BasePGS):
@@ -900,12 +911,25 @@ class PGS_LDpred2(BasePGS):
         ])
         return command
 
-    def _evaluate_model_str(self):
+    def get_model_evaluation_str(self, Eigenvec_file, nPCs, Cov_file):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
         using R stats::lm, printing stats::lm.fit.summary output
         to file
+
+        Parameters
+        ----------
+        Eigenvec_file: path
+            path to file with PCs (no header, columns FID, IID, PC1, PC2, ...)
+        nPCs: int
+            number of PCs to account for
+        Cov_file: path
+            path to file with covariates (header, columns FID, IID, <covariate>)
+
+        Returns
+        -------
+        str
         '''
         cmd = ' '.join([
             os.environ['RSCRIPT'],
@@ -913,6 +937,9 @@ class PGS_LDpred2(BasePGS):
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--nPCs', f'{nPCs}',
+            '--eigenvec-file', Eigenvec_file,
+            '--covariate-file', Cov_file,
             '--out', os.path.join(self.Output_dir, 'test_summary')
         ])
         return cmd
@@ -953,9 +980,9 @@ class PGS_LDpred2(BasePGS):
         # return calls
         if create_backing_file:
             tmp_cmd0 = self._run_createBackingFile()
-            return [tmp_cmd0, tmp_cmd1, self._evaluate_model_str()]
+            return [tmp_cmd0, tmp_cmd1]
         else:
-            return [tmp_cmd1, self._evaluate_model_str()]
+            return [tmp_cmd1]
 
 
 class Standard_GWAS_QC(BasePGS):

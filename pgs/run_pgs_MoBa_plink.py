@@ -14,7 +14,7 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        
+
     ))
     os.environ.update(dict(
         COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
@@ -69,7 +69,6 @@ if __name__ == '__main__':
     Output_dir = 'PGS_MoBa_plink'
 
     # method specific input
-    # Eigenvec_file = '/MOBAv1/MoBaPsychGen_v1-ec-eur-batch-basic-qc-cov.txt'
     Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
     Cov_file = os.path.join(Output_dir, 'master_file.cov')
 
@@ -78,16 +77,16 @@ if __name__ == '__main__':
         'clump_p1': 1,
         'clump_r2': 0.1,
         'clump_kb': 250,
-        'range_list': [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        'range_list': [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1],
         'strat_indep_pairwise': [250, 50, 0.25],
         'nPCs': 6,
-        'score_args': [1, 4, 9, 'header'], # SNP, A1, BETA
+        'score_args': [1, 4, 9, 'header'],  # SNP, A1, BETA
     })
 
     #######################################
     # Preprocessing
     #######################################
-    # some faffing around to produce files that 
+    # some faffing around to produce files that
     # Plink will accept
     if not os.path.isdir(Output_dir):
         os.mkdir(Output_dir)
@@ -99,7 +98,7 @@ if __name__ == '__main__':
          '--pheno-file', Pheno_file,
          '--eigenvec-file', Eigenvec_file,
          '--pca', str(config['plink']['nPCs'])
-        ]
+         ]
     )
     print(f'evaluating: {call}')
     proc = subprocess.run(call, shell=True, check=True)
@@ -118,12 +117,11 @@ if __name__ == '__main__':
     proc = subprocess.run(call, shell=True, check=True)
     assert proc.returncode == 0
 
-    
     # extract pheno file with FID, IID, <phenotype> columns
-    # as PRSice.R script assumes FID and IID as first two cols, 
+    # as PRSice.R script assumes FID and IID as first two cols,
     # and aint f'n smart enough to work around this.
     Pheno_file_plink = os.path.join(Output_dir, f'master_file.{Phenotype}')
-    call  = ' '.join([
+    call = ' '.join([
         os.environ['RSCRIPT'],
         'extract_columns.R',
         '--input-file', Pheno_file,
@@ -136,7 +134,6 @@ if __name__ == '__main__':
     print(f'evaluating: {call}')
     proc = subprocess.run(call, shell=True, check=True)
     assert proc.returncode == 0
-    
 
     #######################################
     # Plink
@@ -164,10 +161,15 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
     # run plink PGS with population stratification
     for call in plink.get_str(mode='stratification'):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
+    # post run model evaluation
+    call = plink.get_model_evaluation_str()
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0

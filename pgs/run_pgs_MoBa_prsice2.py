@@ -14,7 +14,7 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        
+
     ))
     os.environ.update(dict(
         COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
@@ -69,32 +69,28 @@ if __name__ == '__main__':
     Output_dir = 'PGS_MoBa_prsice2'
 
     # method specific input
-    # Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
-    # Cov_file
-    
-    # Eigenvec_file = '/MOBAv1/MoBaPsychGen_v1-ec-eur-batch-basic-qc-cov.txt'
     Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
     Cov_file = os.path.join(Output_dir, 'master_file.cov')
 
     # for "PRSice --extract" arg (throws an error othervise):
-    Valid_file = os.path.join(Output_dir, os.path.split(Geno_file)[1]) + '.valid'
+    Valid_file = os.path.join(Output_dir,
+                              os.path.split(Geno_file)[1]) + '.valid'
 
     # update prsice2 config
     config['prsice2'].update({
         'stat': 'BETA',
         'beta': '',
         # 'pheno-col': Phenotype,  # redundant with the preprocessing
-        'pvalue': 'P', # 'PVAL'   # for UKB_HEIGHT sumstats
+        'pvalue': 'P',  # 'PVAL'   # for UKB_HEIGHT sumstats
         # 'extract': Valid_file,  # for UKB_HEIGHT sumstats
         # 'ignore-fid': ''
     })
     del config['prsice2']['or']
-    
 
     #######################################
     # Preprocessing
     #######################################
-    # some faffing around to produce files that 
+    # some faffing around to produce files that
     # PRSice will accept
     if not os.path.isdir(Output_dir):
         os.mkdir(Output_dir)
@@ -106,7 +102,7 @@ if __name__ == '__main__':
          '--pheno-file', Pheno_file,
          '--eigenvec-file', Eigenvec_file,
          '--pca', str(config['plink']['nPCs'])
-        ]
+         ]
     )
     print(f'evaluating: {call}')
     proc = subprocess.run(call, shell=True, check=True)
@@ -126,10 +122,10 @@ if __name__ == '__main__':
     assert proc.returncode == 0
 
     # extract pheno file with FID, IID, <phenotype> columns
-    # as PRSice.R script assumes FID and IID as first two cols, 
+    # as PRSice.R script assumes FID and IID as first two cols,
     # and aint f'n smart enough to work around this.
     Pheno_file_prsice = os.path.join(Output_dir, f'master_file.{Phenotype}')
-    call  = ' '.join([
+    call = ' '.join([
         os.environ['RSCRIPT'],
         'extract_columns.R',
         '--input-file', Pheno_file,
@@ -142,7 +138,6 @@ if __name__ == '__main__':
     print(f'evaluating: {call}')
     proc = subprocess.run(call, shell=True, check=True)
     assert proc.returncode == 0
-
 
     #######################################
     # PRSice-2
@@ -163,4 +158,9 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
+    # post run model evaluation
+    call = prsice2.get_model_evaluation_str()
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0

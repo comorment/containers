@@ -14,7 +14,7 @@ if __name__ == '__main__':
         CONTAINERS=os.path.split(os.getcwd())[0],
     ))
     os.environ.update(dict(
-        
+
     ))
     os.environ.update(dict(
         COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     Pheno_file = '/REF/examples/ldpred2/simu.pheno'
     Phenotype = 'trait1'
-    Geno_file= '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
+    Geno_file = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
     Data_postfix = ''
 
     # LDpred2 specific
@@ -61,23 +61,23 @@ if __name__ == '__main__':
 
     # method specific input
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
-    
+
     # update ldpred2 config:
     # find suitable number of cores
     ncores = int(
         subprocess.run(
-            'nproc --all', 
-            shell=True, 
-            check=True, 
+            'nproc --all',
+            shell=True,
+            check=True,
             capture_output=True
-            ).stdout.decode())
+        ).stdout.decode())
     if ncores > config['ldpred2']['cores']:
         ncores = config['ldpred2']['cores']
     config['ldpred2'].update({
-        'col_stat': 'BETA', 
-        'col_stat_se': 'SE', 
+        'col_stat': 'BETA',
+        'col_stat_se': 'SE',
         'stat_type': 'BETA',
-        'col-pheno': 'trait1', 
+        'col-pheno': 'trait1',
         'chr2use': [21, 22],
         'cores': ncores
     })
@@ -106,9 +106,9 @@ if __name__ == '__main__':
          '--bfile', Geno_file,
          '--pca', str(config['plink']['nPCs']),
          '--out', Data_prefix
-        ]
+         ]
     )
-    
+
     print(f'evaluating: {call}')
     proc = subprocess.run(call, shell=True)
     assert proc.returncode == 0
@@ -116,7 +116,6 @@ if __name__ == '__main__':
     # file names
     # Eigenval_file = f'{Data_prefix}.eigenval'
     Eigenvec_file = f'{Data_prefix}.eigenvec'
-
 
     #######################################
     # Plink
@@ -144,13 +143,18 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
     # run plink PGS with population stratification
     for call in plink.get_str(mode='stratification'):
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
+    # post run model evaluation
+    call = plink.get_str()
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
 
     #######################################
     # PRSice-2
@@ -171,7 +175,12 @@ if __name__ == '__main__':
         print(f'\nevaluating: {call}\n')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
-    
+
+    # post run model evaluation
+    call = prsice2.get_model_evaluation_str()
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
 
     #######################################
     # LDpred2 infinitesimal model
@@ -192,6 +201,14 @@ if __name__ == '__main__':
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
 
+    # post run model evaluation
+    call = ldpred2_inf.get_model_evaluation_str(
+        Eigenvec_file=Eigenvec_file,
+        nPCs=6,
+        Cov_file=Cov_file)
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
 
     #######################################
     # LDpred2 automatic model
@@ -211,3 +228,12 @@ if __name__ == '__main__':
         print(f'evaluating: {call}')
         proc = subprocess.run(call, shell=True, check=True)
         assert proc.returncode == 0
+
+    # post run model evaluation
+    call = ldpred2_auto.get_model_evaluation_str(
+        Eigenvec_file=Eigenvec_file,
+        nPCs=6,
+        Cov_file=Cov_file)
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
