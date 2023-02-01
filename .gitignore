@@ -43,6 +43,10 @@ usecases/LDpred2/test.score.*
 pgs/QC_data
 pgs/PGS_*
 pgs/results/*
+pgs/logs/*
+*.eigenval
+*.eigenvec
+*.cov
 
 # Jupyter+IPython
 .cache

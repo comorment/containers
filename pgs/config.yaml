@@ -3,8 +3,8 @@ slurm:
   job_name: pgs
   account: p697_norment
   time: "00:30:00"
-  cpus_per_task: 16
-  mem_per_cpu: 2000M
+  cpus_per_task: 8
+  mem_per_cpu: 8000M
   partition: normal
 
   # list of modules to load in SLURM jobs
@@ -35,14 +35,9 @@ prsice2:
   nPCs: 6
   MAF: 0.01
   INFO: 0.8
-  stat: 'OR'
-  or: ''
   thread: 8
 
 # LDpred2
 ldpred2:
-  col_stat: 'OR'
-  col_stat_se: 'SE'
-  stat_type: 'OR'
   cores: 8
 

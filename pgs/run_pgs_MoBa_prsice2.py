@@ -3,7 +3,6 @@
 
 # package imports
 import os
-import subprocess
 import yaml
 from pgs import pgs
 
@@ -78,14 +77,11 @@ if __name__ == '__main__':
 
     # update prsice2 config
     config['prsice2'].update({
-        'stat': 'BETA',
-        'beta': '',
-        # 'pheno-col': Phenotype,  # redundant with the preprocessing
+        'pheno-col': Phenotype,  # redundant with the preprocessing
         'pvalue': 'P',  # 'PVAL'   # for UKB_HEIGHT sumstats
         # 'extract': Valid_file,  # for UKB_HEIGHT sumstats
         # 'ignore-fid': ''
     })
-    del config['prsice2']['or']
 
     #######################################
     # Preprocessing
@@ -103,9 +99,7 @@ if __name__ == '__main__':
          '--pca', str(config['plink']['nPCs'])
          ]
     )
-    print(f'evaluating: {call}')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     # write .cov file with FID IID SEX columns
     call = ' '.join([
@@ -116,9 +110,7 @@ if __name__ == '__main__':
         '--output-file', Cov_file,
         '--header', 'T',
     ])
-    print(f'evaluating: {call}')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     # extract pheno file with FID, IID, <phenotype> columns
     # as PRSice.R script assumes FID and IID as first two cols,
@@ -134,9 +126,7 @@ if __name__ == '__main__':
         '--na', 'NA',
         '--sep', '" "',
     ])
-    print(f'evaluating: {call}')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     #######################################
     # PRSice-2
@@ -154,12 +144,8 @@ if __name__ == '__main__':
 
     # run commands
     for call in prsice2.get_str():
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)

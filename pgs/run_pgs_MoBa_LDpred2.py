@@ -60,7 +60,6 @@ if __name__ == '__main__':
     Sumstats_file = '/MOBA/out/run10_regenie_height_8y_rint.gz'
     Pheno_file = '/MOBA/master_file.csv'
     Phenotype = 'height_8y_rint'
-    colPheno = Phenotype
     Geno_file = '/MOBA/MoBaPsychGen_v1-500kSNPs-child'
     Data_postfix = ''
 
@@ -89,12 +88,8 @@ if __name__ == '__main__':
 
     # Update ldpred2 config
     config['ldpred2'].update({
-        'col_stat': 'BETA',
-        'col_stat_se': 'SE',
-        'stat_type': 'BETA',
-        # 'chr2use': list(range(1,23)),
         'cores': ncores,
-        'col-pheno': colPheno,
+        'col-pheno': Phenotype,
         'file_keep_snps': None,
     })
 
@@ -118,9 +113,7 @@ if __name__ == '__main__':
                 '--pca', str(config['plink']['nPCs'])
              ]
         )
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
         # write .cov file with FID IID SEX columns
         call = ' '.join([
@@ -131,9 +124,7 @@ if __name__ == '__main__':
             '--output-file', Cov_file,
             '--header', 'T',
         ])
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     ###########################################
     # run LDpred2 infinitesimal and auto model
@@ -154,15 +145,11 @@ if __name__ == '__main__':
         )
         # run
         for call in ldpred2.get_str(create_backing_file=True):
-            print(f'\nevaluating: {call}\n')
-            proc = subprocess.run(call, shell=True, check=True)
-            assert proc.returncode == 0
+            pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             Eigenvec_file=os.path.join(Output_dir, 'master_file.eigenvec'),
             nPCs=str(config['plink']['nPCs']),
             Cov_file=os.path.join(Output_dir, 'master_file.cov'))
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)

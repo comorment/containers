@@ -23,6 +23,7 @@ import abc
 import os
 import pandas as pd
 import numpy as np
+import subprocess
 
 
 _MAJOR = "1"
@@ -103,6 +104,12 @@ def extract_variables(df, variables, pheno_dict_map, log):
             f'dropping {drop_col} label (most frequent)')
     return dummies.copy()
 
+def run_call(call):
+    '''run subprocess call'''
+    print(f'\nevaluating: {call}\n')
+    proc = subprocess.run(call, shell=True, check=True)
+    assert proc.returncode == 0
+    return proc
 
 def post_run_plink(
         Output_dir,
@@ -769,7 +776,6 @@ class PGS_PRSice2(BasePGS):
             f'--cov {self.Covariance_file}',
             f'--base-maf MAF:{self.MAF}',
             f'--base-info INFO:{self.INFO}',
-            f'--stat {self.stat}',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
         ])
 
@@ -842,9 +848,6 @@ class PGS_LDpred2(BasePGS):
                  Output_dir='PGS_ldpred2_inf',
                  method='inf',
                  fileGenoRDS='EUR.rds',
-                 col_stat='OR',
-                 col_stat_se='SE',
-                 stat_type='OR',
                  file_keep_snps='/REF/hapmap3/w_hm3.justrs',
                  **kwargs):
         '''
@@ -865,13 +868,6 @@ class PGS_LDpred2(BasePGS):
             LDpred2 method, either "inf" (default) or "auto"
         fileGenoRDS: str
             base name for .rds file output
-        col_stat: str
-            Effect estimate column. Default: 'OR'
-        col_stat_se: str
-            Effect estimate standard error column. Default: 'SE'
-        stat_type: str
-            Effect estimate type (BETA for linear, OR for odds-ratio.
-            Default: 'OR'
         file_keep_snps: str or None
             File with RSIDs of SNPs to keep (optional)
 
@@ -891,9 +887,6 @@ class PGS_LDpred2(BasePGS):
         # set attributes
         self.method = method
         self.fileGenoRDS = fileGenoRDS
-        self.col_stat = col_stat
-        self.col_stat_se = col_stat_se
-        self.stat_type = stat_type
         self.file_keep_snps = file_keep_snps
 
         # inferred
@@ -963,9 +956,6 @@ class PGS_LDpred2(BasePGS):
             os.path.join('Rscripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
             '--file-pheno', self.Pheno_file,
-            '--col-stat', self.col_stat,
-            '--col-stat-se', self.col_stat_se,
-            '--stat-type', self.stat_type,
             '--geno-file', self.fileGenoRDS,
             '--sumstats', self.Sumstats_file,
             '--out', self._file_out,

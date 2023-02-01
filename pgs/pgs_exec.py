@@ -5,7 +5,6 @@
 import os
 import sys
 from pgs import pgs
-import subprocess
 import yaml
 import argparse
 
@@ -155,7 +154,6 @@ os.environ.update(
         PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
     ))
 
-
 # load config.yaml file as dict
 with open("config.yaml", 'r') as f:
     config = yaml.safe_load(f)
@@ -164,10 +162,6 @@ with open("config.yaml", 'r') as f:
 if len(unknowns) > 0:
     d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
     config[parsed_args.method.split('-')[0]].update(d)
-    if parsed_args.method == 'prsice2':
-        if 'beta' in d.keys():
-            del config['prsice2']['or']
-
 
 # job file headers
 bash_header = '''#\!/bin/sh'''
@@ -197,39 +191,38 @@ for key in env_keys:
 
 
 if parsed_args.method == 'plink':
-    pgs = pgs.PGS_Plink(
+    pgs_instance = pgs.PGS_Plink(
         **args_dict,
         **config['plink'])
-    commands = pgs.get_str(mode='preprocessing') + pgs.get_str(mode='stratification')
+    commands = (pgs_instance.get_str(mode='preprocessing') + 
+                pgs.get_str(mode='stratification'))
 elif parsed_args.method == 'prsice2':
-    pgs = pgs.PGS_PRSice2(
+    pgs_instance = pgs.PGS_PRSice2(
         **args_dict,
         **config['prsice2']
     )
-    commands = pgs.get_str()
+    commands = pgs_instance.get_str()
 elif parsed_args.method == 'ldpred2-inf':
-    pgs = pgs.PGS_LDpred2(
+    pgs_instance = pgs.PGS_LDpred2(
         method='inf',
         **args_dict,
         **config['ldpred2']
     )
-    commands = pgs.get_str(create_backing_file=True)
+    commands = pgs_instance.get_str(create_backing_file=True)
 elif parsed_args.method == 'ldpred2-auto':
-    pgs = pgs.PGS_LDpred2(
+    pgs_instance = pgs.PGS_LDpred2(
         method='auto',
         **args_dict,
         **config['ldpred2']
     )
-    commands = pgs.get_str(create_backing_file=True)
+    commands = pgs_instance.get_str(create_backing_file=True)
 else:
     raise NotImplementedError
 
 # create tasks
 if parsed_args.runtype == 'subprocess':
     for call in commands:
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
 elif parsed_args.runtype == 'sh':
     # write bash script

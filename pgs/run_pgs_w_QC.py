@@ -59,7 +59,13 @@ if __name__ == '__main__':
     # LDpred2
     fileGenoRDS = 'EUR.rds'
 
-    # update ldpred2 config:
+    #######################################
+    # Update method-specific configs
+    #######################################
+    # The purpose of this is to make parse additional keyword arguments
+    # to each main method (ldpred2, prsice2, plink) on the command line.
+    # Refer to the documentation of each tool for more information.
+
     # find suitable number of cores
     ncores = int(
         subprocess.run(
@@ -68,10 +74,25 @@ if __name__ == '__main__':
             check=True,
             capture_output=True
         ).stdout.decode())
-    if ncores > config['ldpred2']['cores']:
-        ncores = config['ldpred2']['cores']
+
+    # update plink config
+    config['plink'].update({
+        'score_args': [3, 4, 12, 'header'],  # SNP, A1, OR columns in sumstats
+        'threads': ncores  # not used
+    })
+
+    # update prsice2 config
+    config['prsice2'].update({
+        'or': '',
+        'thread': ncores
+    })
+
+    # update ldpred2 config:
     config['ldpred2'].update({
-        # key: value
+        'col-stat': 'OR',
+        'stat-type': 'OR',
+        'col-pheno': Phenotype,
+        'chr2use': [21, 22],
         'cores': ncores
     })
 
@@ -95,9 +116,7 @@ if __name__ == '__main__':
         Output_dir=QC_data,
     )
     for call in qc.get_str():
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # "Cleaned" Geno_file from QC step
     Geno_file_post_QC = os.path.join(
@@ -122,27 +141,19 @@ if __name__ == '__main__':
 
     # run preprocessing steps for plink
     for call in plink.get_str(mode='preprocessing', update_effect_size=True):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # run basic plink PGS
     for call in plink.get_str(mode='basic'):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # run plink PGS with population stratification
     for call in plink.get_str(mode='stratification'):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # post run model evaluation
     call = plink.get_model_evaluation_str()
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     #######################################
     # PRSice-2
@@ -160,15 +171,11 @@ if __name__ == '__main__':
 
     # run commands
     for call in prsice2.get_str():
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     ############################################
     # LDpred2 infinitesimal and automatic models
@@ -187,15 +194,11 @@ if __name__ == '__main__':
         )
         # run
         for call in ldpred2.get_str(create_backing_file=True):
-            print(f'\nevaluating: {call}\n')
-            proc = subprocess.run(call, shell=True, check=True)
-            assert proc.returncode == 0
+            pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             Eigenvec_file=Eigenvec_file,
             nPCs=config['plink']['nPCs'],
             Cov_file=Cov_file)
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)

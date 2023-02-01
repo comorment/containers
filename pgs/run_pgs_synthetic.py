@@ -62,7 +62,13 @@ if __name__ == '__main__':
     # method specific input
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
 
-    # update ldpred2 config:
+    #######################################
+    # Update method-specific configs
+    #######################################
+    # The purpose of this is to make parse additional keyword arguments
+    # to each main method (ldpred2, prsice2, plink) on the command line.
+    # Refer to the documentation of each tool for more information.
+
     # find suitable number of cores
     ncores = int(
         subprocess.run(
@@ -71,27 +77,23 @@ if __name__ == '__main__':
             check=True,
             capture_output=True
         ).stdout.decode())
-    if ncores > config['ldpred2']['cores']:
-        ncores = config['ldpred2']['cores']
-    config['ldpred2'].update({
-        'col_stat': 'BETA',
-        'col_stat_se': 'SE',
-        'stat_type': 'BETA',
-        'col-pheno': 'trait1',
-        'chr2use': [21, 22],
-        'cores': ncores
+
+    # update plink config
+    config['plink'].update({
+        'score_args': [9, 1, 3, 'header'],  # SNP, A1, BETA columns in sumstats
+        'threads': ncores  # not used
     })
 
     # update prsice2 config
     config['prsice2'].update({
-        'stat': 'BETA',
-        'beta': ''
+        'thread': ncores
     })
-    del config['prsice2']['or']
 
-    # update plink config
-    config['plink'].update({
-        'score_args': [9, 1, 3, 'header']  # SNP, A1, BETA
+    # update ldpred2 config:
+    config['ldpred2'].update({
+        'col-pheno': Phenotype,
+        'chr2use': [21, 22],
+        'cores': ncores
     })
 
     #######################################
@@ -134,27 +136,19 @@ if __name__ == '__main__':
     # run preprocessing steps for plink
     for call in plink.get_str(mode='preprocessing', update_effect_size=False):
         if call is not None:
-            print(f'evaluating: {call}')
-            proc = subprocess.run(call, shell=True)
-            assert proc.returncode == 0
+            pgs.run_call(call)
 
     # run basic plink PGS
     for call in plink.get_str(mode='basic'):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # run plink PGS with population stratification
     for call in plink.get_str(mode='stratification'):
-        print(f'evaluating: {call}')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # post run model evaluation
     call = plink.get_str()
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     #######################################
     # PRSice-2
@@ -172,15 +166,11 @@ if __name__ == '__main__':
 
     # run commands
     for call in prsice2.get_str():
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
 
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
-    print(f'\nevaluating: {call}\n')
-    proc = subprocess.run(call, shell=True, check=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     ############################################
     # LDpred2 infinitesimal and automatic models
@@ -199,15 +189,11 @@ if __name__ == '__main__':
         )
         # run
         for call in ldpred2.get_str(create_backing_file=True):
-            print(f'\nevaluating: {call}\n')
-            proc = subprocess.run(call, shell=True, check=True)
-            assert proc.returncode == 0
+            pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             Eigenvec_file=Eigenvec_file,
             nPCs=6,
             Cov_file=Cov_file)
-        print(f'\nevaluating: {call}\n')
-        proc = subprocess.run(call, shell=True, check=True)
-        assert proc.returncode == 0
+        pgs.run_call(call)
