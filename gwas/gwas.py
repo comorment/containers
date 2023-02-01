@@ -943,7 +943,7 @@ def append_job(args, commands, array_spec, slurm_job_index, cmd_file, submit_job
 
 def rename_iid_column(log, pheno_dict, pheno):
     if np.sum(pheno_dict['TYPE'] == 'IID') != 1: raise(ValueError('Exacly one column in the dictionary file must be marked as IID'))
-    iid_column_name = pheno_dict.loc['FIELD', pheno_dict['TYPE'] == 'IID'][0]
+    iid_column_name = pheno_dict.loc[pheno_dict['TYPE'] == 'IID', 'FIELD'][0]
     if iid_column_name not in pheno.columns: raise(ValueError(f'IID column ({iid_column_name}) not present in --pheno-file'))
     if (iid_column_name !=  'IID') and ('IID' in pheno.columns):
         log.log(f'WARNING: .dict file defines that IID column must be named {iid_column_name}, however --pheno-file has both IID and {iid_column_name} columns. The column named "IID" will be ignored.')
