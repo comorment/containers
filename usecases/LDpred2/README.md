@@ -159,10 +159,10 @@ The main LDpred2 output files are ``Height.score.inf`` and ``Height.score.auto``
 The files are text files with tables formatted as 
 ```
 FID IID Height score
-HG00096 HG00096 169.132168767547 -1.49668824138468e+100
-HG00097 HG00097 171.256258630279 -3.37195056659838e+99
-HG00099 HG00099 171.534379938588 -5.02262306623802e+100
-HG00100 HG00100 NA -1.8332542097235e+100
+HG00096 HG00096 169.132168767547 -0.733896062346436
+HG00097 HG00097 171.256258630279 0.688693127521599
+HG00099 HG00099 171.534379938588 0.203279440703434
+HG00100 HG00100 NA 0.0890499485064315
 ...
 ```
 
@@ -178,9 +178,10 @@ For now, as a workaround, you may fall back to plink's ``fill-missing-a2`` optio
 re-run ``createBackingFile.R``, and include ``--geno-impute skip`` in your ``LDpred2.R`` command:
 
 ```
-plink --bfile EUR --fill-missing-a2 --make-bed --out EUR.nomiss
+export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
+$PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.nomiss
 $RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
-$RSCRIPT ldpred2.R --geno-file EUR.nomiss.rds --geno-impute skip ...
+$RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds --geno-impute skip ...
 ```
 
 
