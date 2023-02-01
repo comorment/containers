@@ -72,7 +72,7 @@ echo "TEST error: Bad imputation mode"
 dump=$( { $LDP --ldpred-mode inf --geno-impute bad-mode; } 2>&1 )
 if [ $? -eq 0 ]; then echo "No error received"; exit; fi
 
-## TEST: Complete runs of --ldpred-mode given by $LDPRED_MODES
+# TEST: Complete runs of --ldpred-mode given by $LDPRED_MODES
 for MODE in $LDPRED_MODES; do
  echo "Testing mode $MODE"
  dump=$( { $LDP --ldpred-mode $MODE; } 2>&1 )
@@ -90,7 +90,7 @@ LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file-rds $fileOutputSNPR \
 echo "Test restricting on a subset of SNPs (only chromosome 1-9 will run)"
 fileSumstats25k=$DIR_TESTS/data/public-data-sumstats25k.txt
 head -n 25000 $fileInputSumStats > $fileSumstats25k
-dump=$( { $LDE --sumstats $fileSumstats25k rsid; } 2>&1 )
+dump=$( { $LDE --sumstats $fileSumstats25k rsid --sumstats-sep ","; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"

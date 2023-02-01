@@ -19,6 +19,7 @@ par <- add_argument(par, "--sample-individuals", nargs=1, help="Specify a number
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
+par <- add_argument(par, "--sumstats-sep", default="", help="Field separator for GWAS summary statistics file (cf. utils::read.table)")
 par <- add_argument(par, "--window-size", default=3, nargs=1, help="Window size in centimorgans, used for LD calculation")
 par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
 
@@ -30,6 +31,7 @@ fileKeepSNPs <- parsed$file_keep_snps
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
+sepSumstats <- parsed$sumstats_sep
 # Sample individuals
 sampleIndividuals <- parsed$sample_individuals
 # Chromosomes to use
@@ -71,9 +73,9 @@ if (!is.na(fileKeepSNPs)) {
 }
 if (!is.na(fileSumstats)) {
   cat('Reading SNPs from sumstat file --sumstats:', fileSumstats, '\n')
-  fileSumstats <- read.table(fileSumstats, header=T, sep=',')
-  cat('Read', nrow(fileSumstats), 'SNPs\n')
-  SNPs <- SNPs[SNPs %in% fileSumstats[,columnRsidSumstats]]
+  dfSumStats <- read.table(fileSumstats, header=T, sep=sepSumstats)
+  cat('Read', nrow(dfSumStats), 'SNPs\n')
+  SNPs <- SNPs[SNPs %in% dfSumStats[,columnRsidSumstats]]
 }
 useSNPs <- MAP$rsid %in% SNPs
 cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')

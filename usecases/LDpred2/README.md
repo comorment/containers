@@ -49,12 +49,14 @@ export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 
+# create genetics maps directory, download and process
+mkdir -p 100genomes/maps
 $RSCRIPT calculateLD.R --geno-file-rds $fileGenoRDS \
  --dir-genetic-maps 100genomes/maps \
  --chr2use 21 22  --sumstats $fileSumstats SNP \
  --file-ld-blocks $fileOutLD --file-ld-map $fileOutLDMap
 ```
-
+ 
 
 ## Running LDpred2 analysis - synthetic example (chr21 and chr22)
 
@@ -83,13 +85,22 @@ export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 
+# run LDpred2 infinitesimal mode
 $RSCRIPT ldpred2.R --ldpred-mode inf \
- --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
-
+ --chr2use 21 22 \
+ --file-pheno $filePheno \
+ --col-pheno $colPheno \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.inf
+ 
 $RSCRIPT ldpred2.R --ldpred-mode auto \
- --chr2use 21 22 --file-pheno $filePheno --col-pheno $colPheno  \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
+ --chr2use 21 22 \
+ --file-pheno $filePheno \
+ --col-pheno $colPheno  \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.auto
 ```
 
 ## Running LDpred2 analysis - height example
@@ -120,16 +131,26 @@ $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
- --file-pheno $filePheno --col-pheno $colPheno \
- --col-stat OR --col-stat-se SE --stat-type OR \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
+ --file-pheno $filePheno \
+ --col-pheno $colPheno \
+ --col-stat OR \
+ --col-stat-se SE \
+ --stat-type OR \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.inf
 
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
- --file-pheno $filePheno --col-pheno $colPheno \
- --col-stat OR --col-stat-se SE --stat-type OR \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
+ --file-pheno $filePheno \
+ --col-pheno $colPheno \
+ --col-stat OR \
+ --col-stat-se SE \
+ --stat-type OR \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.auto
 ```
 
 ## Output
