@@ -3,7 +3,7 @@ slurm:
   job_name: pgs
   account: p697_norment
   time: "00:30:00"
-  cpus_per_task: 8
+  cpus_per_task: 2
   mem_per_cpu: 8000M
   partition: normal
 
@@ -27,17 +27,16 @@ plink:
   range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
   strat_indep_pairwise: [250, 50, 0.25]
   nPCs: 6
-  score_args: [3, 4, 12, 'header']
-  threads: 8
+  threads: 2
 
 # PRSice-2
 prsice2:
   nPCs: 6
   MAF: 0.01
   INFO: 0.8
-  thread: 8
+  thread: 2
 
 # LDpred2
 ldpred2:
-  cores: 8
+  cores: 2
 

@@ -138,7 +138,7 @@ if __name__ == '__main__':
             Pheno_file=Pheno_file,
             Phenotype=Phenotype,
             Geno_file=Geno_file,
-            Output_dir=Output_dirs,
+            Output_dir=Output_dir,
             method=method,
             fileGenoRDS=fileGenoRDS,
             **config['ldpred2']

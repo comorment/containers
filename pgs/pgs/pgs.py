@@ -390,7 +390,7 @@ class PGS_Plink(BasePGS):
         for generating file with updated effect size
         '''
         command = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'update_effect_size.R'),
             self.Sumstats_file,
             self._transformed_file])
@@ -411,7 +411,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['PLINK'],
+            '$PLINK',
             '--bfile',
             self.Geno_file,
             '--clump-p1', str(self.clump_p1),
@@ -437,7 +437,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['AWK_EXEC'],
+            '$AWK_EXEC',
             "'NR!=1{print $3}'",
             os.path.join(self.Output_dir, self.Data_prefix + '.clumped'),
             '>',
@@ -464,13 +464,13 @@ class PGS_Plink(BasePGS):
             # unzip Sumstats file to Output_dir allowing parsing
             # it to Plink using --score
             command += ' '.join([
-                os.environ['PYTHON'],
+                '$PYTHON',
                 '-c',
                 f"""'from pgs import pgs; pgs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""  # noqa: 501
                 '\n'
             ])
         command += ' '.join([
-            os.environ['PYTHON'],
+            '$PYTHON',
             '-c',
             f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""  # noqa: 501
         ])
@@ -493,7 +493,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['PLINK'],
+            '$PLINK',
             '--bfile',
             self.Geno_file,
             '--score',
@@ -543,7 +543,7 @@ class PGS_Plink(BasePGS):
         else:
             # First, perform pruning
             tmp_str_0 = ' '.join([
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--indep-pairwise',
@@ -553,7 +553,7 @@ class PGS_Plink(BasePGS):
 
             # Then we calculate the first N PCs
             tmp_str_1 = ' '.join([
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--extract',
@@ -574,7 +574,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['RSCRIPT'], 
+            '$RSCRIPT', 
             os.path.join('Rscripts', 'find_best_fit_pgs.R'),
             self.Pheno_file,
             self.Eigenvec_file,
@@ -591,7 +591,7 @@ class PGS_Plink(BasePGS):
     def _generate_post_run_str(self):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
-            os.environ['PYTHON'], '-c',
+            '$PYTHON', '-c',
             f"""'from pgs.pgs import post_run_plink; post_run_plink({arg})'"""
         ])
         return cmd
@@ -608,7 +608,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         cmd = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
@@ -746,7 +746,7 @@ class PGS_PRSice2(BasePGS):
         str
         '''
         command = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'generate_covariate.R'),
             self.Cov_file,
             self.Eigenvec_file,
@@ -766,7 +766,7 @@ class PGS_PRSice2(BasePGS):
         '''
         target = self.Geno_file
         command = ' '.join([
-            os.environ['RSCRIPT'], 
+            '$RSCRIPT', 
             os.path.join('Rscripts', 'PRSice.R'),
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
@@ -790,7 +790,7 @@ class PGS_PRSice2(BasePGS):
     def _generate_post_run_str(self):
         arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
         cmd = ' '.join([
-            os.environ['PYTHON'], '-c',
+            '$PYTHON', '-c',
             f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""  # noqa: E501
         ])
         return cmd
@@ -808,7 +808,7 @@ class PGS_PRSice2(BasePGS):
 
         '''
         cmd = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
@@ -896,7 +896,7 @@ class PGS_LDpred2(BasePGS):
     def _run_createBackingFile(self):
         # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
         command = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'createBackingFile.R'),
             self._fileGeno,
             self.fileGenoRDS
@@ -924,7 +924,7 @@ class PGS_LDpred2(BasePGS):
         str
         '''
         cmd = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
@@ -952,7 +952,7 @@ class PGS_LDpred2(BasePGS):
             list of command line statements for analysis run
         '''
         tmp_cmd1 = ' '.join([
-            os.environ['RSCRIPT'], 
+            '$RSCRIPT', 
             os.path.join('Rscripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
             '--file-pheno', self.Pheno_file,
@@ -1040,29 +1040,29 @@ class Standard_GWAS_QC(BasePGS):
         '''
         command = []
         # Filter summary statistics file, zip output.
-        cmd = ' '.join([os.environ['GUNZIP_EXEC'],
+        cmd = ' '.join(['$GUNZIP_EXEC',
                         '-c',
                         self.Sumstats_file,
                         '|\\\n',
-                        os.environ['AWK_EXEC'],
+                        '$AWK_EXEC',
                         "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'",
                         '|\\\n',
-                        os.environ['GZIP_EXEC'],
+                        '$GZIP_EXEC',
                         '->',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.gz')])
         command += [cmd]
 
         # Remove duplicates
-        cmd = ' '.join([os.environ['GUNZIP_EXEC'],
+        cmd = ' '.join(['$GUNZIP_EXEC',
                         '-c',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.gz'),
                         '|\\\n',
-                        os.environ['AWK_EXEC'],
+                        '$AWK_EXEC',
                         "'{seen[$3]++; if(seen[$3]==1){ print}}'",
                         '|\\\n',
-                        os.environ['GZIP_EXEC'],
+                        '$GZIP_EXEC',
                         '->',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.nodup.gz')])
@@ -1071,17 +1071,17 @@ class Standard_GWAS_QC(BasePGS):
         # Retain nonambiguous SNPs:
         cmd = ' '.join(
             [
-                os.environ['GUNZIP_EXEC'],
+                '$GUNZIP_EXEC',
                 '-c',
                 os.path.join(
                     self.Output_dir,
                     self.Phenotype +
                     '.nodup.gz'),
                 '|\\\n',
-                os.environ['AWK_EXEC'],
+                '$AWK_EXEC',
                 """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""",  # noqa: E501
                 '|\\\n',
-                os.environ['GZIP_EXEC'],
+                '$GZIP_EXEC',
                 '->',
                 os.path.join(
                     self.Output_dir,
@@ -1093,7 +1093,7 @@ class Standard_GWAS_QC(BasePGS):
         # Modified from
         # https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
         cmd = ' '.join([
-            os.environ['PLINK'],
+            '$PLINK',
             '--bfile',
             self.Geno_file,
             '--write-snplist',
@@ -1109,7 +1109,7 @@ class Standard_GWAS_QC(BasePGS):
         # Prune to remove highly correlated SNPs
         cmd = ' '.join(
             [
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--keep',
@@ -1134,7 +1134,7 @@ class Standard_GWAS_QC(BasePGS):
         # Compute heterozygosity rates, generating the EUR.QC.het file:
         cmd = ' '.join(
             [
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--extract',
@@ -1158,7 +1158,7 @@ class Standard_GWAS_QC(BasePGS):
         # remove individuals with F coefficients that are more than 3 standard
         # deviation (SD) units from the mean in ``R``:
         cmd = ' '.join([
-            os.environ['RSCRIPT'],
+            '$RSCRIPT',
             os.path.join('Rscripts', 'create_valid_sample.R'),
             os.path.join(
                 self.Output_dir,
@@ -1171,7 +1171,7 @@ class Standard_GWAS_QC(BasePGS):
 
         # strand-flipping the alleles to their complementary alleles
         cmd = ' '.join([
-            os.environ['RSCRIPT'], 
+            '$RSCRIPT', 
             os.path.join('Rscripts', 'strand_flipping.R'),
             self.Geno_file + '.bim',
             os.path.join(self.Output_dir,
@@ -1186,7 +1186,7 @@ class Standard_GWAS_QC(BasePGS):
         # Sex-check pre-pruning, generating EUR.QC.sexcheck:
         cmd = ' '.join(
             [
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--extract',
@@ -1210,7 +1210,7 @@ class Standard_GWAS_QC(BasePGS):
         # Assign individuals as biologically male if F-statistic is > 0.8;
         # biologically female if F < 0.2:
         cmd = ' '.join([
-            os.environ['RSCRIPT'], 
+            '$RSCRIPT', 
             os.path.join('Rscripts', 'create_QC_valid.R'),
             os.path.join(
                 self.Output_dir,
@@ -1228,7 +1228,7 @@ class Standard_GWAS_QC(BasePGS):
         # relative
         cmd = ' '.join(
             [
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--extract',
@@ -1253,7 +1253,7 @@ class Standard_GWAS_QC(BasePGS):
         # Generate a QC'ed data set, creating .ai and .mismatch files:
         cmd = ' '.join(
             [
-                os.environ['PLINK'],
+                '$PLINK',
                 '--bfile',
                 self.Geno_file,
                 '--make-bed',

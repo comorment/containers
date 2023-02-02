@@ -4,6 +4,7 @@
 # package imports
 import os
 import sys
+import datetime
 from pgs import pgs
 import yaml
 import argparse
@@ -60,20 +61,39 @@ parser_prsice2.add_argument(
 )
 # method ldpred2-inf:
 parser_ldpred2_inf = subparsers.add_parser('ldpred2-inf')
+# parser_ldpred2_inf.add_argument(
+#     "--file_keep_snps", type=str,
+#     help="File with RSIDs of SNPs to keep (for method ldpred2-inf)",
+#     default="/REF/hapmap3/w_hm3.justrs"
+# )
 parser_ldpred2_inf.add_argument(
-    "--file_keep_snps", type=str,
-    help="File with RSIDs of SNPs to keep (for method ldpred2-inf)",
-    default="/REF/hapmap3/w_hm3.justrs"
+    "--Cov_file", type=str,
+    help="covariance file (for model evaluation)",
+    default="/REF/examples/prsice2/EUR.cov"
+)
+parser_ldpred2_inf.add_argument(
+    "--Eigenvec-file", type=str,
+    help="eigenvec file (for model evaluation)",
+    default="/REF/examples/prsice2/EUR.eigenvec"
 )
 
 # method ldpred2-auto:
 parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
+# parser_ldpred2_auto.add_argument(
+#     "--file_keep_snps", type=str,
+#     help="File with RSIDs of SNPs to keep (for method ldpred2-auto)",
+#     default="/REF/hapmap3/w_hm3.justrs"
+# )
 parser_ldpred2_auto.add_argument(
-    "--file_keep_snps", type=str,
-    help="File with RSIDs of SNPs to keep (for method ldpred2-auto)",
-    default="/REF/hapmap3/w_hm3.justrs"
+    "--Cov_file", type=str,
+    help="covariance file (for model evaluation)",
+    default="/REF/examples/prsice2/EUR.cov"
 )
-
+parser_ldpred2_auto.add_argument(
+    "--Eigenvec-file", type=str,
+    help="eigenvec file (for model evaluation)",
+    default="/REF/examples/prsice2/EUR.eigenvec"
+)
 
 
 # shared arguments
@@ -164,12 +184,15 @@ if len(unknowns) > 0:
     config[parsed_args.method.split('-')[0]].update(d)
 
 # job file headers
+currentDateAndTime = datetime.datetime.now()
+now = currentDateAndTime.strftime('%y%d%d-%H:%M:%S')
+
 bash_header = '''#\!/bin/sh'''
-jobname = '-'.join([config['slurm']['job_name'], parsed_args.method])
+jobname = '-'.join([config['slurm']['job_name'], parsed_args.method, now])
 slurm_header = f'''#!/bin/sh
 #SBATCH --job-name={jobname}
-#SBATCH --output={os.path.join(parsed_args.Output_dir, jobname + '.txt')}
-#SBATCH --error={os.path.join(parsed_args.Output_dir, jobname + '.txt')}
+#SBATCH --output={os.path.join(parsed_args.Output_dir, jobname + now + '.txt')}
+#SBATCH --error={os.path.join(parsed_args.Output_dir, jobname + now + '.txt')}
 #SBATCH --account=$SBATCH_ACCOUNT  # project ID
 #SBATCH --time={config['slurm']['time']}
 #SBATCH --cpus-per-task={config['slurm']['cpus_per_task']}
@@ -203,21 +226,36 @@ elif parsed_args.method == 'prsice2':
     )
     commands = pgs_instance.get_str()
 elif parsed_args.method == 'ldpred2-inf':
+    args = args_dict.copy()
+    for key in ['Eigenvec_file', 'Cov_file']:
+        args.pop(key)
     pgs_instance = pgs.PGS_LDpred2(
         method='inf',
-        **args_dict,
+        **args,
         **config['ldpred2']
     )
     commands = pgs_instance.get_str(create_backing_file=True)
 elif parsed_args.method == 'ldpred2-auto':
+    args = args_dict.copy()
+    for key in ['Eigenvec_file', 'Cov_file']:
+        args.pop(key)
     pgs_instance = pgs.PGS_LDpred2(
         method='auto',
-        **args_dict,
+        **args,
         **config['ldpred2']
     )
     commands = pgs_instance.get_str(create_backing_file=True)
 else:
     raise NotImplementedError
+
+# post run task(s)
+if parsed_args.method in ['plink', 'prsice2']:
+    commands += [pgs_instance.get_model_evaluation_str()]
+elif parsed_args.method in ['ldpred2-inf', 'ldpred2-auto']:
+    commands += [pgs_instance.get_model_evaluation_str(
+        Eigenvec_file=args_dict['Eigenvec_file'],
+        nPCs=str(config['plink']['nPCs']),
+        Cov_file=args_dict['Cov_file'])]
 
 # create tasks
 if parsed_args.runtype == 'subprocess':
@@ -230,7 +268,7 @@ elif parsed_args.runtype == 'sh':
     if not os.path.isdir(jobdir):
         os.mkdir(jobdir)
     
-    with open(os.path.join(jobdir, f'{parsed_args.method}.sh'), 'w') as f:
+    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.sh'), 'w') as f:
         f.writelines('\n'.join([bash_header] + env_variables_list + commands))
     
         mssg = f'wrote {f.name}. To run, issue:\n$ bash {f.name}'
@@ -242,7 +280,7 @@ elif parsed_args.runtype == 'slurm':
     if not os.path.isdir(jobdir):
         os.mkdir(jobdir)
     
-    with open(os.path.join(jobdir, f'{parsed_args.method}.job'), 'w') as f:
+    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.job'), 'w') as f:
         f.writelines('\n'.join([slurm_header] + env_variables_list + commands))
     
         mssg = f'wrote {f.name}. To submit job to the job queue, issue:\n$ sbatch {f.name}'

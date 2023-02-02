@@ -9,7 +9,9 @@ python3 pgs_exec.py \
     --Output_dir 'results/PGS_synthetic_LDpred2_auto' \
     --runtype 'slurm' \
     'ldpred2-auto' \
-    --file_keep_snps '/REF/hapmap3/w_hm3.justrs' \
+    --Cov_file '/REF/examples/prsice2/EUR.cov' \
+    --Eigenvec-file 'g1000_eur_chr21to22_hm3rnd1.eigenvec' \
+    'file_keep_snps' '/REF/hapmap3/w_hm3.justrs' \
     'fileGenoRDS' 'g1000_eur_chr21to22_hm3rnd1.rds' \
     'col-pheno' 'trait1' \
     'chr2use' '21,22' \
