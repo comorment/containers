@@ -66,34 +66,22 @@ if __name__ == '__main__':
     # to each main method (ldpred2, prsice2, plink) on the command line.
     # Refer to the documentation of each tool for more information.
 
-    # find suitable number of cores
-    ncores = int(
-        subprocess.run(
-            'nproc --all',
-            shell=True,
-            check=True,
-            capture_output=True
-        ).stdout.decode())
-
     # update plink config
     config['plink'].update({
         'score_args': [3, 4, 12, 'header'],  # SNP, A1, OR columns in sumstats
-        'threads': ncores  # not used
     })
 
     # update prsice2 config
     config['prsice2'].update({
-        'or': '',
-        'thread': ncores
+        'or': '',  # use OR as effect size
     })
 
     # update ldpred2 config:
     config['ldpred2'].update({
-        'col-stat': 'OR',
+        'col-stat': 'OR',  # use OR as effect size
         'stat-type': 'OR',
         'col-pheno': Phenotype,
         'chr2use': [21, 22],
-        'cores': ncores
     })
 
     #######################################
