@@ -49,7 +49,7 @@ print(glance(linear.fit))
 
 
 # write <out>.txt)
-sink(paste(parsed$out, '.txt'))
+sink(paste(parsed$out, '.txt', sep=""))
 print(summary(linear.fit))
 sink()
 

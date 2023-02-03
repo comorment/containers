@@ -6,11 +6,11 @@ python3 pgs_exec.py \
     --Pheno_file '/MOBA/master_file.csv' \
     --Phenotype 'height_8y_rint' \
     --Geno_file '/MOBA/MoBaPsychGen_v1-500kSNPs-child' \
-    --Output_dir 'results/PGS_MoBa_LDpred2_inf' \
+    --Output_dir 'results/PGS_MoBa_LDpred2_auto' \
     --runtype 'slurm' \
     'ldpred2-auto' \
-    --Cov_file 'results/PGS_MoBa_LDpred2_inf/master_file.cov' \
-    --Eigenvec-file 'results/PGS_MoBa_LDpred2_inf/master_file.eigenvec' \
+    --Cov_file 'results/PGS_MoBa_LDpred2_auto/master_file.cov' \
+    --Eigenvec-file 'results/PGS_MoBa_LDpred2_auto/master_file.eigenvec' \
     'fileGenoRDS' 'MoBaPsychGen_v1-500kSNPs-child.rds' \
     'col-pheno' 'height_8y_rint'
     
