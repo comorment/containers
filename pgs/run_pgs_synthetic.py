@@ -135,7 +135,7 @@ if __name__ == '__main__':
         pgs.run_call(call)
 
     # post run model evaluation
-    call = plink.get_str()
+    call = plink.get_model_evaluation_str()
     pgs.run_call(call)
 
     #######################################
