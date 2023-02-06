@@ -3,7 +3,6 @@
 
 # package imports
 import os
-import subprocess
 import yaml
 from pgs import pgs
 
@@ -52,12 +51,12 @@ if __name__ == '__main__':
     Data_postfix = '.QC'
 
     # method specific input
-    # Plink, PRSice2
+    # Plink, PRSice2, LDpred2
     Cov_file = '/REF/examples/prsice2/EUR.cov'
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
 
     # LDpred2
-    fileGenoRDS = 'EUR.rds'
+    fileGenoRDS = 'EUR.rds'  # put in working directory as both LDpred2 methods use it
 
     #######################################
     # Update method-specific configs
@@ -80,8 +79,9 @@ if __name__ == '__main__':
     config['ldpred2'].update({
         'col-stat': 'OR',  # use OR as effect size
         'stat-type': 'OR',
+        'col-stat-se': 'SE',
         'col-pheno': Phenotype,
-        'chr2use': [21, 22],
+        # 'chr2use': [21, 22],
     })
 
     #######################################

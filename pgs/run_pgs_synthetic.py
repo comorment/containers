@@ -3,7 +3,6 @@
 
 # package imports
 import os
-import subprocess
 import yaml
 from pgs import pgs
 
@@ -98,10 +97,7 @@ if __name__ == '__main__':
          '--out', Data_prefix
          ]
     )
-
-    print(f'evaluating: {call}')
-    proc = subprocess.run(call, shell=True)
-    assert proc.returncode == 0
+    pgs.run_call(call)
 
     # file names
     # Eigenval_file = f'{Data_prefix}.eigenval'
