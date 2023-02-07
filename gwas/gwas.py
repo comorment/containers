@@ -957,6 +957,7 @@ def rename_iid_column(log, pheno_dict, pheno):
         log.log(f'WARNING: .dict file defines that IID column must be named {iid_column_name}, however --pheno-file has both IID and {iid_column_name} columns. The column named "IID" will be ignored.')
         del pheno['IID']
     pheno.rename(columns={iid_column_name:'IID'}, inplace=True)
+    pheno_dict.loc[pheno_dict['FIELD']==iid_column_name, 'FIELD'] = 'IID'
 
 def read_comorment_pheno(args, pheno_file, dict_file):
     log.log('reading {}...'.format(pheno_file))
@@ -977,7 +978,7 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     extra_values = list(set(pheno_dict['TYPE'].values).difference({'IID', 'CONTINUOUS', 'BINARY', 'NOMINAL'}))
     if len(extra_values) > 0: raise(ValueError('TYPE column in --dict can only have IID, CONTINUOUS, BINARY and NOMINAL - found other values, e.g. {}'.format(extra_values[0])))
 
-    rename_iid_column(log, pheno_dict, pheno)
+    rename_iid_column(log, pheno_dict, pheno)  # hack-hack
     if np.any(pheno['IID'].duplicated()): raise(ValueError('IID column has duplicated values in --pheno-file'))
     missing_cols = [str(c) for c in pheno.columns if (c not in pheno_dict['FIELD'].values)]
     if missing_cols: raise(ValueError('--pheno-file columns not present in --dict: {}'.format(', '.join(missing_cols))))

@@ -159,6 +159,7 @@ def test_gwas_py_identical_FIDs():
         os.chdir(cwd)
 
 
+# py.test tests/test_gwas_py.py -k test_gwas_py_custom_IIDs
 def test_gwas_py_custom_IIDs():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
