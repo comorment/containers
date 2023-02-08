@@ -101,7 +101,8 @@ def parse_args(args):
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
 
-    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, pheno_parser, filter_parser], help='perform GWAS (genome-wide association) analysis'))
+    parser_gwas_add_arguments(args=args, func=execute_gwas, parser=subparsers.add_parser("gwas", parents=[parent_parser, pheno_parser, filter_parser], 
+                                                                                         help='perform GWAS (genome-wide association) analysis'))
     parser_pgrs_add_arguments(args=args, func=execute_pgrs, parser=subparsers.add_parser("pgrs", parents=[parent_parser, pheno_parser], help='compute polygenic risk score'))
     
     parser_merge_plink2_add_arguments(args=args, func=merge_plink2, parser=subparsers.add_parser("merge-plink2", parents=[parent_parser, filter_parser], help='merge plink2 sumstats files'))
@@ -916,8 +917,7 @@ def read_iid_from_keep_or_remove_file(args, fname):
 
 def read_fam(args, fam_file):
     log.log('reading {}...'.format(fam_file))
-    fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(),
-                      dtype=str)
+    fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
     log.log('done, {} rows, {} cols'.format(len(fam), fam.shape[1]))
     if args.log_sensitive: log.log(fam.head())
     if np.any(fam['IID'].duplicated()): raise(ValueError("IID column has duplicated values in --fam file"))
