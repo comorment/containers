@@ -90,19 +90,18 @@ if __name__ == '__main__':
     os.makedirs(Output_dir, exist_ok=True)
 
     # extract precomputed PCs from Pheno_file
-    call = ' '.join(
-        [os.environ['RSCRIPT'],
-         os.path.join('Rscripts', 'generate_eigenvec.R'),
-         '--pheno-file', Pheno_file,
-         '--eigenvec-file', Eigenvec_file,
-         '--pca', str(config['plink']['nPCs'])
-         ]
-    )
+    call = ' '.join([
+        '$RSCRIPT',
+        os.path.join('Rscripts', 'generate_eigenvec.R'),
+        '--pheno-file', Pheno_file,
+        '--eigenvec-file', Eigenvec_file,
+        '--pca', str(config['plink']['nPCs'])
+    ])
     pgs.run_call(call)
 
     # write .cov file with FID IID SEX columns
     call = ' '.join([
-        os.environ['RSCRIPT'],
+        '$RSCRIPT',
         os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', Pheno_file,
         '--columns', 'FID', 'IID', 'SEX',
@@ -116,7 +115,7 @@ if __name__ == '__main__':
     # and aint f'n smart enough to work around this.
     Pheno_file_plink = os.path.join(Output_dir, f'master_file.{Phenotype}')
     call = ' '.join([
-        os.environ['RSCRIPT'],
+        '$RSCRIPT',
         os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', Pheno_file,
         '--columns', 'FID', 'IID', Phenotype,
