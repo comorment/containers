@@ -189,20 +189,16 @@ def extract_variables(df, variables, pheno_dict_map, log):
 def is_bed_file(fname):
     return fname.endswith('.bed')
 def is_bgen_file(fname):
-
     return fname.endswith('.bgen')
 def is_pgen_file(fname):
     return fname.endswith('.pgen')
-
 def is_vcf_file(fname):
     return fname.endswith('.vcf') or fname.endswith('.vcf.gz')
-
-
-
 def remove_suffix(text, suffix):
     return text[:-len(suffix)] if text.endswith(suffix) and len(suffix) != 0 else text
 def replace_suffix(text, suffix, new_suffix):
     return remove_suffix(text, suffix) + new_suffix
+
 def fix_and_validate_chr2use(args, log):
     arg_dict = vars(args)
     chr2use_arg = arg_dict["chr2use"]
