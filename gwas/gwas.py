@@ -916,7 +916,8 @@ def read_iid_from_keep_or_remove_file(args, fname):
 
 def read_fam(args, fam_file):
     log.log('reading {}...'.format(fam_file))
-    fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
+    fam = pd.read_csv(fam_file, delim_whitespace=True, header=None, names='FID IID FatherID MotherID SEX PHENO'.split(), 
+        dtype=str)
     log.log('done, {} rows, {} cols'.format(len(fam), fam.shape[1]))
     if args.log_sensitive: log.log(fam.head())
     if np.any(fam['IID'].duplicated()): raise(ValueError("IID column has duplicated values in --fam file"))
