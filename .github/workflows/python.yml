@@ -17,3 +17,4 @@ jobs:
         uses: reviewdog/action-flake8@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          flake8_args: --ignore errors E121,E123,E126,E226,E24,E704,W503,W504 --max-line-length 120
