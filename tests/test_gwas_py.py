@@ -130,3 +130,64 @@ def test_gwas_py_variance_standardize():
         assert out.returncode == 1
         assert "column has no variation" in str(out.stderr)
         os.chdir(cwd)
+
+
+def test_gwas_py_identical_FIDs():
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.pheno')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.pheno.dict')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.bed')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.info')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.fam')} {d}")
+        os.system(
+            "awk -F'\t' '{$1=2}1' OFS='\t' example_3chr.fam > "
+            "example_3chr.fam.tmp $$ mv example_3chr.fam.tmp example_3chr.fam"
+        )
+        call = (
+            f"singularity exec --home {d}:/home {p3_sif} python"
+            " gwas.py gwas --pheno-file example_3chr.pheno --geno-fit-file"
+            " example_3chr.bed --geno-file example_3chr.bed --info-file"
+            " example_3chr.info --fam example_3chr.fam --info 0.8 --chr2use"
+            " 1-3 --variance-standardize --maf 0.1 --geno 0.5 --hwe 0.01"
+            " --pheno PHENO PHENO2 --covar PC1 PC2 BATCH"
+        )
+        out = subprocess.run(call.split(" "), capture_output=True)
+        assert out.returncode == 0
+        os.chdir(cwd)
+
+
+# py.test tests/test_gwas_py.py -k test_gwas_py_custom_IIDs
+def test_gwas_py_custom_IIDs():
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.pheno')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.pheno.dict')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.bed')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.info')} {d}")
+        os.system(f"cp {os.path.join(ref, 'example_3chr.fam')} {d}")
+        os.system(
+            "awk -F'\t' '{$1=2}1' OFS='\t' example_3chr.fam > "
+            "example_3chr.fam.tmp $$ mv example_3chr.fam.tmp example_3chr.fam"
+        )
+        os.system(
+            "sed -i '2s/.*/SENTRIXID,IID,Identifier/' example_3chr.pheno.dict"
+        )
+        os.system(
+            "sed -i '1s/IID/SENTRIXID/' example_3chr.pheno"
+        )
+        call = (
+            f"singularity exec --home {d}:/home {p3_sif} python"
+            " gwas.py gwas --pheno-file example_3chr.pheno --geno-fit-file"
+            " example_3chr.bed --geno-file example_3chr.bed --info-file"
+            " example_3chr.info --fam example_3chr.fam --info 0.8 --chr2use"
+            " 1-3 --variance-standardize --maf 0.1 --geno 0.5 --hwe 0.01"
+            " --pheno PHENO PHENO2 --covar PC1 PC2 BATCH"
+        )
+        out = subprocess.run(call.split(" "))
+        assert out.returncode == 0
+        os.chdir(cwd)
