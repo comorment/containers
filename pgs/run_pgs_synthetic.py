@@ -51,6 +51,7 @@ if __name__ == '__main__':
     Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     Pheno_file = '/REF/examples/ldpred2/simu.pheno'
     Phenotype = 'trait1'
+    Phenotype_class = 'CONTINUOUS'
     Geno_file = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
     Data_postfix = ''
 
@@ -110,6 +111,7 @@ if __name__ == '__main__':
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
+        Phenotype_class=Phenotype_class,
         Geno_file=Geno_file,
         Output_dir=os.path.join('results', 'PGS_synthetic_plink'),
         Cov_file=Cov_file,
@@ -141,6 +143,7 @@ if __name__ == '__main__':
         Sumstats_file=Sumstats_file,
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
+        Phenotype_class='CONTINUOUS',
         Geno_file=Geno_file,
         Output_dir=os.path.join('results', 'PGS_synthetic_prsice2'),
         Cov_file=Cov_file,
@@ -164,6 +167,7 @@ if __name__ == '__main__':
             Sumstats_file=Sumstats_file,
             Pheno_file=Pheno_file,
             Phenotype=Phenotype,
+            Phenotype_class='CONTINUOUS',
             Geno_file=Geno_file,
             Output_dir=os.path.join(
                 'results', f'PGS_synthetic_LDpred2_{method}'),

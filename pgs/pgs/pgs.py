@@ -166,7 +166,7 @@ def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
         delim_whitespace=True,
         usecols=['IID', 'FID', 'PRS'])
     scores.rename(columns={'PRS': 'score'}, inplace=True)
-    scores.to_csv(os.path.join(Output_dir, 'test.score'),
+    scores.to_csv(os.path.join(Output_dir, score_file),
                   sep=' ', index=False)
 
 
@@ -222,6 +222,7 @@ class BasePGS(abc.ABC):
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Phenotype='Height',
+                 Phenotype_class='CONTINUOUS',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='qc-output',
                  **kwargs):
@@ -232,8 +233,10 @@ class BasePGS(abc.ABC):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str
-            phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype: str or None
+            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype_class: str
+            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -252,6 +255,7 @@ class BasePGS(abc.ABC):
         self.Sumstats_file = Sumstats_file
         self.Pheno_file = Pheno_file
         self.Phenotype = Phenotype
+        self.Phenotype_class = Phenotype_class
         self.Geno_file = Geno_file
         self.Output_dir = Output_dir
 
@@ -281,6 +285,7 @@ class PGS_Plink(BasePGS):
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Phenotype='Height',
+                 Phenotype_class='CONTINUOUS',
                  Geno_file='QC_data/EUR',
                  Output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
@@ -300,8 +305,10 @@ class PGS_Plink(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str
-            phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype: str or None
+            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype_class: str
+            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -339,6 +346,7 @@ class PGS_Plink(BasePGS):
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
                          Phenotype=Phenotype,
+                         Phenotype_class=Phenotype_class,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -612,6 +620,7 @@ class PGS_Plink(BasePGS):
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
+            '--phenotype-class', self.Phenotype_class,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
             '--eigenvec-file', self.Eigenvec_file,
@@ -671,6 +680,7 @@ class PGS_PRSice2(BasePGS):
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Phenotype='Height',
+                 Phenotype_class='CONTINUOUS',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='PGS_prsice2',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
@@ -678,7 +688,6 @@ class PGS_PRSice2(BasePGS):
                  nPCs=6,
                  MAF=0.01,
                  INFO=0.8,
-                 stat='OR',
                  **kwargs):
         '''
         Parameters
@@ -687,17 +696,19 @@ class PGS_PRSice2(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str
-            phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype: str or None
+            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype_class: str
+            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
         Output_dir: str
             path for output files (<path>)
-        Cov_file: str
-            path to covariance file (.cov)
-        Eigenvec_file: str
-            path to eigenvec file (.eig)
+        Cov_file: str or None
+            path to covariate file (.cov)
+        Eigenvec_file: str or None
+            path to eigenvec file (.eig) with PCs
         nPCs: int
             number of Principal Components (PCs) to include
             in covariate generation
@@ -719,6 +730,7 @@ class PGS_PRSice2(BasePGS):
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
                          Phenotype=Phenotype,
+                         Phenotype_class=Phenotype_class,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -728,14 +740,21 @@ class PGS_PRSice2(BasePGS):
         self.nPCs = nPCs
         self.MAF = MAF
         self.INFO = INFO
-        self.stat = stat
 
-        # inferred
-        self.Covariance_file = os.path.join(
-            self.Output_dir,
-            self.Data_prefix + '.covariate')
+        # deal with covariate file, generate from Cov_file and Eigenvec_file if needed
+        if 'cov' in self.kwargs.keys():
+            self._Covariate_file = self.kwargs.pop('cov')
+            print(f'cov={self._Covariate_file} argument found in kwargs.', 
+                  'Eigenvec_file and Cov_file args will be ignored.')
+        else:
+            if self.Cov_file is not None and self.Eigenvec_file is not None:
+                self._Covariate_file = os.path.join(
+                    self.Output_dir,
+                    self.Data_prefix + '.covariate')
+            else:
+                self._Covariate_file = None
 
-    def _generate_covariance_str(self):
+    def _generate_covariate_str(self):
         '''
         Generate string which will be included in job script
         for generating .covariate file combining .cov and .eigenvec
@@ -750,7 +769,7 @@ class PGS_PRSice2(BasePGS):
             os.path.join('Rscripts', 'generate_covariate.R'),
             self.Cov_file,
             self.Eigenvec_file,
-            self.Covariance_file,
+            self._Covariate_file,
             str(self.nPCs)])
 
         return command
@@ -771,13 +790,19 @@ class PGS_PRSice2(BasePGS):
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
             f'--target {target}',
-            '--binary-target F',
+            f'--binary-target {"T" if self.Phenotype_class == "BINARY" else "F"}',
             f'--pheno {self.Pheno_file}',
-            f'--cov {self.Covariance_file}',
-            f'--base-maf MAF:{self.MAF}',
-            f'--base-info INFO:{self.INFO}',
+            f'--pheno-col {self.Phenotype}',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
         ])
+        if self._Covariate_file is not None:
+            cmd0 = self._generate_covariate_str()
+        else:
+            cmd0 = ''
+        command = '\n'.join([
+            cmd0, command
+        ])
+
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -812,6 +837,7 @@ class PGS_PRSice2(BasePGS):
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
+            '--phenotype-class', self.Phenotype_class,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
             '--eigenvec-file', self.Eigenvec_file,
@@ -829,7 +855,12 @@ class PGS_PRSice2(BasePGS):
         list of str
             list of command line statements for analysis run
         '''
-        return [self._generate_covariance_str(),
+        if self._Covariate_file is not None:
+            cmd0 = self._generate_covariate_str()
+        else:
+            cmd0 = ''
+
+        return [cmd0,
                 self._generate_run_str(),
                 self._generate_post_run_str()]
 
@@ -844,6 +875,7 @@ class PGS_LDpred2(BasePGS):
                  Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
                  Pheno_file='/REF/examples/prsice2/EUR.height',
                  Phenotype='Height',
+                 Phenotype_class='CONTINUOUS',
                  Geno_file='/REF/examples/prsice2/EUR',
                  Output_dir='PGS_ldpred2_inf',
                  method='inf',
@@ -857,8 +889,10 @@ class PGS_LDpred2(BasePGS):
             summary statistics file (.gz)
         Pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str
-            phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype: str or None
+            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+        Phenotype_class: str
+            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -880,6 +914,7 @@ class PGS_LDpred2(BasePGS):
         super().__init__(Sumstats_file=Sumstats_file,
                          Pheno_file=Pheno_file,
                          Phenotype=Phenotype,
+                         Phenotype_class=Phenotype_class,
                          Geno_file=Geno_file,
                          Output_dir=Output_dir,
                          **kwargs)
@@ -928,6 +963,7 @@ class PGS_LDpred2(BasePGS):
             os.path.join('Rscripts', 'evaluate_model.R'),
             '--pheno-file', self.Pheno_file,
             '--phenotype', self.Phenotype,
+            '--phenotype-class', self.Phenotype_class,
             '--score-file', os.path.join(self.Output_dir, 'test.score'),
             '--nPCs', f'{nPCs}',
             '--eigenvec-file', Eigenvec_file,

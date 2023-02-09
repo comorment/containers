@@ -47,6 +47,7 @@ if __name__ == '__main__':
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
     Pheno_file = '/REF/examples/prsice2/EUR.height'
     Phenotype = 'Height'
+    Phenotype_class = 'CONTINUOUS'
     Geno_file = '/REF/examples/prsice2/EUR'
     Data_postfix = '.QC'
 
@@ -120,6 +121,7 @@ if __name__ == '__main__':
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
+        Phenotype_class=Phenotype_class,
         Geno_file=Geno_file_post_QC,
         Output_dir=os.path.join('results', 'PGS_plink'),
         Cov_file=Cov_file,
@@ -150,6 +152,7 @@ if __name__ == '__main__':
         Sumstats_file=Sumstats_file_post_QC,
         Pheno_file=Pheno_file,
         Phenotype=Phenotype,
+        Phenotype_class=Phenotype_class,
         Geno_file=Geno_file_post_QC,
         Output_dir=os.path.join('results', 'PGS_prsice2'),
         Cov_file=Cov_file,
@@ -174,6 +177,7 @@ if __name__ == '__main__':
             Sumstats_file=Sumstats_file_post_QC,
             Pheno_file=Pheno_file,
             Phenotype=Phenotype,
+            Phenotype_class=Phenotype_class,
             Geno_file=Geno_file_post_QC,
             Output_dir=os.path.join('results', f'PGS_LDpred2_{method}'),
             method=method,

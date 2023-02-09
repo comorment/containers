@@ -10,6 +10,7 @@ library(dplyr)
 par <- arg_parser('evaluate PGS model')
 par <- add_argument(par, "--pheno-file", help="phenotype file")
 par <- add_argument(par, "--phenotype", help="phenotype name (must be a column header in phenotype file)")
+par <- add_argument(par, "--phenotype-class", help="phenotype class (must be either 'BINARY', 'NOMINAL', 'ORDINAL', or 'CONTINUOUS')")
 par <- add_argument(par, "--score-file", help="input scores from PGS")
 par <- add_argument(par, "--nPCs", help="number of principal components", default=6)
 par <- add_argument(par, "--eigenvec-file", help='eigenvec file')
@@ -38,20 +39,46 @@ covariate <- fread(parsed$covariate_file)
 df <- merge(df, pcs, by=c("FID", "IID"))
 df <- merge(df, covariate, by=c("FID", "IID"))
 cols <- colnames(df)[5:length(df)]
-reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+
 
 # fit model
-linear.fit <- lm(reg.formula, data=df[,-c("FID", "IID")])
+if (parsed$phenotype_class == "BINARY") {
+    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+    linear.fit <- glm(reg.formula, data=df[,-c("FID", "IID")], family="binomial")
+} else if (parsed$phenotype_class == "NOMINAL") {
+    # Load the package
+    # library(nnet)
+    # Run the model
+    # model <- multinom(prog ~ ses + write, data=mdata)
+    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+    linear.fit <- glm(reg.formula, data=df[,-c("FID", "IID")], family="nominal")  # pretty sure this is not right
+} else if (parsed$phenotype_class == "ORDINAL") {
+    # Load the library
+    # library(MASS)
+    # Turn the apply variable into a factor
+    # odata$apply <- factor(odata$apply)
+    # Run the ordinal logistic regression model
+    # model <- polr(apply ~ pared + public + gpa, data=odata)
+    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+    linear.fit <- glm(reg.formula, data=df[,-c("FID", "IID")], family="ordinal")  # pretty sure this is not right
+} else if (parsed$phenotype_class == "CONTINUOUS") {
+    null.formula <- paste(parsed$phenotype, "~", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+    null.fit <- lm(null.formula, data=df[,-c("FID", "IID")])
+    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
+    linear.fit <- lm(reg.formula, data=df[,-c("FID", "IID")])
+}
+print(summary(null.fit))
+print(glance(null.fit))
 print(summary(linear.fit))
 print(glance(linear.fit))
 
-# TODO: export deltas w. model fit without "score" column
 
 
 # write <out>.txt)
 sink(paste(parsed$out, '.txt', sep=""))
+print(summary(null.fit))
 print(summary(linear.fit))
 sink()
 
 # write <out>.csv
-write.table(glance(linear.fit), paste(parsed$out, '.csv', sep=""))
+write.table(rbind(glance(null.fit), glance(linear.fit)), paste(parsed$out, '.csv', sep=""))
