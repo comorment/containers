@@ -21,6 +21,7 @@ par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to ke
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
 par <- add_argument(par, "--sumstats-sep", default="", help="Field separator for GWAS summary statistics file (cf. utils::read.table)")
 par <- add_argument(par, "--window-size", default=3, nargs=1, help="Window size in centimorgans, used for LD calculation")
+par <- add_argument(par, "--thres-r2", default=0.01, nargs=1, help="Threshold to restrict included SNPs in LD calculations")
 par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
 
 parsed <- parse_args(par)
@@ -38,8 +39,10 @@ sampleIndividuals <- parsed$sample_individuals
 chr2use <- parsed$chr2use
 if (any(is.na(chr2use))) chr2use <- 1:22
 dirGeneticMaps <- parsed$dir_genetic_maps
+# Parameters to bigsnpr functions
 argGeneticMapsType <- parsed$genetic_maps_type
 argWindowSize <- parsed$window_size
+argThresholdR2 <- parsed$thres_r2
 
 NCORES <- parsed$cores
 
@@ -100,12 +103,12 @@ for (chr in chr2use) {
   # nDataPoints could probably be a higher nr. I put this here to ensure that filtering
   # works and that the resulting MAP has NA's in it.
   if (nDataPoints == 0) {
-    cat('\nSkipping chromosome', chr,'. Reason: 0 SNPs available\n')
+    warning('\nSkipping chromosome', chr,'. Reason: 0 SNPs available\n')
     next
   }
 
   corr0 <- snp_cor(G, ind.col=indices.G, ind.row=individualSample, size=argWindowSize/1000,
-                   infos.pos=GD[indices.G], ncores=NCORES)
+                   infos.pos=GD[indices.G], ncores=NCORES, thr_r2=argThresholdR2)
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   ld <- Matrix::colSums(corr0^2)
   MAP$ld[indices.G] <- ld
