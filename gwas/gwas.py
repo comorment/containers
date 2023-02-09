@@ -296,7 +296,7 @@ def fix_and_validate_pheno_args(args, log):
         raise ValueError('check you --covar argument, some covariates listed more then once')
 
     # '\s+' is equivalent to delim_whitespace=True option in pandas.read_csv
-    sep_map = {'delim-whitespace': '\s+', 'comma': ',', 'semicolon': ';', 'tab': '\t', 'space': ' '}
+    sep_map = {'delim-whitespace': '\s+', 'comma': ',', 'semicolon': ';', 'tab': '\t', 'space': ' '}  # noqa: W605
     if args.pheno_sep in sep_map:
         args.pheno_sep = sep_map[args.pheno_sep]
     if args.dict_sep is None:
