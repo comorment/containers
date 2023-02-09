@@ -41,6 +41,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 - removals goes here
 
+### Misc
+
+- Python code max line length of 120 chars, ignore number of newlines between functions
+
 ## [1.1] - 2022-12-01
 
 Maintenance/feature release with the following main software incorporated into each container: 
