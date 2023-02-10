@@ -97,11 +97,11 @@ dump=$( { $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
-dump=$( { $LDE --file-keep-snps $fileKeepSNPS; } 2>&1 )
+dump=$( { $LDE --extract $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test sampling individuals (N=400)"
-dump=$( { $LDE --sample-individuals 400 --file-keep-snps $fileKeepSNPS; } 2>&1 )
+dump=$( { $LDE --sample-individuals 400 --extract $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test no restrictions on snps (similar to tutorial)"

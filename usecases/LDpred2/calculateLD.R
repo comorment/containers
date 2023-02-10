@@ -18,8 +18,8 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
 par <- add_argument(par, "--sample-individuals", nargs=1, help="Specify a number of individuals to draw at random")
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
-par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
+par <- add_argument(par, "--extract", help="File with RSIDs of SNPs to extract from summary statistics")
 par <- add_argument(par, "--window-size", default=3, nargs=1, help="Window size in centimorgans, used for LD calculation")
 par <- add_argument(par, "--thres-r2", default=0.01, nargs=1, help="Threshold to restrict included SNPs in LD calculations")
 par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
@@ -28,7 +28,7 @@ parsed <- parse_args(par)
 fileLDBlocks <- parsed$file_ld_blocks
 if (!dir.exists(dirname(fileLDBlocks))) dir.create(dirname(fileLDBlocks))
 fileLDMap <- parsed$file_ld_map
-fileKeepSNPs <- parsed$file_keep_snps
+fileKeepSNPs <- parsed$extract
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
