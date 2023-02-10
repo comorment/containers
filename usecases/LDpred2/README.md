@@ -15,6 +15,11 @@ This README assumes the following two repositories are cloned using [git](https:
 We also assume the following commands are executed from the current folder
 (the one containing [createBackingFile.R](createBackingFile.R) and [ldpred2.R](ldpred2.R) scripts).
 
+### Note on filtering of genotype data
+
+The current version of these scripts conduct no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequillibrium or polygenic scores.
+This should be done for polygenic score analyses intended for publication.
+
 ### Optional: Estimating linkage disequillibrium (LD)
 
 LDpred2 uses the LD structure when calculating polygenic scores. By default, the LDpred2.R script uses LD structure based on European samples provided by the LDpred2 authors.
