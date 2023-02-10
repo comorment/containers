@@ -37,14 +37,23 @@ $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
- --file-pheno $filePheno --col-pheno $colPheno \
- --col-stat OR --col-stat-se SE --stat-type OR \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.inf
+ --file-pheno $filePheno \
+ --col-pheno $colPheno \
+ --col-stat OR \
+ --col-stat-se SE --stat-type OR \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.inf
 
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
- --file-pheno $filePheno --col-pheno $colPheno \
- --col-stat OR --col-stat-se SE --stat-type OR \
- --geno-file $fileGenoRDS --sumstats $fileSumstats --out $fileOut.auto
+ --file-pheno $filePheno \
+ --col-pheno $colPheno \
+ --col-stat OR \
+ --col-stat-se SE \
+ --stat-type OR \
+ --geno-file-rds $fileGenoRDS \
+ --sumstats $fileSumstats \
+ --out $fileOut.auto
 
