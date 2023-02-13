@@ -211,6 +211,59 @@ def df_colums_to_file(
         index=False)
 
 
+def set_env(config):
+    '''Function to set environment variables from config.yaml
+
+    Parameters
+    ----------
+    config: dict
+        config dictionary from config.yaml (or similar file)
+    '''
+    # present working dir
+    PWD = os.getcwd()
+    
+    # ROOT_DIR = config['env']['ROOT_DIR']
+    ROOT_DIR = os.path.split(os.path.split(PWD)[0])[0]
+    os.environ.update({'ROOT_DIR': ROOT_DIR})
+
+    for key, val in config['environ_inferred'].items():
+        if key in os.environ:
+            print(f'os.environ already contains {key} with value {os.environ[key]} - skipping...')
+        else:
+            if os.path.isdir(os.path.expandvars(val)):
+                os.environ[key] = os.path.expandvars(val)
+            else:
+                print(f'WARNING: path {os.path.expandvars(val)} for variable {key} does not exist - skipping...')
+
+    print(
+        '\nenvironment variables in use:\n',
+        '\n'.join(f'{key}: {val}' for key, val in os.environ.items() 
+            if key in dict(**config['environ'], 
+                        **config['environ_inferred']).keys()),
+        '\n')
+
+    # set SINGULARITY_BIND to mount volumes in containers:
+    os.environ['SINGULARITY_BIND'] = ','.join(
+        [f'{os.path.expandvars(item)}:/{key}' 
+            for key, item in config['SINGULARITY_BIND'].items()
+        ])
+    print('mounted volumes on containers:\n', os.environ['SINGULARITY_BIND'], '\n')
+
+    # Executables in different containers
+    SIF = os.environ['SIF']
+    os.environ.update(
+        dict(
+            BASH=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/gwas.sif bash",  # noqa: E501
+            GUNZIP=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/gwas.sif gunzip",  # noqa: E501
+            GZIP=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/gwas.sif gzip",  # noqa: E501
+            AWK=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/gwas.sif awk",  # noqa: E501
+            RSCRIPT=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/r.sif Rscript",  # noqa: E501
+            PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
+            PRSICE=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/gwas.sif PRSice_linux",  # noqa: E501
+            PYTHON=f"singularity exec --home={PWD}:/home --cleanenv {SIF}/python3.sif python3",  # noqa: E501
+        ))
+
+
 class BasePGS(abc.ABC):
     """Base PGRS object declaration with some
     shared properties for subclassing
@@ -445,7 +498,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            '$AWK_EXEC',
+            '$AWK',
             "'NR!=1{print $3}'",
             os.path.join(self.Output_dir, self.Data_prefix + '.clumped'),
             '>',
@@ -1076,29 +1129,29 @@ class Standard_GWAS_QC(BasePGS):
         '''
         command = []
         # Filter summary statistics file, zip output.
-        cmd = ' '.join(['$GUNZIP_EXEC',
+        cmd = ' '.join(['$GUNZIP',
                         '-c',
                         self.Sumstats_file,
                         '|\\\n',
-                        '$AWK_EXEC',
+                        '$AWK',
                         "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'",
                         '|\\\n',
-                        '$GZIP_EXEC',
+                        '$GZIP',
                         '->',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.gz')])
         command += [cmd]
 
         # Remove duplicates
-        cmd = ' '.join(['$GUNZIP_EXEC',
+        cmd = ' '.join(['$GUNZIP',
                         '-c',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.gz'),
                         '|\\\n',
-                        '$AWK_EXEC',
+                        '$AWK',
                         "'{seen[$3]++; if(seen[$3]==1){ print}}'",
                         '|\\\n',
-                        '$GZIP_EXEC',
+                        '$GZIP',
                         '->',
                         os.path.join(self.Output_dir,
                                      self.Phenotype + '.nodup.gz')])
@@ -1107,17 +1160,17 @@ class Standard_GWAS_QC(BasePGS):
         # Retain nonambiguous SNPs:
         cmd = ' '.join(
             [
-                '$GUNZIP_EXEC',
+                '$GUNZIP',
                 '-c',
                 os.path.join(
                     self.Output_dir,
                     self.Phenotype +
                     '.nodup.gz'),
                 '|\\\n',
-                '$AWK_EXEC',
+                '$AWK',
                 """'!( ($4=="A" && $5=="T") ||  ($4=="T" && $5=="A") || ($4=="G" && $5=="C") || ($4=="C" && $5=="G")) {print}'""",  # noqa: E501
                 '|\\\n',
-                '$GZIP_EXEC',
+                '$GZIP',
                 '->',
                 os.path.join(
                     self.Output_dir,

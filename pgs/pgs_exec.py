@@ -98,6 +98,10 @@ parser_ldpred2_auto.add_argument(
 
 # shared arguments
 parser.add_argument(
+    "--config", type=str, 
+    default='config.yaml', 
+    help="config YAML file")
+parser.add_argument(
     "--Sumstats_file", type=str, 
     default=os.path.join("QC_data", 'Height.QC.gz'), 
     help="summary statistics file")
@@ -109,6 +113,11 @@ parser.add_argument(
     "--Phenotype", type=str, 
     default="Height", 
     help="Phenotype name (must be a column header in Pheno_file)")
+parser.add_argument(
+    "--Phenotype_class", type=str, 
+    default="CONTINUOUS", 
+    help="Phenotype class",
+    choices=['CONTINUOUS', 'BINARY', 'ORDINAL', 'NOMINAL'])
 parser.add_argument(
     "--Geno_file", type=str, 
     default="EUR", 
@@ -126,8 +135,6 @@ parser.add_argument(
     choices=runtype_choices
 )
 
-
-
 # NameSpace object
 parsed_args, unknowns = parser.parse_known_args(sys.argv[1:])
 
@@ -140,44 +147,22 @@ assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
 # convert to dict, remove skipped key/value pairs
 args_dict = vars(parsed_args).copy()
 for key in ['method', 'runtype']:
-        args_dict.pop(key)
+    args_dict.pop(key)
 
-
-# enviroment variables for test runs
-os.environ.update(dict(
-    CONTAINERS=os.path.split(os.getcwd())[0],
-))
-os.environ.update(dict(
-    COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
-    SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
-    REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference')
-))
-os.environ.update(dict(
-    LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref'),
-))
-os.environ.update(dict(
-        SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF,{os.environ["LDPRED2_REF"]}:/ldpred2_ref'  # noqa: E501
-))
-
-# Executables in containers
-SIF = os.environ['SIF']
-PWD = os.getcwd()
-os.environ.update(
-    dict(
-        # BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",  # noqa: E501
-        GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",  # noqa: E501
-        GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",  # noqa: E501
-        AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",  # noqa: E501
-        RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",  # noqa: E501
-        PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
-        PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",  # noqa: E501
-        PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
-    ))
 
 # load config.yaml file as dict
-with open("config.yaml", 'r') as f:
+config = args_dict.pop('config')
+with open(config, 'r') as f:
     config = yaml.safe_load(f)
 
+#######################################
+# set up environment variables
+#######################################
+# the config may contain some default paths to container files
+# and reference data, but we may want to override these for clarity
+pgs.set_env(config)
+
+#######################################
 # update config with additional kwargs
 if len(unknowns) > 0:
     d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
@@ -202,8 +187,8 @@ slurm_header = f'''#!/bin/sh
 
 # environment variables for sh and slurm scripts
 env_keys = [
-    'COMORMENT', 'CONTAINERS', 'SIF', 'REFERENCE', 'LDPRED2_REF',
-    'SINGULARITY_BIND', 'GUNZIP_EXEC', 'GZIP_EXEC', 'AWK_EXEC', 
+    'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE', 'LDPRED2_REF',
+    'SINGULARITY_BIND', 'GUNZIP', 'GZIP', 'AWK', 
     'RSCRIPT', 'PLINK', 'PRSICE', 'PYTHON'
     ]
 env_variables_list = []
@@ -252,10 +237,11 @@ else:
 if parsed_args.method in ['plink', 'prsice2']:
     commands += [pgs_instance.get_model_evaluation_str()]
 elif parsed_args.method in ['ldpred2-inf', 'ldpred2-auto']:
-    commands += [pgs_instance.get_model_evaluation_str(
-        Eigenvec_file=args_dict['Eigenvec_file'],
-        nPCs=str(config['plink']['nPCs']),
-        Cov_file=args_dict['Cov_file'])]
+    commands += [
+        pgs_instance.get_model_evaluation_str(
+            Eigenvec_file=args_dict['Eigenvec_file'],
+            nPCs=str(config['plink']['nPCs']),
+            Cov_file=args_dict['Cov_file'])]
 
 # create tasks
 if parsed_args.runtype == 'subprocess':

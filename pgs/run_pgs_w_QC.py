@@ -8,41 +8,20 @@ from pgs import pgs
 
 
 if __name__ == '__main__':
-    # enviroment variables for test runs
-    os.environ.update(dict(
-        CONTAINERS=os.path.split(os.getcwd())[0],
-    ))
-    os.environ.update(dict(
-        COMORMENT=os.path.split(os.environ['CONTAINERS'])[0],
-        SIF=os.path.join(os.environ['CONTAINERS'], 'singularity'),
-        REFERENCE=os.path.join(os.environ['CONTAINERS'], 'reference'),
-    ))
-    os.environ.update(dict(
-        LDPRED2_REF=os.path.join(os.environ['COMORMENT'], 'ldpred2_ref')
-    ))
-    os.environ.update(dict(
-        SINGULARITY_BIND=f'{os.environ["REFERENCE"]}:/REF,{os.environ["LDPRED2_REF"]}:/ldpred2_ref'  # noqa: E501
-    ))
-
-    # Executables in containers
-    SIF = os.environ['SIF']
-    PWD = os.getcwd()
-    os.environ.update(
-        dict(
-            # BASH_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif bash",  # noqa: E501
-            GUNZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gunzip",  # noqa: E501
-            GZIP_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif gzip",  # noqa: E501
-            AWK_EXEC=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif awk",  # noqa: E501
-            RSCRIPT=f"singularity exec --home={PWD}:/home {SIF}/r.sif Rscript",  # noqa: E501
-            PLINK=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif plink",  # noqa: E501
-            PRSICE=f"singularity exec --home={PWD}:/home {SIF}/gwas.sif PRSice_linux",  # noqa: E501
-            PYTHON=f"singularity exec --home={PWD}:/home {SIF}/python3.sif python",  # noqa: E501
-        ))
-
     # load config.yaml file as dict
-    with open("config.yaml", 'r') as f:
-        config = yaml.safe_load(f)
+    with open("config.yaml", 'r') as stream:
+        config = yaml.safe_load(stream)
 
+    #######################################
+    # set up environment variables
+    #######################################
+    # the config may contain some default paths to container files
+    # and reference data, but we may want to override these for clarity
+    pgs.set_env(config)
+
+    #######################################
+    # Setup inputs and outputs
+    #######################################
     # input (shared)
     Sumstats_file = '/REF/examples/prsice2/Height.gwas.txt.gz'
     Pheno_file = '/REF/examples/prsice2/EUR.height'
@@ -51,13 +30,17 @@ if __name__ == '__main__':
     Geno_file = '/REF/examples/prsice2/EUR'
     Data_postfix = '.QC'
 
+    # Output root directory (will be created if it does not exist)
+    Output_dir = 'output'
+    os.makedirs(Output_dir, exist_ok=True)
+
     # method specific input
     # Plink, PRSice2, LDpred2
     Cov_file = '/REF/examples/prsice2/EUR.cov'
     Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
 
     # LDpred2
-    fileGenoRDS = 'EUR.rds'  # put in working directory as both LDpred2 methods use it
+    fileGenoRDS = os.path.join(Output_dir, 'EUR.rds')  # put in working directory as both LDpred2 methods use it
 
     #######################################
     # Update method-specific configs
@@ -82,7 +65,6 @@ if __name__ == '__main__':
         'stat-type': 'OR',
         'col-stat-se': 'SE',
         'col-pheno': Phenotype,
-        # 'chr2use': [21, 22],
     })
 
     #######################################
@@ -93,7 +75,7 @@ if __name__ == '__main__':
     #######################################
 
     # output dir for QC'd data.
-    QC_data = os.path.join('results', 'QC_data')
+    QC_data = os.path.join(Output_dir, 'QC_data')
 
     # perform some basic QC steps
     qc = pgs.Standard_GWAS_QC(
@@ -123,7 +105,7 @@ if __name__ == '__main__':
         Phenotype=Phenotype,
         Phenotype_class=Phenotype_class,
         Geno_file=Geno_file_post_QC,
-        Output_dir=os.path.join('results', 'PGS_plink'),
+        Output_dir=os.path.join(Output_dir, 'PGS_plink'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['plink'],
@@ -154,7 +136,7 @@ if __name__ == '__main__':
         Phenotype=Phenotype,
         Phenotype_class=Phenotype_class,
         Geno_file=Geno_file_post_QC,
-        Output_dir=os.path.join('results', 'PGS_prsice2'),
+        Output_dir=os.path.join(Output_dir, 'PGS_prsice2'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['prsice2'],
@@ -179,7 +161,7 @@ if __name__ == '__main__':
             Phenotype=Phenotype,
             Phenotype_class=Phenotype_class,
             Geno_file=Geno_file_post_QC,
-            Output_dir=os.path.join('results', f'PGS_LDpred2_{method}'),
+            Output_dir=os.path.join(Output_dir, f'PGS_LDpred2_{method}'),
             method=method,
             fileGenoRDS=fileGenoRDS,
             **config['ldpred2']
