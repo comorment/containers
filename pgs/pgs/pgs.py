@@ -222,8 +222,7 @@ def set_env(config):
     # present working dir
     PWD = os.getcwd()
     
-    # ROOT_DIR = config['env']['ROOT_DIR']
-    ROOT_DIR = os.path.split(os.path.split(PWD)[0])[0]
+    ROOT_DIR = config['environ']['ROOT_DIR']
     os.environ.update({'ROOT_DIR': ROOT_DIR})
 
     for key, val in config['environ_inferred'].items():
