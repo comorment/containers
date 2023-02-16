@@ -109,7 +109,7 @@ source(paste0(dirScript, '/fun.R'))
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
 colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
-colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a0",  "a1",  "beta",  "beta_se")
+colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
@@ -135,7 +135,7 @@ sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
 # Reame columns in bigSNP object
-colMap <- c('chr', 'rsid', 'pos', 'a0', 'a1')
+colMap <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 map <- setNames(obj.bigSNP$map[-3], colMap)
 
 # Rename headers in sumstats file if necessary
