@@ -227,12 +227,12 @@ def set_env(config):
 
     for key, val in config['environ_inferred'].items():
         if key in os.environ:
-            print(f'os.environ already contains {key} with value {os.environ[key]} - skipping...')
+            print(f'os.environ already contains {key} with value {os.environ[key]} - redefining...')
+        if os.path.isdir(os.path.expandvars(val)):
+            os.environ[key] = os.path.expandvars(val)
         else:
-            if os.path.isdir(os.path.expandvars(val)):
-                os.environ[key] = os.path.expandvars(val)
-            else:
-                print(f'WARNING: path {os.path.expandvars(val)} for variable {key} does not exist - skipping...')
+            mssg =  f'Path {os.path.expandvars(val)} for variable {key} does not exist. Revise config.yaml!'
+            raise Exception(mssg)
 
     print(
         '\nenvironment variables in use:\n',
@@ -536,7 +536,7 @@ class PGS_Plink(BasePGS):
         command += ' '.join([
             '$PYTHON',
             '-c',
-            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, "SNP.pvalue")}", ["SNP", "P"])'"""  # noqa: 501
+            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, self.clump_snp_field + ".pvalue")}", ["{self.clump_snp_field}", "P"])'"""  # noqa: 501
         ])
         return command
 
@@ -565,7 +565,7 @@ class PGS_Plink(BasePGS):
             ' '.join([str(x) for x in self.score_args]),
             '--q-score-range',
             self._range_list_file,
-            os.path.join(self.Output_dir, 'SNP.pvalue'),
+            os.path.join(self.Output_dir, self.clump_snp_field + '.pvalue'),
             '--extract',
             os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
             '--threads', str(self.kwargs['threads']),
