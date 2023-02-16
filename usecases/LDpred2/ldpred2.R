@@ -100,6 +100,12 @@ if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", pas
 argStatType <- parsed$stat_type
 setSeed <- parsed$set_seed
 
+### Maybe there's some environment variable availble to determine the location of the script instead
+coms <- commandArgs()
+coms <- coms[substr(coms, 1, 8) == '--file=/']
+dirScript <- dirname(substr(coms, 8, nchar(coms)))
+source(paste0(dirScript, '/fun.R'))
+
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
 colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
@@ -107,6 +113,8 @@ colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a0",  "a1",  "beta",  "beta_se")
 
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
+nMissingGenotypes <- countMissingGenotypes(obj.bigSNP$genotypes)
+if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data.')
 if (!is.na(filePheno)) {
   cat('Loading external phenotype in file', filePheno, '\n')
   dataPheno <- bigreadr::fread2(filePheno)
