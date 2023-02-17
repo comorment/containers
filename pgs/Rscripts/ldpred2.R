@@ -229,7 +229,7 @@ for (chr in chr2use) {
 }
 
 cat('\n### Running LD score regression\n')
-ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL, ncores=NCORES))
+ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(df_beta$beta/df_beta$beta_se)^2, sample_size=n_eff, blocks=NULL))
 h2_est <- ldsc[["h2"]]
 cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
@@ -238,7 +238,7 @@ cat('\n### Starting polygenic scoring\n')
 if (argLdpredMode == 'inf') {
   cat ('Running LDPRED2 infinitesimal model\n')
   cat('Calculating beta inf\n')
-  beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est, ncores=NCORES)
+  beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
   cat('Running LDPRED2 auto model\n')
