@@ -21,13 +21,19 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-- Added status badges and citation.cff file 
+- Added ``PRSice_linux`` to ``r.sif``
+- Added tests for ``gwas.py``
 - Added package ``GWASTools`` to ``r.sif``. 
 - Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
-- add ``ldak5.2.linux`` binary to ``gwas.sif``
+- Added ``ldak5.2.linux`` binary to ``gwas.sif``
+- Added status badges and citation.cff file 
 
 ### Updated
 
+* Rebuilt the R container
+* ````
+  e83ffdd2282e81935db4a3a2fb307dcf  singularity/r.sif
+  ```
 * Rebuilt the R container
   ```
   23d195a10b84603b15d0e8c42df40fbd  singularity/r.sif
@@ -35,11 +41,16 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-- Fixes goes here
+- Use [packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16](https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16) as main R package repo
+- ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
 
 ### Removed
 
 - removals goes here
+
+### Misc
+
+- Python code max line length of 120 chars, ignore number of newlines between functions
 
 ## [1.1] - 2022-12-01
 
@@ -80,7 +91,7 @@ Maintenance/feature release with the following main software incorporated into e
   | r.sif             | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
   | r.sif             | R                   | 4.0.5 (2021-03-31) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | r.sif             | gcta64              | version 1.93.2 beta Linux                 | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
+  | r.sif             | PRSice_linux        | 2.3.3 (2020-08-05)                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
   | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR/commit/c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
@@ -93,6 +104,7 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 
 ### Added
 
+- add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
 - add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
 - add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 - add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build

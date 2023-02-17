@@ -1,9 +1,9 @@
 all: hello.sif gwas.sif python3.sif r.sif saige.sif
 
 %.sif: dockerfiles/%/Dockerfile
-	docker build -t $* -f dockerfiles/$*/Dockerfile . | tee logs/$*.log && \
-	scripts/convert_docker_image_to_singularity.sh $*  | tee -a logs/$*.log && \
-	scripts/move_singularity_file.sh $* | tee -a logs/$*.log
+	docker build -t $* -f dockerfiles/$*/Dockerfile . | tee $*.log && \
+	scripts/convert_docker_image_to_singularity.sh $*  | tee -a $*.log && \
+	scripts/move_singularity_file.sh $* | tee -a $*.log
 
 # Example commands executed by this make file
 # 
