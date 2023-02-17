@@ -44,7 +44,8 @@ if (nWithMissing == 0) {
 cat('Genotypes missing for at least 1 individual: N=', nWithMissing, ' out of ', length(nMissingGenotypes), ').\n', sep='')
 if (!is.na(imputeSimple)) {
   cat('Imputing genotypes by using', imputeSimple, '(see bigsnpr::snp_fastImputeSimple).\n')
-  G <- snp_fastImputeSimple(G, method=imputeSimple, ncores = NCORES)
+  if (imputeSimple == 'zero') G <- zeroMissingGenotypes(G)
+  else G <- snp_fastImputeSimple(G, method=imputeSimple, ncores = NCORES)
 } else {
   library(xgboost)
   cat('Imputing genotypes by using XGBoost models (see bigsnpr::snp_fastImpute).\n')

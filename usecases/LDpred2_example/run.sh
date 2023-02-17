@@ -84,20 +84,29 @@ if [ ! -f $FILE_LDMAP ]; then
  wget -O $FILE_LDMAP "https://figshare.com/ndownloader/files/37802721" ;  
 fi;
 
-# Do a test with the imputed genotypes
-$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
+LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --ld-file $DIR_TESTS/data/ld/ldref/LD_with_blocks_chr@.rds \
   --ld-meta-file $DIR_TESTS/data/ld/ldref/map.rds \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
-  --geno-file-rds $fileImputed.rds --sumstats $fileInputSumStats --out ${fileOut}_imputed.inf
+  --sumstats $fileInputSumStats --out ${fileOut}_imputed.inf"
+
+# Failure due to missing genotypes
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds; } 2>&1 )
+if [ $? -eq 0 ]; then echo "No error received"; echo "$dump"; exit; fi
+# Fix with -geno-impute-zero
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds --geno-impute-zero; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+# Run with preimputed file
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImputed.rds; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 # Note that if files in --dir-genetic-maps do not exist, these will be downloaded. But I think error if the directory doesnt exist
 LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --ld-file $DIR_TESTS/data/ld/ldref/LD_with_blocks_chr@.rds \
   --ld-meta-file $DIR_TESTS/data/ld/ldref/map.rds \
-  --merge-by-rsid --geno-impute skip \
+  --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
