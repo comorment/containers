@@ -229,7 +229,7 @@ for (chr in chr2use) {
 }
 
 cat('\n### Running LD score regression\n')
-ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL))
+ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(beta/beta_se)^2, sample_size=n_eff, blocks=NULL, ncores=NCORES))
 h2_est <- ldsc[["h2"]]
 cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
