@@ -238,7 +238,7 @@ cat('\n### Starting polygenic scoring\n')
 if (argLdpredMode == 'inf') {
   cat ('Running LDPRED2 infinitesimal model\n')
   cat('Calculating beta inf\n')
-  beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
+  beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est, ncores=NCORES)
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
   cat('Running LDPRED2 auto model\n')
