@@ -388,7 +388,7 @@ def make_regenie_commands(args, logistic, step):
 
     return (cmd + cmd_step1) if step == 1 else (cmd + cmd_step2)
 
-def make_saige_commands(args, logistic, step, log):
+def make_saige_commands(args, logistic, step):
     geno_fit_file = args.geno_fit_file
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
 
@@ -625,7 +625,7 @@ export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
            singularity_bind=args.config_object['singularity_bind'])
 
 def prepare_covar_and_phenofiles(args, log, cc12, join_covar_into_pheno):
-    fam = read_fam(args, args.fam, log)
+    fam = read_fam(args, args.fam)
     pheno, pheno_dict = read_comorment_pheno(args, args.pheno_file, args.dict_file)
     pheno_dict_map = dict(zip(pheno_dict['FIELD'], pheno_dict['TYPE']))
 
@@ -1062,13 +1062,13 @@ class Logger(object):
             with open(self.fh + '.error', 'w') as error_fh:
                 error_fh.write(str(msg).rstrip() + '\n')
 
-def read_bim(args, bim_file, log):
+def read_bim(args, bim_file):
     log.log('reading {}...'.format(bim_file))
     bim = pd.read_csv(bim_file, delim_whitespace=True, header=None, names='CHR SNP GP BP A1 A2'.split())
     log.log('done, {} rows, {} cols'.format(len(bim), bim.shape[1]))
     return bim
 
-def read_iid_from_keep_or_remove_file(args, fname, log):
+def read_iid_from_keep_or_remove_file(args, fname):
     log.log('reading {}...'.format(fname))
     df = pd.read_csv(fname, delim_whitespace=True, header=None, comment='#', dtype=str)
     col_idx = 0 if (len(df.columns) == 1) else 1
@@ -1079,7 +1079,7 @@ def read_iid_from_keep_or_remove_file(args, fname, log):
         raise ValueError(f'no IIDs found in {fname} file')
     return iid
 
-def read_fam(args, fam_file, log):
+def read_fam(args, fam_file):
     log.log('reading {}...'.format(fam_file))
     fam = pd.read_csv(fam_file, delim_whitespace=True, header=None,
                       names='FID IID FatherID MotherID SEX PHENO'.split(), dtype=str)
@@ -1179,9 +1179,9 @@ def read_comorment_pheno(args, pheno_file, dict_file):
     keep = set()
     remove = set()
     for fname in args.keep:
-        keep = keep.union(read_iid_from_keep_or_remove_file(args, fname, log))
+        keep = keep.union(read_iid_from_keep_or_remove_file(args, fname))
     for fname in args.remove:
-        remove = remove.union(read_iid_from_keep_or_remove_file(args, fname, log))
+        remove = remove.union(read_iid_from_keep_or_remove_file(args, fname))
 
     if len(keep) > 0:
         pheno = pheno[pheno['IID'].isin(keep)]
