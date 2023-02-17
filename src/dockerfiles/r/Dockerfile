@@ -25,10 +25,18 @@ COPY /scripts/install_gcta.sh /tmp/gcta/
 RUN bash /tmp/gcta/install_gcta.sh && \
     rm -rf /tmp/gcta
 
+# PRSice-2.
+# The container running PRSice.R script with "--prsice PRSice_linux" 
+# argument must also contain the PRSice_linux binary)
+WORKDIR /tmp/prsice
+COPY /scripts/install_prsice.sh /tmp/prsice/
+RUN bash /tmp/prsice/install_prsice.sh && \
+    rm -rf /tmp/prsice
+
 # R packages.
 # CRAN packages
 WORKDIR /tmp/
-RUN R -e "install.packages('devtools', version='2.4.5', repos='https://cloud.r-project.org', dependencies=TRUE)"
+RUN R -e "install.packages('devtools', version='2.4.5', repo='https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
 COPY /scripts/R/cran.R .
 RUN Rscript cran.R
 
