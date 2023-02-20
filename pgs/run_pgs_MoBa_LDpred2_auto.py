@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     # output directories
     Output_dirs = {
-        'auto': os.path.join('results', 'PGS_MoBa_LDpred2_auto')
+        'auto': os.path.join('output', 'PGS_MoBa_LDpred2_auto')
     }
 
     # Update ldpred2 config
@@ -102,7 +102,7 @@ if __name__ == '__main__':
             Geno_file=Geno_file,
             Output_dir=Output_dir,
             method=method,
-            fileGenoRDS=fileGenoRDS,
+            fileGenoRDS=os.path.join(Output_dir, fileGenoRDS),
             **config['ldpred2']
         )
         # run

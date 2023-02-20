@@ -3,8 +3,8 @@ slurm:
   job_name: pgs
   account: p697_norment
   time: "00:30:00"
-  cpus_per_task: 2
-  mem_per_cpu: 8000M
+  cpus_per_task: 16
+  mem_per_cpu: 4000M
   partition: normal
 
   # list of modules to load in SLURM jobs
@@ -24,7 +24,7 @@ environ_inferred:
   # reference data within containers repo
   # REFERENCE: "$CONTAINERS/reference"
   # directory with singularity containers (.sif files)
-  SIF: "$CONTAINERS/singularity"
+  SIF: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17/singularity"
   # folder containing  full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data
   LDPRED2_REF: "$ROOT_DIR/data/durable/users/espehage/comorment/ldpred2_ref"
 
@@ -38,7 +38,7 @@ environ_inferred:
 # NB! will be set as "export SINGULARITY_BIND=value0:/key0,value1:/key1,..."
 # NB! Also mandatory
 SINGULARITY_BIND: 
-  REF: '$REFERENCE'
+  # REF: '$REFERENCE'
   ldpred2_ref: '$LDPRED2_REF'
   MOBA: '$MOBA'
   SUMSTATS: '$SUMSTATS'

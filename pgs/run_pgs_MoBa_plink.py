@@ -28,7 +28,7 @@ if __name__ == '__main__':
     Data_postfix = ''
 
     # output dir
-    Output_dir = os.path.join('results', 'PGS_MoBa_plink')
+    Output_dir = os.path.join('output', 'PGS_MoBa_plink')
 
     # method specific input
     Eigenvec_file = os.path.join(Output_dir, 'master_file.eigenvec')
