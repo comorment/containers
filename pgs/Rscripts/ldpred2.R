@@ -229,7 +229,7 @@ for (chr in chr2use) {
 }
 
 cat('\n### Running LD score regression\n')
-ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(df_beta$beta/df_beta$beta_se)^2, sample_size=n_eff, blocks=NULL))
+ldsc <- with(df_beta, snp_ldsc(ld, ld_size, chi2=(df_beta$beta/df_beta$beta_se)^2, sample_size=n_eff, blocks=NULL, ncores=NCORES))
 h2_est <- ldsc[["h2"]]
 cat('Results:', 'Intercept =', ldsc[["int"]], 'H2 =', h2_est, '\n')
 
@@ -268,7 +268,7 @@ if (argLdpredMode == 'inf') {
 if (genoImpute != 'skip') {
   cat('Imputing missing genotypes...\n')
   # Count missingness over individuals for each SNP
-  nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
+  nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c', ncores=NCORES)
   nMissingGenotypes <- sum(nMissingGenotypes > 0)
   if (nMissingGenotypes > 0) {
     warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
@@ -281,7 +281,7 @@ cat('Scoring all individuals...\n')
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
 map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 
-pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
+pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']], ncores=NCORES)
 obj.bigSNP$fam[,nameScore] <- pred_all
 
 if (!is.na(colPheno)) {
