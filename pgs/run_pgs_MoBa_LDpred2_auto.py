@@ -21,7 +21,6 @@ if __name__ == '__main__':
     pgs.set_env(config)
 
     # input (shared)
-    # Sumstats_file = '/SUMSTATS/STD/UKB_HEIGHT_2018_irnt.sumstats.gz'
     Sumstats_file = '/MOBA/out/run10_regenie_height_8y_rint.gz'
     Pheno_file = '/MOBA/master_file.csv'
     Phenotype = 'height_8y_rint'
@@ -47,7 +46,6 @@ if __name__ == '__main__':
 
     # output directories
     Output_dirs = {
-        'inf': os.path.join('results', 'PGS_MoBa_LDpred2_inf'),
         'auto': os.path.join('results', 'PGS_MoBa_LDpred2_auto')
     }
 
