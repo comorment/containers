@@ -4,7 +4,7 @@ slurm:
   account: p697_norment
   time: "00:30:00"
   cpus_per_task: 2
-  mem_per_cpu: 8000M
+  mem_per_cpu: 4000MB
   partition: normal
 
   # list of modules to load in SLURM jobs

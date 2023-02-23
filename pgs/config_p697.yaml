@@ -4,7 +4,7 @@ slurm:
   account: p697_norment
   time: "00:30:00"
   cpus_per_task: 16
-  mem_per_cpu: 4000M
+  mem_per_cpu: 4000MB
   partition: normal
 
   # list of modules to load in SLURM jobs
@@ -53,7 +53,7 @@ plink:
   range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
   strat_indep_pairwise: [250, 50, 0.25]
   nPCs: 6
-  threads: 2
+  threads: 16
 
 # PRSice-2
 prsice2:
@@ -66,5 +66,5 @@ prsice2:
 
 # LDpred2
 ldpred2:
-  cores: 2
+  cores: 16
 

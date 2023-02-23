@@ -346,6 +346,7 @@ class PGS_Plink(BasePGS):
                  clump_r2=0.1,
                  clump_kb=250,
                  clump_snp_field='SNP',
+                 clump_field='P',
                  range_list=[0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5],
                  strat_indep_pairwise=[250, 50, 0.25],
                  nPCs=6,
@@ -379,6 +380,8 @@ class PGS_Plink(BasePGS):
             plink --clump-r2 parameter value (default: 250)
         clump_snp_field: str
             plink --clump-snp-field parameter value (default: 'SNP')
+        clump_field: str
+            plink --clump-field parameter value (default: 'P')
         range_list: list of floats
             list of p-value ranges for plink --q-score-range arg.
             (default: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5])
@@ -428,6 +431,7 @@ class PGS_Plink(BasePGS):
         self.clump_r2 = clump_r2
         self.clump_kb = clump_kb
         self.clump_snp_field = clump_snp_field
+        self.clump_field = clump_field
 
         # range of p-values on interval (0, p-value)
         self.range_list = range_list
@@ -485,7 +489,7 @@ class PGS_Plink(BasePGS):
             (self._transformed_file
                 if update_effect_size else self.Sumstats_file),
             '--clump-snp-field', self.clump_snp_field,  #
-            '--clump-field', 'P',
+            '--clump-field', self.clump_field,
             '--threads', str(self.kwargs['threads']),
             '--out', os.path.join(self.Output_dir, self.Data_prefix)
         ])
@@ -536,7 +540,7 @@ class PGS_Plink(BasePGS):
         command += ' '.join([
             '$PYTHON',
             '-c',
-            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, self.clump_snp_field + ".pvalue")}", ["{self.clump_snp_field}", "P"])'"""  # noqa: 501
+            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, self.clump_snp_field + ".pvalue")}", ["{self.clump_snp_field}", "{self.clump_field}"])'"""  # noqa: 501
         ])
         return command
 
