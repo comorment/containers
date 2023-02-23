@@ -100,7 +100,7 @@ setSeed <- parsed$set_seed
 
 ### Maybe there's some environment variable availble to determine the location of the script instead
 coms <- commandArgs()
-coms <- coms[substr(coms, 1, 8) == '--file=/']
+coms <- coms[substr(coms, 1, 7) == '--file=']
 dirScript <- dirname(substr(coms, 8, nchar(coms)))
 source(paste0(dirScript, '/fun.R'))
 
@@ -129,7 +129,7 @@ if (genoImputeZero) {
   cat('### Imputing missing genotypes with zero\n')
   G <- zeroMissingGenotypes(G)
 }
-nMissingGenotypes <- countMissingGenotypes(G)
+nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
 if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass -geno-impute-zero.')
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
@@ -299,5 +299,6 @@ outputData <- obj.bigSNP$fam[,colsKeep]
 colsKeep[1:2] <- c('FID', 'IID')
 colnames(outputData) <- colsKeep
 write.table(outputData, file=fileOutput, row.names = F, quote=F)
+cat('Scores written to', fileOutput,'\n')
 # Drop temporary file
 fileRemoved <- file.remove(paste0(tmp, '.sbk'))
