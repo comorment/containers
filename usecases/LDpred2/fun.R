@@ -13,3 +13,10 @@ zeroMissingGenotypes <- function(genoMat) {
   if (class(genoMat) != "FBM.code256") stop('Argument must be a FBM.code256 object. Received ', class(genoMat))
   genoMat$copy(code=c(0,1,2, rep(0, 253)))
 }
+
+# Get the indices of a vector for elements that are numeric
+# Haven't found a better way to deal with warnings without doing text based filtering.
+#' @param x A vector
+getNumericIndices <- function(x) {
+  suppressWarnings(which(!is.na(as.numeric(x))))
+}
