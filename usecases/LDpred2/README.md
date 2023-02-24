@@ -20,6 +20,32 @@ We also assume the following commands are executed from the current folder
 The current version of these scripts conduct no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequillibrium or polygenic scores.
 This should be done for polygenic score analyses intended for publication.
 
+## Note on missing genotypes
+
+If genotypes are missing LDpred2 will stop and return an error (``Error: You can't have missing values in 'X'.``). One can either pass ``--geno-impute-zero`` to replace missing genotypes with zero or impute with any other tool such as plink,
+or use [imputeGenotypes.R](imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently only "simple" imputation with mode, mean, random or zero is supported by this
+script. For a documentation on these methods see [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
+
+First, note that using ``--geno-impute-zero`` is costly in computational time so it's better to impute prior to running ldpred2.R. Second, imputeGenotypes.R does not
+create a copy of the genotypes, thus the imputation performed persists. If you wish to keep the original .rds/.bk files you should copy these prior to imputing.
+
+An example use of [imputeGenotypes.R](imputeGenotypes.R) (ignoring the n:
+```
+# Copy if you wish to leave the original files unchanged
+cp EUR.rds EUR.nomiss.rds
+cp EUR.bk EUR.nomiss.bk
+$RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds EUR.nomiss.rds
+```
+
+Another option is to use plink's ``fill-missing-a2`` option, and re-run ``createBackingFile.R``:
+
+```
+export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
+$PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.nomiss
+$RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
+$RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
+```
+
 ### Optional: Estimating linkage disequillibrium (LD)
 
 LDpred2 uses the LD structure when calculating polygenic scores. By default, the LDpred2.R script uses LD structure based on European samples provided by the LDpred2 authors.
@@ -178,22 +204,6 @@ HG00100 HG00100 NA 0.0890499485064315
 ```
 
 The script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`` in this directory.
-
-## Handling missing genotypes
-
-By default the LDpred2.R script will impute missing genotypes bigsnpr's ``mean0`` method from [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
-This is done because otherwise bigsnpr returns an error (``Error: You can't have missing values in 'X'.``).
-Imputing missing values, however, can be very slow, and eventually we [want](https://github.com/comorment/containers/pull/117#issuecomment-1409985505) to include this in ``createBackingFile.R`` step, so this is done once, rather then as part of every ``LDpred2.R`` invocation.
-
-For now, as a workaround, you may fall back to plink's ``fill-missing-a2`` option, then
-re-run ``createBackingFile.R``, and include ``--geno-impute skip`` in your ``LDpred2.R`` command:
-
-```
-export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
-$PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.nomiss
-$RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
-$RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds --geno-impute skip ...
-```
 
 ## Slurm job
 
