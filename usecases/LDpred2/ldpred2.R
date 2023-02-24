@@ -139,6 +139,15 @@ cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
+# Check that there are no characters in chromosome column (causes snp_match to fail)
+if (is.character(sumstats[, colChr])) {
+  cat('Removing rows with non-integers in column', colChr, '\n')
+  numeric <- getNumericIndices(sumstats[, colChr])
+  cat('Removing', sum(!numeric), 'SNPs...\n')
+  sumstats <- sumstats[numeric,]
+  cat('Retained', nrow(sumstats), 'SNPs\n')
+}
+
 # Reame columns in bigSNP object
 colMap <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 map <- setNames(obj.bigSNP$map[-3], colMap)
