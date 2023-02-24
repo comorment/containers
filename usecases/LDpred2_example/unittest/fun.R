@@ -1,0 +1,8 @@
+library(testthat)
+dirTests <- Sys.getenv('DIR_SCRIPTS')
+source(paste0(dirTests, '/fun.R'))
+context("Test functions")
+dta <- data.frame(a=1:3, b=c(1, 'X', 2))
+test_that("Test numeric counts",
+          expect_equal(c(1, 3), getNumericIndices(dta$b))
+          )
