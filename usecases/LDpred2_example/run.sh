@@ -25,49 +25,34 @@ export fileOut=$DIR_TESTS/output/public-data.score
 export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
 
 # The different modes to run
-LDPRED_MODES="inf auto"
+LDPRED_MODES="inf"
+
+echo "### Running R function unittests"
+Rscript $DIR_TESTS/unittest/fun.R
 
 echo "### Testing RDS/backingfile creation"
-### These two runs ensure that the backing file is created
-### correctly wheter the uses specifies .rds or not
-# Passing full name of $fileSNPR
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-# Passing basename of $fileSNPR
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $(dirname $fileOutputSNPR)/$(basename $fileOutputSNPR) )
-if [ $? -eq 1 ]; then exit; fi
-
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR )
-if [ $? -eq 1 ]; then exit; fi
+source $DIR_TESTS/scripts/backingfile.sh
 
 echo "### Testing imputation"
-# No missingness in this one
-#$RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileOutputSNPR --geno-output-file-rds $DIR_TESTS/output/$(basename $fileOutputSNPR).rds
-
 # Convert a file with missing genotypes
+# Copy some plink files
+cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_TESTS/data/
+cp $DIR_REFERENCE/examples/prsice2/EUR.bim $DIR_TESTS/data/
+cp $DIR_REFERENCE/examples/prsice2/EUR.fam $DIR_TESTS/data/
 fileImpute=$DIR_TESTS/data/EUR
 fileImputed=$DIR_TESTS/data/EUR_imputed
+# Convert to bigsnpr
 dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R /REF/examples/prsice2/EUR.bed $fileImpute.rds )
 if [ $? -eq 1 ]; then exit; fi
-echo "$dump"
-# bigsnpr::fastImpute depends on xgboost
-# Currently give an error
-# Error in xgb.iter.update(bst$handle, dtrain, iteration - 1, obj) : 
-#  [13:32:00] src/objective/./regression_loss.h:94: Check failed: base_score > 0.0f && base_score < 1.0f: base_score must be in (0,1) for logistic loss, got: nan
-#$RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImpute --geno-output-file-rds $fileImputed
-# rm $fileImputed
 # Test simple imputation 
 
-# I haven't found a simple way to rewrite bigsnpr objects so we just copy tehm instead
+# The imputation replaces data on disk. As copying these objects takes
+# a lot of time it's probably better to let the user copy the files
+# manually if desired to keep the original files unhcanged
 cp $fileImpute.bk $fileImputed.bk
 cp $fileImpute.rds $fileImputed.rds
 $RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImputed.rds \
  --impute-simple mode
-#rm $fileImputed
-# Throws error, --impute-simple cannot be combined with --impute-alpha, --impute-size, --impute-ptrain
-#$RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImpute --geno-output-file-rds $fileImputed \
-# --impute-simple mode
-#rm $fileImputed
 
 
 echo "### Testing ldpred2.R using externally provided LD"
@@ -89,8 +74,10 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --ld-meta-file $DIR_TESTS/data/ld/ldref/map.rds \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
+  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --sumstats $fileInputSumStats --out ${fileOut}_imputed.inf"
+
+$LDP --ldpred-mode inf --geno-file-rds $fileImputed.rds
 
 # Failure due to missing genotypes
 dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds; } 2>&1 )
@@ -159,8 +146,9 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --ld-meta-file $DIR_TESTS/output/ld/map.rds \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
+  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 dump=$( { $LDP; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+echo "$dump"
 
