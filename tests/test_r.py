@@ -46,7 +46,6 @@ def test_r_R_rmarkdown():
         assert pdf_output
 
 
-# py.test tests/test_r.py -k test_r_bigsnpr
 def test_r_bigsnpr():
     pwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
@@ -57,3 +56,9 @@ def test_r_bigsnpr():
         out = subprocess.run(call.split(' '))
         os.chdir(pwd)
         assert out.returncode == 0
+
+
+def test_r_prsice():
+    call = f'singularity run {pth} PRSice_linux --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0

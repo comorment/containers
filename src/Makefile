@@ -1,7 +1,7 @@
 all: hello.sif gwas.sif python3.sif r.sif saige.sif
 
 %.sif: dockerfiles/%/Dockerfile
-	docker build -t $* -f dockerfiles/$*/Dockerfile . && \
+	docker build -t $* -f dockerfiles/$*/Dockerfile . | tee $*.log && \
 	scripts/convert_docker_image_to_singularity.sh $* && \
 	scripts/move_singularity_file.sh $*
 
