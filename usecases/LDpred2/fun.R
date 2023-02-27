@@ -20,3 +20,12 @@ zeroMissingGenotypes <- function(genoMat) {
 getNumericIndices <- function(x) {
   suppressWarnings(which(!is.na(as.numeric(x))))
 }
+
+# Complement sumstats with missing information
+#' @param sumstats A data.frame with sumstats
+#' @param reference A data.frame with reference data to complement sumstats
+#' @return A data.frame with merged data of sumstats and reference
+complementSumstats <- function(sumstats, reference, columnsSumstats=list(rsid='SNP', a1='A1', a0='A2'), columnsReference=list(rsid='ID', a1='ALT', a0='REF')) {
+  colsRef <- unlist(columnsReference, use.names=F)
+  merge(sumstats, reference[,colsRef], by.x=solumnSumstats$rsid, by.y=columnsreference$rsid, all.x=T)
+}
