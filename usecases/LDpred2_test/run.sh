@@ -8,7 +8,7 @@ export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 export DIR_SIF=$DIR_BASE/singularity
-export DIR_TESTS=$DIR_BASE/usecases/LDpred2_example
+export DIR_TESTS=$DIR_BASE/usecases/LDpred2_test
 export DIR_SCRIPTS=$DIR_BASE/usecases/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
 export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
@@ -39,11 +39,14 @@ echo "### Testing imputation"
 cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_TESTS/data/
 cp $DIR_REFERENCE/examples/prsice2/EUR.bim $DIR_TESTS/data/
 cp $DIR_REFERENCE/examples/prsice2/EUR.fam $DIR_TESTS/data/
+# File to impute
 fileImpute=$DIR_TESTS/data/EUR
+# Imputed file
 fileImputed=$DIR_TESTS/data/EUR_imputed
+
 # Convert to bigsnpr
 dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R /REF/examples/prsice2/EUR.bed $fileImpute.rds )
-if [ $? -eq 1 ]; then exit; fi
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 # Test simple imputation 
 
 # The imputation replaces data on disk. As copying these objects takes
@@ -51,9 +54,9 @@ if [ $? -eq 1 ]; then exit; fi
 # manually if desired to keep the original files unhcanged
 cp $fileImpute.bk $fileImputed.bk
 cp $fileImpute.rds $fileImputed.rds
-$RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImputed.rds \
- --impute-simple mode
-
+dump=$( { $RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImputed.rds \
+ --impute-simple mode; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "### Testing ldpred2.R using externally provided LD"
 # Download data if necessary
@@ -76,8 +79,6 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --sumstats $fileInputSumStats --out ${fileOut}_imputed.inf"
-
-$LDP --ldpred-mode inf --geno-file-rds $fileImputed.rds
 
 # Failure due to missing genotypes
 dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds; } 2>&1 )
@@ -150,5 +151,4 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 dump=$( { $LDP; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-echo "$dump"
 
