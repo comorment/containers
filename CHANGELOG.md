@@ -45,7 +45,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-- removals goes here
+- Removed redundant `usecases/LDpred2_tutorial` files
 
 ### Misc
 
