@@ -25,10 +25,10 @@ export fileOut=$DIR_TESTS/output/public-data.score
 export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
 
 # The different modes to run
-LDPRED_MODES="inf"
+LDPRED_MODES="inf auto"
 
 echo "### Running R function unittests"
-Rscript $DIR_TESTS/unittest/fun.R
+$RSCRIPT $DIR_TESTS/unittest/fun.R
 
 echo "### Testing RDS/backingfile creation"
 source $DIR_TESTS/scripts/backingfile.sh

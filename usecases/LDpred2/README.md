@@ -164,6 +164,9 @@ export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 
+# impute
+$RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fileGenoRDS
+
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \

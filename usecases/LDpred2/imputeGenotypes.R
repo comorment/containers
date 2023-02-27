@@ -32,8 +32,11 @@ if (nWithMissing == 0) {
 }
 cat('Genotypes missing for at least 1 individual: N=', nWithMissing, ' out of ', length(nMissingGenotypes), ' genotypes).\n', sep='')
 cat('Imputing genotypes by using', imputeSimple, '(see bigsnpr::snp_fastImputeSimple).\n')
-if (imputeSimple == 'zero') G <- zeroMissingGenotypes(G);
-else G <- snp_fastImputeSimple(G, method=imputeSimple, ncores = NCORES);
+if (imputeSimple == 'zero') {
+  G <- zeroMissingGenotypes(G) 
+} else {
+  G <- snp_fastImputeSimple(G, method=imputeSimple, ncores = NCORES)
+}
 nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
 nWithMissing <- sum(nMissingGenotypes > 0)
 if (nWithMissing > 0) stop('Imputation has failed: Still missing genotypes')
