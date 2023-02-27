@@ -96,7 +96,7 @@ Maintenance/feature release with the following main software incorporated into e
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
-
+- add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
 - add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
 - add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
 - add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
@@ -135,11 +135,13 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 
 ### Fixed
 
+* ``usecases/LDpred2/ldpred2.R`` error when sumstats contain characters in chromosome column.
 * use ``afterok`` spec instead of ``afterany`` in SLURM dependencies so that next steps of the pipeline don't run if a previous step has failed (fix #26)
 * use SLURM's ``cpus_per_task=1`` for SAIGE step2, because it doesn't support --nThreads (see <https://github.com/saigegit/SAIGE/issues/9>)
 
 ### Removed
 
+- removed ``--geno-impute`` from ``usecases/LDpred2/ldpred2.R``. Functionality replaced by ``--geno-impute-zero`` and ``usecases/LDpred2/imputeGenotypes.R``
 - removed misc. source/data files in /tools/* from container builds
 - removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
 - the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:

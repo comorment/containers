@@ -23,8 +23,7 @@ par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rd
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
 # Genotype
-par <- add_argument(par, "--geno-impute", help="Imputation method for missing genotypes (preimpute genotypes to avoid warning).", 
-                    nargs=1, default="mean0")
+par <- add_argument(par, "--geno-impute-zero", help="Set missing genotypes to zero.", flag=T)
 # Sumstats file.
 par <- add_argument(par, "--chr2use", help="list of chromosomes to use (by default it uses chromosomes 1 to 22)", nargs=Inf)
 par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR", nargs=1)
@@ -61,9 +60,8 @@ fileMetaLD <- parsed$ld_meta_file
 fileKeepSNPs <- parsed$file_keep_snps
 filePheno <- parsed$file_pheno
 ### Genotype
-genoImpute <- parsed$geno_impute
-genoImputeValid <- c('mode', 'mean0', 'mean2', 'random', 'skip')
-if (!genoImpute %in% genoImputeValid) stop('--geno-impute accepts the following values: ',paste0(genoImputeValid, collapse=', '))
+genoImputeZero <- parsed$geno_impute_zero
+
 # Sumstats file
 chr2use <- parsed$chr2use
 if (any(is.na(chr2use))) chr2use <- 1:22
@@ -100,13 +98,20 @@ if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", pas
 argStatType <- parsed$stat_type
 setSeed <- parsed$set_seed
 
+### Maybe there's some environment variable availble to determine the location of the script instead
+coms <- commandArgs()
+coms <- coms[substr(coms, 1, 7) == '--file=']
+dirScript <- dirname(substr(coms, 8, nchar(coms)))
+source(paste0(dirScript, '/fun.R'))
+
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
 colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
-colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a0",  "a1",  "beta",  "beta_se")
+colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
+
 if (!is.na(filePheno)) {
   cat('Loading external phenotype in file', filePheno, '\n')
   dataPheno <- bigreadr::fread2(filePheno)
@@ -119,6 +124,14 @@ CHR <- obj.bigSNP$map$chromosome
 POS <- obj.bigSNP$map$physical.pos
 NCORES <- parsed$cores
 
+# Check genotype data for missingness
+if (genoImputeZero) {
+  cat('### Imputing missing genotypes with zero\n')
+  G <- zeroMissingGenotypes(G)
+}
+nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
+if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass -geno-impute-zero.')
+
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
 
@@ -126,8 +139,17 @@ cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
+# Check that there are no characters in chromosome column (causes snp_match to fail)
+if (is.character(sumstats[, colChr])) {
+  cat('Removing rows with non-integers in column', colChr, '\n')
+  numeric <- getNumericIndices(sumstats[, colChr])
+  cat('Removing', sum(!numeric), 'SNPs...\n')
+  sumstats <- sumstats[numeric,]
+  cat('Retained', nrow(sumstats), 'SNPs\n')
+}
+
 # Reame columns in bigSNP object
-colMap <- c('chr', 'rsid', 'pos', 'a0', 'a1')
+colMap <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 map <- setNames(obj.bigSNP$map[-3], colMap)
 
 # Rename headers in sumstats file if necessary
@@ -180,13 +202,11 @@ if (argStatType == "OR") {
   sumstats$beta <- log(sumstats$beta)
 }
 
-if (TRUE) {
-  cat('Filtering SNPs based on --chr2use\n')
-  nSNPsBefore <- nrow(sumstats)
-  sumstats <- sumstats[sumstats$chr %in% chr2use,]
-  nSNPsAfter <- nrow(sumstats)
-  cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
-}
+cat('Filtering SNPs based on --chr2use\n')
+nSNPsBefore <- nrow(sumstats)
+sumstats <- sumstats[sumstats$chr %in% chr2use,]
+nSNPsAfter <- nrow(sumstats)
+cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
 
 # match sumstats to genotypes
 # (df_beta is quite an ugly name for GWAS sumstats, but let it be so 
@@ -265,17 +285,6 @@ if (argLdpredMode == 'inf') {
   beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
 }
 
-if (genoImpute != 'skip') {
-  cat('Imputing missing genotypes...\n')
-  # Count missingness over individuals for each SNP
-  nMissingGenotypes <- big_apply(G, a.FUN=function (x, ind) colSums(is.na(x[,ind])), a.combine='c')
-  nMissingGenotypes <- sum(nMissingGenotypes > 0)
-  if (nMissingGenotypes > 0) {
-    warning('Missing genotypes found (N positions=', nMissingGenotypes, '). Imputing genotypes by using "', genoImpute,'" (see bigsnpr::snp_fastImputeSimple).\n')
-    G <- snp_fastImputeSimple(G, method=genoImpute, ncores = NCORES)
-  }
-}
-
 cat('Scoring all individuals...\n')
 # find which SNPs to use, and whether we need to flip their sign
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
@@ -299,5 +308,6 @@ outputData <- obj.bigSNP$fam[,colsKeep]
 colsKeep[1:2] <- c('FID', 'IID')
 colnames(outputData) <- colsKeep
 write.table(outputData, file=fileOutput, row.names = F, quote=F)
+cat('Scores written to', fileOutput,'\n')
 # Drop temporary file
 fileRemoved <- file.remove(paste0(tmp, '.sbk'))
