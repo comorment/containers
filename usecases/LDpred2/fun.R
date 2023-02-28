@@ -24,8 +24,11 @@ getNumericIndices <- function(x) {
 # Complement sumstats with missing information
 #' @param sumstats A data.frame with sumstats
 #' @param reference A data.frame with reference data to complement sumstats
+#' @param colRsidSumstats Name of column with RSID/SNP ID in sumstats
+#' @param colRsidRef Name of column with RSID/SNP ID in reference data
+#' @param colsKeepReference Vector of columns to merge with sumstats
 #' @return A data.frame with merged data of sumstats and reference
-complementSumstats <- function(sumstats, reference, columnsSumstats=list(rsid='SNP', a1='A1', a0='A2'), columnsReference=list(rsid='ID', a1='ALT', a0='REF')) {
-  colsRef <- unlist(columnsReference, use.names=F)
-  merge(sumstats, reference[,colsRef], by.x=solumnSumstats$rsid, by.y=columnsreference$rsid, all.x=T)
+complementSumstats <- function(sumstats, reference, colRsidSumstats='SNP', colRsidRef='ID', colsKeepReference=c('CHR','POS')) {
+  colsRef <- c(colRsidRef, colsKeepReference)
+  merge(sumstats, reference[,colsRef], by.x=colRsidSumstats, by.y=colRsidRef, all.x=T)
 }
