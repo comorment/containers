@@ -29,15 +29,18 @@ script. For a documentation on these methods see [snp_fastImputeSimple](https://
 First, note that using ``--geno-impute-zero`` is costly in computational time so it's better to impute prior to running ldpred2.R. Second, imputeGenotypes.R does not
 create a copy of the genotypes, thus the imputation performed persists. If you wish to keep the original .rds/.bk files you should copy these prior to imputing.
 
-An example use of [imputeGenotypes.R](imputeGenotypes.R) (ignoring the n:
+An example use of [imputeGenotypes.R](imputeGenotypes.R):
 ```
-# Copy if you wish to leave the original files unchanged
-cp EUR.rds EUR.nomiss.rds
-cp EUR.bk EUR.nomiss.bk
-$RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds EUR.nomiss.rds
+# Conver from plink format to bigSNPR .rds/.bk files
+$RSCRIPT createBackingFile.R <fileGeno>.nomiss.bed <fileGeno>.nomiss.rds
+
+# Copy these files if you wish to leave the original files unchanged
+cp <fileGeno>.rds <fileGeno>.nomiss.rds
+cp <fileGeno>.bk <fileGeo>.nomiss.bk
+$RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds <fileGeno>.nomiss.rds
 ```
 
-Another option is to use plink's ``fill-missing-a2`` option, and re-run ``createBackingFile.R``:
+Another option is to use plink's ``--fill-missing-a2`` option, and re-run ``createBackingFile.R``:
 
 ```
 export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
@@ -163,6 +166,9 @@ export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+
+# impute
+$RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fileGenoRDS
 
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \

@@ -130,7 +130,7 @@ if (genoImputeZero) {
   G <- zeroMissingGenotypes(G)
 }
 nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
-if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass -geno-impute-zero.')
+if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass --geno-impute-zero.')
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
