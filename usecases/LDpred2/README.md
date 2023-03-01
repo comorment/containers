@@ -20,7 +20,7 @@ We also assume the following commands are executed from the current folder
 The current version of these scripts conduct no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequillibrium or polygenic scores.
 This should be done for polygenic score analyses intended for publication.
 
-## Note on missing genotypes
+### Note on missing genotypes
 
 If genotypes are missing LDpred2 will stop and return an error (``Error: You can't have missing values in 'X'.``). One can either pass ``--geno-impute-zero`` to replace missing genotypes with zero or impute with any other tool such as plink,
 or use [imputeGenotypes.R](imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently only "simple" imputation with mode, mean, random or zero is supported by this
@@ -95,7 +95,43 @@ $RSCRIPT calculateLD.R --geno-file-rds $fileGenoRDS \
  --file-ld-blocks $fileOutLD --file-ld-map $fileOutLDMap
 ```
 
-## Running LDpred2 analysis - synthetic example (chr21 and chr22)
+## Running LDpred2 analysis
+
+### Summary statistics
+
+LDpred2 requires chromosome number, effective allele (eg A1), reference allele (eg A2, A0), and either SNP ID (RSID) or genomic position. If the summary statistics lack any of this
+information, the software will not run. Commonly, output from meta-analysis software such as metal do not contain this information. The [complementSumstats.R](complementSumstats.R)
+script can be used to add these columns. In the example below, this script is used to append this information in a set of gzipped files inside a directory, and output these as gzipped
+files:
+```
+# set environmental variables. Replace "<path/to/comorment>" with 
+# the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
+export COMORMENT=<path/to/comorment>
+export SIF=$COMORMENT/containers/singularity
+export REFERENCE=$COMORMENT/containers/reference
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+
+export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+
+# Directory with possibly gzipped sumstat files
+dirSumstats=directory/sumstats
+# Directory to direct output
+dirOutput=directory/sumstats/processed
+if [ ! -d $dirOutput ]; then mkdir $dirOutput; fi;
+
+for fileSumstats in `ls $dirSumstats`; do
+ echo "Processing file $fileSumstats"
+ $RSCRIPT complementSumstats.R --col-sumstats-snp-id MarkerName --sumstats $dirSumstats/$fileSumstats | gzip -c > $dirOutput/$fileSumstats
+done
+```
+
+When working within the container, the `--reference argument` can be omitted, but can of course be replaced with anything else along with `--col-reference-snp-id`
+to set the SNP ID column in the reference file. The argument `--columns-append` controls which columns to append and default to the `#CHROM` and `POS` which are the
+columns of chromosome and position in the `HRC` reference data (default of `--reference` argument). This script will fail if there are duplicate SNPs in any of these
+files that are matched. In the example below, output is piped to gzip. To write directly to a file the arguments `--file-output <output file>` and `--file-output-col-sep`
+controls the location of the output file and the column separator used (defaults to tab, "\t").
+
+### Synthetic example (chr21 and chr22)
 
 The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
 This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather then clone the entire repo.
@@ -141,7 +177,7 @@ $RSCRIPT ldpred2.R --ldpred-mode auto \
  --out $fileOut.auto
 ```
 
-## Running LDpred2 analysis - height example
+### Height example
 
 The following set of commands gives an example of how to apply LDpred2 on a demo height data:
 
