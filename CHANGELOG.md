@@ -40,6 +40,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+- Fixed ``ldpred2.R`` script merging of ``obj.bigSNP$fam`` data, in case ``--file-pheno`` arg is used
 - Use [packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16](https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16) as main R package repo
 - ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
 

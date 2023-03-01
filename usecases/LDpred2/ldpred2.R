@@ -110,7 +110,7 @@ obj.bigSNP <- snp_attach(fileGeno)
 if (!is.na(filePheno)) {
   cat('Loading external phenotype in file', filePheno, '\n')
   dataPheno <- bigreadr::fread2(filePheno)
-  obj.bigSNP$fam <- merge(obj.bigSNP$fam, dataPheno, by.x = c('family.ID','sample.ID'), by.y=c('FID','IID'), all.x=T)
+  obj.bigSNP$fam <- merge(obj.bigSNP$fam, dataPheno, by.x = c('family.ID','sample.ID'), by.y=c('FID','IID'), all.x=T, sort=F)
 }
 
 # Store some key variables
