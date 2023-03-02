@@ -17,6 +17,7 @@ par <- add_argument(par, "--dir-genetic-maps", default=tempdir(),
 # Optional arguments
 par <- add_argument(par, "--genetic-maps-type", default="hapmap", help="Which genetic map to use, hapmap or OMNI.")
 par <- add_argument(par, "--sample-individuals", nargs=1, help="Specify a number of individuals to draw at random")
+par <- add_argument(par, "--sample-seed", nargs=1, help="Set a seed for reproducibility before sampling individuals")
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
 par <- add_argument(par, "--extract", help="File with RSIDs of SNPs to extract from summary statistics")
@@ -34,6 +35,9 @@ fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
 # Sample individuals
 sampleIndividuals <- parsed$sample_individuals
+sampleSeed <- parsed$sample_seed
+if (!is.na(sampleSeed) & !isNumeric(sampleSeed)) stop('--sample-seed must be numeric, got ', sampleSeed)
+
 # Chromosomes to use
 chr2use <- parsed$chr2use
 if (any(is.na(chr2use))) chr2use <- 1:22
@@ -86,6 +90,7 @@ individualSample <- rows_along(G)
 if (!is.na(sampleIndividuals)) {
   cat('Drawing', sampleIndividuals, 'individuals at random\n')
   if (nrow(G) < sampleIndividuals) stop('Requsted sample size is greater than the available:', nrow(G))
+  if (!is.na(sampleSeed)) set.seed(sampleSeed)
   individualSample <- sample(nrow(G), sampleIndividuals)
 }
 
@@ -113,6 +118,6 @@ for (chr in chr2use) {
   MAP$ld[indices.G] <- ld
   saveRDS(corr0, file=fileName)
 }
-cat('\n')
+cat('\nWriting map to', fileLDMap, '\n')
 saveRDS(MAP, file=fileLDMap)
 
