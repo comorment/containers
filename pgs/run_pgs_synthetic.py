@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
     # update ldpred2 config:
     config['ldpred2'].update({
-        'col-pheno': Phenotype,
         'chr2use': [21, 22],
     })
 

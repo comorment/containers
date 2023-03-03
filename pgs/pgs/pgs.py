@@ -1051,7 +1051,6 @@ class PGS_LDpred2(BasePGS):
             '$RSCRIPT', 
             os.path.join('Rscripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
-            '--file-pheno', self.Pheno_file,
             '--geno-file', self.fileGenoRDS,
             '--sumstats', self.Sumstats_file,
             '--out', self._file_out,

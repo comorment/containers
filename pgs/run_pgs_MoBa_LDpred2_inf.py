@@ -52,7 +52,6 @@ if __name__ == '__main__':
     # Update ldpred2 config
     config['ldpred2'].update({
         'cores': ncores,
-        'col-pheno': Phenotype,
         'file_keep_snps': None,
     })
 

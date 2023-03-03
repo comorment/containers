@@ -13,7 +13,6 @@ python3 pgs_exec.py \
     ldpred2-auto \
     --Cov_file results/PGS_MoBa_LDpred2_auto/master_file.cov \
     --Eigenvec-file results/PGS_MoBa_LDpred2_auto/master_file.eigenvec \
-    fileGenoRDS MoBaPsychGen_v1-500kSNPs-child.rds \
-    col-pheno height_8y_rint
+    fileGenoRDS MoBaPsychGen_v1-500kSNPs-child.rds
     
 

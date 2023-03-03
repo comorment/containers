@@ -64,7 +64,6 @@ if __name__ == '__main__':
         'col-stat': 'OR',  # use OR as effect size
         'stat-type': 'OR',
         'col-stat-se': 'SE',
-        'col-pheno': Phenotype,
     })
 
     #######################################

@@ -14,6 +14,5 @@ python3 pgs_exec.py \
     --Eigenvec-file g1000_eur_chr21to22_hm3rnd1.eigenvec \
     fileGenoRDS g1000_eur_chr21to22_hm3rnd1.rds \
     file_keep_snps /REF/hapmap3/w_hm3.justrs \
-    col-pheno trait1 \
     chr2use 21,22 \
     cores 2
