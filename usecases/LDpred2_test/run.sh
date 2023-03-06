@@ -15,8 +15,8 @@ export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
 
 # Tutorial data
 # Phenotypic data is part of bed file
-export fileInputGeno=$DIR_BASE/usecases/LDpred2_test/tutorial_data/public-data3.bed
-export fileInputSumStats=$DIR_BASE/usecases/LDpred2_test/tutorial_data/public-data3-sumstats.txt
+export fileInputGeno=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3.bed
+export fileInputSumStats=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3-sumstats.txt
 export fileOutputSNPR=$DIR_TESTS/data/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
