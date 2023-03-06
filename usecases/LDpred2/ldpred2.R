@@ -15,11 +15,11 @@ par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
 # Optional files
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
+par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
 
 # Phenotype
-par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of fam file")
 par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
 par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
 # Genotype
