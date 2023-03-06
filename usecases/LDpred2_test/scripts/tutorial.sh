@@ -41,8 +41,6 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
 
-$LDP --file-pheno $DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3.fam
-exit
 for MODE in $LDPRED_MODES; do
  dump=$( { $LDP --ldpred-mode $MODE --out $fileOut.$MODE; } 2>&1 )
  if [ $? -eq 1 ]; then echo "$dump"; exit; fi
