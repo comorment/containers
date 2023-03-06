@@ -12,7 +12,7 @@ fileSumstats25k=$DIR_TESTS/data/public-data-sumstats25k.txt
 head -n 25000 $fileInputSumStats > $fileSumstats25k
 dump=$( { $LDE --sumstats $fileSumstats25k rsid ; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
- Test adding the parameter --thres-r2
+# Test adding the parameter --thres-r2
 dump=$( { $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
@@ -40,6 +40,9 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --col-stat beta --col-stat-se beta_se \
   --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
+
+$LDP --file-pheno $DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3.fam
+exit
 for MODE in $LDPRED_MODES; do
  dump=$( { $LDP --ldpred-mode $MODE --out $fileOut.$MODE; } 2>&1 )
  if [ $? -eq 1 ]; then echo "$dump"; exit; fi

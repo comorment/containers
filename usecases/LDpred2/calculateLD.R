@@ -6,6 +6,12 @@ library(argparser, quietly = T)
 library(stringr)
 library(data.table)
 
+# Load some functions
+coms <- commandArgs()
+coms <- coms[substr(coms, 1, 7) == '--file=']
+dirScript <- dirname(substr(coms, 8, nchar(coms)))
+source(paste0(dirScript, '/fun.R'))
+
 par <- arg_parser('Calculate linkage disequillibrium (LD) using bigSNPr')
 # Mandatory arguments
 par <- add_argument(par, "--geno-file-rds", nargs=1, help="Input .rds (bigSNPR) file with genotypes")
