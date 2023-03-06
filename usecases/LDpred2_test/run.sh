@@ -8,15 +8,15 @@ export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 export DIR_SIF=$DIR_BASE/singularity
-export DIR_TESTS=$DIR_BASE/usecases/LDpred2_example
+export DIR_TESTS=$DIR_BASE/usecases/LDpred2_test
 export DIR_SCRIPTS=$DIR_BASE/usecases/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
 export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
 
 # Tutorial data
 # Phenotypic data is part of bed file
-export fileInputGeno=$DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3.bed
-export fileInputSumStats=$DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3-sumstats.txt
+export fileInputGeno=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3.bed
+export fileInputSumStats=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3-sumstats.txt
 export fileOutputSNPR=$DIR_TESTS/data/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
@@ -27,19 +27,36 @@ export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REFERENCE:/REF $
 # The different modes to run
 LDPRED_MODES="inf auto"
 
+echo "### Running R function unittests"
+$RSCRIPT $DIR_TESTS/unittest/fun.R
+
 echo "### Testing RDS/backingfile creation"
-### These two runs ensure that the backing file is created
-### correctly wheter the uses specifies .rds or not
-# Passing full name of $fileSNPR
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR )
+source $DIR_TESTS/scripts/backingfile.sh
+
+echo "### Testing imputation"
+# Convert a file with missing genotypes
+# Copy some plink files
+cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_TESTS/data/
+cp $DIR_REFERENCE/examples/prsice2/EUR.bim $DIR_TESTS/data/
+cp $DIR_REFERENCE/examples/prsice2/EUR.fam $DIR_TESTS/data/
+# File to impute
+fileImpute=$DIR_TESTS/data/EUR
+# Imputed file
+fileImputed=$DIR_TESTS/data/EUR_imputed
+
+# Convert to bigsnpr
+dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R /REF/examples/prsice2/EUR.bed $fileImpute.rds )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-# Passing basename of $fileSNPR
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $(dirname $fileOutputSNPR)/$(basename $fileOutputSNPR) )
-if [ $? -eq 1 ]; then exit; fi
+# Test simple imputation 
 
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR )
-if [ $? -eq 1 ]; then exit; fi
-
+# The imputation replaces data on disk. As copying these objects takes
+# a lot of time it's probably better to let the user copy the files
+# manually if desired to keep the original files unhcanged
+cp $fileImpute.bk $fileImputed.bk
+cp $fileImpute.rds $fileImputed.rds
+dump=$( { $RSCRIPT $DIR_SCRIPTS/imputeGenotypes.R --geno-file-rds $fileImputed.rds \
+ --impute-simple mode; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "### Testing ldpred2.R using externally provided LD"
 # Download data if necessary
@@ -48,12 +65,30 @@ FILE_LDMAP=$DIR_TESTS/data/ld/map_hm3_plus.rds
 if [ ! -f $FILE_LDREF ]; then 
  echo "Downloading LD reference"
  wget -O $FILE_LDREF "https://figshare.com/ndownloader/files/36363087"; 
- unzip -d $DIR_TESTS/data/ld/ldref_with_blocks.zip $FILE_LDREF
+ unzip -d $DIR_TESTS/data/ld/ $FILE_LDREF
 fi;
 if [ ! -f $FILE_LDMAP ]; then 
  echo "Downloading LD map"
  wget -O $FILE_LDMAP "https://figshare.com/ndownloader/files/37802721" ;  
 fi;
+
+LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
+  --ld-file $DIR_TESTS/data/ld/ldref/LD_with_blocks_chr@.rds \
+  --ld-meta-file $DIR_TESTS/data/ld/ldref/map.rds \
+  --merge-by-rsid \
+  --col-stat beta --col-stat-se beta_se \
+  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
+  --sumstats $fileInputSumStats --out ${fileOut}_imputed.inf"
+
+# Failure due to missing genotypes
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds; } 2>&1 )
+if [ $? -eq 0 ]; then echo "No error received"; echo "$dump"; exit; fi
+# Fix with -geno-impute-zero
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImpute.rds --geno-impute-zero; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+# Run with preimputed file
+dump=$( { $LDP --ldpred-mode inf --geno-file-rds $fileImputed.rds; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 # Note that if files in --dir-genetic-maps do not exist, these will be downloaded. But I think error if the directory doesnt exist
 LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
@@ -112,7 +147,7 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --ld-meta-file $DIR_TESTS/output/ld/map.rds \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a0 --col-A2 a1 \
+  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
 dump=$( { $LDP; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi

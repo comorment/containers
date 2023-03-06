@@ -64,7 +64,7 @@ MAP <- obj.bigSNP$map
 GD <- snp_asGeneticPos(CHR, POS, dir=dirGeneticMaps, type=argGeneticMapsType, ncores=NCORES)
 if (is.null(GD)) stop('Genetic distance is not available')
 MAP <- MAP[,c('chromosome', 'marker.ID', 'physical.pos', 'allele1', 'allele2')]
-colnames(MAP) <- c('chr', 'rsid', 'pos', 'a0', 'a1')
+colnames(MAP) <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 
 SNPs <- MAP$rsid
 if (!is.na(fileKeepSNPs)) {
