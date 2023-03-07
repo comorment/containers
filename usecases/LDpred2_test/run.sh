@@ -68,7 +68,7 @@ FILE_LDMAP=$DIR_TESTS/data/ld/map_hm3_plus.rds
 if [ ! -f $FILE_LDREF ]; then 
  echo "Downloading LD reference"
  wget -O $FILE_LDREF "https://figshare.com/ndownloader/files/36363087"; 
- unzip -d $DIR_TESTS/data/ld/ldref_with_blocks.zip $FILE_LDREF
+ unzip -d $DIR_TESTS/data/ld/ $FILE_LDREF
 fi;
 if [ ! -f $FILE_LDMAP ]; then 
  echo "Downloading LD map"
