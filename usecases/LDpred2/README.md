@@ -104,10 +104,8 @@ This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks
 # point to input/output files
 export fileGeno=/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed
 export fileGenoRDS=g1000_eur_chr21to22_hm3rnd1.rds
-export filePheno=/REF/examples/ldpred2/simu.pheno
 export fileSumstats=/REF/examples/ldpred2/trait1.sumstats.gz
 export fileOut=simu
-export colPheno=trait1
 
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
@@ -125,8 +123,6 @@ $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 # run LDpred2 infinitesimal mode
 $RSCRIPT ldpred2.R --ldpred-mode inf \
  --chr2use 21 22 \
- --file-pheno $filePheno \
- --col-pheno $colPheno \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.inf
@@ -134,8 +130,6 @@ $RSCRIPT ldpred2.R --ldpred-mode inf \
 # run LDpred2 automatic mode
 $RSCRIPT ldpred2.R --ldpred-mode auto \
  --chr2use 21 22 \
- --file-pheno $filePheno \
- --col-pheno $colPheno  \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.auto
@@ -149,10 +143,8 @@ The following set of commands gives an example of how to apply LDpred2 on a demo
 # point to input/output files
 export fileGeno=/REF/examples/prsice2/EUR.bed
 export fileGenoRDS=EUR.rds
-export filePheno=/REF/examples/prsice2/EUR.height
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
 export fileOut=Height
-export colPheno=Height
 
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
@@ -173,8 +165,6 @@ $RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fileGenoRDS
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
- --file-pheno $filePheno \
- --col-pheno $colPheno \
  --col-stat OR \
  --col-stat-se SE \
  --stat-type OR \
@@ -185,8 +175,6 @@ $RSCRIPT ldpred2.R \
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
- --file-pheno $filePheno \
- --col-pheno $colPheno \
  --col-stat OR \
  --col-stat-se SE \
  --stat-type OR \
@@ -201,11 +189,11 @@ The main LDpred2 output files are ``Height.score.inf`` and ``Height.score.auto``
 The files are text files with tables formatted as
 
 ```
-FID IID Height score
-HG00096 HG00096 169.132168767547 -0.733896062346436
-HG00097 HG00097 171.256258630279 0.688693127521599
-HG00099 HG00099 171.534379938588 0.203279440703434
-HG00100 HG00100 NA 0.0890499485064315
+FID IID score
+HG00096 HG00096 -0.733896062346436
+HG00097 HG00097 0.688693127521599
+HG00099 HG00099 0.203279440703434
+HG00100 HG00100 0.0890499485064315
 ...
 ```
 
