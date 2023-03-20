@@ -12,6 +12,7 @@ devtools::install_version('dplyr', version='1.1.0', repos=url, dependencies=depe
 devtools::install_version('fmsb', version='0.7.5', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('ggplot2', version='3.4.1', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('glue', version='1.6.2', repos=url, dependencies=dependencies, upgrade=upgrade)
+devtools::install_version('gtsummary', version='1.7.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('foreign', version='0.8-84', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('magrittr', version='2.0.3', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('mvtnorm', version='1.1-3', repos=url, dependencies=dependencies, upgrade=upgrade)
