@@ -9,6 +9,7 @@ devtools::install_version('BiocManager', version='1.30.19', repos=url, dependenc
 devtools::install_version('DescTools', version='0.99.47', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('data.table', version='1.14.6', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('dplyr', version='1.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
+devtools::install_version('flextable', version='0.8.5', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('fmsb', version='0.7.5', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('ggplot2', version='3.4.1', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('glue', version='1.6.2', repos=url, dependencies=dependencies, upgrade=upgrade)
