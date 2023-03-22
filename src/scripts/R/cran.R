@@ -18,6 +18,7 @@ devtools::install_version('foreign', version='0.8-84', repos=url, dependencies=d
 devtools::install_version('magrittr', version='2.0.3', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('mvtnorm', version='1.1-3', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('optparse', version='1.7.3', repos=url, dependencies=dependencies, upgrade=upgrade)
+devtools::install_version('parameters', version='0.20.2', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('pROC', version='1.18.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('qqman', version='0.1.8', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('reghelper', version='1.1.1', repos=url, dependencies=dependencies, upgrade=upgrade)

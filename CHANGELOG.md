@@ -32,7 +32,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Rebuilt the R container
 * ````
-  3a7a7c44e78208a5ef39d0e5479d1dc1  singularity/r.sif
+  5ecbfc50f96bc6b25f61858927283e2d  singularity/r.sif
   ```
 * Rebuilt the R container
   ```
