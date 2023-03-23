@@ -14,11 +14,16 @@ zeroMissingGenotypes <- function(genoMat) {
   genoMat$copy(code=c(0,1,2, rep(0, 253)))
 }
 
-# Get the indices of a vector for elements that are numeric
+# Test if x is numeric
 # Haven't found a better way to deal with warnings without doing text based filtering.
+isNumeric <- function(x) {
+  suppressWarnings(!is.na(as.numeric(x)))
+}
+
+# Get the indices of a vector for elements that are numeric
 #' @param x A vector
 getNumericIndices <- function(x) {
-  suppressWarnings(which(!is.na(as.numeric(x))))
+  which(isNumeric(x))
 }
 
 # Complement sumstats with missing information.

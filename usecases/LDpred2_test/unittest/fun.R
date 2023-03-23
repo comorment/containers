@@ -5,11 +5,24 @@ source(paste0(dirScripts, '/fun.R'))
 
 context("Test functions")
 dta <- data.frame(a=1:3, b=c(1, 'X', 2))
-test_that("Test numeric counts",
-          expect_equal(c(1, 3), getNumericIndices(dta$b))
-          )
+test_that("Test numeric counts", {
+  expect_true(isNumeric('1'))
+  expect_false(isNumeric('a'))
+  expect_true(isNumeric(0))
+  expect_equal(c(1, 3), getNumericIndices(dta$b))
+})
 
-# Test data to use for somplementSumstats
+test_that("Test if variable is NA (isVarNA)", {
+  expect_true(isVarNA(NA))
+  expect_false(isVarNA(NULL))
+  expect_false(isVarNA(c()))
+  expect_false(isVarNA(F))
+  expect_false(isVarNA('a'))
+  expect_false(isVarNA(1:3))
+  expect_false(isVarNA(data.frame()))
+})
+
+# Test data to use for complementSumstats
 # Joining reference to sumstats should result in 3 successful matches on RSID
 sumstats <- bigreadr::fread2(paste0(dirTests, '/unittest/data/sumstats.txt'))
 reference <- bigreadr::fread2(paste0(dirTests, '/unittest/data/hrc37.txt'))
@@ -23,4 +36,4 @@ test_that("Test appending columns to sumstats", {
   expect_equal(nrow(merged), 9)
   expect_equal(sum(!is.na(merged$`#CHROM`)), 3)
   expect_equal(sum(!is.na(merged$POS)), 3)
-  })
+})

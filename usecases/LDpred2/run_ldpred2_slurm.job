@@ -16,10 +16,8 @@ fi
 
 export fileGeno=/REF/examples/prsice2/EUR.bed
 export fileGenoRDS=EUR.rds
-export filePheno=/REF/examples/prsice2/EUR.height
 export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
 export fileOut=Height
-export colPheno=Height
 
 # set environmental variables. Replace $COMORMENT with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
@@ -37,8 +35,6 @@ $RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
- --file-pheno $filePheno \
- --col-pheno $colPheno \
  --col-stat OR \
  --col-stat-se SE --stat-type OR \
  --geno-file-rds $fileGenoRDS \
@@ -48,8 +44,6 @@ $RSCRIPT ldpred2.R \
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
- --file-pheno $filePheno \
- --col-pheno $colPheno \
  --col-stat OR \
  --col-stat-se SE \
  --stat-type OR \

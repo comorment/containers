@@ -40,12 +40,13 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+- Fixed ``ldpred2.R`` script in case ``--file-pheno``/``--col-pheno``/``--col-pheno-from-fam`` args were used, by removing these options altogether.
 - Use [packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16](https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16) as main R package repo
 - ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
 
 ### Removed
 
-- removals goes here
+- Removed redundant `usecases/LDpred2_tutorial` files
 
 ### Misc
 
@@ -102,6 +103,7 @@ Maintenance/feature release with the following main software incorporated into e
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
+- add polygenic score output tests for ``usecases/LDpred2/ldpred.R``
 - add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
 - add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
 - add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/

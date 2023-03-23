@@ -15,13 +15,9 @@ par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
 # Optional files
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
-par <- add_argument(par, "--file-pheno", help="File with phenotype data (if not part of BED file")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
 
-# Phenotype
-par <- add_argument(par, "--col-pheno", help="Column name of phenotype in --file-pheno.", nargs=1)
-par <- add_argument(par, "--col-pheno-from-fam", help="Use phenotype in fam file", nargs=0)
 # Genotype
 par <- add_argument(par, "--geno-impute-zero", help="Set missing genotypes to zero.", flag=T)
 # Sumstats file.
@@ -58,7 +54,6 @@ fileMetaLD <- parsed$ld_meta_file
 
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
-filePheno <- parsed$file_pheno
 ### Genotype
 genoImputeZero <- parsed$geno_impute_zero
 
@@ -75,12 +70,8 @@ colStat <- parsed$col_stat
 colStatSE <- parsed$col_stat_se
 colPValue <- parsed$col_pvalue
 colN <- parsed$col_n
-# Column pheno (needs to account for when phenotype is stored in the fam file)
-colPheno <- parsed$col_pheno
-colPhenoFromFam <- parsed$col_pheno_from_fam
 mergeByRsid <- !is.na(parsed$merge_by_rsid)
-if (!is.na(colPheno) & !is.na(colPhenoFromFam)) stop("Only one of --col-pheno and --col-pheno-from-fam should be provided")
-if (!is.na(colPhenoFromFam)) colPheno <- 'affection'
+
 # Polygenic score
 nameScore <- parsed$name_score
 # Parameters to LDpred
@@ -111,12 +102,6 @@ colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
-
-if (!is.na(filePheno)) {
-  cat('Loading external phenotype in file', filePheno, '\n')
-  dataPheno <- bigreadr::fread2(filePheno)
-  obj.bigSNP$fam <- merge(obj.bigSNP$fam, dataPheno, by.x = c('family.ID','sample.ID'), by.y=c('FID','IID'), all.x=T)
-}
 
 # Store some key variables
 G <- obj.bigSNP$genotypes
@@ -293,16 +278,9 @@ map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
 
-if (!is.na(colPheno)) {
-  phenotype <- obj.bigSNP$fam[,colPheno]
-  correlation <- cor(pred_all, phenotype, use="pairwise.complete.obs")
-  correlation <- round(correlation, 4)
-  cat('Correlation with phenotype:', correlation, '\n')
-}
 
-cat('\n### Writing fam file with PGS and phenotype\n')
+cat('\n### Writing fam file with PGS\n')
 colsKeep <- c('family.ID', 'sample.ID', nameScore)
-if (!is.na(colPheno)) colsKeep <- c(colsKeep, colPheno)
 outputData <- obj.bigSNP$fam[,colsKeep]
 # Rename to stick with plink naming
 colsKeep[1:2] <- c('FID', 'IID')

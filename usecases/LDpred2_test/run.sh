@@ -15,8 +15,8 @@ export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
 
 # Tutorial data
 # Phenotypic data is part of bed file
-export fileInputGeno=$DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3.bed
-export fileInputSumStats=$DIR_BASE/usecases/LDpred2_tutorial/tutorial_data/public-data3-sumstats.txt
+export fileInputGeno=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3.bed
+export fileInputSumStats=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3-sumstats.txt
 export fileOutputSNPR=$DIR_TESTS/data/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
@@ -35,6 +35,9 @@ source $DIR_TESTS/scripts/sumstats.sh
 
 echo "### Testing RDS/backingfile creation"
 source $DIR_TESTS/scripts/backingfile.sh
+
+echo "### Testing tutorial data"
+source $DIR_TESTS/scripts/tutorial.sh
 
 echo "### Testing imputation"
 # Convert a file with missing genotypes
@@ -116,42 +119,3 @@ for MODE in $LDPRED_MODES; do
  dump=$( { $LDP --ldpred-mode $MODE; } 2>&1 )
  if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 done
-
-echo "### Testing LD estimation with calculateLD.R and use in ldpred2.R"
-# Basic command to perform LD estimation
-LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file-rds $fileOutputSNPR \
-  --dir-genetic-maps $DIR_TESTS/maps/ \
-  --file-ld-blocks $DIR_TESTS/output/ld/ld-chr@.rds \
-  --file-ld-map $DIR_TESTS/output/ld/map.rds
-"
-
-echo "Test restricting on a subset of SNPs (only chromosome 1-9 will run)"
-fileSumstats25k=$DIR_TESTS/data/public-data-sumstats25k.txt
-head -n 25000 $fileInputSumStats > $fileSumstats25k
-dump=$( { $LDE --sumstats $fileSumstats25k rsid ; } 2>&1 )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-# Test adding the parameter --thres-r2
-dump=$( { $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2; } 2>&1 )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-
-echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
-dump=$( { $LDE --extract $fileKeepSNPS; } 2>&1 )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-
-echo "Test sampling individuals (N=400)"
-dump=$( { $LDE --sample-individuals 400 --extract $fileKeepSNPS; } 2>&1 )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-
-echo "Test no restrictions on snps (similar to tutorial)"
-dump=$( { $LDE; } 2>&1 )
-# Use this LD to run LDpred
-LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
-  --ld-file $DIR_TESTS/output/ld/ld-chr@.rds \
-  --ld-meta-file $DIR_TESTS/output/ld/map.rds \
-  --merge-by-rsid \
-  --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
-  --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats --out $fileOut.inf"
-dump=$( { $LDP; } 2>&1 )
-if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-
