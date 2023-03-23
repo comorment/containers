@@ -1,4 +1,10 @@
 library(argparser, quietly = T)
+# Source functions
+coms <- commandArgs()
+coms <- coms[substr(coms, 1, 7) == '--file=']
+dirScript <- dirname(substr(coms, 8, nchar(coms)))
+source(paste0(dirScript, '/fun.R'))
+
 par <- arg_parser('Complement GWAS summary statistics')
 par <- add_argument(par, '--sumstats', nargs=1, help='Summary statistics file. Anything accepted by bigreadr::fread2')
 par <- add_argument(par, '--reference', nargs=1, default='/REF/hrc/HRC.r1-1.GRCh37.wgs.mac5.sites.tab.gz',
@@ -17,13 +23,7 @@ noPrint <- ifelse(fileOut == '', T, F)
 colSumstatsSnpId <- parsed$col_sumstats_snp_id
 colRefSnpId <- parsed$col_reference_snp_id
 colsAppend <- parsed$columns_append
-if (is.na(colsAppend)) colsAppend <- c('#CHROM', 'POS')
-
-# Source functions
-coms <- commandArgs()
-coms <- coms[substr(coms, 1, 7) == '--file=']
-dirScript <- dirname(substr(coms, 8, nchar(coms)))
-source(paste0(dirScript, '/fun.R'))
+if (isVarNA(colsAppend)) colsAppend <- c('#CHROM', 'POS')
 
 if (!noPrint) cat('Reading sumstats', sumstats, '\n')
 sumstats <- bigreadr::fread2(fileSumstats)

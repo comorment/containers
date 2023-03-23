@@ -14,6 +14,19 @@ zeroMissingGenotypes <- function(genoMat) {
   genoMat$copy(code=c(0,1,2, rep(0, 253)))
 }
 
+# Test if x is NA
+# R's built in function is.na is annoying due to that it causes troubles when
+# used in conditioning where a variable can be either NA or anything else. For instance
+# if the variable tested is a vector this will yield a warning as is.na will return a list
+# of booleans when applied to a vector. This function will simply test if the variable itself
+# is NA
+isVarNA <- function (x) {
+  tp <- typeof(x)
+  if (tp == 'logical') {
+    o <- ifelse(is.null(x), F, is.na(x))
+  } else return(F)
+}
+
 # Test if x is numeric
 # Haven't found a better way to deal with warnings without doing text based filtering.
 isNumeric <- function(x) {

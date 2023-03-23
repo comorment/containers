@@ -9,4 +9,3 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 # Add up som more columns than the defaults
 dump=$( { $COM --columns-append "#CHROM" POS AF; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-echo "$dump"
