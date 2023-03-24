@@ -9,3 +9,10 @@ test_that("Test numeric counts", {
   expect_true(isNumeric(0))
   expect_equal(c(1, 3), getNumericIndices(dta$b))
   })
+
+test_that("Test various functions", {
+  expect_true(hasAllColumns(dta, c('a','b')))
+  expect_true(hasAllColumns(dta, c('a')))
+  expect_false(hasAllColumns(dta, c('a','b', 'c')))
+  expect_false(hasAllColumns(dta, c('no')))
+})

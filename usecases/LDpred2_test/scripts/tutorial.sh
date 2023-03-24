@@ -1,5 +1,5 @@
 # The last command of this script replicates the results from the tutorial
-echo "### Testing LD estimation with calculateLD.R and use in ldpred2.R"
+echo "Testing LD estimation with calculateLD.R and use in ldpred2.R"
 # Basic command to perform LD estimation
 LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file-rds $fileOutputSNPR \
   --dir-genetic-maps $DIR_TESTS/maps/ \
@@ -25,8 +25,9 @@ dump=$( { $LDE --sample-individuals 400 --extract $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 # Filter out SNPs that overlap with genotypes
+echo "Test LD estimation with SNP filtering"
 cut -f 1 -d , $fileInputSumStats > $DIR_TESTS/data/snps-for-ld.txt
-$LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid
+dump=$( { $LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid; } 2<&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test no restrictions on snps (similar to tutorial)"
