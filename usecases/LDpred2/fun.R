@@ -14,12 +14,15 @@ hasAllColumns <- function (dta, cols) {
 #' @param fileName A file to verify
 #' @param scoreName The name of the score to place in the file
 verifyScoreOutputFile <- function (fileName, scoreName) {
+  require(bigreadr)
   if (!file.exists(fileName)) stop('File', fileName, 'does not exist.\n')
   # Inspect that the necessary columns to merge are available in this file (IID and FID)
-  tmp <- bigstatsr::fread2(fileName, nrows=2)
+  tmp <- bigreadr::fread2(fileName, nrows=2)
+  cnames <- colnames(tmp)
   if (!hasAllColumns(tmp, COLNAMES_ID_PLINK)) {
-    stop('Necessary ID columns (', paste0(COLNAMES_ID_PLINK, collapse=', '),'). Found: ', paste0(colnames(tmp), collapse=', '))
+    stop('Necessary ID columns (', paste0(COLNAMES_ID_PLINK, collapse=', '),'). Found: ', paste0(cnames, collapse=', '))
   }
+  if (scoreName %in% cnames) warning('A column with the designated score name (',scoreName,') already exists in output file ', fileName)
 }
 
 # Write the score to a file
@@ -35,9 +38,9 @@ writeScore <- function (scoreData, outputFile, scoreName, merge=F) {
   colsKeep[1:2] <- COLNAMES_ID_PLINK
   colnames(outputData) <- colsKeep
   if (merge) {
-    require(bigstatsr)
-    fileData <- bigstatsr::fread2(fileOutput) 
-    outputData <- merge(fileData, scoreData, by=COLNAMES_ID_PLINK, all.x=T)
+    require(bigreadr)
+    fileData <- bigreadr::fread2(fileOutput)
+    outputData <- merge(fileData, outputData, by=COLNAMES_ID_PLINK, all.x=T)
   }
   write.table(outputData, file=fileOutput, row.names = F, quote=F)
 }

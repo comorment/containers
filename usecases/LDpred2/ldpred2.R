@@ -105,7 +105,7 @@ colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 # If the user has requested to merge scores to an existing output file
 if (fileOutputMerge) {
   cat('Checking ability to merge score with file', fileOutput, 'due to --out-merge\n')
-  verifyPgsOutputFile(fileOutput, nameScore)
+  verifyScoreOutputFile(fileOutput, nameScore)
 }
 
 cat('Loading backingfile:', fileGeno ,'\n')
@@ -285,7 +285,6 @@ map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 
 pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
-
 
 cat('\n### Writing fam file with PGS\n')
 writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMerge)
