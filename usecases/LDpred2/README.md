@@ -135,6 +135,24 @@ $RSCRIPT ldpred2.R --ldpred-mode auto \
  --out $fileOut.auto
 ```
 
+### Optional: Append score to existing file
+It is possible to merge the calculated score to an existing file. For example, you might have a file looking like this:
+```
+FID	IID	SEX	PC1 ...
+1	1	M	1.1 ...
+2	2	F	0.3 ...
+```
+By replacing the ``$fileOut.inf`` and ``$fileOut.auto`` argument above with `<myfile>` and using the options
+``--name-score myScoreInf`` for the ``--ldpred-mode inf`` statement and ``--name-score myScoreAuto`` for the other,
+and add the flag ``--out-merge`` you end up with these scores in the existing file. 
+```
+FID	IID	SEX	PC1 ...	myScoreInf	myScoreAuto
+1	1	M	1.1 ...	0.3			0.4
+2	2	F	0.3 ...	-0.2		0.1
+```
+Note that it is required that the outputfile contains the columns ``IID`` and ``FID``
+to use this functionality.
+
 ## Running LDpred2 analysis - height example
 
 The following set of commands gives an example of how to apply LDpred2 on a demo height data:
