@@ -103,6 +103,7 @@ Maintenance/feature release with the following main software incorporated into e
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
+- add option to append ``usecases/LDpred2/ldpred.R`` score output to an existing file
 - add polygenic score output tests for ``usecases/LDpred2/ldpred.R``
 - add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
 - add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
