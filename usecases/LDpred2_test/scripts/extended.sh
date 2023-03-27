@@ -52,12 +52,12 @@ for MODE in $LDPRED_MODES; do
  dump=$( { $LDP --ldpred-mode $MODE --out $fileOut.$MODE; } 2>&1 )
  if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 done
-
 echo "Test appending score to output file"
 export fileExisting=$fileOut.inf
-export scoreNameExisting=score # Exists form runs above
+export scoreNameExisting=score # Exists from runs above
 export scoreNameNew=newScore # Name for appended score
 dump=$( { $LDP --ldpred-mode inf --name-score $scoreNameNew --out $fileExisting --out-merge; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 echo "Runing unittests on output"
 $RSCRIPT $DIR_TESTS/unittest/extended.R
+

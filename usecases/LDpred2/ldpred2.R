@@ -20,7 +20,8 @@ par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statis
 par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
 # Optional files
-par <- add_argument(par, "--out-merge", help="Merge output with existing file using ID column(s)", default=COLNAMES_ID_PLINK)
+par <- add_argument(par, "--out-merge", flag=T, help="Merge output with existing file.")
+par <- add_argument(par, "--out-merge-ids", nargs=2, default=COLNAMES_ID_PLINK, help='Pass ID columns in this order: [family ID] [individual ID]')
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
@@ -61,7 +62,8 @@ fileMetaLD <- parsed$ld_meta_file
 
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
-fileOutputMergeIDs <- parsed$out_merge
+fileOutputMerge <- parsed$out_merge
+fileOutputMergeIDs <- parsed$out_merge_ids
 ### Genotype
 genoImputeZero <- parsed$geno_impute_zero
 
@@ -103,9 +105,9 @@ colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
 colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 
 # If the user has requested to merge scores to an existing output file
-if (!isVarNA(fileOutputMergeIDs)) {
+if (fileOutputMerge) {
   cat('Checking ability to merge score with file', fileOutput, 'due to --out-merge\n')
-  verifyScoreOutputFile(fileOutput, nameScore)
+  verifyScoreOutputFile(fileOutput, nameScore, fileOutputMergeIDs)
 }
 
 cat('Loading backingfile:', fileGeno ,'\n')
@@ -286,8 +288,9 @@ map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
 
-cat('\n### Writing fam file with PGS\n')
-writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMergeIDs)
+cat('\n### Writing file with PGS\n')
+if (fileOutputMerge) cat('Merging by', paste0(fileOutputMergeIDs, collapse=', '), '\n', sep = '')
+writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMerge, fileOutputMergeIDs)
 cat('Scores written to', fileOutput,'\n')
 # Drop temporary file
 fileRemoved <- file.remove(paste0(tmp, '.sbk'))

@@ -42,8 +42,8 @@ fileImputed=$DIR_TESTS/data/EUR_imputed
 # Create shortcut environment variable for Rscript 
 export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
 
-# The different modes to run
-LDPRED_MODES="inf"
+# The different modes to run (affects runs of scripts/extended.sh)
+LDPRED_MODES="inf auto"
 
 echo "### Running R function unittests"
 $RSCRIPT $DIR_TESTS/unittest/fun.R

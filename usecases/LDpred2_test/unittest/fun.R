@@ -31,7 +31,8 @@ test_that("Test if variable is NA (isVarNA)", {
 
 # Test data to use for complementSumstats
 # Joining reference to sumstats should result in 3 successful matches on RSID
-sumstats <- bigreadr::fread2(paste0(dirTests, '/unittest/data/sumstats.txt'))
+fileSumstats <- paste0(dirTests, '/unittest/data/sumstats.txt')
+sumstats <- bigreadr::fread2(fileSumstats)
 reference <- bigreadr::fread2(paste0(dirTests, '/unittest/data/hrc37.txt'))
 test_that("Test appending columns to sumstats", {
   # Error due to that one of the default columns (CHR) is not available in the reference data
@@ -43,4 +44,12 @@ test_that("Test appending columns to sumstats", {
   expect_equal(nrow(merged), 9)
   expect_equal(sum(!is.na(merged$`#CHROM`)), 3)
   expect_equal(sum(!is.na(merged$POS)), 3)
+})
+
+# Using the sumstats file to test this may seem wrong, but it should in principle
+# be enough to cover the expected behavior of this function
+test_that("Test functions used when merging score to existing files", {
+  expect_error(verifyScoreOutputFile(fileSumstats, 'score', COLNAMES_ID_PLINK))
+  expect_warning(verifyScoreOutputFile(fileSumstats, 'OR', c('CHR_ORG', 'SNP')))
+  expect_no_error(verifyScoreOutputFile(fileSumstats, 'score', c('CHR_ORG', 'SNP')))
 })

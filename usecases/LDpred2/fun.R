@@ -13,14 +13,15 @@ hasAllColumns <- function (dta, cols) {
 # Verify that an existing file to append scores to meet the requirements
 #' @param fileName A file to verify
 #' @param scoreName The name of the score to place in the file
-verifyScoreOutputFile <- function (fileName, scoreName) {
-  require(bigreadr)
+#' @param mergeIDs Variables to use when merging score.
+verifyScoreOutputFile <- function (fileName, scoreName, mergeIDs) {
+  require(bigreadr, quietly = T)
   if (!file.exists(fileName)) stop('File', fileName, 'does not exist.\n')
   # Inspect that the necessary columns to merge are available in this file (IID and FID)
   tmp <- bigreadr::fread2(fileName, nrows=2)
   cnames <- colnames(tmp)
-  if (!hasAllColumns(tmp, COLNAMES_ID_PLINK)) {
-    stop('Necessary ID columns (', paste0(COLNAMES_ID_PLINK, collapse=', '),'). Found: ', paste0(cnames, collapse=', '))
+  if (!hasAllColumns(tmp, mergeIDs)) {
+    stop('Necessary ID columns (', paste0(mergeIDs, collapse=', '),') for merging not found in ', fileName, '. Found: ', paste0(cnames, collapse=', '))
   }
   if (scoreName %in% cnames) warning('A column with the designated score name (',scoreName,') already exists in output file ', fileName)
 }
@@ -29,19 +30,22 @@ verifyScoreOutputFile <- function (fileName, scoreName) {
 #' @param scoreData A data.frame with at least 'family.ID', 'sample.ID' (bigSNPR name for FID/IID) and the score
 #' @param outputFile The name of the file to write output to
 #' @param scoreName The name of the score in scoreData
-#' @param merge Wheter to merge output data to an existing file
-writeScore <- function (scoreData, outputFile, scoreName, merge=F) {
+#' @param fileMerge Whether to merge output data to an existing file
+writeScore <- function (scoreData, outputFile, scoreName, fileMerge=F, mergeIDs=NULL) {
   colsKeep <- c(COLNAMES_ID_BIGSNPR, scoreName)
   if (!hasAllColumns(scoreData, colsKeep)) stop('Necessary columns not present in output data. Found: ', colnames(scoreData))
   outputData <- scoreData[,colsKeep]
-  # Rename to stick with plink naming
-  colsKeep[1:2] <- COLNAMES_ID_PLINK
+  # Rename columns
+  newIDcols <- COLNAMES_ID_PLINK
+  if (fileMerge) newIDcols <- mergeIDs
+  colsKeep[1:2] <- newIDcols
   colnames(outputData) <- colsKeep
-  if (merge) {
+  if (fileMerge) {
     require(bigreadr)
     fileData <- bigreadr::fread2(fileOutput)
-    outputData <- merge(fileData, outputData, by=COLNAMES_ID_PLINK, all.x=T)
+    outputData <- merge(fileData, outputData, by=newIDcols, all.x=T)
   }
+  print(head(outputData))
   write.table(outputData, file=fileOutput, row.names = F, quote=F)
 }
 

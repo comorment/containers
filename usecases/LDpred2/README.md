@@ -186,8 +186,9 @@ FID	IID	SEX	PC1 ...	myScoreInf	myScoreAuto
 1	1	M	1.1 ...	0.3		0.4
 2	2	F	0.3 ...	-0.2		0.1
 ```
-Note that it is required that the outputfile contains the columns ``IID`` and ``FID``
-to use this functionality.
+Note that by default, merging is based on the columns ``IID`` and ``FID`` in the output file. If these columns are
+named differently the option ``--out-merge-ids <FID column> <IID column`` should be used to specify their names.
+
 
 ### Height example
 
