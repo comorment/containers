@@ -20,7 +20,7 @@ par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statis
 par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
 # Optional files
-par <- add_argument(par, "--out-merge", help="Merge output with existing file", flag=T)
+par <- add_argument(par, "--out-merge", help="Merge output with existing file using ID column(s)", default=COLNAMES_ID_PLINK)
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
@@ -61,7 +61,7 @@ fileMetaLD <- parsed$ld_meta_file
 
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
-fileOutputMerge <- parsed$out_merge
+fileOutputMergeIDs <- parsed$out_merge
 ### Genotype
 genoImputeZero <- parsed$geno_impute_zero
 
@@ -103,7 +103,7 @@ colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
 colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
 
 # If the user has requested to merge scores to an existing output file
-if (fileOutputMerge) {
+if (!isVarNA(fileOutputMergeIDs)) {
   cat('Checking ability to merge score with file', fileOutput, 'due to --out-merge\n')
   verifyScoreOutputFile(fileOutput, nameScore)
 }
@@ -287,7 +287,7 @@ pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
 
 cat('\n### Writing fam file with PGS\n')
-writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMerge)
+writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMergeIDs)
 cat('Scores written to', fileOutput,'\n')
 # Drop temporary file
 fileRemoved <- file.remove(paste0(tmp, '.sbk'))
