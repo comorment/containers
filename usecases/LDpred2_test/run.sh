@@ -48,6 +48,9 @@ LDPRED_MODES="inf"
 echo "### Running R function unittests"
 $RSCRIPT $DIR_TESTS/unittest/fun.R
 
+echo "### Testing sumstats scripts"
+source $DIR_TESTS/scripts/sumstats.sh
+
 echo "### Testing RDS/backingfile creation"
 source $DIR_TESTS/scripts/backingfile.sh
 
