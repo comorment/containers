@@ -107,6 +107,6 @@ complementSumstats <- function(sumstats, reference, colRsidSumstats='SNP', colRs
   colsRefMissing <- setdiff(colsRef, colsRefIntersect)
   if (length(colsRefMissing) > 0) stop(paste0('Column(s) ', paste0(colsRefMissing, collapse=','), ' was not found in reference data'))
   res <- data.table::merge.data.table(sumstats, reference[,colsRef], by.x=colRsidSumstats, by.y=colRsidRef, all.x=T)
-  if (nrow(res) != nrRows) stop('The merge resulted in ', nrow(res), ' but input contained ', nrow(res))
+  if (nrow(res) != nrRows) stop('The merge resulted in ', nrow(res), ' rows but input contained ', nrRows, ' rows')
   res
 }
