@@ -21,7 +21,7 @@ par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
 # Optional files
 par <- add_argument(par, "--out-merge", flag=T, help="Merge output with existing file.")
-par <- add_argument(par, "--out-merge-ids", nargs=2, default=COLNAMES_ID_PLINK, help='Pass ID columns in this order: [family ID] [individual ID]')
+par <- add_argument(par, "--out-merge-ids", nargs=2, help='Pass ID columns in this order: [family ID] [individual ID]')
 par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
@@ -64,6 +64,8 @@ fileMetaLD <- parsed$ld_meta_file
 fileKeepSNPs <- parsed$file_keep_snps
 fileOutputMerge <- parsed$out_merge
 fileOutputMergeIDs <- parsed$out_merge_ids
+# Vectors as defaults causes a warning for argparse, so the default is set this way instead
+if (fileOutputMerge & isVarNA(fileOutputMergeIDs)) fileOutputMergeIDs <- COLNAMES_ID_PLINK
 ### Genotype
 genoImputeZero <- parsed$geno_impute_zero
 
@@ -81,7 +83,6 @@ colStatSE <- parsed$col_stat_se
 colPValue <- parsed$col_pvalue
 colN <- parsed$col_n
 mergeByRsid <- !is.na(parsed$merge_by_rsid)
-
 # Polygenic score
 nameScore <- parsed$name_score
 # Parameters to LDpred
