@@ -135,12 +135,13 @@ sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
 # Check that there are no characters in chromosome column (causes snp_match to fail)
-if (is.character(sumstats[, colChr])) {
+if (!isOnlyNumeric(sumstats[, colChr])) {
   cat('Removing rows with non-integers in column', colChr, '\n')
   numeric <- getNumericIndices(sumstats[, colChr])
-  cat('Removing', sum(!numeric), 'SNPs...\n')
+  cat('Removing', nrow(sumstats) - length(numeric), 'SNPs...\n')
   sumstats <- sumstats[numeric,]
   cat('Retained', nrow(sumstats), 'SNPs\n')
+  sumstats[, colChr] <- as.numeric(sumstats[, colChr])
 }
 
 # Reame columns in bigSNP object

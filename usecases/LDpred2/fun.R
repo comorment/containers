@@ -45,7 +45,6 @@ writeScore <- function (scoreData, outputFile, scoreName, fileMerge=F, mergeIDs=
     fileData <- bigreadr::fread2(fileOutput)
     outputData <- merge(fileData, outputData, by=newIDcols, all.x=T)
   }
-  print(head(outputData))
   write.table(outputData, file=fileOutput, row.names = F, quote=F)
 }
 
@@ -80,8 +79,14 @@ isVarNA <- function (x) {
 
 # Test if x is numeric
 # Haven't found a better way to deal with warnings without doing text based filtering.
+#' @param x A variable to test.
 isNumeric <- function(x) {
   suppressWarnings(!is.na(as.numeric(x)))
+}
+
+# Test if there is only numbers in a variable
+isOnlyNumeric <-  function (x) {
+  sum(isNumeric(x)) == length(x)
 }
 
 # Get the indices of a vector for elements that are numeric
