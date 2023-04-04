@@ -21,7 +21,7 @@ export DIR_REFERENCE=$DIR_BASE/reference
 export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
 
 # Tutorial data
-# Phenotypic data is part of public-data3 fam file
+# Phenotypic data is part of public-data3.fam file
 export fileInputGeno=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3.bed
 export fileInputSumStats=$DIR_BASE/usecases/LDpred2_test/data/tutorial_data/public-data3-sumstats.txt
 export fileOutputSNPR=$DIR_TESTS/data/public-data3.rds
