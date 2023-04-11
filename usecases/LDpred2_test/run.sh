@@ -18,7 +18,8 @@ export DIR_SIF=$DIR_BASE/singularity
 export DIR_TESTS=$DIR_BASE/usecases/LDpred2_test
 export DIR_SCRIPTS=$DIR_BASE/usecases/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
-export DIR_REF_LDPRED=$DIR_BASE/ldpred2_ref
+# The location of the comorment/ldpred2_ref repository that containts LD matrixes
+export DIR_REF_LDPRED=$DIR_BASE/../ldpred2_ref
 
 # Tutorial data
 # Phenotypic data is part of public-data3.fam file
@@ -40,7 +41,7 @@ fileImputed=$DIR_TESTS/data/EUR_imputed
 
 
 # Create shortcut environment variable for Rscript 
-export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
+export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
 
 # The different modes to run (affects runs of scripts/extended.sh)
 LDPRED_MODES="inf auto"
