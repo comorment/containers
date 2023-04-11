@@ -1,6 +1,7 @@
 # Download data if necessary
 FILE_LDREF=$DIR_TESTS/data/ld/ldref_with_blocks.zip
-FILE_LDMAP=$DIR_TESTS/data/ld/map_hm3_plus.rds
+FILE_LDMAP=$DIR_TESTS/data/ld/map.rds
+FILE_LDMAP_PLUS=$DIR_TESTS/data/ld/map_hm3_plus.rds
 if [ ! -f $FILE_LDREF ]; then 
  echo "Downloading LD reference"
  wget -O $FILE_LDREF "https://figshare.com/ndownloader/files/36363087"; 
@@ -8,6 +9,10 @@ if [ ! -f $FILE_LDREF ]; then
 fi;
 if [ ! -f $FILE_LDMAP ]; then 
  echo "Downloading LD map"
+ wget -O $FILE_LDMAP "https://figshare.com/ndownloader/files/36360900" ;  
+fi;
+if [ ! -f $FILE_LDMAP_PLUS ]; then 
+ echo "Downloading LD map (map_hm3_plus.rds)"
  wget -O $FILE_LDMAP "https://figshare.com/ndownloader/files/37802721" ;  
 fi;
 
