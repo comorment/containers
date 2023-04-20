@@ -25,11 +25,11 @@ colRefSnpId <- parsed$col_reference_snp_id
 colsAppend <- parsed$columns_append
 if (isVarNA(colsAppend)) colsAppend <- c('#CHROM', 'POS')
 
-if (!noPrint) cat('Reading sumstats', sumstats, '\n')
+if (!noPrint) cat('Reading sumstats', fileSumstats, '\n')
 sumstats <- bigreadr::fread2(fileSumstats)
-if (!noPrint) cat('Reading reference file', reference)
+if (!noPrint) cat('Reading reference file', reference, '\n')
 reference <- bigreadr::fread2(reference)
 if (!noPrint) cat('Complementing sumstats\n')
 sumstats <- complementSumstats(sumstats, reference, colRsidSumstats=colSumstatsSnpId, colRsidRef=colRefSnpId, colsKeepReference=colsAppend)
-if (!noPrint) cat('Writing output\n')
+if (!noPrint) cat('Writing output', fileOut, '\n')
 bigreadr::fwrite2(sumstats, file=fileOut, sep=fileOutColSep)
