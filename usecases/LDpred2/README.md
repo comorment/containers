@@ -121,7 +121,8 @@ if [ ! -d $dirOutput ]; then mkdir $dirOutput; fi;
 
 for fileSumstats in `ls $dirSumstats`; do
  echo "Processing file $fileSumstats"
- $RSCRIPT $COMORMENT/containers/LDpred2/complementSumstats.R --col-sumstats-snp-id MarkerName --sumstats $dirSumstats/$fileSumstats | gzip -c > $dirOutput/$fileSumstats
+ $RSCRIPT $COMORMENT/containers/LDpred2/complementSumstats.R --col-sumstats-snp-id MarkerName --sumstats $dirSumstats/$fileSumstats --file-output $dirOutput/$fileSumstats
+ gzip $dirOutput/$fileSumstats
 done
 ```
 
