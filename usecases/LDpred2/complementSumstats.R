@@ -38,6 +38,6 @@ reference <- bigreadr::fread2(reference)
 if (!noPrint) cat('Complementing sumstats\n')
 sumstats <- complementSumstats(sumstats, reference, colRsidSumstats=colSumstatsSnpId, colRsidRef=colRefSnpId, colsKeepReference=colsAppend)
 if (!noPrint) cat('Renaming columns\n')
-colnames(sumstats) <- parsed$column_names_output
+sumstats <- rename_columns(sumstats, colsAppend, parsed$column_names_output)
 if (!noPrint) cat('Writing output file', fileOut, '\n')
 bigreadr::fwrite2(sumstats, file=fileOut, sep=fileOutColSep)
