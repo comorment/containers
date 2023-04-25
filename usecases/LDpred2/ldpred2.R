@@ -44,7 +44,8 @@ par <- add_argument(par, "--effective-sample-size", help="Effective sample size,
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Set column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
-par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for ldpred-auto", default=30)
+par <- add_argument(par, "--hyper-p-length", help="Length of hyperparameter p sequence to use for --ldpred-mode auto", default=30)
+par <- add_argument(par, "--hyper-p-max", help="Maximum (<1) of hyperparameter p sequence to use for --ldpred-mode auto", default=0.2)
 # Others
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
@@ -87,6 +88,7 @@ mergeByRsid <- !is.na(parsed$merge_by_rsid)
 nameScore <- parsed$name_score
 # Parameters to LDpred
 parHyperPLength <- parsed$hyper_p_length
+parHyperPMax <- parsed$hyper_p_max
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
 
@@ -260,7 +262,7 @@ if (argLdpredMode == 'inf') {
 } else if (argLdpredMode == 'auto') {
   cat('Running LDPRED2 auto model\n')
   if (!is.na(setSeed)) set.seed(setSeed)
-  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, 0.2, length.out=parHyperPLength), 
+  multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, parHyperPMax, length.out=parHyperPLength), 
                                  allow_jump_sign=F, shrink_corr=0.95, ncores=NCORES)
   cat('Plotting diagnostics: ', fileOutput, '.png\n', sep='')
   library(ggplot2)
