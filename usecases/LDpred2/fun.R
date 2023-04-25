@@ -115,3 +115,16 @@ complementSumstats <- function(sumstats, reference, colRsidSumstats='SNP', colRs
   if (nrow(res) != nrRows) warning('The merge resulted in ', nrow(res), ' rows but input contained ', nrRows, ' rows')
   res
 }
+
+# Rename columns in data.frame
+#' @param df A data.frame
+#' @param old_names A vector of old column names
+#' @param new_names A vector of new column names
+#' @return A data.frame with renamed columns
+rename_columns <- function(df, old_names, new_names) {
+  if (length(old_names) != length(new_names)) {
+    stop("The length of the old_names and new_names lists must be the same.")
+  }
+  colnames(df)[match(old_names, colnames(df))] <- new_names
+  return(df)
+}

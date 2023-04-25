@@ -61,3 +61,11 @@ test_that("Test functions used when merging score to existing files", {
   expect_warning(verifyScoreOutputFile(fileSumstats, 'OR', c('CHR_ORG', 'SNP')))
   expect_no_error(verifyScoreOutputFile(fileSumstats, 'score', c('CHR_ORG', 'SNP')))
 })
+
+# Test that rename_columns works as expected
+test_that("Test rename_columns", {
+  expect_equal(rename_columns(sumstats, c('A1', 'A2'), c('A1', 'A2')), sumstats)
+  expect_true(hasAllColumns(rename_columns(sumstats, c('A1', 'A2', 'N'), c('EffectAllele', 'OtherAllele', 'Neff')), c('EffectAllele', 'OtherAllele', 'Neff')))
+  expect_error(rename_columns(sumstats, c('A1', 'A2'), c('A1', 'A2', 'N')))
+  expect_error(rename_columns(sumstats, c('A1', 'A2', 'N'), c('A1', 'A2')))
+})
