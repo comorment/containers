@@ -14,8 +14,8 @@ par <- add_argument(par, '--col-sumstats-snp-id', nargs=1, default='SNP', help='
 par <- add_argument(par, '--col-reference-snp-id', nargs=1, default='ID', help='SNP ID (RSID) column in reference file')
 par <- add_argument(par, '--columns-append', nargs=Inf, default=c('#CHROM', 'POS'), help='Columns from reference data to append to sumstats. Defaults to #CHROM and POS')
 par <- add_argument(par, '--column-names-output', nargs=Inf, default=c('CHR', 'POS'), help='Column names in output. Defaults to column names in sumstats. Defaults to CHR and POS')
-par <- add_argument(par, '--file-output', nargs=1, default=tempfile(pattern='sumstats.txt'), help='Output file name. Defaults to a temporary file (<tempdir>/sumstats.txt)')
 par <- add_argument(par, '--file-output-col-sep', nargs=1, default='\t', help='Column separator in output. Anything accepted by bigreadr::fwrite2')
+par <- add_argument(par, '--file-output', nargs=1, default=tempfile(), help='Output file name. Defaults to a temporary file (<tempdir>/<tempfilename>)')
 parsed <- parse_args(par)
 fileSumstats <- parsed$sumstats
 reference <- parsed$reference
