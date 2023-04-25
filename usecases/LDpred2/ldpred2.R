@@ -41,6 +41,8 @@ par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nar
 par <- add_argument(par, "--col-n", help="Effective sample size. Override with --effective-sample-size", default="N", nargs=1)
 par <- add_argument(par, "--stat-type", help="Effect estimate type (BETA for linear, OR for odds-ratio)", default="BETA", nargs=1)
 par <- add_argument(par, "--effective-sample-size", help="Effective sample size, if unavailable in sumstats (--col-n)", nargs=1)
+par <- add_argument(par, "--n-cases", help="Nr cases when phenotype is binary. For calculating effective sample size.", nargs=1)
+par <- add_argument(par, "--n-controls", help="Nr controls when phenotype is binary. For calculating effective sample size.", nargs=1)
 # Polygenic score
 par <- add_argument(par, "--name-score", help="Set column name for the created score", nargs=1, default='score')
 # Parameters to LDpred
@@ -91,6 +93,10 @@ parHyperPLength <- parsed$hyper_p_length
 parHyperPMax <- parsed$hyper_p_max
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
+argNCases <- parsed$n_cases
+argNControls <- parsed$n_controls
+# User can supply either --effective-sample-size or --n-cases and --n-controls
+if (!is.na(argEffectiveSampleSize) && (!is.na(argNCases) | !is.na(argNControls))) stop('Do not provide both --effective sample size and --n-cases/--n-controls')
 
 if (!is.na(argEffectiveSampleSize)) {
   argEffectiveSampleSize <- as.numeric(argEffectiveSampleSize)
@@ -100,6 +106,7 @@ argLdpredMode <- parsed$ldpred_mode
 validModes <- c('inf', 'auto')
 if (!argLdpredMode %in% validModes) stop("--ldpred-mode should be one of: ", paste0(validModes, collapse=', '))
 argStatType <- parsed$stat_type
+if (!argStatType %in% c('BETA', 'OR')) stop('--stat-type should be one of "BETA" or "OR"')
 setSeed <- parsed$set_seed
 
 # These vectors are used to convert headers in the sumstat files to those
