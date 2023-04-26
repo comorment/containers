@@ -15,7 +15,7 @@ source(paste0(dirScript, '/fun.R'))
 
 par <- arg_parser('Calculate polygenic scores using ldpred2')
 # Mandatory arguments (files)
-par <- add_argument(par, "--geno-file-rds", help="Input .rds (bigSNPR) file with genotypes")
+par <- add_argument(par, "--geno-file-rds", help="Input .rds (bigSNPR) file with genotypes. A similarly named .bk (backing) file must exist in the same location")
 par <- add_argument(par, "--sumstats", help="Input file with GWAS summary statistics")
 par <- add_argument(par, "--out", help="Output file with calculated PGS")
 
