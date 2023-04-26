@@ -176,23 +176,8 @@ colnames(sumstats) <- colSumstats
 sumstats$a0 <- toupper(sumstats$a0)
 sumstats$a1 <- toupper(sumstats$a1)
 
-### Check effective sample-size
-esNaArgs <- is.na(argNCases) + is.na(argNControls)
-esInSumstats <- colN %in% tolower(colN)
-# If no sample size arguments have been provided, take the N column from sumstats if available
-if (esNaArgs == 2 && is.na(argEffectiveSampleSize) && !esInSumstats)
-  stop("Effective sample size has not been provided as an argument and no such column was found in the sumstats (column ", colN, ")")
-# User can supply either --effective-sample-size or --n-cases and --n-controls
-if (!is.na(argEffectiveSampleSize)) {
-  if (esNaArgs < 2) stop('Do not provide both --effective sample size and --n-cases/--n-controls')
-  effectiveSampleSize <- as.numeric(argEffectiveSampleSize)
-  if (!is.numeric(effectiveSampleSize)) stop('Effective sample size needs to be numeric, received: ', effectiveSampleSize)
-}
-# User cannot supply only one of --n-cases and --n-controls
-if (argsES == 1) stop('Provide both --n-cases and --n-controls')
-if (argsES == 0) effectiveSampleSize <- 1/((1/argNCases) + (1/argNControls))
-# Add effective sample size
-sumstats$n_eff <- effectiveSampleSize
+### Determine effective sample-size
+sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffectiveSampleSize, cases=argNCases, controls=argsNControls, colES=colN)
 
 if (!is.na(fileKeepSNPs)) {
   cat('Filtering SNPs using', fileKeepSNPs, '\n')

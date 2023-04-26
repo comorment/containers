@@ -116,6 +116,34 @@ complementSumstats <- function(sumstats, reference, colRsidSumstats='SNP', colRs
   res
 }
 
+# Get effective sample size from various sources in user input
+# Note that arguments effectiveSampleSize or cases and controls will override
+# effective sample size if provided as a column in sumstats.
+#' @param sumstats A data.frame with sumstats
+#' @param effectiveSampleSize Precalculated effective sample size
+#' @param cases No of cases for a binary trait
+#' @param controls No of controls for a binary trait
+#' @param colES Column containing effective sample size in sumstats
+#' @return Either integer or a vector of integers
+getEffectiveSampleSize <- function (sumstats, effectiveSampleSize=NA, cases=NA, controls=NA, colES=NA) {
+  cases <- as.numeric(cases)
+  controls <- as.numeric(controls)
+  argsCcNA <- is.na(cases) + is.na(controls)
+  esInSumstats <- colES %in% colnames(sumstats)
+  if (argsCcNA == 2 && is.na(effectiveSampleSize) && !esInSumstats)
+    stop("Effective sample size has not been provided as an argument and no such column was found in the sumstats (column ", colES, ")")
+  if (esInSumstats) esOut <- sumstats[, colES]
+  if (!is.na(effectiveSampleSize)) {
+    if (argsCcNA < 2) stop('Do not provide both --effective sample size and --n-cases/--n-controls')
+    esOut <- as.numeric(effectiveSampleSize)
+    if (!is.numeric(esOut)) stop('Effective sample size needs to be numeric, received: ', effectiveSampleSize)
+  }
+  # User cannot supply only one of --n-cases and --n-controls
+  if (argsCcNA == 1) stop('Provide both --n-cases and --n-controls')
+  if (argsCcNA == 0) esOut <- 1/((1/cases) + (1/controls))
+  esOut
+}
+
 # Rename columns in data.frame
 #' @param df A data.frame
 #' @param old_names A vector of old column names

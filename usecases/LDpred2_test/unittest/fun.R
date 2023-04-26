@@ -54,6 +54,34 @@ test_that("Test appending columns to sumstats", {
   expect_equal(sum(!is.na(merged$POS)), 3)
 })
 
+# Test getting the effective sample size, can be provided in multiple ways
+# Sumstats (loaded above) contain a column "N".
+test_that("Test getting effective sample size", {
+  # Define som hypotetical user input
+  nES <- 1 # Effective sample size
+  nCases <- 10
+  nControls <-100
+  colEs <- 'N'
+  # Various errors
+  expect_error(getEffectiveSampleSize(sumstats))
+  expect_error(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES, cases=nCases))
+  expect_error(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES, cases=nCases, controls=nControls))
+  expect_error(getEffectiveSampleSize(sumstats, cases=nCases, colES=colEs))
+  expect_error(getEffectiveSampleSize(sumstats, colES='MissingCol'))
+  # OK ways
+  expect_vector(getEffectiveSampleSize(sumstats, colES=colEs))
+  # Manual calculation
+  es <- 1/((1/nCases) + (1/nControls))
+  expect_equal(getEffectiveSampleSize(sumstats, cases=nCases, controls=nControls), es)
+  expect_equal(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES), nES)
+  # Manually provided sample size overrides column in sumstats
+  expect_equal(getEffectiveSampleSize(sumstats, cases=nCases, controls=nControls, colES=colEs), es)
+  expect_equal(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES, colES=colEs), nES)
+  # OK, but input is of wrong type
+  expect_equal(getEffectiveSampleSize(sumstats, cases=as.character(nCases), controls=as.character(nControls)), es)
+  expect_equal(getEffectiveSampleSize(sumstats, effectiveSampleSize=as.character(nES)), nES)
+})
+
 # Using the sumstats file to test this may seem wrong, but it should in principle
 # be enough to cover the expected behavior of this function
 test_that("Test functions used when merging score to existing files", {
