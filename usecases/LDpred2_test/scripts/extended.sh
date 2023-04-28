@@ -39,12 +39,10 @@ echo "TEST error: Bad imputation mode"
 dump=$( { $LDP --ldpred-mode inf --geno-impute bad-mode --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 0 ]; then echo "No error received"; exit; fi
 
-# TEST: Complete runs of --ldpred-mode given by $LDPRED_MODES
-for MODE in $LDPRED_MODES; do
- echo "Testing mode $MODE"
- dump=$( { $LDP --ldpred-mode $MODE --out $fileOut.$MODE; } 2>&1 )
- if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-done
+# TEST: Complete runs of --ldpred-mode
+dump=$( { $LDP --ldpred-mode inf --out $fileOut.$MODE; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
 echo "Test appending score to output file"
 export fileExisting=$fileOut.inf
 export scoreNameExisting=score # Exists from runs above

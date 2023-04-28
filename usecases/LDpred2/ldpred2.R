@@ -93,8 +93,9 @@ parHyperPLength <- parsed$hyper_p_length
 parHyperPMax <- parsed$hyper_p_max
 # Others
 argEffectiveSampleSize <- parsed$effective_sample_size
-argNCases <- parsed$n_cases
-argNControls <- parsed$n_controls
+# These two have to be accessed differently due to some argparser bug
+argNCases <- parsed$`n-cases`
+argNControls <- parsed$`n_controls`
 
 argLdpredMode <- parsed$ldpred_mode
 validModes <- c('inf', 'auto')
@@ -177,7 +178,7 @@ sumstats$a0 <- toupper(sumstats$a0)
 sumstats$a1 <- toupper(sumstats$a1)
 
 ### Determine effective sample-size
-sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffectiveSampleSize, cases=argNCases, controls=argsNControls, colES=colN)
+sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffectiveSampleSize, cases=argNCases, controls=argNControls, colES=colN)
 
 if (!is.na(fileKeepSNPs)) {
   cat('Filtering SNPs using', fileKeepSNPs, '\n')

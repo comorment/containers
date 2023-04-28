@@ -77,6 +77,10 @@ isVarNA <- function (x) {
   } else return(F)
 }
 
+isVarNAorNULL <- function (x) {
+  isVarNA(x) | is.null(x)
+}
+
 # Test if x is numeric
 # Haven't found a better way to deal with warnings without doing text based filtering.
 #' @param x A variable to test.
@@ -125,15 +129,21 @@ complementSumstats <- function(sumstats, reference, colRsidSumstats='SNP', colRs
 #' @param controls No of controls for a binary trait
 #' @param colES Column containing effective sample size in sumstats
 #' @return Either integer or a vector of integers
-getEffectiveSampleSize <- function (sumstats, effectiveSampleSize=NA, cases=NA, controls=NA, colES=NA) {
+getEffectiveSampleSize <- function (sumstats, effectiveSampleSize=NULL, cases=NULL, controls=NULL, colES=NULL) {
+  argsCcNA <- isVarNAorNULL(cases) + isVarNAorNULL(controls)
   cases <- as.numeric(cases)
   controls <- as.numeric(controls)
-  argsCcNA <- is.na(cases) + is.na(controls)
-  esInSumstats <- colES %in% colnames(sumstats)
-  if (argsCcNA == 2 && is.na(effectiveSampleSize) && !esInSumstats)
+  colES <- tolower(colES)
+  esInSumstats <- ifelse(isVarNAorNULL(colES), F, colES %in% colnames(sumstats))
+  print(esInSumstats)
+  print(argsCcNA)
+  print(effectiveSampleSize)
+  print(colES)
+  print(head(sumstats))
+  if (argsCcNA == 2 && isVarNAorNULL(effectiveSampleSize) && !esInSumstats) 
     stop("Effective sample size has not been provided as an argument and no such column was found in the sumstats (column ", colES, ")")
   if (esInSumstats) esOut <- sumstats[, colES]
-  if (!is.na(effectiveSampleSize)) {
+  if (!isVarNAorNULL(effectiveSampleSize)) {
     if (argsCcNA < 2) stop('Do not provide both --effective sample size and --n-cases/--n-controls')
     esOut <- as.numeric(effectiveSampleSize)
     if (!is.numeric(esOut)) stop('Effective sample size needs to be numeric, received: ', effectiveSampleSize)
