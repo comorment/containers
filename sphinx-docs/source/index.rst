@@ -32,7 +32,7 @@ Usecases
 Souce codes
 ===========
 
-.. mdinclude:: ../../src/README.md
+.. mdinclude:: ../../docker/README.md
 
 
 Indices and tables

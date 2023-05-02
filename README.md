@@ -87,7 +87,7 @@ Earlier version (prior to April 2021) of all containers and refrence data was di
 
 ## Source files
 
-The source files for configuring and building the container files provided here are found in the [src](https://github.com/comorment/containers/tree/main/src) directory.
+The source files for configuring and building the container files provided here are found in the [docker](https://github.com/comorment/containers/tree/main/docker) directory.
 See the corresponding README file therein for detailes.
 
 ## Online documentation
