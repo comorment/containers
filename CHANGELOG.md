@@ -40,6 +40,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+- Set version file info to 1.2.0dev (was 0.1.1dev)
 - Fixed bad parsing of arbitrary length list of args in ``usecases/LDpred2/complementSumstats.R``
 - Made ``usecases/LDpred2/complementSumstats.R`` write output file by default, not stdout.
 - Fixed print statement in ``usecases/LDpred2/complementSumstats.R`` causing crash w. ``--file-output`` arg.
