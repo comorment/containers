@@ -1,3 +1,5 @@
+### Summary statistics
+
 The results of GWAS are represented as summary statistics, with the following columns:
 
 * ``SNP`` - marker name, for example rs#.
@@ -24,7 +26,7 @@ The sample size ``N`` is as reported by the software (``plink2`` or ``regenie``)
 ``CaseN`` and ``ControlN`` columns are only provided for ``plink2`` results for logistic regression.
 If you need these columns for ``regenie`` analysis consider also running ``plink2`` analysis, and copy over the columns into your ``regenie`` output.
 
-## Comparison of columns names
+#### Comparison of columns names
 
 * CoMorMent: this file
 * LDSC: https://github.com/precimed/ldsc/blob/master/munge_sumstats.py
@@ -53,4 +55,3 @@ If you need these columns for ``regenie`` analysis consider also running ``plink
 | Z             | ?             | Z             | Z             | Z             | OK     |
 | FRQ           | FRQ_A_NNN     | FRQ           | EAF           | FRQ           | keep "FRQ" which makes more sense for non-EUR populations     |
 | missing       | ?             | missing       | EAF_1KG       | missing       | not needed     |
-
