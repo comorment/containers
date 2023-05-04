@@ -1,3 +1,4 @@
+(specifications)=
 ### Specifications
 
 These are the specifications of the input data format for GWAS anslysis, recommended in CoMorMent projects.

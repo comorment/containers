@@ -14,25 +14,50 @@ hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/contain
    :caption: Contents:
 
 
-.. mdinclude:: ../../README.md
-
+.. literalinclude:: ../../README.md
+   :language: md
+   # :parser: myst_parser.sphinx_
+   # :relative-docs: docs/
+   # :relative-images:
 
 Container documentation
 =======================
 
-.. mdinclude:: ../../docs/README.md
+.. include:: ../../docs/README.md
+   :parser: myst_parser.sphinx_
 
+.. include:: ../../docs/singularity/README.md
+   :parser: myst_parser.sphinx_
+
+.. include:: ../../docs/specifications/README.md
+   :parser: myst_parser.sphinx_
 
 Usecases
 ========
 
-.. mdinclude:: ../../usecases/README.md
+.. include:: ../../usecases/README.md
+   :parser: myst_parser.sphinx_
 
 
-Souce codes
+Source codes
+============
+
+.. include:: ../../scripts/README.md
+   :parser: myst_parser.sphinx_
+
+
+Reference
+=========
+
+.. include:: ../../reference/README.md
+   :parser: myst_parser.sphinx_
+
+
+Dockerfiles
 ===========
 
-.. mdinclude:: ../../docker/README.md
+.. include:: ../../docker/README.md
+   :parser: myst_parser.sphinx_
 
 
 Indices and tables

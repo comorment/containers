@@ -1,9 +1,9 @@
-## Overview
+# Documentation
 
-### [Singularity](https://github.com/comorment/containers/blob/main/docs/specifications/README.md)
+## [Singularity](docs/singularity)
 
 Brief descriptions of the available software container builds.
 
-### [Specifications](https://github.com/comorment/containers/blob/main/docs/specifications/README.md)
+## [Specifications](docs/specifications)
 
 Specifications of the input data format for GWAS anslysis, recommended in CoMorMent projects
