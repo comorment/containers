@@ -1,8 +1,8 @@
-# CoMorMent-containers
+# CoMorMent Containers
 
 The goal of the [CoMorMent](https://www.comorment.uio.no) containers repository at <https://github.com/comorment/containers> is to distribute tools for GWAS and post-GWAS analysis in CoMorMent project ([comorment.eu](https://comorment.eu)).
 
-Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [Getting started](#getting-started) section below).
+Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [Getting started](#getting-started) section below.
 
 Most of the tools require additional [reference](reference) data, provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
@@ -21,9 +21,9 @@ Additional tools are available in separate repositories:
 * <https://github.com/comorment/popcorn> - cross-ancestry genetic correlations
 * <https://github.com/comorment/magma> - MAGMA, LAVA, lava-partitioning tools
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
-* <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``gwas.sif`` ([more info](usecases/LDpred2/README.md)).
+* <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``r.sif`` ([more info](scripts/pgs/README.md)).
 
-## <a name="project-status"></a>Project status
+## Project status
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7385621.svg)](https://doi.org/10.5281/zenodo.7385621)
 [![Documentation Status](https://readthedocs.org/projects/comorment-containers/badge/?version=latest)](https://comorment-containers.readthedocs.io/en/latest/?badge=latest)
@@ -31,7 +31,7 @@ Additional tools are available in separate repositories:
 [![Hadolint](https://github.com/comorment/containers/actions/workflows/docker.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker.yml)
 [![Flake8](https://github.com/comorment/containers/actions/workflows/python.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/python.yml)
 
-## <a name="getting-started"></a>Getting started
+## Getting started
 
 We recommend to clone this entire repository using ``git clone.``
 However, you need to enable [install Git LFS extension](https://git-lfs.github.com/).
@@ -48,12 +48,14 @@ git lfs install
 ```
 
 Now you're all set to clone this repository (note that adding ``--depth 1`` to your command as shown below will limit the amount of data transfered from github to your machine):
+
 ```
 git clone --depth 1 https://github.com/comorment/containers.git
 ```
 
 At this point you may want to run the following find&grep command to check that all git lfs files were downloaded successfully (i.e. you got an actual content of each file, and not just its git lfs reference). The command searches for and lists all files within $COMORMENT folder which contain a string like ``oid sha``, likely indicating that git lfs file hasn't been downloaded.
 If the following commands doesn't find any files that you're good to go. Otherwise you may want to re-run your ``git clone`` commands or investigate why the're failing to download the actual file.
+
 ```
 find $COMORMENT -type f -not -path '*/.*' -exec sh -c 'head -c 100 "{}" | if grep -H "oid sha"; then echo {}; fi ' \; | grep -v "oid sha256"
 ```
@@ -70,11 +72,11 @@ export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
 ```
 
 Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](https://github.com/comorment/containers/blob/main/docs/singularity/hello.md) example.
-Take a look at other README files in the [docs](https://github.com/comorment/containers/tree/main/docs/singularity) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases/) folder.
+Take a look at other README files in the [docs](https://github.com/comorment/containers/tree/main/docs/singularity) folder, as well as detailed use cases in [usecases](usecases).
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
-* ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub. Cloning ``reference`` repository is optional, and it's only needed for internal work within the CoMorMent project - for normal use you may proceed without it.
+* ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of the [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub. Cloning ``reference`` repository is optional, and it's only needed for internal work within the CoMorMent project - for normal use you may proceed without it.
 * ``$SIF`` refers to ``$COMORMENT/containers/singularity`` folder, containing singulairty containers (the ``.sif`` files)
 * ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most (if not all) of the exmples don't require private reference data.
 * We assume that all containers run with ``--home $PWD:/home``, mounting current folder mounted as ``/home`` within container

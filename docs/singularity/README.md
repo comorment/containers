@@ -1,4 +1,4 @@
-### Singularity containers
+# Singularity
 
 Here is a brief overview of available containers (more info in the links below):
 

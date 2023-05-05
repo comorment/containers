@@ -19,7 +19,7 @@ We also assume the following commands are executed from the current folder
 
 The current version of these scripts conduct no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequillibrium or polygenic scores.
 This should be done for polygenic score analyses intended for publication.
-
+2
 ### Note on missing genotypes
 
 If genotypes are missing LDpred2 will stop and return an error (``Error: You can't have missing values in 'X'.``). One can either pass ``--geno-impute-zero`` to replace missing genotypes with zero or impute with any other tool such as plink,

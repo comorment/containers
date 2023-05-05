@@ -1,4 +1,4 @@
-### Phenotypes and covariates
+# Phenotypes and covariates
 
 For phenotypes and covariates, we expect the data to be organized in a single delimiter-separated file (hereinafter referred to as *phenotype file*),
 with rows corresponding to individuals, and columns corresponding to relevant variables of interest or covariates.

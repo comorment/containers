@@ -35,9 +35,8 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
-    'myst_parser',
     'sphinx_design',
-    # 'm2r2'
+    'myst_parser',
 ]
 
 templates_path = ['_templates']

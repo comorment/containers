@@ -1,6 +1,6 @@
-## Singularity containers for GWAS and post-GWAS analysis
+# Docker
 
-This repository is used to develop and document singularity containers with various software and analytical tools for GWAS and post-GWAS analysis.
+This repository is used to develop and document [Singularity](https://sylabs.io) or [Apptainer](https://apptainer.org) containers with various software and analytical tools for GWAS and post-GWAS analysis via [Docker](https://www.docker.com).
 
 ## Getting started
 
@@ -10,7 +10,7 @@ If you would like to contribute to developing these containers, please see  [doc
 
 For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.com/comorment/containers/blob/main/docs/gwas.md).
 
-## Prerequisites (to running tutorials)
+### Prerequisites (to running tutorials)
 
 * download containers shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
 * download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
@@ -21,7 +21,7 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.co
 * create an empty folder called ``data``, for storing the results and intermediate files produced by running containers.
   (most instructinos mount this folder like this: ``-B data:/data``).
 
-## Description of available containers
+### Description of available containers
 
 * ``hello`` - a hello-world introductory container
 * ``gwas`` - basic tools for gwas (``plink``, ``plink2``, ``prsice``, ``BoltLMM``)
@@ -30,7 +30,7 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.co
 * ``SAIGE`` - container for SAIGE in R
 All containers (except ``SAIGE``) have a shared layer of common utilities (``wget``, ``gzip``, etc).
 
-## Software versions
+### Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
   Please keep up to date (and update the main [README.md](https://github.com/comorment/containers/blob/main/README.md) when pushing new container builds):
@@ -163,11 +163,12 @@ Checks for individual containers (e.g., ``gwas.sif``) can be executed by issuing
 py.test -v tests/test_<container-prefix>.py
 ```
 
-Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in ``<containers>/singularity/``,
+Note that the proper container files (*.sif files) corresponding to the different test scripts must exist in ``<containers>/singularity/>``,
 not only git LFS pointer files.
 
-# Git clone ignoring lfs 
+## Git clone ignoring LFS
 
-https://stackoverflow.com/questions/42019529/how-to-clone-pull-a-git-repository-ignoring-lfs
-
+See [stackoverflow.com/questions/42019529/how-to-clone-pull-a-git-repository-ignoring-lfs](https://stackoverflow.com/questions/42019529/how-to-clone-pull-a-git-repository-ignoring-lfs)
+```
 GIT_LFS_SKIP_SMUDGE=1 git clone git@github.com:comorment/containers.git
+```

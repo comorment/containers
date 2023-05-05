@@ -1,4 +1,4 @@
-### Genotypes
+# Genotypes
 
 We expect imputed genotype data, which may be split into multiple *cohorts* at each site.
 For example, MoBa imputed genotype data is currently split into three cohorts, one per genotype array: GSA, OMNI and HCE.

@@ -1,9 +1,9 @@
 # Documentation
 
-## [Singularity](docs/singularity)
+## Singularity
 
-Brief descriptions of the available software container builds.
+Brief descriptions of the available software container builds are available at [singularity](singularity).
 
-## [Specifications](docs/specifications)
+## Specifications
 
-Specifications of the input data format for GWAS anslysis, recommended in CoMorMent projects
+Specifications of the input data format for GWAS anslysis, recommended in CoMorMent projects are documentat at [specifications](specifications)

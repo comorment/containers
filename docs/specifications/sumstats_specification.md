@@ -1,4 +1,4 @@
-### Summary statistics
+# Summary statistics
 
 The results of GWAS are represented as summary statistics, with the following columns:
 
@@ -26,7 +26,7 @@ The sample size ``N`` is as reported by the software (``plink2`` or ``regenie``)
 ``CaseN`` and ``ControlN`` columns are only provided for ``plink2`` results for logistic regression.
 If you need these columns for ``regenie`` analysis consider also running ``plink2`` analysis, and copy over the columns into your ``regenie`` output.
 
-#### Comparison of columns names
+## Comparison of columns names
 
 * CoMorMent: this file
 * LDSC: https://github.com/precimed/ldsc/blob/master/munge_sumstats.py
