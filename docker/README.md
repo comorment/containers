@@ -23,7 +23,7 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.co
 
 ### Description of available containers
 
-The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./docs/singularity).
+The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./../docs/singularity).
 
 ### Software versions
 
