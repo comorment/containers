@@ -1,4 +1,4 @@
-## gwas.sif
+# ``gwas.sif`` container
 
 The ``gwas.sif`` container file has multiple tools related to imputation and GWAS analysis, as summarized in this [table](./../../docker#software-versions).
 

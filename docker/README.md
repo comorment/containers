@@ -4,11 +4,11 @@ This repository is used to develop and document [Singularity](https://sylabs.io)
 
 ## Getting started
 
-For new users we recommend to go over introductory instructions in [docs/hello.md](https://github.com/comorment/containers/blob/main/docs/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
+For new users we recommend to go over introductory instructions in [docs/singularity/hello.md](./../docs/singularity/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
 
-If you would like to contribute to developing these containers, please see  [docs/contributing.md](https://github.com/comorment/containers/blob/main/CONTRIBUTING.md).
+If you would like to contribute to developing these containers, please see the [CONTRIBUTING](./../CONTRIBUTING.md) file.
 
-For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.com/comorment/containers/blob/main/docs/gwas.md).
+For a tutorial on GWAS with synthetic data, see [docs/gwas.md](./../docs/gwas/gwas.md).
 
 ### Prerequisites (to running tutorials)
 
