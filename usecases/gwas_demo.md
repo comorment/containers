@@ -3,15 +3,15 @@
 This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
 Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software to compute polygenic risk scores.
 
-This will use genotype and phenotype data formatted according to [CoMorMent specification](../gwas/pheno_geno_specification.md),
-and the helper [gwas.py](../gwas/gwas.py) script that reads the phenotype data,
+This will use genotype and phenotype data formatted according to [CoMorMent specifications](../docs/specifications),
+and the helper [gwas.py](../scripts/gwas/gwas.py) script that reads the phenotype data,
 extracts user-defined subset of phenotypes and covariates,
 and prepares the scripts or SLURM jobs for ``plink2`` and ``regenie`` analysis.
 In this demo we're using example data from [reference/examples/regenie](../reference/examples/regenie) folder.
 Take a moment to look at the [phenotype file](../reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](../reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
 For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](../reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](../reference/examples/regenie/example_3chr.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script and [config.yaml](../gwas/config.yaml) file from ``$COMORMENT/containers/gwas/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
+Now, to run this use case, just copy the [gwas.py](../scripts/gwas/gwas.py) script and [config.yaml](../scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
@@ -88,7 +88,7 @@ run2_regenie_PHENO.gz
 run2_regenie_PHENO2.gz
 ```
 
-Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](../gwas/sumstats_specification.md).
+Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](../docs/specifications/sumstats_specification.md).
 
 It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
 If you have genotypes formatted this way, the only change you need is to change ``--geno-file`` file, pointing it to ``.bgen``  (or a ``.vcf``) file
@@ -176,7 +176,7 @@ Filtering options:
   --geno GENO           threshold for filtering on per-variant missingness rate)
 ```
 
-## How to PRSice2 software
+## How to run PRSice2 software
 
 Computing polygenic risk scores require (and testing how they work on a known phenotype data)  
 require a similar set input to what you use for running a GWAS analysis,
