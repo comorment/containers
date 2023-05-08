@@ -7,4 +7,4 @@ The following use cases illustrate applications of CoMorMent containers:
 * [meta_simu.md](./meta_simu.md) describe use cases related to meta-analysis
 * [bolt-lmm_demo.md](./bolt-lmm_demo.md) describes how to run bolt-lmm
 * [saige_demo.md](./saige_demo.md) describes how to run Saige
-* [pgs/LDpred2](./pgs/LDpred2.md) describes how to run PRS analyses using LDpred2
+* [pgs/LDpred2](pgs) describes how to run PRS analyses using LDpred2
