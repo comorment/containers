@@ -23,7 +23,7 @@ Additional tools are available in separate repositories:
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
 * <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``r.sif`` ([more info](scripts/pgs)).
 
-## <a name="project-status"></a>Project status
+## Project status
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7385621.svg)](https://doi.org/10.5281/zenodo.7385621)
 [![Documentation Status](https://readthedocs.org/projects/comorment-containers/badge/?version=latest)](https://comorment-containers.readthedocs.io/en/latest/?badge=latest)
@@ -31,7 +31,7 @@ Additional tools are available in separate repositories:
 [![Hadolint](https://github.com/comorment/containers/actions/workflows/docker.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker.yml)
 [![Flake8](https://github.com/comorment/containers/actions/workflows/python.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/python.yml)
 
-## <a name="getting-started"></a>Getting started
+## Getting started
 
 We recommend to clone this entire repository using ``git clone.``
 However, you need to enable [install Git LFS extension](https://git-lfs.github.com/).
