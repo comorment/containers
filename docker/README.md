@@ -8,11 +8,13 @@ For new users we recommend to go over introductory instructions in [docs/singula
 
 If you would like to contribute to developing these containers, please see the [CONTRIBUTING](./../CONTRIBUTING.md) file.
 
-For a tutorial on GWAS with synthetic data, see [docs/gwas.md](./../docs/gwas/gwas.md).
+For a tutorial on GWAS with synthetic data, see [docs/usecases/gwas_demo.md](./../docs/usecases/gwas_demo.md).
 
 ### Prerequisites (to running tutorials)
 
-* download containers shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
+NOTE: This is out of date. Confer [docs/usecases](./../docs/usecases).
+
+* download container files shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
 * download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
   and create an environmental variable ``COMORMENT_REF`` pointing to the folder containing extracted ``comorment_ref.tar.gz`` data.
   If you want to see the content of ``comorment_ref.tar.gz`` without downloading and extracting,
@@ -21,11 +23,11 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](./../docs/gwas/gw
 * create an empty folder called ``data``, for storing the results and intermediate files produced by running containers.
   (most instructinos mount this folder like this: ``-B data:/data``).
 
-### Description of available containers
+## Description of available containers
 
 The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./../docs/singularity).
 
-### Software versions
+## Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
   Please keep up to date (and update the main [README.md](./../README.md) when pushing new container builds):
