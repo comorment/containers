@@ -1,6 +1,6 @@
 # GWAS real
 
-This use case describes application of [gwas.py](../gwas/gwas.py) to perform GWAS in [MoBa](https://github.com/norment/moba), on height and major depression phenotypes.
+This use case describes application of the [gwas.py](../scripts/gwas/gwas.py) script to perform GWAS in [MoBa](https://github.com/norment/moba), on height and major depression phenotypes.
 
 Input files:
 
@@ -67,8 +67,8 @@ Also, I've combined QQ plots using [combine_figures.py](out/combine_figures.py) 
 Some resulting figures:
 
 * Manhattan plot for height GWAS:
-  ![run1_height.plink2.gz.manh.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/gwas_real/run1_height.plink2.gz.manh.png) -  
+  ![run1_height.plink2.gz.manh.png](gwas_real/run1_height.plink2.gz.manh.png) -  
 * Combined QQ plot for height GWAS:
-  ![height.qq.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/gwas_real/height.qq.png)
+  ![height.qq.png](gwas_real/height.qq.png)
 * Combined QQ plot for depression GWAS:
-  ![dep.qq.png](https://raw.githubusercontent.com/comorment/containers/main/usecases/gwas_real/dep.qq.png)
+  ![dep.qq.png](gwas_real/dep.qq.png)
