@@ -34,7 +34,7 @@ Additional tools are available in separate repositories:
 ## Getting started
 
 We recommend to clone this entire repository using ``git clone.``
-However, you need to enable [install Git LFS extension](https://git-lfs.github.com/).
+However, you need to install the [Git LFS extension](https://git-lfs.github.com/).
 This is done by downloading and unpacking the GitLFS package, adding ``git-lfs`` binary to a folder that is in your ``PATH``, and running
 ``git lfs install`` command.
 
@@ -71,8 +71,8 @@ export COMORMENT=/cluster/projects/p33/github/comorment
 export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
 ```
 
-Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](https://github.com/comorment/containers/blob/main/docs/singularity/hello.md) example.
-Take a look at other README files in the [docs](https://github.com/comorment/containers/tree/main/docs/singularity) folder, as well as detailed use cases in [usecases](usecases).
+Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](docs/singularity/hello.md) example.
+Take a look at other README files in the [docs/singularity](docs/singularity) folder, as well as detailed use cases in [usecases](usecases).
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
