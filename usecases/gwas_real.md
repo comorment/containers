@@ -63,7 +63,7 @@ ls out/*gz | parallel -j16 $PYTHON gwas.py qq --sumstats {} --out {}.qq.png
 ls out/*gz | parallel -j16 $PYTHON gwas.py manh --sumstats {} --out {}.manh.png
 ```
 
-Also, I've combined QQ plots using [combine_figures.py](out/combine_figures.py) script.
+Also, I've combined QQ plots using [combine_figures.py](gwas_real/combine_figures.py) script.
 Some resulting figures:
 
 * Manhattan plot for height GWAS:
