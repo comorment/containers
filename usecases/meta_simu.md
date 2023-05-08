@@ -39,11 +39,11 @@ GWAMA \
 -o /output_path
 ```
 
-For more informatino about GWAMA, see here: <https://genomics.ut.ee/en/tools/gwama>
+For more informatino about GWAMA, see [genomics.ut.ee/en/tools](https://genomics.ut.ee/en/tools).
 
 ## METAL
 
-METAL tool for meta-analysis ( <https://genome.sph.umich.edu/wiki/METAL_Documentation> ) is available in gwas.sif container and can be executed as follows:
+METAL tool for meta-analysis ([METAL_Documentation](https://genome.sph.umich.edu/wiki/METAL_Documentation)) is available in ``gwas.sif`` container and can be executed as follows:
 
 ```
 singularity exec --home $PWD:/home $SIF/gwas.sif metal
