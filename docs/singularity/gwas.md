@@ -1,33 +1,8 @@
 ## gwas.sif
 
-The ``gwas.sif`` container has multiple tools related to imputation and GWAS analysis:
-```
-    plink               # v1.90b6.18 64-bit (16 Jun 2020)
-    plink2              # v2.00a2.3LM 64-bit Intel (24 Jan 2020)
-    plink2_avx2         # v2.00a2.3LM AVX2 Intel (24 Jan 2020)
-    PRSice_linux        # 2.3.3 (2020-08-05) 
-    simu_linux          # Version v0.9.4
-    bolt                # v2.3.5 March 20, 2021  
-    gcta64              # version 1.93.2 beta Linux
-    gctb                # GCTB 2.02
-    qctool              # version: 2.0.6, revision 18b8f17
-    king                # KING 2.2.6 - (c)
-    metal               # version released on 2011-03-25
-    vcftools            # VCFtools (0.1.17)
-    bcftools            # Version: 1.12 (using htslib 1.12)
-    flashpca_x86-64     # flashpca 2.0
-    regenie             # REGENIE v2.0.2.gz
-    GWAMA               # GWAMA_v2.2.2.zip
-    shapeit2            # Version : v2.r904
-    impute4             # impute4.1.2_r300.3
-    minimac4            # Version: 1.0.2; Built: Fri Sep  3 13:25:51
-    bgenix              # version: 1.1.7, revision
-    cat-bgen, edit-bgen # same as bgenix
-```
-Only tools released as binaries (executables) are put in ``gwas`` containers.
-Each tool has corresponding folder within ``/tools/``.
-Most of the tools are copied to ``/bin``, and can be executed by the name of the binary (as listed above).
-Some specific tools (e.g. ``bolt``) add added to the path directly from their tools folder (e.g. ``/tools/bolt``) due to dependencies.
+The ``gwas.sif`` container file has multiple tools related to imputation and GWAS analysis, as summarized in this [table](./../docker#software-versions).
+
+Note that some specific tools (e.g. ``bolt``) are added to the path directly from their ``/tools`` folder (e.g. ``/tools/bolt``) due to hard-linked dependencies.
 Either way, all tools can be invoked by their name, as listed above. For example:
 
 ```

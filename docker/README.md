@@ -23,17 +23,12 @@ For a tutorial on GWAS with synthetic data, see [docs/gwas.md](https://github.co
 
 ### Description of available containers
 
-* ``hello`` - a hello-world introductory container
-* ``gwas`` - basic tools for gwas (``plink``, ``plink2``, ``prsice``, ``BoltLMM``)
-* ``python3`` - python3 packages distributed via [Miniforge](https://github.com/conda-forge/miniforge). This package also contains jupyter notebook.
-* ``R`` - container for R analysis (installed by native R package manager)
-* ``SAIGE`` - container for SAIGE in R
-All containers (except ``SAIGE``) have a shared layer of common utilities (``wget``, ``gzip``, etc).
+The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./docs/singularity).
 
 ### Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
-  Please keep up to date (and update the main [README.md](https://github.com/comorment/containers/blob/main/README.md) when pushing new container builds):
+  Please keep up to date (and update the main [README.md](./../README.md) when pushing new container builds):
   
   | container         | OS/tool             | version                                   | license
   | ----------------- | ------------------- | ----------------------------------------- | -------------
