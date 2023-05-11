@@ -7,7 +7,7 @@ This document is not for tracking [changes](CHANGELOG.md).
 
 - Stick to the [semantic versioning scheme](https://semver.org), with the `<MAJOR>.<MINOR>.<PATCH>` numbering [scheme](https://semver.org/#summary) with possible extensions.
 - Every merged PR should bump the version info in ``version/version.py`` depending on the nature of the change (minor fix means bumping `<PATCH>` and so forth).
-  Reset the lesser version number (e.g., `<PATCH>`) if the high version level is incremented (e.g, `<MINOR>`).
+  Reset the lesser version number (e.g., `<PATCH>`) if the higher version level is incremented (e.g, `<MINOR>`).
 - [comorment-containers.readthedocs.io](https://comorment-containers.rtfd.io) should trigger docs builds automatically with each merged PR.
 - Make sure that the [CHANGELOG](CHANGELOG.md) is kept up to date.
 - Create a tag for each change in version (excluding `dev`,`rc#` extensions, and similar).
@@ -17,7 +17,7 @@ This document is not for tracking [changes](CHANGELOG.md).
   git tag -a v<MAJOR>.<MINOR>.<PATCH> -m "Release v<MAJOR>.<MINOR>.<PATCH>"
   git push --tags
   ```
-- Each new tag warrants a new release. This is presently done on via [Draft new release](https://github.com/comorment/containers/releases/new).
+- Each new tag warrants a new release. This is presently done via [Draft new release](https://github.com/comorment/containers/releases/new).
   Here, choose the corresponding tag ID and Target, and set the appropriate title as `CoMorMent-Containers-v<MAJOR>.<MINOR>.<PATCH>`.
   Press the "Generate release notes" to list changes since the last appropriate tag (e.g., `v<MAJOR>.<MINOR>` for a bump to `<PATCH>`, and similar).
   Then, press "Publish release".
