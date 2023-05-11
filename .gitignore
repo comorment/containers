@@ -1,5 +1,8 @@
 # misc
 .DS_Store
+.cache
+.local
+.vscode
 
 # bash
 .bash_history
@@ -9,6 +12,11 @@
 .pytest_cache
 __pycache__
 .python_history
+.ipython
+.jupyter
+
+# plink
+*.error
 
 # R
 .rda
@@ -37,3 +45,4 @@ LDpred2.html
 *.sbk
 usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
+
