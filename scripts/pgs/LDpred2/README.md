@@ -30,6 +30,7 @@ First, note that using ``--geno-impute-zero`` is costly in computational time so
 create a copy of the genotypes, thus the imputation performed persists. If you wish to keep the original .rds/.bk files you should copy these prior to imputing.
 
 An example use of [imputeGenotypes.R](imputeGenotypes.R):
+
 ```
 # Conver from plink format to bigSNPR .rds/.bk files
 $RSCRIPT createBackingFile.R <fileGeno>.nomiss.bed <fileGeno>.nomiss.rds
@@ -59,7 +60,7 @@ If you don't provide these files, LDpred2 will try to download these automatical
 the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
 
 Two parameters that can be passed to ``calculateLD.R`` and affect the LD estimation are ``--window-size`` (region around index SNP in basepairs) and ``--thres-r2`` (threshold for including
-a SNP correlation in the LD). The default for ``--thres-r2`` is 0 in ``bigsnpr::snp_cor``, but ``calculateLD.R`` has a default of 0.01. 
+a SNP correlation in the LD). The default for ``--thres-r2`` is 0 in ``bigsnpr::snp_cor``, but ``calculateLD.R`` has a default of 0.01.
 
 The example script below will output one file per chromosome (``output/ld-chr-1.rds``, ``output/ld-chr-2.rds``, ...) and a "map" indicating the SNPs used in LD estimation (``output/map.rds``).
 The flag ``--sumstats`` can be used to filter SNPs to use where the first argument is the file and the second the column name or position of the RSID of the SNP (ie it does not neeed to be a proper
@@ -103,6 +104,7 @@ LDpred2 requires chromosome number, effective allele (eg A1), reference allele (
 information, the software will not run. Commonly, output from meta-analysis software such as metal do not contain this information. The [complementSumstats.R](complementSumstats.R)
 script can be used to add these columns. In the example below, this script is used to append this information in a set of gzipped files inside a directory, and output these as gzipped
 files:
+
 ```
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
@@ -173,23 +175,27 @@ $RSCRIPT ldpred2.R --ldpred-mode auto \
 ```
 
 ### Optional: Append score to existing file
+
 It is possible to merge the calculated score to an existing file. For example, you might have a file looking like this:
+
 ```
-FID	IID	SEX	PC1 ...
-1	1	M	1.1 ...
-2	2	F	0.3 ...
+FID IID SEX PC1 ...
+1 1 M 1.1 ...
+2 2 F 0.3 ...
 ```
+
 By replacing the ``$fileOut.inf`` and ``$fileOut.auto`` argument above with `<myfile>` and using the options
 ``--name-score myScoreInf`` for the ``--ldpred-mode inf`` statement and ``--name-score myScoreAuto`` for the other,
-and add the flag ``--out-merge`` you end up with these scores in the existing file. 
+and add the flag ``--out-merge`` you end up with these scores in the existing file.
+
 ```
-FID	IID	SEX	PC1 ...	myScoreInf	myScoreAuto
-1	1	M	1.1 ...	0.3		0.4
-2	2	F	0.3 ...	-0.2		0.1
+FID IID SEX PC1 ... myScoreInf myScoreAuto
+1 1 M 1.1 ... 0.3  0.4
+2 2 F 0.3 ... -0.2  0.1
 ```
+
 Note that by default, merging is based on the columns ``IID`` and ``FID`` in the output file. If these columns are
 named differently the option ``--out-merge-ids <FID column> <IID column`` should be used to specify their names.
-
 
 ### Height example
 

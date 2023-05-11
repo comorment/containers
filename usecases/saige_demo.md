@@ -1,11 +1,14 @@
-This usecase describe how to run Saige analysis (https://github.com/weizhouUMICH/SAIGE). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+# SAIGE demo
 
-1.   create folder for output
+This usecase describe how to run Saige analysis (<https://github.com/weizhouUMICH/SAIGE>). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+
+1. create folder for output
+
 ```
 mkdir saige_out
 ```
 
-2.  prepare input files (merge phenofile and cov file, generate --sampleFile argument required for SAIGE step2)
+2. prepare input files (merge phenofile and cov file, generate --sampleFile argument required for SAIGE step2)
 
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif sh -c "cut /REF/examples/regenie/example_3chr.fam -f 1 > /home/saige_out/samples.txt"
@@ -19,7 +22,7 @@ dff=pd.merge(df1,df2, on='IID', how='inner')
 dff.to_csv('saige_out/pheno_cov.txt', header=True, index=False, sep='\t', mode='a')
 ```
 
-3.  Run SAIGE step 1
+3. Run SAIGE step 1
 
 ```
 singularity exec --home $PWD:/home $SIF/saige.sif step1_fitNULLGLMM.R \
@@ -37,7 +40,7 @@ singularity exec --home $PWD:/home $SIF/saige.sif step1_fitNULLGLMM.R \
     --tauInit=1,0
 ```
 
-4.  Run SAIGE step 2
+4. Run SAIGE step 2
 
 ```
 singularity exec --home $PWD:/home $SIF/saige.sif step2_SPAtests.R \

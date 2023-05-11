@@ -29,6 +29,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* Updated file and folder layout, fixing minor documentation issues. Moving from ``m2r2`` to ``Myst-parser`` for Sphinx-generated online docs.
 * Rebuilt the R container
 * ````
   1d435af6003bbca95ef8cc062bf666fc  singularity/r.sif
@@ -119,7 +120,7 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 - add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
 - add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
 - added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
-- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [src/README.md](https://github.com/comorment/containers/src/README.md)
+- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [docker/README.md](https://github.com/comorment/containers/docker/README.md)
 - replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
 - replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
 - add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container

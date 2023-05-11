@@ -20,8 +20,8 @@ def test_gwas_py_plink():
 
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         call = (
             f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
             " gwas.py gwas --argsfile"
@@ -48,8 +48,8 @@ def test_gwas_py_plink():
 def test_gwas_py_regenie():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         call = (
             f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
             " gwas.py gwas --argsfile"
@@ -77,8 +77,8 @@ def test_gwas_py_regenie():
 def test_gwas_py_saige():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         call = (
             f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
             " gwas.py gwas --argsfile"
@@ -106,8 +106,8 @@ def test_gwas_py_saige():
 def test_gwas_py_variance_standardize():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno.dict')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.bed')} {d}")
@@ -135,8 +135,8 @@ def test_gwas_py_variance_standardize():
 def test_gwas_py_identical_FIDs():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno.dict')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.bed')} {d}")
@@ -163,8 +163,8 @@ def test_gwas_py_identical_FIDs():
 def test_gwas_py_custom_IIDs():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'gwas', 'config.yaml')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
+        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.pheno.dict')} {d}")
         os.system(f"cp {os.path.join(ref, 'example_3chr.bed')} {d}")

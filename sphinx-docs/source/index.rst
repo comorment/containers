@@ -10,34 +10,47 @@ This is the online documentation for the CoMorMent-containers project,
 hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 0
 
+   readme
+   docs
+   docker
+   reference
+   scripts
+   usecases
+   changelog
+   contributing
 
-.. mdinclude:: ../../README.md
+Note: if you read this on readthedocs, some internal links between pages may be broken (work in progress). 
+Use the left column for navigating.
 
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
-Container documentation
-=======================
+.. include:: ../../docs/README.md
+   :parser: myst_parser.sphinx_
 
-.. mdinclude:: ../../docs/README.md
+.. include:: ../../docker/README.md
+   :parser: myst_parser.sphinx_
 
+.. include:: ../../reference/README.md
+   :parser: myst_parser.sphinx_
 
-Usecases
-========
+.. include:: ../../scripts/README.md
+   :parser: myst_parser.sphinx_
 
-.. mdinclude:: ../../usecases/README.md
+.. include:: ../../usecases/README.md
+   :parser: myst_parser.sphinx_
 
+.. include:: ../../CHANGELOG.md
+   :parser: myst_parser.sphinx_
 
-Souce codes
-===========
-
-.. mdinclude:: ../../src/README.md
+.. include:: ../../CONTRIBUTING.md
+   :parser: myst_parser.sphinx_
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
