@@ -21,12 +21,34 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-- Added ``RELEASES.md`` file explaining steps needed to make releases.
-- Added ``PRSice_linux`` to ``r.sif``
-- Added tests for ``gwas.py``
-- Added package ``GWASTools`` to ``r.sif``. 
-- Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
-- Added status badges and citation.cff file 
+* Additions goes here
+
+### Updated
+
+* Updates goes here
+
+### Fixed
+
+* Fixes goes here
+
+### Removed
+
+* Removals goes here
+
+### Misc.
+
+* Miscellaneous goes here
+
+## [1.2] - 2023-05-11
+
+### Added
+
+* Added ``RELEASES.md`` file explaining steps needed to make releases.
+* Added ``PRSice_linux`` to ``r.sif``
+* Added tests for ``gwas.py``
+* Added package ``GWASTools`` to ``r.sif``. 
+* Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
+* Added status badges and citation.cff file 
 
 ### Updated
 
@@ -42,21 +64,21 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-- Set version file info to 1.2.dev (was 0.1.1dev)
-- Fixed bad parsing of arbitrary length list of args in ``usecases/LDpred2/complementSumstats.R``
-- Made ``usecases/LDpred2/complementSumstats.R`` write output file by default, not stdout.
-- Fixed print statement in ``usecases/LDpred2/complementSumstats.R`` causing crash w. ``--file-output`` arg.
-- Fixed ``ldpred2.R`` script in case ``--file-pheno``/``--col-pheno``/``--col-pheno-from-fam`` args were used, by removing these options altogether.
-- Use [packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16](https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16) as main R package repo
-- ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
+* Set version file info to 1.2.dev (was 0.1.1dev)
+* Fixed bad parsing of arbitrary length list of args in ``usecases/LDpred2/complementSumstats.R``
+* Made ``usecases/LDpred2/complementSumstats.R`` write output file by default, not stdout.
+* Fixed print statement in ``usecases/LDpred2/complementSumstats.R`` causing crash w. ``--file-output`` arg.
+* Fixed ``ldpred2.R`` script in case ``--file-pheno``/``--col-pheno``/``--col-pheno-from-fam`` args were used, by removing these options altogether.
+* Use [packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16](https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16) as main R package repo
+* ``gwas.py --variance-standardize`` option now throws an error when applied to columns with no variance
 
 ### Removed
 
-- Removed redundant `usecases/LDpred2_tutorial` files
+* Removed redundant `usecases/LDpred2_tutorial` files
 
 ### Misc
 
-- Python code max line length of 120 chars, ignore number of newlines between functions
+* Python code max line length of 120 chars, ignore number of newlines between functions
 
 ## [1.1] - 2022-12-01
 
@@ -109,34 +131,34 @@ Maintenance/feature release with the following main software incorporated into e
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
-- add option to append ``usecases/LDpred2/ldpred.R`` score output to an existing file
-- add script ``usecases/LDpred2/complementSumstats.R`` to append chromosome and position to summary statistics
-- add polygenic score output tests for ``usecases/LDpred2/ldpred.R``
-- add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
-- add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
-- add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
-- add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
-- add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
-- add basic GitHub actions from https://github.com/precimed/container_template.git
-- add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
-- add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
-- added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
-- add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [docker/README.md](https://github.com/comorment/containers/docker/README.md)
-- replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
-- replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
-- add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
-- add basic test that KING software runs in ``gwas.sif``
-- add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
-- add CHANGELOG.md (this file)
-- add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
-- add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
-- add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
-- add package ``qqman`` to ``r.sif``
-- add package ``yaml`` to ``python3.sif``
-- add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
-- add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
-- add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
-- add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
+* add option to append ``usecases/LDpred2/ldpred.R`` score output to an existing file
+* add script ``usecases/LDpred2/complementSumstats.R`` to append chromosome and position to summary statistics
+* add polygenic score output tests for ``usecases/LDpred2/ldpred.R``
+* add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
+* add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
+* add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
+* add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
+* add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
+* add basic GitHub actions from https://github.com/precimed/container_template.git
+* add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
+* add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
+* added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
+* add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [docker/README.md](https://github.com/comorment/containers/docker/README.md)
+* replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
+* replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
+* add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
+* add basic test that KING software runs in ``gwas.sif``
+* add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
+* add CHANGELOG.md (this file)
+* add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
+* add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
+* add ``gwas.py --pheno-sep`` and ``--dict-sep`` options to specify delimiter for the phenotype file and phenotype dictionary file
+* add package ``qqman`` to ``r.sif``
+* add package ``yaml`` to ``python3.sif``
+* add ``gctb_2.0_tutorial.zip`` reference files under ``reference/examples/gctb_2.0_tutorial``
+* add ``config.yaml`` file with configuration options, which can be specified via ``gwas.py --config`` option
+* add ``--chunk-size-bp`` and ``--bim`` option, allowing to run SAIGE analysis in smaller chunks
+* add ``--keep`` and ``--remove`` options to ``gwas.py``, allowing to keep and remove subsets of individuals from analysis; the functions work similarly to plink2 as described [here](https://www.cog-genomics.org/plink/2.0/filter#sample).
 
 ### Updated
 
@@ -157,10 +179,10 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 
 ### Removed
 
-- removed ``--geno-impute`` from ``usecases/LDpred2/ldpred2.R``. Functionality replaced by ``--geno-impute-zero`` and ``usecases/LDpred2/imputeGenotypes.R``
-- removed misc. source/data files in /tools/* from container builds
-- removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
-- the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
+* removed ``--geno-impute`` from ``usecases/LDpred2/ldpred2.R``. Functionality replaced by ``--geno-impute-zero`` and ``usecases/LDpred2/imputeGenotypes.R``
+* removed misc. source/data files in /tools/* from container builds
+* removed unused ``libquadmath0`` library from builds (affecting future ``gwas.sif``, ``hello.sif``, and ``python3.sif`` builds)
+* the following command-line options are removed; instead, they can be specified via ``config.yaml`` file:
   ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu``, ``--module-load``, ``--comorment-folder``, ``--singularity-bind``.
   Note that ``config.yaml`` file is now required.
 * ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
@@ -175,13 +197,11 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 * ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime.
   pleioFDR reference files are also moved to this repository.
 
-
-
 ## [1.0.0] - 2020-10-20
 
 ### Added
 
-- initial release of the following containers:
+* initial release of the following containers:
 
   ```
   70502c11d662218181ac79a846a0937a  enigma-cnv.sif
