@@ -29,6 +29,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* Updated file and folder layout, fixing minor documentation issues. Moving from ``m2r2`` to ``Myst-parser`` for Sphinx-generated online docs.
 * Rebuilt the R container
 * ````
   1d435af6003bbca95ef8cc062bf666fc  singularity/r.sif

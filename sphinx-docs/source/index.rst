@@ -21,6 +21,9 @@ hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/contain
    changelog
    contributing
 
+Note: if you read this on readthedocs, some internal links between pages may be broken (work in progress). 
+Use the left column for navigating.
+
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
 
