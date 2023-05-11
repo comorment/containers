@@ -1,13 +1,13 @@
 # ``python3.sif`` container
 
-``python3.sif`` container runs ``python 3.8.8`` from Anaconda, and has many useful python modules already installed, 
-including pandas, numpy, scipy, matplotlib and few others (see [here](https://github.com/comorment/gwas/blob/main/containers/python3/Dockerfile) for full details).
+``python3.sif`` container runs [Python](https://python.org) packaged by [Conda-forge](https://conda-forge.org), and has many useful python modules already installed, 
+including pandas, numpy, scipy, matplotlib, jupyter and few others (see [here](https://github.com/comorment/gwas/blob/main/containers/python3/Dockerfile) for full details).
 Basic usage is very simple:
 
 ```
 >singularity exec --contain --home $PWD:/home python3.sif python
-Python 3.8.8 (default, Feb 24 2021, 21:46:12) 
-[GCC 7.3.0] :: Anaconda, Inc. on linux
+Python 3.10.6 | packaged by conda-forge | (main, Aug 22 2022, 20:35:26) [GCC 10.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 You may also use jupyter notebook like this:
