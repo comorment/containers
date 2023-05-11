@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+- Added ``RELEASES.md`` file explaining steps needed to make releases.
 - Added ``PRSice_linux`` to ``r.sif``
 - Added tests for ``gwas.py``
 - Added package ``GWASTools`` to ``r.sif``. 
