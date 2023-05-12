@@ -1,3 +1,5 @@
+# Summary statistics
+
 The results of GWAS are represented as summary statistics, with the following columns:
 
 * ``SNP`` - marker name, for example rs#.
@@ -53,4 +55,3 @@ If you need these columns for ``regenie`` analysis consider also running ``plink
 | Z             | ?             | Z             | Z             | Z             | OK     |
 | FRQ           | FRQ_A_NNN     | FRQ           | EAF           | FRQ           | keep "FRQ" which makes more sense for non-EUR populations     |
 | missing       | ?             | missing       | EAF_1KG       | missing       | not needed     |
-
