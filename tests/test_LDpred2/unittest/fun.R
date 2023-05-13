@@ -62,9 +62,6 @@ test_that("Test getting effective sample size", {
   nCases <- 10
   nControls <-100
   colEs <- 'N'
-  #print('hej')
-  #print(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES))
-  #print('d')
   # Various errors
   expect_error(getEffectiveSampleSize(sumstats))
   expect_error(getEffectiveSampleSize(sumstats, effectiveSampleSize=nES, cases=nCases))

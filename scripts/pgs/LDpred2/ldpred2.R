@@ -178,6 +178,7 @@ sumstats$a0 <- toupper(sumstats$a0)
 sumstats$a1 <- toupper(sumstats$a1)
 
 ### Determine effective sample-size
+if (!is.na(colN)) colN <- tolower(colN)
 sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffectiveSampleSize, cases=argNCases, controls=argNControls, colES=colN)
 
 if (!is.na(fileKeepSNPs)) {
