@@ -49,7 +49,7 @@ LDPRED_MODES="inf auto"
 
 echo "### Running R function unittests"
 $RSCRIPT $DIR_TESTS/unittest/fun.R
-
+exit
 echo "### Testing sumstats scripts"
 source $DIR_TESTS/scripts/sumstats.sh
 

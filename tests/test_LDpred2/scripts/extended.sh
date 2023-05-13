@@ -39,11 +39,12 @@ echo "TEST error: Bad imputation mode"
 dump=$( { $LDP --ldpred-mode inf --geno-impute bad-mode --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 0 ]; then echo "No error received"; exit; fi
 
-# TEST: Complete runs of --ldpred-mode
-dump=$( { $LDP --ldpred-mode inf --out $fileOut.$MODE; } 2>&1 )
+# TEST: Complete run of --ldpred-mode
+dump=$( { $LDP --ldpred-mode inf --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test appending score to output file"
+# These variables are used by the unittests below
 export fileExisting=$fileOut.inf
 export scoreNameExisting=score # Exists from runs above
 export scoreNameNew=newScore # Name for appended score

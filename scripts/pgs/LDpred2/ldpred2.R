@@ -287,8 +287,8 @@ pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
 obj.bigSNP$fam[,nameScore] <- pred_all
 
 cat('\n### Writing file with PGS\n')
-if (fileOutputMerge) cat('Merging by', paste0(fileOutputMergeIDs, collapse=', '), '\n', sep = '')
+if (fileOutputMerge) cat('Merging by', paste0(fileOutputMergeIDs, collapse=', '), '\n')
 writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMerge, fileOutputMergeIDs)
-cat('Scores written to', fileOutput,'\n')
+cat('Scores written to', fileOutput, '\n')
 # Drop temporary file
 fileRemoved <- file.remove(paste0(tmp, '.sbk'))

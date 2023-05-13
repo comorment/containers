@@ -133,13 +133,7 @@ getEffectiveSampleSize <- function (sumstats, effectiveSampleSize=NULL, cases=NU
   argsCcNA <- isVarNAorNULL(cases) + isVarNAorNULL(controls)
   cases <- as.numeric(cases)
   controls <- as.numeric(controls)
-  colES <- tolower(colES)
   esInSumstats <- ifelse(isVarNAorNULL(colES), F, colES %in% colnames(sumstats))
-  print(esInSumstats)
-  print(argsCcNA)
-  print(effectiveSampleSize)
-  print(colES)
-  print(head(sumstats))
   if (argsCcNA == 2 && isVarNAorNULL(effectiveSampleSize) && !esInSumstats) 
     stop("Effective sample size has not been provided as an argument and no such column was found in the sumstats (column ", colES, ")")
   if (esInSumstats) esOut <- sumstats[, colES]
