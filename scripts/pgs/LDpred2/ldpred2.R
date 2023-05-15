@@ -139,16 +139,6 @@ cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
-# Check that there are no characters in chromosome column (causes snp_match to fail)
-if (!isOnlyNumeric(sumstats[, colChr])) {
-  cat('Removing rows with non-integers in column', colChr, '\n')
-  numeric <- getNumericIndices(sumstats[, colChr])
-  cat('Removing', nrow(sumstats) - length(numeric), 'SNPs...\n')
-  sumstats <- sumstats[numeric,]
-  cat('Retained', nrow(sumstats), 'SNPs\n')
-  sumstats[, colChr] <- as.numeric(sumstats[, colChr])
-}
-
 # Reame columns in bigSNP object
 colMap <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 map <- setNames(obj.bigSNP$map[-3], colMap)
@@ -176,6 +166,16 @@ colSumstats[colReplacements] <- colSumstatToGeno
 colnames(sumstats) <- colSumstats
 sumstats$a0 <- toupper(sumstats$a0)
 sumstats$a1 <- toupper(sumstats$a1)
+
+# Check that there are no characters in chromosome column (causes snp_match to fail)
+if (!isOnlyNumeric(sumstats$chr)) {
+  cat('Removing rows with non-integers in column', colChr, '\n')
+  numeric <- getNumericIndices(sumstats[, colChr])
+  cat('Removing', nrow(sumstats) - length(numeric), 'SNPs...\n')
+  sumstats <- sumstats[numeric,]
+  cat('Retained', nrow(sumstats), 'SNPs\n')
+  sumstats[, colChr] <- as.numeric(sumstats[, colChr])
+}
 
 ### Determine effective sample-size
 if (!is.na(colN)) colN <- tolower(colN)

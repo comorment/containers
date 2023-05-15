@@ -77,6 +77,7 @@ isVarNA <- function (x) {
   } else return(F)
 }
 
+# Same as isVarNA above but extended to NULL
 isVarNAorNULL <- function (x) {
   isVarNA(x) | is.null(x)
 }
