@@ -49,7 +49,7 @@ echo "Test appending score to output file"
 export fileExisting=$fileOut.inf
 export scoreNameExisting=score # Exists from runs above
 export scoreNameNew=newScore # Name for appended score
-dump=$( { $LDP --ldpred-mode inf --name-score $scoreNameNew --out $fileExisting --out-merge; } 2>&1 )
+dump=$( { $LDP --ldpred-mode inf --hyper-p-max 0.4 --name-score $scoreNameNew --out $fileExisting --out-merge; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Runing unittests on output"
