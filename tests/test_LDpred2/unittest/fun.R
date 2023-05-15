@@ -27,7 +27,7 @@ test_that("Test various functions", {
   expect_false(hasAllColumns(dta, c('no')))
 })
 
-test_that("Test if variable is NA (isVarNA)", {
+test_that("Test if variable is NA/NULL (isVarNA)", {
   expect_true(isVarNA(NA))
   expect_false(isVarNA(NULL))
   expect_false(isVarNA(c()))
@@ -35,6 +35,14 @@ test_that("Test if variable is NA (isVarNA)", {
   expect_false(isVarNA('a'))
   expect_false(isVarNA(1:3))
   expect_false(isVarNA(data.frame()))
+  # isVarNAorNULL()
+  expect_false(isVarNAorNULL(1))
+  expect_false(isVarNAorNULL('a'))
+  expect_false(isVarNAorNULL(F))
+  expect_false(isVarNAorNULL(1:3))
+  expect_true(isVarNAorNULL(c()))
+  expect_true(isVarNAorNULL(NA))
+  expect_true(isVarNAorNULL(NULL))
 })
 
 # Test data to use for complementSumstats
