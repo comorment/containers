@@ -98,6 +98,16 @@ $RSCRIPT calculateLD.R --geno-file-rds $fileGenoRDS \
 
 ## Running LDpred2 analysis
 
+### Effective sample-size
+
+LDpred2 requires information on effective sample-size. There are three ways to provide this to LDpred2:
+- As a column in the summary statistics, defaulting to column `N`. If it is a different column, provide with argument `--col-n`.
+- Manually calculated by providing this number with `--effective-sample-size`.
+- Manually specified by providing number of cases and controls with arguments `--n-cases` and `--n-controls`.
+
+Specifying the effective sample size manually will override any sample size column in the sumstats.
+Providing both `--effective-sample-size` and `--n-cases/--n-controls` will throw an error.
+
 ### Summary statistics
 
 LDpred2 requires chromosome number, effective allele (eg A1), reference allele (eg A2, A0), and either SNP ID (RSID) or genomic position. If the summary statistics lack any of this
