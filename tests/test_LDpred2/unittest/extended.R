@@ -13,5 +13,6 @@ test_that("Appended score output", {
   tmp <- bigreadr::fread2(fileExisting, nrows=2)
   cnames <- colnames(tmp)
   cnamesExp <- c(COLNAMES_ID_PLINK, scoreNameExisting, scoreNameNew)
-  expect_true(hasAllColumns(tmp, cnamesExp))
+  expect_true(hasAllColumns(tmp, cnamesExp), 
+	paste('Expected columns', paste0(cnamesExp, collapse=','), 'but', paste0(colnames(tmp), collapse=','), 'were found in', fileExisting))
 })
