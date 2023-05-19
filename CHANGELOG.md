@@ -29,7 +29,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Solved error due to case-sensitive handling of `--col-chr` in `ldpred2.R`
+* Solved error due to case-sensitive handling of `--col-chr` in `ldpred2.R` and naming of diagnostic plot when using `--name-score`.
 
 ### Removed
 
