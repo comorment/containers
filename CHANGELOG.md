@@ -21,7 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Added to ``ldpred2.R``: Multi-threading of ``snp_ldsc``, arguments for parameters to ``snp_ldpred2_auto``, and alternative effective sample-size calculation through ``--n-cases`` and ``n-controls``.
+* Additions goes here
 
 ### Updated
 
@@ -29,7 +29,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Solved error due to case-sensitive handling of `--col-chr` in `ldpred2.R` and naming of diagnostic plot when using `--name-score`.
+* Fixes goes here
 
 ### Removed
 
@@ -38,6 +38,16 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Misc.
 
 * Miscellaneous goes here
+
+## [1.3.0] - 2023-05-19
+
+### Added
+
+* Added to ``ldpred2.R``: Multi-threading of ``snp_ldsc``, arguments for parameters to ``snp_ldpred2_auto``, and alternative effective sample-size calculation through ``--n-cases`` and ``n-controls``.
+
+### Fixed
+
+* Solved error due to case-sensitive handling of `--col-chr` in `ldpred2.R` and naming of diagnostic plot when using `--name-score`.
 
 ## [1.2] - 2023-05-11
 
