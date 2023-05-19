@@ -60,6 +60,7 @@ parsed <- parse_args(par)
 fileGeno <- parsed$geno_file_rds
 fileSumstats <- parsed$sumstats
 fileOutput <- parsed$out
+fileOutputPlot <- fileOutput # diagnostic plot
 fileLD <- parsed$ld_file
 fileMetaLD <- parsed$ld_meta_file
 
@@ -88,6 +89,12 @@ colN <- parsed$col_n
 mergeByRsid <- !is.na(parsed$merge_by_rsid)
 # Polygenic score
 nameScore <- parsed$name_score
+# If the PGS is assigned a name, the diagnostic plot (auto mode only)
+# will get this name and placed in the same directory as the score
+if (!is.na(nameScore)) {
+	dirPlot <- dirname(fileOutput)
+	fileOutputPlot <- paste0(dirPlot, '/', nameScore, '.png')
+}
 # Parameters to LDpred
 parHyperPLength <- parsed$hyper_p_length
 parHyperPMax <- parsed$hyper_p_max
@@ -139,7 +146,7 @@ cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
 cat('Loaded', nrow(sumstats), 'SNPs\n')
 
-# Reame columns in bigSNP object
+# Rename columns in bigSNP object
 colMap <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 map <- setNames(obj.bigSNP$map[-3], colMap)
 
@@ -259,7 +266,7 @@ if (argLdpredMode == 'inf') {
   if (!is.na(setSeed)) set.seed(setSeed)
   multi_auto <- snp_ldpred2_auto(corr, df_beta, h2_init=h2_est, vec_p_init=seq_log(1e-4, parHyperPMax, length.out=parHyperPLength), 
                                  allow_jump_sign=F, shrink_corr=0.95, ncores=NCORES)
-  cat('Plotting diagnostics: ', fileOutput, '.png\n', sep='')
+  cat('Plotting diagnostics: ', fileOutputPlot, '\n', sep='')
   library(ggplot2)
   auto <- multi_auto[[1]]
   dta <- data.frame(path_p_est=auto$path_p_est, path_h2_est=auto$path_h2_est, x=1:length(auto$path_p_est))
@@ -271,7 +278,7 @@ if (argLdpredMode == 'inf') {
       geom_hline(aes(yintercept=auto$h2_est), col="blue") + labs(y="h2"),
     ncol=1, align="hv"
   )
-  ggsave(plt, file=paste0(fileOutput, '.png'))
+  ggsave(plt, file=fileOutputPlot)
   cat('Filtering chains\n')
   range <- sapply(multi_auto, function(auto) diff(range(auto$corr_est)))
   # Keep chains that pass the filtering below
