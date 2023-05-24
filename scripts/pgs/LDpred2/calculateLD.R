@@ -125,5 +125,6 @@ for (chr in chr2use) {
   saveRDS(corr0, file=fileName)
 }
 cat('\nWriting map to', fileLDMap, '\n')
+MAP <- subset(MAP, rsid %in% SNPs)
 saveRDS(MAP, file=fileLDMap)
 

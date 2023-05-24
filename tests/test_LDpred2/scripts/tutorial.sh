@@ -12,6 +12,7 @@ fileSumstats25k=$DIR_TESTS/data/public-data-sumstats25k.txt
 head -n 25000 $fileInputSumStats > $fileSumstats25k
 dump=$( { $LDE --sumstats $fileSumstats25k rsid ; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
 # Test adding the parameter --thres-r2
 dump=$( { $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
@@ -20,10 +21,22 @@ echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
 dump=$( { $LDE --extract $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
+# Use this LD to run LDpred
+LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
+  --ld-file $DIR_TESTS/output/ld/ld-chr@.rds \
+  --ld-meta-file $DIR_TESTS/output/ld/map.rds \
+  --merge-by-rsid --set-seed 1 \
+  --col-stat beta --col-stat-se beta_se \
+  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
+  --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
+
 echo "Test sampling individuals (N=400)"
 dump=$( { $LDE --sample-individuals 400 --extract $fileKeepSNPS; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
+dump=$( { $LDP --ldpred-mode inf --out $fileOut.inf; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+ 
 # Filter out SNPs that overlap with genotypes
 echo "Test LD estimation with SNP filtering"
 cut -f 1 -d , $fileInputSumStats > $DIR_TESTS/data/snps-for-ld.txt
@@ -33,14 +46,6 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 echo "Test no restrictions on snps (similar to tutorial)"
 dump=$( { $LDE; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
-# Use this LD to run LDpred
-LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
-  --ld-file $DIR_TESTS/output/ld/ld-chr@.rds \
-  --ld-meta-file $DIR_TESTS/output/ld/map.rds \
-  --merge-by-rsid --set-seed 1 \
-  --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
-  --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
 
 for MODE in $LDPRED_MODES; do
  dump=$( { $LDP --ldpred-mode $MODE --out $fileOut.$MODE; } 2>&1 )
