@@ -27,6 +27,7 @@ par <- add_argument(par, "--sample-seed", nargs=1, help="Set a seed for reproduc
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
 par <- add_argument(par, "--sumstats", nargs=2, help="Input file with GWAS summary statistics. First argument is the file, second is RSID column position (integer) or name.")
 par <- add_argument(par, "--extract", help="File with RSIDs of SNPs to extract from summary statistics")
+par <- add_argument(par, "--extract-individuals", help="File with individual identifiers to extract from genotype data")
 par <- add_argument(par, "--window-size", default=3, nargs=1, help="Window size in centimorgans, used for LD calculation")
 par <- add_argument(par, "--thres-r2", default=0.01, nargs=1, help="Threshold to restrict included SNPs in LD calculations")
 par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
@@ -39,8 +40,17 @@ fileKeepSNPs <- parsed$extract
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
+# Extract individuals
+extractIndividuals <- parsed$extract_individuals
+if (!is.na(extractIndividuals)) {
+  if (!file.exists(extractIndividuals)) stop('--extract-individuals: Could not find file ', extractIndividuals)
+}
 # Sample individuals
 sampleIndividuals <- parsed$sample_individuals
+if (!is.na(sampleIndividuals)) {
+  sampleIndividuals <- as.numeric(sampleIndividuals)
+  if (!is.numeric(sampleIndividuals)) stop('--sample-individuals needs to be numeric, got ', sampleIndividuals)
+}
 sampleSeed <- parsed$sample_seed
 if (!is.na(sampleSeed) & !isNumeric(sampleSeed)) stop('--sample-seed must be numeric, got ', sampleSeed)
 
@@ -63,7 +73,7 @@ POS <- obj.bigSNP$map$physical.pos
 
 # Create a dataframe to hold the ld for each SNP (uncertain about the minimum amount of variables needed here)
 MAP <- obj.bigSNP$map
-str(obj.bigSNP)
+
 # NOTE
 # Genetic distance is used by snp_cor, argument infos.pos. First, for some reason the documentation states that this is
 # supposed to be physical position basepairs (thus integers). However, the tutorial uses genetic distance in centimorgans. 
@@ -92,6 +102,15 @@ if (!is.na(fileSumstats)) {
 useSNPs <- MAP$rsid %in% SNPs
 cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
 
+# Extract individuals
+if (!is.na(extractIndividuals)) {
+  inds <- data.table::fread(extractIndividuals)
+  indIds <- obj.bigSNP$fam$sample.ID %in% inds[,1]
+  cat('Extracting ', sum(indIds), ' individuals\n')
+  individualSample <- which(indIds)
+}
+
+# Sample individuals
 individualSample <- rows_along(G)
 if (!is.na(sampleIndividuals)) {
   cat('Drawing', sampleIndividuals, 'individuals at random\n')
