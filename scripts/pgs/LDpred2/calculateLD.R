@@ -63,7 +63,7 @@ POS <- obj.bigSNP$map$physical.pos
 
 # Create a dataframe to hold the ld for each SNP (uncertain about the minimum amount of variables needed here)
 MAP <- obj.bigSNP$map
-
+str(obj.bigSNP)
 # NOTE
 # Genetic distance is used by snp_cor, argument infos.pos. First, for some reason the documentation states that this is
 # supposed to be physical position basepairs (thus integers). However, the tutorial uses genetic distance in centimorgans. 

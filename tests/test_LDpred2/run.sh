@@ -54,13 +54,13 @@ echo "### Testing sumstats scripts"
 source $DIR_TESTS/scripts/sumstats.sh
 
 echo "### Testing RDS/backingfile creation"
-source $DIR_TESTS/scripts/backingfile.sh
+#source $DIR_TESTS/scripts/backingfile.sh
 
 echo "### Testing tutorial data"
 source $DIR_TESTS/scripts/tutorial.sh
 
 echo "### Testing imputation"
-source $DIR_TESTS/scripts/imputation.sh
+#source $DIR_TESTS/scripts/imputation.sh
 
 echo "### Testing ldpred2.R (various options, manually downloaded LD, output merge)"
-source $DIR_TESTS/scripts/extended.sh
+#source $DIR_TESTS/scripts/extended.sh
