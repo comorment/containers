@@ -39,6 +39,16 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.3.1] - 2023-06-05
+
+### Added
+
+* Added unittest for uppercase chromosome column name in sumstats files, that may also contain chromosomes encoded as character(s)
+
+### Fixed
+
+* Fixed issue with character encoding in with uppercase chromosome column name in sumstats files. 
+
 ## [1.3.0] - 2023-05-19
 
 ### Added
