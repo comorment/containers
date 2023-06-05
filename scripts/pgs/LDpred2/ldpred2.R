@@ -177,11 +177,11 @@ sumstats$a1 <- toupper(sumstats$a1)
 # Check that there are no characters in chromosome column (causes snp_match to fail)
 if (!isOnlyNumeric(sumstats$chr)) {
   cat('Removing rows with non-integers in column', colChr, '\n')
-  numeric <- getNumericIndices(sumstats[, colChr])
+  numeric <- getNumericIndices(sumstats$chr)
   cat('Removing', nrow(sumstats) - length(numeric), 'SNPs...\n')
   sumstats <- sumstats[numeric,]
   cat('Retained', nrow(sumstats), 'SNPs\n')
-  sumstats[, colChr] <- as.numeric(sumstats[, colChr])
+  sumstats$chr <- as.numeric(sumstats$chr)
 }
 
 ### Determine effective sample-size
