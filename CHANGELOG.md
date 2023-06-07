@@ -39,7 +39,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
-## [1.3.1] - 2023-06-05
+## [1.3.1] - 2023-06-07
 
 ### Added
 
