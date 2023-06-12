@@ -1,6 +1,6 @@
 # LDpred2
 
-The files in this directory exemplifies how to run the LDpred2 analysis using the ``bigsnpr`` R library, using [ldpred2.R](ldpred2.R) script developed by Andreas Jangmo, Espen Hagen and Oleksandr Frei. The script is based on this [tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html).
+The files in this directory exemplifies how to run the LDpred2 analysis using the ``bigsnpr`` R library, using [ldpred2.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2.R) script developed by Andreas Jangmo, Espen Hagen and Oleksandr Frei. The script is based on this [tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html).
 The LDpred2 method is explained in the publication:
 
 - Florian Privé, Julyan Arbel, Bjarni J Vilhjálmsson, LDpred2: better, faster, stronger, Bioinformatics, Volume 36, Issue 22-23, 1 December 2020, Pages 5424–5431, <https://doi.org/10.1093/bioinformatics/btaa1029>
@@ -13,7 +13,7 @@ This README assumes the following two repositories are cloned using [git](https:
 - <https://github.com/comorment/ldpred2_ref>
 
 We also assume the following commands are executed from the current folder
-(the one containing [createBackingFile.R](createBackingFile.R) and [ldpred2.R](ldpred2.R) scripts).
+(the one containing [createBackingFile.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/createBackingFile.R) and [ldpred2.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2.R) scripts).
 
 ### Note on filtering of genotype data
 
@@ -23,13 +23,13 @@ This should be done for polygenic score analyses intended for publication.
 ### Note on missing genotypes
 
 If genotypes are missing LDpred2 will stop and return an error (``Error: You can't have missing values in 'X'.``). One can either pass ``--geno-impute-zero`` to replace missing genotypes with zero or impute with any other tool such as plink,
-or use [imputeGenotypes.R](imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently only "simple" imputation with mode, mean, random or zero is supported by this
+or use [imputeGenotypes.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently only "simple" imputation with mode, mean, random or zero is supported by this
 script. For a documentation on these methods see [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
 
 First, note that using ``--geno-impute-zero`` is costly in computational time so it's better to impute prior to running ldpred2.R. Second, imputeGenotypes.R does not
 create a copy of the genotypes, thus the imputation performed persists. If you wish to keep the original .rds/.bk files you should copy these prior to imputing.
 
-An example use of [imputeGenotypes.R](imputeGenotypes.R):
+An example use of [imputeGenotypes.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/imputeGenotypes.R):
 
 ```
 # Conver from plink format to bigSNPR .rds/.bk files
@@ -111,7 +111,7 @@ Providing both `--effective-sample-size` and `--n-cases/--n-controls` will throw
 ### Summary statistics
 
 LDpred2 requires chromosome number, effective allele (eg A1), reference allele (eg A2, A0), and either SNP ID (RSID) or genomic position. If the summary statistics lack any of this
-information, the software will not run. Commonly, output from meta-analysis software such as metal do not contain this information. The [complementSumstats.R](complementSumstats.R)
+information, the software will not run. Commonly, output from meta-analysis software such as metal do not contain this information. The [complementSumstats.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/complementSumstats.R)
 script can be used to add these columns. In the example below, this script is used to append this information in a set of gzipped files inside a directory, and output these as gzipped
 files:
 
@@ -146,8 +146,8 @@ controls the location of the output file and the column separator used (defaults
 
 ### Synthetic example (chr21 and chr22)
 
-The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
-This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather then clone the entire repo.
+The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
+This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files from the [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather then clone the entire repo.
 
 ```
 # point to input/output files
@@ -273,7 +273,7 @@ The script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`
 
 ## Slurm job
 
-On an HPC resource the same analysis can be run by first writing a job script [run_ldpred2_slurm.job](run_ldpred2_slurm.job).
+On an HPC resource the same analysis can be run by first writing a job script [run_ldpred2_slurm.job](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/run_ldpred2_slurm.job).
 In order to run the job, first make sure that the ``SBATCH_ACCOUNT`` environment variable is defined:
 
 ```

@@ -12,14 +12,16 @@ hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/contain
 .. toctree::
    :maxdepth: 0
 
-   readme
-   docs
-   docker
-   reference
-   scripts
-   usecases
-   changelog
-   contributing
+   README
+   docs/README
+   docs/singularity/README
+   docs/specifications/README
+   docker/README
+   reference/README
+   scripts/README
+   usecases/README
+   CHANGELOG
+   CONTRIBUTING
 
 Note: if you read this on readthedocs, some internal links between pages may be broken (work in progress). 
 Use the left column for navigating.
