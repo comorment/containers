@@ -10,21 +10,60 @@ This is the online documentation for the CoMorMent-containers project,
 hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::
+   :caption: Containers
    :maxdepth: 0
-
+   
    README
+
+.. toctree::
+   :caption: Documentation
+   :glob:
+   :maxdepth: 0
+   
    docs/README
-   docs/singularity/README
-   docs/specifications/README
+   docs/singularity/*
+   docs/specifications/*
+
+.. toctree::
+   :caption: Docker
+   :maxdepth: 0
+   
    docker/README
+
+.. toctree::
+   :caption: Reference
+   
    reference/README
+
+.. toctree::
+   :caption: Scripts
+   :maxdepth: 0
+   
    scripts/README
-   usecases/README
+   scripts/gwas/README
+   scripts/pgs/README
+   scripts/pgs/LDpred2/README
+
+.. toctree::
+   :caption: Singularity
+   :maxdepth: 0
+   
+   singularity/README
+
+.. toctree::
+   :caption: Usecases
+   :glob:
+   :maxdepth: 0
+   
+   usecases/*
+
+.. toctree::
+   :caption: Other
+   :maxdepth: 0
+   
    CHANGELOG
    CONTRIBUTING
 
-Note: if you read this on readthedocs, some internal links between pages may be broken (work in progress). 
-Use the left column for navigating.
 
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
