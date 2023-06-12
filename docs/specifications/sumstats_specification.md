@@ -16,7 +16,7 @@ The results of GWAS are represented as summary statistics, with the following co
 * ``L95``, ``U95`` - lower and upper 95% confidence interval of the ``BETA``.
 * ``P`` - p-value
 
-For ``SNP``, ``CHR``, ``BP``, ``A1`` and ``A2`` columns the [gwas.py](gwas.py) script will simply copy over the information from the genetic file, i.e. from ``.bgen`` or ``.bim`` files. This means that ``SNP`` is likely to be dbSNP rs#, or some other form of identifyied such as ``CHR:BP:A1:A2``. 
+For ``SNP``, ``CHR``, ``BP``, ``A1`` and ``A2`` columns the [scripts/gwas/gwas.py](https://github.com/comorment/containers/tree/main/scripts/gwas/gwas.py) script will simply copy over the information from the genetic file, i.e. from ``.bgen`` or ``.bim`` files. This means that ``SNP`` is likely to be dbSNP rs#, or some other form of identifyied such as ``CHR:BP:A1:A2``. 
 For ``CHR`` and ``BP``, there we don't enforce a specific genomic build - it all depends on what build was used by the genotype data.
 Finally, ``A1`` and ``A2`` are not guarantied to be minor or major alleles, but ``A1`` will be used as an effect allele for signed summary statistics (i.e. ``Z`` and ``BETA`` columns).
 

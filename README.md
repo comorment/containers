@@ -4,15 +4,15 @@ The goal of the [CoMorMent](https://www.comorment.uio.no) containers repository 
 
 Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [Getting started](#getting-started) section below.
 
-Most of the tools require additional [reference](reference) data, provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
+Many of the tools require additional reference data provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
 <https://github.com/comorment/reference>. This repository is private - please approach your contact within CoMorMent project to enable your access.
 
-Description of containers and usage instructions are provided in the [docs](docs) folder.
+Description of containers and usage instructions are provided in the [docs](https://github.com/comorment/containers/tree/main/docs) folder.
 
-More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](usecases) folder.
+More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](https://github.com/comorment/containers/tree/main/usecases) folder.
 
-The history of changes is available in the [CHANGELOG.md](https://github.com/comorment/containers/blob/main/CHANGELOG.md) file.
+The history of changes is available in the [CHANGELOG.md](./CHANGELOG.md) file.
 
 Additional tools are available in separate repositories:
 
@@ -21,7 +21,7 @@ Additional tools are available in separate repositories:
 * <https://github.com/comorment/popcorn> - cross-ancestry genetic correlations
 * <https://github.com/comorment/magma> - MAGMA, LAVA, lava-partitioning tools
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
-* <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``r.sif`` ([more info](scripts/pgs)).
+* <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``r.sif`` ([more info](https://github.com/comorment/containers/tree/main/scripts/pgs)).
 
 ## Project status
 
@@ -71,8 +71,8 @@ export COMORMENT=/cluster/projects/p33/github/comorment
 export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
 ```
 
-Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](docs/singularity/hello.md) example.
-Take a look at other README files in the [docs/singularity](docs/singularity) folder, as well as detailed use cases in [usecases](usecases).
+Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](./docs/singularity/hello.md) example.
+Take a look at the [README](./docs/singularity/README.md) file in the [docs/singularity](https://github.com/comorment/containers/tree/main/docs/singularity) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases).
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
@@ -90,7 +90,7 @@ Earlier version (prior to April 2021) of all containers and refrence data was di
 ## Source files
 
 The source files for configuring and building the container files provided here are found in the [docker](https://github.com/comorment/containers/tree/main/docker) directory.
-See the corresponding [README](docker) file therein for details.
+See the corresponding [README](./docker/README.md) file therein for details.
 
 ## Online documentation
 

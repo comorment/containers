@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Note that CoMorMent containers are organized using several GitHub repositories:
 
-* <https://github.com/comorment/containers> - .sif files, public reference data, documentation, common scripts
-* <https://github.com/comorment/reference> - private reference data with access restricted to CoMorMent collaborator
+* [https://github.com/comorment/containers](https://github.com/comorment/containers) - .sif files, public reference data, documentation, common scripts
+* [https://github.com/comorment/reference](https://github.com/comorment/reference) - private reference data with access restricted to CoMorMent collaborator
 
 All of the above repositories are covered by this CHANGELOG. They will have the same version tags on github.
-In addition, we have repositories containing specific tools, e.g. <https://github.com/comorment/HDL>,
+In addition, we have repositories containing specific tools, e.g. [https://github.com/comorment/HDL](https://github.com/comorment/HDL),
 which will be covered by their own CHANGELOG.md file.
 
 To identify the version of a .sif file, run ``md5sum <container>.sif`` command and find the MD5 checksum in the list below.
@@ -35,9 +35,15 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Removals goes here
 
-### Misc.
+### Misc
 
 * Miscellaneous goes here
+
+## [1.3.2] - 2023-06-12
+
+### Fixed
+
+* Fixed misc. issues with cross references in online documentation
 
 ## [1.3.1] - 2023-06-07
 
@@ -47,7 +53,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Fixed issue with character encoding in sumstats files, in case chromosome column name is uppercase. 
+* Fixed issue with character encoding in sumstats files, in case chromosome column name is uppercase.
 
 ## [1.3.0] - 2023-05-19
 
@@ -66,18 +72,21 @@ If MD5 sum is not listed for a certain release then it means that the container 
 * Added ``RELEASES.md`` file explaining steps needed to make releases.
 * Added ``PRSice_linux`` to ``r.sif``
 * Added tests for ``gwas.py``
-* Added package ``GWASTools`` to ``r.sif``. 
+* Added package ``GWASTools`` to ``r.sif``.
 * Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
-* Added status badges and citation.cff file 
+* Added status badges and citation.cff file
 
 ### Updated
 
 * Updated file and folder layout, fixing minor documentation issues. Moving from ``m2r2`` to ``Myst-parser`` for Sphinx-generated online docs.
 * Rebuilt the R container
+
 * ````
   1d435af6003bbca95ef8cc062bf666fc  singularity/r.sif
   ```
+
 * Rebuilt the R container
+
   ```
   23d195a10b84603b15d0e8c42df40fbd  singularity/r.sif
   ```
@@ -102,7 +111,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [1.1] - 2022-12-01
 
-Maintenance/feature release with the following main software incorporated into each container: 
+Maintenance/feature release with the following main software incorporated into each container:
 
   | container         | OS/tool             | version                                   | license
   | ----------------- | ------------------- | ----------------------------------------- | -------------
@@ -151,24 +160,25 @@ Maintenance/feature release with the following main software incorporated into e
 Main changes since release version [1.0.0](https://github.com/comorment/containers/releases/tag/v1.0.0):
 
 ### Added
+
 * add option to append ``usecases/LDpred2/ldpred.R`` score output to an existing file
 * add script ``usecases/LDpred2/complementSumstats.R`` to append chromosome and position to summary statistics
 * add polygenic score output tests for ``usecases/LDpred2/ldpred.R``
 * add ``usecases/LDpred2/imputeGenotypes.R`` for imputing genotypes using R-package bigSNPR
 * add ``usecases/LDpred2/calculateLD.R`` for calculation LD using R-package bigSNPR.
-* add autobuilt online documentation from repository sources at https://comorment-containers.readthedocs.io/en/latest/
+* add autobuilt online documentation from repository sources at <https://comorment-containers.readthedocs.io/en/latest/>
 * add R libraries for LDpred2 analysis to `r.sif` + corresponding example.
 * add tests for ``metal`` and ``qctool`` in ``gwas.sif`` build
-* add basic GitHub actions from https://github.com/precimed/container_template.git
+* add basic GitHub actions from <https://github.com/precimed/container_template.git>
 * add ``FaST-LMM`` (version 0.6.3) to future ``python3.sif``, and corresponding test
 * add ``shapeit4.2`` binary (shapeit4 v.4.2.2) and HTSlib (1.11) to future ``gwas.sif`` builds, and corresponding test
 * added additional tests for software in ``gwas.sif``, ``python3.sif`` builds
-* add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [docker/README.md](https://github.com/comorment/containers/docker/README.md)
+* add versions identifiers for all explicitly installed software across ``hello.sif``, ``gwas.sif``, ``python3.sif``, ``r.sif``, listed in [docker/README.md](./docker/README.md)
 * replaced Ubuntu 18.04 with 20.04 (LTS) as base image for ``hello.sif``, ``gwas.sif``, ``python3.sif``
-* replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds 
+* replaced ``src/scripts/install_miniconda3.sh`` by ``scr/scripts/install_mambaforge.sh`` which is now used in future  ``python3.sif`` builds
 * add tests for bgenix and Minimac4 software in ``gwas.sif``, removing build-time dependencies for these from container
 * add basic test that KING software runs in ``gwas.sif``
-* add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas). 
+* add Dockerfiles and install scripts for `gwas.sif`, `hello.sif`, `python3.sif`, `r.sif`, `saige.sif` from [gwas](https://github.com/comorment/gwas).
 * add CHANGELOG.md (this file)
 * add ``gwas.py --analysis saige`` option, allowing to run SAIGE analysis
 * add ``gwas.py --analysis figures`` option, using R qqman for QQ and manhattan plots
@@ -183,6 +193,7 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 ### Updated
 
 * rebuilt the following containers following version pinning in Dockerfiles, install scripts, etc. (see above additions):
+
   ```
   bb7a8e0b977e29e03067d75d19803913  singularity/gwas.sif
   11ac9e8fe69df07d650bd5e1e7cdeee5  singularity/hello.sif
@@ -208,13 +219,13 @@ Main changes since release version [1.0.0](https://github.com/comorment/containe
 * ``gwas.py --analysis loci manh qq`` options as removed (fix #22)
 * ``--bed-fit``, ``--bed-test``, ``--bgen-fit``, ``--bgen-test`` options of ``gwas.py`` are removed; use new options ``--geno-fit-file`` and ``--geno-file`` instead
 * remove ``regenie.sif`` and ``regenie3.sif``, because regenie software is also included in ``gwas.sif``
-* remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container (<https://github.com/comorment/mixer>). This is also where you will find MiXeR's use-cases.
-* MAGMA, LAVA and ldblock software is moved to https://github.com/comorment/magma.
+* remove MiXeR package from ``python3.sif`` container, because MiXeR is now available as a separate container ([https://github.com/comorment/mixer](https://github.com/comorment/mixer)). This is also where you will find MiXeR's use-cases.
+* MAGMA, LAVA and ldblock software is moved to <https://github.com/comorment/magma>.
   MAGMA reference files are also moved to this repository.
-* enigma-cnv.sif and enigma-cnv.sif is moved to https://github.com/comorment/iPsychCNV
-  enigma-cnv.sif is also available here: in https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers
-* tryggve_query.sif  is moved to https://github.com/comorment/Tryggve_psych
-* ``matlabruntime.sif`` container is moved to https://github.com/comorment/matlabruntime.
+* enigma-cnv.sif and enigma-cnv.sif is moved to <https://github.com/comorment/iPsychCNV>
+  enigma-cnv.sif is also available here: in <https://github.com/ENIGMA-git/ENIGMA-CNV/tree/main/CNVCalling/containers>
+* tryggve_query.sif  is moved to <https://github.com/comorment/Tryggve_psych>
+* ``matlabruntime.sif`` container is moved to <https://github.com/comorment/matlabruntime>.
   pleioFDR reference files are also moved to this repository.
 
 ## [1.0.0] - 2020-10-20

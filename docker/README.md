@@ -8,11 +8,11 @@ For new users we recommend to go over introductory instructions in [docs/singula
 
 If you would like to contribute to developing these containers, please see the [CONTRIBUTING](./../CONTRIBUTING.md) file.
 
-For a tutorial on GWAS with synthetic data, see [docs/usecases/gwas_demo.md](./../docs/usecases/gwas_demo.md).
+For a tutorial on GWAS with synthetic data, see [usecases/gwas_demo.md](./../usecases/gwas_demo.md).
 
 ### Prerequisites (to running tutorials)
 
-NOTE: This is out of date. Confer [docs/usecases](./../docs/usecases).
+NOTE: This is out of date. Confer [usecases/README.md](./../usecases/README.md).
 
 * download container files shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
 * download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
@@ -25,7 +25,7 @@ NOTE: This is out of date. Confer [docs/usecases](./../docs/usecases).
 
 ## Description of available containers
 
-The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./../docs/singularity).
+The detailed description of the available container [files](https://github.com/comorment/containers/tree/main/singularity) provided in this repository are found [here](./../docs/singularity/README.md).
 
 ## Software versions
 
