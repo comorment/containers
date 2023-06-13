@@ -287,13 +287,14 @@ cat('Scoring all individuals...\n')
 # find which SNPs to use, and whether we need to flip their sign
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
 map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
+
 tryCatch(
-  pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']]),
+  pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']], ncores=NCORES),
   error=function(er) {
     cat('bigstatsr::big_prodVec threw an error:\n')
     message(er)
     cat('\n\nErrors regarding "missingness in X" may be solved by imputing genotype data or passing --geno-impute-zero\n')
-    quit('no')
+    er
   }, warning=function(er) {
     cat('bigstatsr::big_prodVec threw a warning:\n')
     message(er)
