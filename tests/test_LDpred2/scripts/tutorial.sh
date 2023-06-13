@@ -13,9 +13,6 @@ head -n 25000 $fileInputSumStats > $fileSumstats25k
 dump=$( { $LDE --sumstats $fileSumstats25k rsid ; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
-echo "$dump"
-exit
-
 # Test adding the parameter --thres-r2
 dump=$( { $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi

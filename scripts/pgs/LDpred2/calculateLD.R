@@ -102,6 +102,7 @@ if (!is.na(fileSumstats)) {
 useSNPs <- MAP$rsid %in% SNPs
 cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
 
+individualSample <- rows_along(G)
 # Extract individuals
 if (!is.na(extractIndividuals)) {
   inds <- data.table::fread(extractIndividuals)
@@ -111,12 +112,12 @@ if (!is.na(extractIndividuals)) {
 }
 
 # Sample individuals
-individualSample <- rows_along(G)
 if (!is.na(sampleIndividuals)) {
   cat('Drawing', sampleIndividuals, 'individuals at random\n')
-  if (nrow(G) < sampleIndividuals) stop('Requsted sample size is greater than the available:', nrow(G))
+  nInds <- length(individualSample)
+  if (nInds < sampleIndividuals) stop('Requsted sample size is greater than the available:', nInds)
   if (!is.na(sampleSeed)) set.seed(sampleSeed)
-  individualSample <- sample(nrow(G), sampleIndividuals)
+  individualSample <- sample(individualSample, sampleIndividuals)
 }
 
 cat('Calculating SNP correlation/LD using', NCORES, 'cores\n')
@@ -146,4 +147,3 @@ for (chr in chr2use) {
 cat('\nWriting map to', fileLDMap, '\n')
 MAP <- subset(MAP, rsid %in% SNPs)
 saveRDS(MAP, file=fileLDMap)
-
