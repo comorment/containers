@@ -1,13 +1,13 @@
 # GWAS real
 
-This use case describes application of the [gwas.py](../scripts/gwas/gwas.py) script to perform GWAS in [MoBa](https://github.com/norment/moba), on height and major depression phenotypes.
+This use case describes application of the [scripts/gwas/gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script to perform GWAS in [MoBa](https://github.com/norment/moba), on height and major depression phenotypes.
 
 Input files:
 
-* [moba.pheno.dict](gwas_real/moba.pheno.dict) - dictionary file. Corresponding ``moba.pheno`` file is not included as it contains individual-level information
+* [moba.pheno.dict](https://github.com/comorment/containers/tree/main/usecases/gwas_real/moba.pheno.dict) - dictionary file. Corresponding ``moba.pheno`` file is not included as it contains individual-level information
 * ``moba.hm3.withoutFID.[bed/bim/fam]`` - individual-level genotypes in plink format, constrained to HapMap3 SNPs, with ``N=86890`` individuals and ``M=787125`` markers; this is only used for ``regenie`` and ``saige`` analyses. To constrain imputed data down to HapMap3 SNPs one can use ``$PLINK --bfile <imputed> --extract <REF>/ldsc/w_hm3.justrs --make-bed --out <out>`` command.
 * ``98k-ec-eur-fin-batch-basic-qc-withoutFID.[bed/bim/fam]`` - full genotypes without constraining to HapMap3 SNPs, with exacly the same set of individuals, and ``M=5003746`` markers
-* [moba.bed.argsfile](gwas_real/moba.bed.argsfile) and [moba.bgen.argsfile](gwas_real/moba.bgen.argsfile) - file for the ``gwas.py --argsfile`` argument, containing pointers to hard calles (in plink format) and dosages (in ``bgen`` format):
+* [moba.bed.argsfile](https://github.com/comorment/containers/tree/main/usecases/gwas_real/moba.bed.argsfile) and [moba.bgen.argsfile](https://github.com/comorment/containers/tree/main/usecases/gwas_real/moba.bgen.argsfile) - file for the ``gwas.py --argsfile`` argument, containing pointers to hard calles (in plink format) and dosages (in ``bgen`` format):
 
   ```
   # moba.bed.argsfile
@@ -63,12 +63,12 @@ ls out/*gz | parallel -j16 $PYTHON gwas.py qq --sumstats {} --out {}.qq.png
 ls out/*gz | parallel -j16 $PYTHON gwas.py manh --sumstats {} --out {}.manh.png
 ```
 
-Also, I've combined QQ plots using [combine_figures.py](gwas_real/combine_figures.py) script.
+Also, I've combined QQ plots using [combine_figures.py](https://github.com/comorment/containers/tree/main/usecases/gwas_real/combine_figures.py) script.
 Some resulting figures:
 
 * Manhattan plot for height GWAS:
-  ![run1_height.plink2.gz.manh.png](gwas_real/run1_height.plink2.gz.manh.png) -  
+  ![run1_height.plink2.gz.manh.png](./gwas_real/run1_height.plink2.gz.manh.png)
 * Combined QQ plot for height GWAS:
-  ![height.qq.png](gwas_real/height.qq.png)
+  ![height.qq.png](./gwas_real/height.qq.png)
 * Combined QQ plot for depression GWAS:
-  ![dep.qq.png](gwas_real/dep.qq.png)
+  ![dep.qq.png](./gwas_real/dep.qq.png)
