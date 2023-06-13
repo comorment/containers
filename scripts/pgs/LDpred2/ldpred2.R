@@ -136,8 +136,6 @@ if (genoImputeZero) {
   cat('### Imputing missing genotypes with zero\n')
   G <- zeroMissingGenotypes(G)
 }
-#nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
-#if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass --geno-impute-zero.')
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
@@ -290,8 +288,8 @@ cat('Scoring all individuals...\n')
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
 map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
 tryCatch(
-  pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
-  , error=function(er) {
+  pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']]),
+  error=function(er) {
     cat('bigstatsr::big_prodVec threw an error:\n')
     message(er)
     cat('\n\nErrors regarding "missingness in X" may be solved by imputing genotype data or passing --geno-impute-zero\n')
