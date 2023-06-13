@@ -25,7 +25,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
-* Updates goes here
+* Removed time consuming genotype missingness check from ``ldpred2.R``.
 
 ### Fixed
 
