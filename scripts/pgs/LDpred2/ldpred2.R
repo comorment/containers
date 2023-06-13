@@ -136,8 +136,8 @@ if (genoImputeZero) {
   cat('### Imputing missing genotypes with zero\n')
   G <- zeroMissingGenotypes(G)
 }
-nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
-if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass --geno-impute-zero.')
+#nMissingGenotypes <- countMissingGenotypes(G, cores=NCORES)
+#if (sum(nMissingGenotypes > 0)) stop('Genotypes are missing. Please impute genotype data or pass --geno-impute-zero.')
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
@@ -258,7 +258,6 @@ cat('\n### Starting polygenic scoring\n')
 # LDPRED2-Inf: Infinitesimal model
 if (argLdpredMode == 'inf') {
   cat ('Running LDPRED2 infinitesimal model\n')
-  cat('Calculating beta inf\n')
   beta <- snp_ldpred2_inf(corr, df_beta, h2=h2_est)
 # LDPRED2-Auto
 } else if (argLdpredMode == 'auto') {
@@ -290,8 +289,18 @@ cat('Scoring all individuals...\n')
 # find which SNPs to use, and whether we need to flip their sign
 map_pgs <- df_beta[1:4]; map_pgs$beta <- 1
 map_pgs2 <- snp_match(map_pgs, map, join_by_pos=!mergeByRsid, match.min.prop=0)
-
-pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
+tryCatch(
+  pred_all <- big_prodVec(G, beta * map_pgs2$beta, ind.col=map_pgs2[['_NUM_ID_']])
+  , error=function(er) {
+    cat('bigstatsr::big_prodVec threw an error:\n')
+    message(er)
+    cat('\n\nErrors regarding "missingness in X" may be solved by imputing genotype data or passing --geno-impute-zero\n')
+    quit('no')
+  }, warning=function(er) {
+    cat('bigstatsr::big_prodVec threw a warning:\n')
+    message(er)
+  }
+)
 obj.bigSNP$fam[,nameScore] <- pred_all
 
 cat('\n### Writing file with PGS\n')

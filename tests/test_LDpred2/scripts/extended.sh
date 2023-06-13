@@ -21,7 +21,7 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 echo "Test error: Missing genotypes"
 dump=$( { $LDP --ldpred-mode inf --col-chr chr --geno-file-rds $fileImpute.rds --sumstats $fileInputSumStats; } 2>&1 )
-if [ $? -eq 0 ]; then echo "No error received"; echo "$dump"; exit; fi
+if [ $? -eq 1 ]; then echo "No error received"; echo "$dump"; exit; fi
 
 echo "Test --geno-impute-zero"
 dump=$( { $LDP --ldpred-mode inf --col-chr chr --geno-file-rds $fileImpute.rds --geno-impute-zero --sumstats $fileInputSumStats; } 2>&1 )
