@@ -46,3 +46,6 @@ LDpred2.html
 usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
 
+# matlab
+.matlab
+.MathWorks

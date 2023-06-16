@@ -1,4 +1,4 @@
-all: hello.sif gwas.sif python3.sif r.sif saige.sif
+all: hello.sif gwas.sif python3.sif r.sif saige.sif matlab.sif
 
 %.sif: dockerfiles/%/Dockerfile
 	docker build -t $* -f dockerfiles/$*/Dockerfile . | tee $*.log && \
