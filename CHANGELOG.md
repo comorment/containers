@@ -45,6 +45,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Update regenie to v3.2.8
 
+### Fixed
+
+* #187 - Regression in gwas.py in handling of info, maf, hwe and geno filters
+
 ## [1.3.3] - 2023-06-14
 
 ### Updated
