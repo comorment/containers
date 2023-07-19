@@ -8,11 +8,11 @@ For new users we recommend to go over introductory instructions in [docs/singula
 
 If you would like to contribute to developing these containers, please see the [CONTRIBUTING](./../CONTRIBUTING.md) file.
 
-For a tutorial on GWAS with synthetic data, see [docs/usecases/gwas_demo.md](./../docs/usecases/gwas_demo.md).
+For a tutorial on GWAS with synthetic data, see [usecases/gwas_demo.md](./../usecases/gwas_demo.md).
 
 ### Prerequisites (to running tutorials)
 
-NOTE: This is out of date. Confer [docs/usecases](./../docs/usecases).
+NOTE: This is out of date. Confer [usecases/README.md](./../usecases/README.md).
 
 * download container files shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
 * download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
@@ -25,7 +25,7 @@ NOTE: This is out of date. Confer [docs/usecases](./../docs/usecases).
 
 ## Description of available containers
 
-The detailed description of the available container [files](./../singularity) provided in this repository are found [here](./../docs/singularity).
+The detailed description of the available container [files](https://github.com/comorment/containers/tree/main/singularity) provided in this repository are found [here](./../docs/singularity/README.md).
 
 ## Software versions
 
@@ -51,7 +51,7 @@ The detailed description of the available container [files](./../singularity) pr
   | gwas.sif          | vcftools            | 0.1.17                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | bcftools            | 1.12 (using htslib 1.12)                  | [MIT/Expat/GPLv3](https://github.com/samtools/bcftools/blob/develop/LICENSE)
   | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | regenie             | v2.0.2.gz                                 | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | gwas.sif          | regenie             | v3.2.8                                    | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
   | gwas.sif          | GWAMA               | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
   | gwas.sif          | minimac4            | v4.1.0                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)

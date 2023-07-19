@@ -1,6 +1,6 @@
 # Singularity
 
-Here is a brief overview of available container [files](./../../singularity) (more info in the links below):
+Here is a brief overview of available container [files](./../../singularity/README.md) (more info in the links below):
 
 * [hello.sif](hello.md) - a simple container for demo purpose, allowing to experiment with singularity features
 * [gwas.sif](gwas.md) - multiple tools (released as binaries/executables) for imputation and GWAS analysis

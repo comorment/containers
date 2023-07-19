@@ -22,3 +22,4 @@ This document is not for tracking [changes](CHANGELOG.md).
   Press the "Generate release notes" to list changes since the last appropriate tag (e.g., `v<MAJOR>.<MINOR>` for a bump to `<PATCH>`, and similar).
   Then, press "Publish release".
 - New releases should trigger Zenodo.org code deposit automatically at [https://doi.org/10.5281/zenodo.7385620](https://doi.org/10.5281/zenodo.7385620).
+- Sync github.com/comorment/containers to TSD p697 project, following steps outlined [here](https://github.com/comorment/containers/issues/174)
