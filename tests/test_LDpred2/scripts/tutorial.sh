@@ -36,12 +36,17 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 dump=$( { $LDP --ldpred-mode inf --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
- 
+
 # Filter out SNPs that overlap with genotypes
 echo "Test LD estimation with SNP filtering"
 cut -f 1 -d , $fileInputSumStats > $DIR_TESTS/data/snps-for-ld.txt
 dump=$( { $LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid; } 2<&1 )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
+dump=$( { $LDP --ldpred-mode auto --out $fileOut.inf; } 2>&1 )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+echo "$dump";
+exit
 
 echo "Test no restrictions on snps (similar to tutorial)"
 dump=$( { $LDE; } 2>&1 )
