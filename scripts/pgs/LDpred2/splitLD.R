@@ -32,6 +32,7 @@ fileLDMap <- parsed$file_ld_map
 for (chr in chr2use) {
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   outputFileName <- str_replace(fileOutputLDBlocks, '@', toString(chr))
+  print(fileName)
   mat <- readRDS(fileName)
   nc <- ncol(mat)
   sequence <- round(seq_log(nc/30, nc/5, length.out=20))
