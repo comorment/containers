@@ -14,6 +14,13 @@ nonZeroesPercentage <- function (mat) {
   100*nonZeroesFraction(mat)
 }
 
+intervals <- function (mat) {
+  steps <- seq(-1, 1, by=.02)
+  tb <- table(cut(mat@x, breaks=steps, include.lowest=T))
+  tb <- 100*tb/length(mat@x)
+  tb
+}
+
 roundToThousands <- function (x) round(x/1000)
 
 # Plotting

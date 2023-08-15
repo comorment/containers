@@ -24,6 +24,7 @@ par <- add_argument(par, '--plot-scale-x', nargs=1, default='relative', help='X-
 par <- add_argument(par, '--plot-file-out', nargs=1, help='Name of plot output file.')
 # Summary arguments
 par <- add_argument(par, '--non-zeroes', nargs=1, help='"Count", "fraction", or "percentage" non-zero elements in the matrixes')
+par <- add_argument(par, '--intervals', flag=T, help='% values from -1 to 1 in intervals of 0.02')
 # Figures
 # Chromosome selection
 par <- add_argument(par, '--chr2use', nargs=Inf, help='List of chromosomes to use (by default it uses chromosomes 1 to 22)')
@@ -40,6 +41,8 @@ argNonZeroes <- parsed$non_zeroes
 if (!is.na(argNonZeroes)) {
   func <- paste0('nonZeroes', str_to_title(argNonZeroes), '(mat)')
 }
+argIntervals <- parsed$intervals
+if (argIntervals) func <- 'intervals(mat)'
 # Plotting
 argPlot <- parsed$plot
 argPlotThreshold <- parsed$plot_threshold
@@ -80,9 +83,11 @@ for (chrom in chr2use) {
     plts[[ix]] <- plt
     #ggsave(plt, width=14, height=4,file=str_replace(argPlotFileOut, '@', toString(chr)))
   }
-  if (!is.na(argNonZeroes)) {
+  if (!is.na(argNonZeroes) | argIntervals) {
     res <- eval(parse(text=func))
+    nms <- c('CHR', names(res))
     output <- rbind(output, c(chrom, res))
+    colnames(output) <- nms
   }
   gc(verbose=F)
 }
@@ -103,5 +108,5 @@ if (!is.na(argNonZeroes)) {
 
 if (!is.na(fileOut)) {
   cat('Writing restults to', fileOut, '\n')
-  write.table(output, file=fileOut, sep=fileOutSep, quote=F, row.names = F)
+  write.table(output, file=fileOut, sep=fileOutSep, quote=T, row.names = F)
 } 
