@@ -55,7 +55,10 @@ $RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
 LDpred2 uses the LD structure when calculating polygenic scores. By default, the LDpred2.R script uses LD structure based on European samples provided by the LDpred2 authors.
 To instead calculate LD on your own, the ``calculateLD.R`` script can be used. The output from this script can then be used as input to ``LDpred2.R`` (with the optional ``--ld-file`` flag).
 
-To use ``calculateLD.R`` you need to download genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) in order to convert each SNPs physical position to genomic position.
+It should be noted that creating these LD matrixes may require several steps that are dependent on what type of genotypic data you have. These are not covered in detail here, but a
+first step is to ensure that you filter out related individuals, and use a reasonably sized set of genotyped or well-imputed SNPs. How to restrict individuals and SNPs are covered below. 
+
+First, to use ``calculateLD.R`` you need to download genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) in order to convert each SNPs physical position to genomic position.
 If you don't provide these files, LDpred2 will try to download these automatically which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
 the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
 
@@ -63,8 +66,12 @@ Two parameters that can be passed to ``calculateLD.R`` and affect the LD estimat
 a SNP correlation in the LD). The default for ``--thres-r2`` is 0 in ``bigsnpr::snp_cor``, but ``calculateLD.R`` has a default of 0.01.
 
 The example script below will output one file per chromosome (``output/ld-chr-1.rds``, ``output/ld-chr-2.rds``, ...) and a "map" indicating the SNPs used in LD estimation (``output/map.rds``).
-The flag ``--sumstats`` can be used to filter SNPs to use where the first argument is the file and the second the column name or position of the RSID of the SNP (ie it does not neeed to be a proper
-sumstats file).
+The flag ``--sumstats`` can be used to filter SNPs to use where the first argument is the file and the second the column name or position of the RSID of the SNP (ie it does not need to be a proper
+sumstats file). The ``--extract`` argument does similar but expects a file that is just a list of RSIDs. These arguments can be combined and the SNPs used will then be limited to those
+that overlap in both files.
+
+By a similar principle, ``--extract-individuals`` can be used together with ``--sample-individuals`` to limit the set of individuals (e.g., unrelated only), and then to draw a sample
+from this set.
 
 ```
 # point to input/output files
@@ -95,6 +102,26 @@ $RSCRIPT calculateLD.R --geno-file-rds $fileGenoRDS \
  --chr2use 21 22  --sumstats $fileSumstats SNP \
  --file-ld-blocks $fileOutLD --file-ld-map $fileOutLDMap
 ```
+
+Note that "bad" LD matrixes may result in optimization failures as these when running the LDpred2 scoring:
+```
+Running LDPRED2 auto model
+Erorr in { : task 1 failed - "L-BFGS-B needs finite values of 'fn'"
+Calls: snp_ldpred2_auto -> %dorng% -> do.call -> <Anonymous> -> <Anonymous>
+```
+
+The LDpred2 creators recommend to create indpendent LD blocks in these matrixes. the ``splitLD.R`` script can be used for this purpose. The setup is the same as the
+example above, but we add a modified ``$RSCRIPT [...]``` statement using the outputted matrixes from ``calculateLD.R`` as input to ``splitLD.R``. There are several parameters
+to this script that will affect the "shape" of these blocks (thus subsequent performance in LDpred2). Consult ``splitLD.R`` and ``bigsnpr::snp_ldsplit`` for details.
+```
+$RSCRIPT splitLD.R --file-ld-blocks $fileOutLD \
+ --file-ld-map $fileOutLDMap \
+ --file-output-ld-blocks ld-blocked-chr@.rds
+```
+
+The script ``analyzeLD.R`` can be used to visualize these matrixes and provide summary statistics. We don't cover its use in detail here, but
+if you experience issues with LD matrixes one way may be to compare plots and statistics between your matrixes and those provided by by the LDpred2
+creators. ``Rscript analyzeLD.R --help`` provides an overview of usage.
 
 ## Running LDpred2 analysis
 
