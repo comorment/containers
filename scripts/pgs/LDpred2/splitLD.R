@@ -32,7 +32,7 @@ fileLDMap <- parsed$file_ld_map
 for (chr in chr2use) {
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   outputFileName <- str_replace(fileOutputLDBlocks, '@', toString(chr))
-  print(fileName)
+  cat('\t', chr, ': Loading LD from', basename(fileName), '\n')
   mat <- readRDS(fileName)
   nc <- ncol(mat)
   sequence <- round(seq_log(nc/30, nc/5, length.out=20))
@@ -53,5 +53,6 @@ for (chr in chr2use) {
   mat@x <- ifelse(bestGroup[mat@i + 1L] == bestGroup[mat@j + 1L], mat@x, 0)
   mat <- Matrix::drop0(mat)
   #mat <- as(mat, 'symmetrixMatrix')
+  cat('\tWriting LD to', basename(outputFileName), '\n')
   saveRDS(mat, file=outputFileName)
 }

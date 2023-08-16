@@ -1,3 +1,5 @@
+dirOut=$DIR_TESTS/output/ld
+if [ ! -d $dirOut ]; then mkdir $dirOut; fi
 # Basic command to perform LD estimation
 LDE="$RSCRIPT $DIR_SCRIPTS/calculateLD.R --geno-file-rds $fileOutputSNPR \
   --dir-genetic-maps $DIR_TESTS/maps/ \

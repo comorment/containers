@@ -15,7 +15,7 @@ source(paste0(dirScript, '/fun.R'))
 par <- arg_parser('Calculate linkage disequillibrium (LD) using bigSNPr')
 # Mandatory arguments
 par <- add_argument(par, "--geno-file-rds", nargs=1, help="Input .rds (bigSNPR) file with genotypes")
-par <- add_argument(par, "--file-ld-blocks", nargs=1, default="LD_with_blocks_chr@.rds", help="Template name of output files using @ to indicate chromosome nr")
+par <- add_argument(par, "--file-ld-chr", nargs=1, default="LD_chr@.rds", help="Template name of output files using @ to indicate chromosome nr")
 par <- add_argument(par, "--file-ld-map", nargs=1, default="map.rds", help="Name of outputted LD map file")
 # Directories
 par <- add_argument(par, "--dir-genetic-maps", default=tempdir(), 
