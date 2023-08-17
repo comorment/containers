@@ -52,7 +52,7 @@ par <- add_argument(par, "--hyper-p-max", help="Maximum (<1) of hyperparameter p
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
-par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", nargs=0)
+par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", flag=TRUE)
 
 parsed <- parse_args(par)
 
@@ -86,11 +86,11 @@ colStat <- parsed$col_stat
 colStatSE <- parsed$col_stat_se
 colPValue <- parsed$col_pvalue
 colN <- parsed$col_n
-mergeByRsid <- !is.null(parsed$merge_by_rsid)
+mergeByRsid <- parsed$merge_by_rsid
 
 # unset colBP in case of merging by rsid
 if (mergeByRsid) {
-  cat(paste('The --merge-by-rsid flag is used; --col-bp', colBP, 'will be ignored'))
+  cat(paste('The --merge-by-rsid flag is used; --col-bp', colBP, 'will be ignored\n'))
   colBP <- NULL
 }
 
