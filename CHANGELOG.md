@@ -39,6 +39,12 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.3.5] - 2023-08-17
+
+### Updated
+
+* Updated LDpred2 README file
+
 ## [1.3.4] - 2023-06-22
 
 ### Updated
