@@ -86,11 +86,11 @@ colStat <- parsed$col_stat
 colStatSE <- parsed$col_stat_se
 colPValue <- parsed$col_pvalue
 colN <- parsed$col_n
-mergeByRsid <- !is.na(parsed$merge_by_rsid)
+mergeByRsid <- !is.null(parsed$merge_by_rsid)
 
 # unset colBP in case of merging by rsid
-if (!is.na(mergeByRsid)) {
-  cat(cpaste('The --merge-by-rsid flag is used; --col-bp ', colBP, ' will be ignored'))
+if (mergeByRsid) {
+  cat(paste('The --merge-by-rsid flag is used; --col-bp', colBP, 'will be ignored'))
   colBP <- NULL
 }
 
@@ -120,7 +120,7 @@ setSeed <- parsed$set_seed
 
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
-if (!is.na(merge_by_rsid)) {
+if (mergeByRsid) {
   colSumstatsOld <- c(colChr, colSNPID, colA1, colA2, colStat, colStatSE)
   colSumstatToGeno <- c("chr",  "rsid",  "a1",  "a0",  "beta",  "beta_se")
 } else {
