@@ -34,7 +34,7 @@ par <- add_argument(par, "--col-chr", help="CHR number column", default="CHR", n
 par <- add_argument(par, "--col-snp-id", help="SNP ID (RSID) column", default="SNP", nargs=1)
 par <- add_argument(par, "--col-A1", help="Effective allele column", default="A1", nargs=1)
 par <- add_argument(par, "--col-A2", help="Noneffective allele column", default="A2", nargs=1)
-par <- add_argument(par, "--col-bp", help="SNP position column", default="BP", nargs=1)
+par <- add_argument(par, "--col-bp", help="SNP position column. Will be ignored if --merge-by-rsid flag is used", default="BP", nargs=1)
 par <- add_argument(par, "--col-stat", help="Effect estimate column", default="BETA", nargs=1)
 par <- add_argument(par, "--col-stat-se", help="Effect estimate standard error column", default="SE", nargs=1)
 par <- add_argument(par, "--col-pvalue", help="P-value column", default="P", nargs=1)
@@ -52,7 +52,7 @@ par <- add_argument(par, "--hyper-p-max", help="Maximum (<1) of hyperparameter p
 par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinitesimal)', default="inf")
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
-par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes)", nargs=0)
+par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", flag=TRUE)
 
 parsed <- parse_args(par)
 
@@ -86,7 +86,14 @@ colStat <- parsed$col_stat
 colStatSE <- parsed$col_stat_se
 colPValue <- parsed$col_pvalue
 colN <- parsed$col_n
-mergeByRsid <- !is.na(parsed$merge_by_rsid)
+mergeByRsid <- parsed$merge_by_rsid
+
+# unset colBP in case of merging by rsid
+if (mergeByRsid) {
+  cat(paste('The --merge-by-rsid flag is used; --col-bp', colBP, 'will be ignored\n'))
+  colBP <- NULL
+}
+
 # Polygenic score
 nameScore <- parsed$name_score
 # If the PGS is assigned a name, the diagnostic plot (auto mode only)
@@ -113,8 +120,13 @@ setSeed <- parsed$set_seed
 
 # These vectors are used to convert headers in the sumstat files to those
 # used by bigsnpr
-colSumstatsOld <- c(  colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
-colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
+if (mergeByRsid) {
+  colSumstatsOld <- c(colChr, colSNPID, colA1, colA2, colStat, colStatSE)
+  colSumstatToGeno <- c("chr",  "rsid",  "a1",  "a0",  "beta",  "beta_se")
+} else {
+  colSumstatsOld <- c(colChr, colSNPID, colBP, colA1, colA2, colStat, colStatSE)
+  colSumstatToGeno <- c("chr",  "rsid",  "pos",  "a1",  "a0",  "beta",  "beta_se")
+}
 
 # If the user has requested to merge scores to an existing output file
 if (fileOutputMerge) {
