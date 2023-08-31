@@ -1,41 +1,54 @@
 # test script checking that all installed libraries are present
 
-library(argparser)
-library(bigreadr)
-library(bigsnpr)
-library(BiocGenerics)
-library(BiocManager)
-library(DescTools)
-library(devtools)
-library(data.table)
-library(dplyr)
-library(flextable)
-library(fmsb)
-library(foreign)
-library(GenomicSEM)
-library(ggplot2)
-library(gsmr)
-library(gtsummary)
-library(GWASTools)
-library(magrittr)
-library(mvtnorm)
-library(optparse)
-library(parameters)
-library(pROC)
-library(qqman)
-library(rareGWAMA)
-library(reghelper)
-library(remotes)
-library(rmarkdown)
-library(runonce)
-library(snpStats)
-library(survey)
-library(seqminer)
-library(stringr)
-library(tibble)
-library(tidyr)
-library(tidyverse)
-library(tools)
-library(TwoSampleMR)
-library(xgboost)
-library(zlibbioc)
+# Load the testthat package
+library(testthat)
+
+# List of libraries to check
+libraries_to_check <- c(
+    "argparser", 
+    "bigreadr", 
+    "bigsnpr",
+    "BiocGenerics",
+    "BiocManager",
+    "DescTools",
+    "devtools",
+    "data.table",
+    "dplyr",
+    "flextable",
+    "fmsb",
+    "foreign",
+    "GenomicSEM",
+    "ggplot2",
+    "gsmr",
+    "gtsummary",
+    "GWASTools",
+    "magrittr",
+    "mvtnorm",
+    "optparse",
+    "parameters",
+    "pROC",
+    "qqman",
+    "rareGWAMA",
+    "reghelper",
+    "remotes",
+    "rmarkdown",
+    "runonce",
+    "snpStats",
+    "survey",
+    "seqminer",
+    "stringr",
+    "tibble",
+    "tidyr",
+    "tidyverse",
+    "tools",
+    "TwoSampleMR",
+    "xgboost",
+    "zlibbioc"  
+    )
+
+# Define a test
+test_that("Required libraries are installed", {
+  missing_libraries <- setdiff(libraries_to_check, installed.packages()[, "Package"])
+  expect_true(length(missing_libraries) == 0, 
+              sprintf("Missing libraries: %s", paste(missing_libraries, collapse = ", ")))
+})

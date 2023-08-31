@@ -21,12 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-- Added ``PRSice_linux`` to ``r.sif``
-- Added tests for ``gwas.py``
-- Added package ``GWASTools`` to ``r.sif``. 
-- Added confidence intervals to qq plots created by ``gwas.py`` using ``GWASTools`` R package.
-- Added ``ldak5.2.linux`` binary to ``gwas.sif``
-- Added status badges and citation.cff file
+* Additions goes here
 
 ### Updated
 
