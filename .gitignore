@@ -1,5 +1,8 @@
 # misc
 .DS_Store
+.cache
+.local
+.vscode
 
 # bash
 .bash_history
@@ -9,6 +12,11 @@
 .pytest_cache
 __pycache__
 .python_history
+.ipython
+.jupyter
+
+# plink
+*.error
 
 # R
 .rda
@@ -38,6 +46,44 @@ LDpred2.html
 *.error
 usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
+
+# PGS demo output 
+pgs/QC_data
+pgs/PGS_*
+pgs/results/*
+pgs/output/*
+pgs/logs/*
+pgs/tmp-data/*
+pgs/slurm_job_scripts/*
+pgs/bash_scripts/*
+*.eigenval
+*.eigenvec
+*.cov
+
+# Jupyter+IPython
+.cache
+.local
+.ipython
+.jupyter
+
+# PGS demo output 
+pgs/QC_data
+pgs/PGS_*
+pgs/results/*
+pgs/output/*
+pgs/logs/*
+pgs/tmp-data/*
+pgs/slurm_job_scripts/*
+pgs/bash_scripts/*
+*.eigenval
+*.eigenvec
+*.cov
+
+# Jupyter+IPython
+.cache
+.local
+.ipython
+.jupyter
 
 # PGS demo output 
 pgs/QC_data

@@ -1,0 +1,20 @@
+# parameters to pass for SLURM jobs
+slurm:
+  job_name: gwas
+  account: p697_norment
+  time: "06:00:00"
+  cpus_per_task: 16
+  mem_per_cpu: 8000M
+
+  # list of modules to load in SLURM jobs
+  module_load:
+    - singularity/3.7.1
+
+# folder containing 'containers' subfolder with a full copy of https://github.com/comorment/containers
+comorment_folder: "/ess/p697/data/durable/s3-api/github/comorment"
+
+# SINGULARITY_BIND variable to set in SLURM scripts
+singularity_bind: "$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697"
+
+saige:
+  cpus_per_task_stage2: 1

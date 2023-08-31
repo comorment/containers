@@ -10,34 +10,88 @@ This is the online documentation for the CoMorMent-containers project,
 hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :caption: Containers
+   :maxdepth: 0
+   
+   README
+
+.. toctree::
+   :caption: Documentation
+   :glob:
+   :maxdepth: 0
+   
+   docs/README
+   docs/singularity/*
+   docs/specifications/*
+
+.. toctree::
+   :caption: Docker
+   :maxdepth: 0
+   
+   docker/README
+
+.. toctree::
+   :caption: Reference
+   
+   reference/README
+
+.. toctree::
+   :caption: Scripts
+   :maxdepth: 0
+   
+   scripts/README
+   scripts/gwas/README
+   scripts/pgs/README
+   scripts/pgs/LDpred2/README
+
+.. toctree::
+   :caption: Singularity
+   :maxdepth: 0
+   
+   singularity/README
+
+.. toctree::
+   :caption: Usecases
+   :glob:
+   :maxdepth: 0
+   
+   usecases/*
+
+.. toctree::
+   :caption: Other
+   :maxdepth: 0
+   
+   CHANGELOG
+   CONTRIBUTING
 
 
-.. mdinclude:: ../../README.md
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
 
+.. include:: ../../docs/README.md
+   :parser: myst_parser.sphinx_
 
-Container documentation
-=======================
+.. include:: ../../docker/README.md
+   :parser: myst_parser.sphinx_
 
-.. mdinclude:: ../../docs/README.md
+.. include:: ../../reference/README.md
+   :parser: myst_parser.sphinx_
 
+.. include:: ../../scripts/README.md
+   :parser: myst_parser.sphinx_
 
-Usecases
-========
+.. include:: ../../usecases/README.md
+   :parser: myst_parser.sphinx_
 
-.. mdinclude:: ../../usecases/README.md
+.. include:: ../../CHANGELOG.md
+   :parser: myst_parser.sphinx_
 
-
-Souce codes
-===========
-
-.. mdinclude:: ../../src/README.md
+.. include:: ../../CONTRIBUTING.md
+   :parser: myst_parser.sphinx_
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

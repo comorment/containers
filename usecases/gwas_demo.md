@@ -1,15 +1,18 @@
+# GWAS demo
+
 This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
 Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software to compute polygenic risk scores.
 
-This will use genotype and phenotype data formatted according to [CoMorMent specification](../gwas/pheno_geno_specification.md),
-and the helper [gwas.py](../gwas/gwas.py) script that reads the phenotype data,
+This will use genotype and phenotype data formatted according to [CoMorMent specifications](./../docs/specifications/README.md),
+and the helper [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script that reads the phenotype data,
 extracts user-defined subset of phenotypes and covariates,
 and prepares the scripts or SLURM jobs for ``plink2`` and ``regenie`` analysis.
-In this demo we're using example data from [reference/examples/regenie](../reference/examples/regenie) folder.
-Take a moment to look at the [phenotype file](../reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](../reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
-For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](../reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](../reference/examples/regenie/example_3chr.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
+In this demo we're using example data from [reference/examples/regenie](https://github.com/comorment/containers/blob/main/reference/examples/regenie) folder.
+Take a moment to look at the [phenotype file](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
+For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](../gwas/gwas.py) script and [config.yaml](../gwas/config.yaml) file from ``$COMORMENT/containers/gwas/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
+Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in [Getting started](../README.md#getting-started) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
+
 ```
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
@@ -23,9 +26,11 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr_vcf.argsfile \
 --pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis saige figures --out run3_saige
 ```
+
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
-We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](../reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
+We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
+
 ```
 # example_3chr.args file defines the following arguments:
 --pheno-file /REF/examples/regenie/example_3chr.pheno 
@@ -38,12 +43,13 @@ We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](.
 --geno 0.5       # normally 0.98 or higher
 --hwe 0.01       # normaly 1e-10 or lower
 ```
+
 In the above example ``--geno-fit-file`` points to the same file as ``--geno-file``, which is NOT how things should be done in a real application. ``--geno-fit-file`` should point to a single genetic file (merged across chromosomes),
-constrained to approximately less than a million SNPs, for example constrain to genotyped SNPs, or constrain to  the set of HapMap3 SNPs. For a real example, see [gwas_real.md](gwas_real.md).
+constrained to approximately less than a million SNPs, for example constrain to genotyped SNPs, or constrain to  the set of HapMap3 SNPs. For a real example, see [gwas_real.md](./gwas_real.md).
 
 Adding ``figures`` to the ``--analysis`` argument trigger post-GWAS scripts to generate manhattan / qq plots.
 
-Take a look at the resulting [run1.log](gwas_demo/run1.log) and [run2.log](gwas_demo/run2.log), to see if gwas.py was executed as intended.
+Take a look at the resulting [run1.log](https://github.com/comorment/containers/blob/main/usecases/gwas_demo/run1.log) and [run2.log](https://github.com/comorment/containers/blob/main/usecases/gwas_demo/run2.log), to see if gwas.py was executed as intended.
 For this small-scale demo example, you could execute the actual GWAS locally on your machine as follows:
 
 ```
@@ -58,6 +64,7 @@ cat run2_regenie_cmd.sh | bash
 ```
 
 Otherwise you need to submit the SLURM jobs, generated by gwas.py script. There are two jobs for ``plink2`` analysis: ``run1_plink2.1.job`` and ``run1_plink2.2.job``, and three jobs for ``regenie`` analysis: ``run1_regenie.1.job``, ``run1_regenie.2.job``, ``run1_regenie.3.job`` (and similarly for ``run2``). These jobs must be executed in order, i.e. ``.2.job`` need to wait for ``.1.job``, and ``.3.job`` need to wait for ``.2.job``. You still can submit all jobs at once, but use SLURM's dependency management as described [here](https://stackoverflow.com/questions/19960332/use-slurm-job-id):
+
 ```
 RES=$(sbatch run1_plink2.1.job)
 RES=$(sbatch --dependency=afterany:${RES##* } run1_plink2.2.job)
@@ -70,29 +77,34 @@ To customize parameters in the header of the slurm jobs, use ``--slurm-job-name`
 Further, you may need to customize ``--module-load`` argument, which by default loads ``singularity/3.7.1`` module.
 Feel free to replace this with other version of singularity, or list multiple modules if you need to load something else in addition to singularity.
 (a handy trick: if you want to explicily avoid loading the singularity module, because it's pre-installed, but don't need any other modules, you may add another irrelevant module just to overwrite the default ``--module-load`` argument).
-Finally, you need to customize ``--comorment-folder`` folder containing a ``containers`` subfolder with a full copy of https://github.com/comorment/containers.
+Finally, you need to customize ``--comorment-folder`` folder containing a ``containers`` subfolder with a full copy of <https://github.com/comorment/containers>.
 
-For more results, see [gwas_demo](gwas_demo) folder. Main results are the following GWAS summary statistics:
+For more results, see [gwas_demo](https://github.com/comorment/containers/blob/main/usecases/gwas_demo) folder. Main results are the following GWAS summary statistics:
+
 ```
 run1_plink2_CASE.gz
 run1_plink2_CASE2.gz
 run2_regenie_PHENO.gz
 run2_regenie_PHENO2.gz
 ```
-Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](../gwas/sumstats_specification.md).
+
+Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../docs/specifications/sumstats_specification.md).
 
 It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
 If you have genotypes formatted this way, the only change you need is to change ``--geno-file`` file, pointing it to ``.bgen``  (or a ``.vcf``) file
-as in this example: [example_3chr_bgen.argsfile](../reference/examples/regenie/example_3chr_bgen.argsfile).
+as in this example: [example_3chr_bgen.argsfile](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr_bgen.argsfile).
 It is expected that ``.bgen`` has corresponding ``.sample`` and ``.bgen.bgi`` files.
-Similarly, for a ``.vcf`` (or ``.vcf.gz``) formats you need to generate ``.tbi`` and/or ``.csi`` index files (see https://www.biostars.org/p/59492/).
+Similarly, for a ``.vcf`` (or ``.vcf.gz``) formats you need to generate ``.tbi`` and/or ``.csi`` index files (see <https://www.biostars.org/p/59492/>).
 
 To see more info about ``gwas.py`` arguments, try this:
+
 ```
 >singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
 ```
-Key arguments are also described below, 
+
+Key arguments are also described below,
 but the actual ``--help`` output will describe more arguments - we don't copy this information here since gwas.py tool is being actively developed.
+
 ```
 usage: gwas.py gwas [-h] [--out OUT] 
                     [--geno-file GENO_FILE] [--geno-fit-file GENO_FIT_FILE] [--fam FAM]
@@ -164,7 +176,7 @@ Filtering options:
   --geno GENO           threshold for filtering on per-variant missingness rate)
 ```
 
-## How to PRSice2 software
+## How to run PRSice2 software
 
 Computing polygenic risk scores require (and testing how they work on a known phenotype data)  
 require a similar set input to what you use for running a GWAS analysis,
@@ -187,12 +199,13 @@ export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 cat run3_prsice2_cmd.sh | bash
 ```
 
-The resulting ``run3_prsice2.summary`` file looks as follows, 
+The resulting ``run3_prsice2.summary`` file looks as follows,
 which is reasonable: PGRS computed based on CASE phenotypes explains CASE phenotype better (P=1.88e-09) than CASE2 phenotype.
+
 ```
-Phenotype	Set	Threshold	PRS.R2	Full.R2	Null.R2	Prevalence	Coefficient	Standard.Error	P	Num_SNP
-CASE	Base	0.9	0.064886	0.818532	0.753646	-	92.0264	15.3183	1.88278e-09	50
-CASE2	Base	0.9	5.09224e-05	0.0334905	0.0334396	-	0.93301	7.02908	0.894402	50
+Phenotype Set Threshold PRS.R2 Full.R2 Null.R2 Prevalence Coefficient Standard.Error P Num_SNP
+CASE Base 0.9 0.064886 0.818532 0.753646 - 92.0264 15.3183 1.88278e-09 50
+CASE2 Base 0.9 5.09224e-05 0.0334905 0.0334396 - 0.93301 7.02908 0.894402 50
 ```
 
 For more information, see this:
