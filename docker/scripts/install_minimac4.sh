@@ -1,9 +1,10 @@
 #!/bin/sh
+set -euo pipefail
 
 # install some deps for installing cget
 apt-get update && \
     apt-get install --no-install-recommends \
-    python3-pip=20.0.2-5ubuntu1.6 \
+    python3-pip=20.0.2-5ubuntu1.9 \
     python3-click=7.0-3 \
     python3-six=1.14.0-2 \
     -y && \
