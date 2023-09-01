@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-# run script wrapping the class definitions in pgs/pgs.py as a command line tool
+# run script wrapping the class definitions in pgs/pgs.py as a command
+# line tool
 
 # package imports
 import os
 import sys
 import datetime
-from pgs import pgs
-import yaml
 import argparse
+import yaml
+from pgs import pgs
 
 
 # list of method options
@@ -18,19 +19,19 @@ runtype_choices = ['sh', 'slurm', 'subprocess']
 
 # shared
 parser = argparse.ArgumentParser(
-    prog='PGS', 
+    prog='PGS',
     description="A pipeline for PGS analysis")
 
 # first argument for method
 parser.add_argument(
-    "--method", type=str, 
-    help="Method for PGS", 
-    default='prsice2', 
+    "--method", type=str,
+    help="Method for PGS",
+    default='prsice2',
     choices=method_choices,
     action='store',
-    )
+)
 # create subparsers object
-subparsers = parser.add_subparsers(dest='method') 
+subparsers = parser.add_subparsers(dest='method')
 subparsers.required = True
 
 
@@ -98,29 +99,29 @@ parser_ldpred2_auto.add_argument(
 
 # shared arguments
 parser.add_argument(
-    "--config", type=str, 
-    default='config.yaml', 
+    "--config", type=str,
+    default='config.yaml',
     help="config YAML file")
 parser.add_argument(
-    "--Sumstats_file", type=str, 
-    default=os.path.join("QC_data", 'Height.QC.gz'), 
+    "--Sumstats_file", type=str,
+    default=os.path.join("QC_data", 'Height.QC.gz'),
     help="summary statistics file")
 parser.add_argument(
-    "--Pheno_file", type=str, 
-    default="/REF/examples/prsice2/EUR.height", 
+    "--Pheno_file", type=str,
+    default="/REF/examples/prsice2/EUR.height",
     help="Phenotype file")
 parser.add_argument(
-    "--Phenotype", type=str, 
-    default="Height", 
+    "--Phenotype", type=str,
+    default="Height",
     help="Phenotype name (must be a column header in Pheno_file)")
 parser.add_argument(
-    "--Phenotype_class", type=str, 
-    default="CONTINUOUS", 
+    "--Phenotype_class", type=str,
+    default="CONTINUOUS",
     help="Phenotype class",
     choices=['CONTINUOUS', 'BINARY', 'ORDINAL', 'NOMINAL'])
 parser.add_argument(
-    "--Geno_file", type=str, 
-    default="EUR", 
+    "--Geno_file", type=str,
+    default="EUR",
     help="file path to .bed, .bim, .fam, etc. files")
 parser.add_argument(
     "--Output_dir", type=str,
@@ -130,7 +131,7 @@ parser.add_argument(
 # runtime specific
 parser.add_argument(
     '--runtype', type=str,
-    help=f"operation mode",
+    help="operation mode",
     default='subprocess',
     choices=runtype_choices
 )
@@ -140,7 +141,8 @@ parsed_args, unknowns = parser.parse_known_args(sys.argv[1:])
 
 # TODO: Find neater way of handling additional kwargs
 if len(unknowns) > 0:
-    print(f'arguments that will override config.yaml for method {parsed_args.method}:')
+    print('arguments that will override config.yaml for method ' +
+          f'{parsed_args.method}:')
     print(unknowns, '\n')
 assert len(unknowns) % 2 == 0, 'number of arguments must be even!'
 
@@ -152,7 +154,7 @@ for key in ['method', 'runtype']:
 
 # load config.yaml file as dict
 config = args_dict.pop('config')
-with open(config, 'r') as f:
+with open(config, 'r', encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
 #######################################
@@ -172,7 +174,7 @@ if len(unknowns) > 0:
 currentDateAndTime = datetime.datetime.now()
 now = currentDateAndTime.strftime('%y%d%d-%H:%M:%S')
 
-bash_header = '''#\!/bin/sh'''
+bash_header = '''#\\!/bin/sh'''
 jobname = '-'.join([config['slurm']['job_name'], parsed_args.method, now])
 slurm_header = f'''#!/bin/sh
 #SBATCH --job-name={jobname}
@@ -188,9 +190,9 @@ slurm_header = f'''#!/bin/sh
 # environment variables for sh and slurm scripts
 env_keys = [
     'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE', 'LDPRED2_REF',
-    'SINGULARITY_BIND', 'GUNZIP', 'GZIP', 'AWK', 
+    'SINGULARITY_BIND', 'GUNZIP', 'GZIP', 'AWK',
     'RSCRIPT', 'PLINK', 'PRSICE', 'PYTHON'
-    ]
+]
 env_variables_list = []
 for key in env_keys:
     env_variables_list += [f'export {key}="{os.environ[key]}"']
@@ -202,8 +204,8 @@ if parsed_args.method == 'plink':
     pgs_instance = pgs.PGS_Plink(
         **args_dict,
         **config['plink'])
-    commands = (pgs_instance.get_str(mode='preprocessing') + 
-                pgs.get_str(mode='stratification'))
+    commands = (pgs_instance.get_str(mode='preprocessing') +
+                pgs_instance.get_str(mode='stratification'))
 elif parsed_args.method == 'prsice2':
     pgs_instance = pgs.PGS_PRSice2(
         **args_dict,
@@ -253,10 +255,11 @@ elif parsed_args.runtype == 'sh':
     jobdir = 'bash_scripts'
     if not os.path.isdir(jobdir):
         os.mkdir(jobdir)
-    
-    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.sh'), 'w') as f:
+
+    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.sh'),
+              'w', encoding="utf-8") as f:
         f.writelines('\n'.join([bash_header] + env_variables_list + commands))
-    
+
         mssg = f'wrote {f.name}. To run, issue:\n$ bash {f.name}'
         print(mssg)
 
@@ -265,11 +268,13 @@ elif parsed_args.runtype == 'slurm':
     jobdir = 'slurm_job_scripts'
     if not os.path.isdir(jobdir):
         os.mkdir(jobdir)
-    
-    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.job'), 'w') as f:
+
+    with open(os.path.join(jobdir, f'{parsed_args.method}-{now}.job'),
+              'w', encoding="utf-8") as f:
         f.writelines('\n'.join([slurm_header] + env_variables_list + commands))
-    
-        mssg = f'wrote {f.name}. To submit job to the job queue, issue:\n$ sbatch {f.name}'
+
+        mssg = (f'wrote {f.name}.' +
+                f'To submit job to the job queue, issue:\n$ sbatch {f.name}')
         print(mssg)
 else:
     raise NotImplementedError(

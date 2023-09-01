@@ -104,12 +104,14 @@ def extract_variables(df, variables, pheno_dict_map, log):
             f'dropping {drop_col} label (most frequent)')
     return dummies.copy()
 
+
 def run_call(call):
     '''run subprocess call'''
     print(f'\nevaluating: {call}\n')
     proc = subprocess.run(call, shell=True, check=True)
     assert proc.returncode == 0
     return proc
+
 
 def post_run_plink(
         Output_dir,
@@ -221,32 +223,35 @@ def set_env(config):
     '''
     # present working dir
     PWD = os.getcwd()
-    
+
     ROOT_DIR = config['environ']['ROOT_DIR']
     os.environ.update({'ROOT_DIR': ROOT_DIR})
 
     for key, val in config['environ_inferred'].items():
         if key in os.environ:
-            print(f'os.environ already contains {key} with value {os.environ[key]} - redefining...')
+            print('os.environ already contains ' +
+                  f'{key} with value {os.environ[key]} - redefining...')
         if os.path.isdir(os.path.expandvars(val)):
             os.environ[key] = os.path.expandvars(val)
         else:
-            mssg =  f'Path {os.path.expandvars(val)} for variable {key} does not exist. Revise config.yaml!'
-            raise Exception(mssg)
+            mssg = (f'Path {os.path.expandvars(val)} for variable {key}' +
+                    'does not exist. Revise config.yaml!')
+            raise FileNotFoundError(mssg)
 
     print(
         '\nenvironment variables in use:\n',
-        '\n'.join(f'{key}: {val}' for key, val in os.environ.items() 
-            if key in dict(**config['environ'], 
-                        **config['environ_inferred']).keys()),
+        '\n'.join(f'{key}: {val}' for key, val in os.environ.items()
+                  if key in dict(**config['environ'],
+                                 **config['environ_inferred']).keys()),
         '\n')
 
     # set SINGULARITY_BIND to mount volumes in containers:
     os.environ['SINGULARITY_BIND'] = ','.join(
-        [f'{os.path.expandvars(item)}:/{key}' 
+        [f'{os.path.expandvars(item)}:/{key}'
             for key, item in config['SINGULARITY_BIND'].items()
-        ])
-    print('mounted volumes on containers:\n', os.environ['SINGULARITY_BIND'], '\n')
+         ])
+    print('mounted volumes on containers:\n',
+          os.environ['SINGULARITY_BIND'], '\n')
 
     # Executables in different containers
     SIF = os.environ['SIF']
@@ -286,9 +291,10 @@ class BasePGS(abc.ABC):
         Pheno_file: str
             phenotype file (for instance, .height)
         Phenotype: str or None
-            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+            if not ``None``, phenotype name (must be a column
+            header in ``Pheno_file``)
         Phenotype_class: str
-            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
+            phenotype class, either 'CONTINUOUS' or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -360,9 +366,10 @@ class PGS_Plink(BasePGS):
         Pheno_file: str
             phenotype file (for instance, .height)
         Phenotype: str or None
-            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+            if not ``None``, phenotype name (must be a column
+            header in ``Pheno_file``)
         Phenotype_class: str
-            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
+            phenotype class, either 'CONTINUOUS' or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -642,7 +649,7 @@ class PGS_Plink(BasePGS):
         str
         '''
         command = ' '.join([
-            '$RSCRIPT', 
+            '$RSCRIPT',
             os.path.join('Rscripts', 'find_best_fit_pgs.R'),
             self.Pheno_file,
             self.Eigenvec_file,
@@ -757,9 +764,10 @@ class PGS_PRSice2(BasePGS):
         Pheno_file: str
             phenotype file (for instance, .height)
         Phenotype: str or None
-            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+            if not ``None``, phenotype name (must be a column
+            header in ``Pheno_file``)
         Phenotype_class: str
-            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
+            phenotype class, either 'CONTINUOUS' or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -801,10 +809,11 @@ class PGS_PRSice2(BasePGS):
         self.MAF = MAF
         self.INFO = INFO
 
-        # deal with covariate file, generate from Cov_file and Eigenvec_file if needed
+        # deal with covariate file, generate from Cov_file and Eigenvec_file if
+        # needed
         if 'cov' in self.kwargs.keys():
             self._Covariate_file = self.kwargs.pop('cov')
-            print(f'cov={self._Covariate_file} argument found in kwargs.', 
+            print(f'cov={self._Covariate_file} argument found in kwargs.',
                   'Eigenvec_file and Cov_file args will be ignored.')
         else:
             if self.Cov_file is not None and self.Eigenvec_file is not None:
@@ -844,13 +853,14 @@ class PGS_PRSice2(BasePGS):
         str
         '''
         target = self.Geno_file
+        binary_target = "T" if self.Phenotype_class == "BINARY" else "F"
         command = ' '.join([
-            '$RSCRIPT', 
+            '$RSCRIPT',
             os.path.join('Rscripts', 'PRSice.R'),
             '--prsice /usr/bin/PRSice_linux',
             f'--base {self.Sumstats_file}',
             f'--target {target}',
-            f'--binary-target {"T" if self.Phenotype_class == "BINARY" else "F"}',
+            f'--binary-target {binary_target}',
             f'--pheno {self.Pheno_file}',
             f'--pheno-col {self.Phenotype}',
             f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
@@ -862,7 +872,6 @@ class PGS_PRSice2(BasePGS):
         command = '\n'.join([
             cmd0, command
         ])
-
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -950,9 +959,10 @@ class PGS_LDpred2(BasePGS):
         Pheno_file: str
             phenotype file (for instance, .height)
         Phenotype: str or None
-            if not ``None``, phenotype name (must be a column header in ``Pheno_file``)
+            if not ``None``, phenotype name (must be a column
+            header in ``Pheno_file``)
         Phenotype_class: str
-            phenotype class, either 'CONTINUOUS', 'NOMINAL', 'ORDINAL', or 'BINARY'
+            phenotype class, either 'CONTINUOUS' or 'BINARY'
         Geno_file: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
@@ -967,7 +977,8 @@ class PGS_LDpred2(BasePGS):
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
-            the ``Rscripts/ldpred2.R`` script (see file for full set of options).
+            the ``Rscripts/ldpred2.R`` script
+            (see file for full set of options).
             If the option is only a flag without value, set value
             as None-type or empty string.
         '''
@@ -1012,7 +1023,8 @@ class PGS_LDpred2(BasePGS):
         nPCs: int
             number of PCs to account for
         Cov_file: path
-            path to file with covariates (header, columns FID, IID, <covariate>)
+            path to file with covariates
+            (header, columns FID, IID, <covariate>)
 
         Returns
         -------
@@ -1048,7 +1060,7 @@ class PGS_LDpred2(BasePGS):
             list of command line statements for analysis run
         '''
         tmp_cmd1 = ' '.join([
-            '$RSCRIPT', 
+            '$RSCRIPT',
             os.path.join('Rscripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
             '--geno-file', self.fileGenoRDS,
@@ -1056,7 +1068,8 @@ class PGS_LDpred2(BasePGS):
             '--out', self._file_out,
         ])
         if self.file_keep_snps is not None:
-            tmp_cmd1 = ' '.join([tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
+            tmp_cmd1 = ' '.join(
+                [tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -1266,7 +1279,7 @@ class Standard_GWAS_QC(BasePGS):
 
         # strand-flipping the alleles to their complementary alleles
         cmd = ' '.join([
-            '$RSCRIPT', 
+            '$RSCRIPT',
             os.path.join('Rscripts', 'strand_flipping.R'),
             self.Geno_file + '.bim',
             os.path.join(self.Output_dir,
@@ -1305,7 +1318,7 @@ class Standard_GWAS_QC(BasePGS):
         # Assign individuals as biologically male if F-statistic is > 0.8;
         # biologically female if F < 0.2:
         cmd = ' '.join([
-            '$RSCRIPT', 
+            '$RSCRIPT',
             os.path.join('Rscripts', 'create_QC_valid.R'),
             os.path.join(
                 self.Output_dir,

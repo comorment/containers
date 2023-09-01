@@ -46,7 +46,7 @@ plink:
   range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
   strat_indep_pairwise: [250, 50, 0.25]
   nPCs: 6
-  threads: 2
+  threads: 4
 
 # PRSice-2
 prsice2:
@@ -55,9 +55,9 @@ prsice2:
   # base_info: 0.8
   # MAF: 0.01
   # INFO: 0.8
-  thread: 2
+  thread: 4
 
 # LDpred2
 ldpred2:
-  cores: 2
+  cores: 4
 
