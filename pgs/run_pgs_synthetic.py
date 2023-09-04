@@ -38,7 +38,7 @@ if __name__ == '__main__':
     fileGenoRDS = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
 
     # method specific input
-    Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
+    covariate_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
 
     #######################################
     # Update method-specific configs
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     # file names
     # Eigenval_file = f'{data_prefix}.eigenval'
-    Eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
+    eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
 
     #######################################
     # Plink
@@ -91,8 +91,8 @@ if __name__ == '__main__':
         phenotype_class=phenotype_class,
         geno_file_prefix=geno_file_prefix,
         output_dir=os.path.join(output_dir, 'PGS_synthetic_plink'),
-        Cov_file=Cov_file,
-        Eigenvec_file=Eigenvec_file,
+        covariate_file=covariate_file,
+        eigenvec_file=eigenvec_file,
         **config['plink'],
     )
 
@@ -123,8 +123,8 @@ if __name__ == '__main__':
         phenotype_class='CONTINUOUS',
         geno_file_prefix=geno_file_prefix,
         output_dir=os.path.join(output_dir, 'PGS_synthetic_prsice2'),
-        Cov_file=Cov_file,
-        Eigenvec_file=Eigenvec_file,
+        covariate_file=covariate_file,
+        eigenvec_file=eigenvec_file,
         **config['prsice2'],
     )
 
@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            Eigenvec_file=Eigenvec_file,
+            eigenvec_file=eigenvec_file,
             nPCs=6,
-            Cov_file=Cov_file)
+            covariate_file=covariate_file)
         pgs.run_call(call)

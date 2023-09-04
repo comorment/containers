@@ -61,8 +61,8 @@ if __name__ == '__main__':
     # some faffing around to produce files for
     # post run model evaluation
     for output_dir in Output_dirs.values():
-        Eigenvec_file = os.path.join(output_dir, 'master_file.eigenvec')
-        Cov_file = os.path.join(output_dir, 'master_file.cov')
+        eigenvec_file = os.path.join(output_dir, 'master_file.eigenvec')
+        covariate_file = os.path.join(output_dir, 'master_file.cov')
 
         os.makedirs(output_dir, exist_ok=True)
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
             '$RSCRIPT',
             os.path.join('Rscripts', 'generate_eigenvec.R'),
             '--pheno-file', pheno_file,
-            '--eigenvec-file', Eigenvec_file,
+            '--eigenvec-file', eigenvec_file,
             '--pca', str(config['plink']['nPCs'])
         ])
         pgs.run_call(call)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
             os.path.join('Rscripts', 'extract_columns.R'),
             '--input-file', pheno_file,
             '--columns', 'FID', 'IID', 'SEX',
-            '--output-file', Cov_file,
+            '--output-file', covariate_file,
             '--header', 'T',
         ])
         pgs.run_call(call)
@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            Eigenvec_file=os.path.join(output_dir, 'master_file.eigenvec'),
+            eigenvec_file=os.path.join(output_dir, 'master_file.eigenvec'),
             nPCs=str(config['plink']['nPCs']),
-            Cov_file=os.path.join(output_dir, 'master_file.cov'))
+            covariate_file=os.path.join(output_dir, 'master_file.cov'))
         pgs.run_call(call)

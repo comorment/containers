@@ -31,8 +31,8 @@ if __name__ == '__main__':
     output_dir = os.path.join('output', 'PGS_MoBa_prsice2')
 
     # method specific input
-    Eigenvec_file = os.path.join(output_dir, 'master_file.eigenvec')
-    Cov_file = os.path.join(output_dir, 'master_file.cov')
+    eigenvec_file = os.path.join(output_dir, 'master_file.eigenvec')
+    covariate_file = os.path.join(output_dir, 'master_file.cov')
 
     # for "PRSice --extract" arg (throws an error othervise):
     Valid_file = os.path.join(output_dir,
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         '$RSCRIPT',
         os.path.join('Rscripts', 'generate_eigenvec.R'),
         '--pheno-file', pheno_file,
-        '--eigenvec-file', Eigenvec_file,
+        '--eigenvec-file', eigenvec_file,
         '--pca', str(config['plink']['nPCs'])
     ])
     pgs.run_call(call)
@@ -69,7 +69,7 @@ if __name__ == '__main__':
         os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', pheno_file,
         '--columns', 'FID', 'IID', 'SEX',
-        '--output-file', Cov_file,
+        '--output-file', covariate_file,
         '--header', 'T',
     ])
     pgs.run_call(call)
@@ -99,8 +99,8 @@ if __name__ == '__main__':
         phenotype=phenotype,
         geno_file_prefix=geno_file_prefix,
         output_dir=output_dir,
-        Cov_file=Cov_file,
-        Eigenvec_file=Eigenvec_file,
+        covariate_file=covariate_file,
+        eigenvec_file=eigenvec_file,
         **config['prsice2'],
     )
 

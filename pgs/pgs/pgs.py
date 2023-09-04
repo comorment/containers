@@ -344,8 +344,8 @@ class PGS_Plink(BasePGS):
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='QC_data/EUR',
                  output_dir='PGS_plink',
-                 Cov_file='/REF/examples/prsice2/EUR.cov',
-                 Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
+                 covariate_file='/REF/examples/prsice2/EUR.cov',
+                 eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -373,9 +373,9 @@ class PGS_Plink(BasePGS):
             (</ENV/path/to/data/file>)
         output_dir: str
             path for output files (<path>)
-        Cov_file: str
+        covariate_file: str
             path to covariance file (.cov)
-        Eigenvec_file: str or None
+        eigenvec_file: str or None
             None, or path to eigenvec file (.eigenvec)
         clump_p1: float
             plink --clump-p1 parameter value (default: 1)
@@ -414,22 +414,22 @@ class PGS_Plink(BasePGS):
                          output_dir=output_dir,
                          **kwargs)
         # set attributes
-        if Cov_file is None or Eigenvec_file is None:
-            self.Cov_file = os.path.join(
+        if covariate_file is None or eigenvec_file is None:
+            self.covariate_file = os.path.join(
                 self.output_dir,
                 self.data_prefix + '.')
-            self.Eigenvec_file = os.path.join(
+            self.eigenvec_file = os.path.join(
                 self.output_dir,
                 self.data_prefix + '.eigenvec')
         else:
-            for fpath in [Cov_file, Eigenvec_file]:
+            for fpath in [covariate_file, eigenvec_file]:
                 try:
                     assert os.path.isfile(fpath)
                 except AssertionError:
                     print(f'file {fpath} may not exist\n')
 
-            self.Cov_file = Cov_file
-            self.Eigenvec_file = Eigenvec_file
+            self.covariate_file = covariate_file
+            self.eigenvec_file = eigenvec_file
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -553,9 +553,9 @@ class PGS_Plink(BasePGS):
         '''
         Write range_list file in output directory
         '''
-        with open(self._range_list_file, 'wt') as f:
-            for v in self.range_list:
-                f.write(f'{v} 0 {v}\n')
+        with open(self._range_list_file, 'wt', encoding='utf-8') as f:
+            for val in self.range_list:
+                f.write(f'{val} 0 {val}\n')
 
     def _run_plink_basic(self):
         '''
@@ -588,7 +588,7 @@ class PGS_Plink(BasePGS):
         '''
         Account for (population) stratification using PCs,
         creating .eigenvec file.
-        If class parameter Eigenvec_file is set and file exist,
+        If class parameter eigenvec_file is set and file exist,
         this function will not return commands to compute
         a new eigenvec file.
 
@@ -596,20 +596,20 @@ class PGS_Plink(BasePGS):
         -------
         list of str
         '''
-        # skip this step if Eigenvec_file argument is specified and file exist.
-        if os.path.isfile(self.Eigenvec_file):
-            print(f'Eigenvec_file {self.Eigenvec_file} exists. ' +
-                  'To get instructions to compute, set Eigenvec_file=None')
+        # skip this step if eigenvec_file argument is specified and file exist.
+        if os.path.isfile(self.eigenvec_file):
+            print(f'eigenvec_file {self.eigenvec_file} exists. ' +
+                  'To get instructions to compute, set eigenvec_file=None')
             # check that number of PCs match with class input
             eigenvec_df = pd.read_csv(
-                self.Eigenvec_file,
+                self.eigenvec_file,
                 delim_whitespace=True, header=None, nrows=1)
             nPCs = eigenvec_df.columns.size - 2
             if nPCs != self.nPCs:
                 mssg = (
-                    f'The number of PCs in {self.Eigenvec_file} nPCs={nPCs} ' +
+                    f'The number of PCs in {self.eigenvec_file} nPCs={nPCs} ' +
                     f'while <pgs.PGS_Plink instance>.nPCs={self.nPCs}. ' +
-                    f'Inst. class pgs.PGS_Plink w. nPCs={self.Eigenvec_file}' +
+                    f'Inst. class pgs.PGS_Plink w. nPCs={self.eigenvec_file}' +
                     ' (confer config.yaml file with settings).')
                 raise ValueError(mssg)
             return ''
@@ -650,8 +650,8 @@ class PGS_Plink(BasePGS):
             '$RSCRIPT',
             os.path.join('Rscripts', 'find_best_fit_pgs.R'),
             self.pheno_file,
-            self.Eigenvec_file,
-            self.Cov_file,
+            self.eigenvec_file,
+            self.covariate_file,
             self.phenotype,
             os.path.join(self.output_dir, self.data_prefix),
             ','.join([str(x) for x in self.range_list]),
@@ -688,8 +688,8 @@ class PGS_Plink(BasePGS):
             '--phenotype-class', self.phenotype_class,
             '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
-            '--eigenvec-file', self.Eigenvec_file,
-            '--covariate-file', self.Cov_file,
+            '--eigenvec-file', self.eigenvec_file,
+            '--covariate-file', self.covariate_file,
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
@@ -748,8 +748,8 @@ class PGS_PRSice2(BasePGS):
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='/REF/examples/prsice2/EUR',
                  output_dir='PGS_prsice2',
-                 Cov_file='/REF/examples/prsice2/EUR.cov',
-                 Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
+                 covariate_file='/REF/examples/prsice2/EUR.cov',
+                 eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  nPCs=6,
                  MAF=0.01,
                  INFO=0.8,
@@ -771,9 +771,9 @@ class PGS_PRSice2(BasePGS):
             (</ENV/path/to/data/file>)
         output_dir: str
             path for output files (<path>)
-        Cov_file: str or None
+        covariate_file: str or None
             path to covariate file (.cov)
-        Eigenvec_file: str or None
+        eigenvec_file: str or None
             path to eigenvec file (.eig) with PCs
         nPCs: int
             number of Principal Components (PCs) to include
@@ -801,20 +801,20 @@ class PGS_PRSice2(BasePGS):
                          output_dir=output_dir,
                          **kwargs)
         # set attributes
-        self.Cov_file = Cov_file
-        self.Eigenvec_file = Eigenvec_file
+        self.covariate_file = covariate_file
+        self.eigenvec_file = eigenvec_file
         self.nPCs = nPCs
         self.MAF = MAF
         self.INFO = INFO
 
-        # deal with covariate file, generate from Cov_file and Eigenvec_file if
+        # deal with covariate file, generate from covariate_file and eigenvec_file if
         # needed
         if 'cov' in self.kwargs.keys():
             self._Covariate_file = self.kwargs.pop('cov')
             print(f'cov={self._Covariate_file} argument found in kwargs.',
-                  'Eigenvec_file and Cov_file args will be ignored.')
+                  'eigenvec_file and covariate_file args will be ignored.')
         else:
-            if self.Cov_file is not None and self.Eigenvec_file is not None:
+            if self.covariate_file is not None and self.eigenvec_file is not None:
                 self._Covariate_file = os.path.join(
                     self.output_dir,
                     self.data_prefix + '.covariate')
@@ -834,8 +834,8 @@ class PGS_PRSice2(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'generate_covariate.R'),
-            self.Cov_file,
-            self.Eigenvec_file,
+            self.covariate_file,
+            self.eigenvec_file,
             self._Covariate_file,
             str(self.nPCs)])
 
@@ -907,8 +907,8 @@ class PGS_PRSice2(BasePGS):
             '--phenotype-class', self.phenotype_class,
             '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
-            '--eigenvec-file', self.Eigenvec_file,
-            '--covariate-file', self.Cov_file,
+            '--eigenvec-file', self.eigenvec_file,
+            '--covariate-file', self.covariate_file,
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
@@ -1007,7 +1007,7 @@ class PGS_LDpred2(BasePGS):
         ])
         return command
 
-    def get_model_evaluation_str(self, Eigenvec_file, nPCs, Cov_file):
+    def get_model_evaluation_str(self, eigenvec_file, nPCs, covariate_file):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
@@ -1016,11 +1016,11 @@ class PGS_LDpred2(BasePGS):
 
         Parameters
         ----------
-        Eigenvec_file: path
+        eigenvec_file: path
             path to file with PCs (no header, columns FID, IID, PC1, PC2, ...)
         nPCs: int
             number of PCs to account for
-        Cov_file: path
+        covariate_file: path
             path to file with covariates
             (header, columns FID, IID, <covariate>)
 
@@ -1036,8 +1036,8 @@ class PGS_LDpred2(BasePGS):
             '--phenotype-class', self.phenotype_class,
             '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{nPCs}',
-            '--eigenvec-file', Eigenvec_file,
-            '--covariate-file', Cov_file,
+            '--eigenvec-file', eigenvec_file,
+            '--covariate-file', covariate_file,
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd

@@ -39,7 +39,7 @@ subparsers.required = True
 # method plink:
 parser_plink = subparsers.add_parser('plink')
 parser_plink.add_argument(
-    "--Cov_file", type=str,
+    "--covariate_file", type=str,
     help="covariance file (for method plink)",
     default="/REF/examples/prsice2/EUR.cov"
 )
@@ -51,7 +51,7 @@ parser_plink.add_argument(
 # method prsice2:
 parser_prsice2 = subparsers.add_parser('prsice2')
 parser_prsice2.add_argument(
-    "--Cov_file", type=str,
+    "--covariate_file", type=str,
     help="covariance file (for method prsice2)",
     default="/REF/examples/prsice2/EUR.cov"
 )
@@ -68,7 +68,7 @@ parser_ldpred2_inf = subparsers.add_parser('ldpred2-inf')
 #     default="/REF/hapmap3/w_hm3.justrs"
 # )
 parser_ldpred2_inf.add_argument(
-    "--Cov_file", type=str,
+    "--covariate_file", type=str,
     help="covariance file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.cov"
 )
@@ -86,7 +86,7 @@ parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
 #     default="/REF/hapmap3/w_hm3.justrs"
 # )
 parser_ldpred2_auto.add_argument(
-    "--Cov_file", type=str,
+    "--covariate_file", type=str,
     help="covariance file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.cov"
 )
@@ -215,7 +215,7 @@ elif parsed_args.method == 'prsice2':
     commands = pgs_instance.get_str()
 elif parsed_args.method == 'ldpred2-inf':
     args = args_dict.copy()
-    for key in ['Eigenvec_file', 'Cov_file']:
+    for key in ['eigenvec_file', 'covariate_file']:
         args.pop(key)
     pgs_instance = pgs.PGS_LDpred2(
         method='inf',
@@ -225,7 +225,7 @@ elif parsed_args.method == 'ldpred2-inf':
     commands = pgs_instance.get_str(create_backing_file=True)
 elif parsed_args.method == 'ldpred2-auto':
     args = args_dict.copy()
-    for key in ['Eigenvec_file', 'Cov_file']:
+    for key in ['eigenvec_file', 'covariate_file']:
         args.pop(key)
     pgs_instance = pgs.PGS_LDpred2(
         method='auto',
@@ -242,9 +242,9 @@ if parsed_args.method in ['plink', 'prsice2']:
 elif parsed_args.method in ['ldpred2-inf', 'ldpred2-auto']:
     commands += [
         pgs_instance.get_model_evaluation_str(
-            Eigenvec_file=args_dict['Eigenvec_file'],
+            eigenvec_file=args_dict['eigenvec_file'],
             nPCs=str(config['plink']['nPCs']),
-            Cov_file=args_dict['Cov_file'])]
+            covariate_file=args_dict['covariate_file'])]
 
 # create tasks
 if parsed_args.runtype == 'subprocess':

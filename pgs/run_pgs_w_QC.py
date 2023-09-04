@@ -9,7 +9,7 @@ from pgs import pgs
 
 if __name__ == '__main__':
     # load config.yaml file as dict
-    with open("config.yaml", 'r') as stream:
+    with open("config.yaml", 'r', encoding='utf-8') as stream:
         config = yaml.safe_load(stream)
 
     #######################################
@@ -36,8 +36,8 @@ if __name__ == '__main__':
 
     # method specific input
     # Plink, PRSice2, LDpred2
-    Cov_file = '/REF/examples/prsice2/EUR.cov'
-    Eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
+    covariate_file = '/REF/examples/prsice2/EUR.cov'
+    eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
 
     # LDpred2
     fileGenoRDS = os.path.join(output_dir, 'EUR.rds')  # put in working directory as both LDpred2 methods use it
@@ -105,8 +105,8 @@ if __name__ == '__main__':
         phenotype_class=phenotype_class,
         geno_file_prefix=Geno_file_post_QC,
         output_dir=os.path.join(output_dir, 'PGS_plink'),
-        Cov_file=Cov_file,
-        Eigenvec_file=Eigenvec_file,
+        covariate_file=covariate_file,
+        eigenvec_file=eigenvec_file,
         **config['plink'],
     )
 
@@ -136,8 +136,8 @@ if __name__ == '__main__':
         phenotype_class=phenotype_class,
         geno_file_prefix=Geno_file_post_QC,
         output_dir=os.path.join(output_dir, 'PGS_prsice2'),
-        Cov_file=Cov_file,
-        Eigenvec_file=Eigenvec_file,
+        covariate_file=covariate_file,
+        eigenvec_file=eigenvec_file,
         **config['prsice2'],
     )
 
@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            Eigenvec_file=Eigenvec_file,
+            eigenvec_file=eigenvec_file,
             nPCs=config['plink']['nPCs'],
-            Cov_file=Cov_file)
+            covariate_file=covariate_file)
         pgs.run_call(call)
