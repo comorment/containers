@@ -39,24 +39,25 @@ subparsers.required = True
 # method plink:
 parser_plink = subparsers.add_parser('plink')
 parser_plink.add_argument(
-    "--covariate_file", type=str,
+    "--covariate-file", type=str,
     help="covariance file (for method plink)",
     default="/REF/examples/prsice2/EUR.cov"
 )
 parser_plink.add_argument(
-    "--Eigenvec-file", type=str,
+    "--eigenvec-file", type=str,
     help="eigenvec file (for method plink)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
+
 # method prsice2:
 parser_prsice2 = subparsers.add_parser('prsice2')
 parser_prsice2.add_argument(
-    "--covariate_file", type=str,
+    "--covariate-file", type=str,
     help="covariance file (for method prsice2)",
     default="/REF/examples/prsice2/EUR.cov"
 )
 parser_prsice2.add_argument(
-    "--Eigenvec-file", type=str,
+    "--eigenvec-file", type=str,
     help="eigenvec file (for method prsice2)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
@@ -68,12 +69,12 @@ parser_ldpred2_inf = subparsers.add_parser('ldpred2-inf')
 #     default="/REF/hapmap3/w_hm3.justrs"
 # )
 parser_ldpred2_inf.add_argument(
-    "--covariate_file", type=str,
+    "--covariate-file", type=str,
     help="covariance file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.cov"
 )
 parser_ldpred2_inf.add_argument(
-    "--Eigenvec-file", type=str,
+    "--eigenvec-file", type=str,
     help="eigenvec file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
@@ -86,12 +87,12 @@ parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
 #     default="/REF/hapmap3/w_hm3.justrs"
 # )
 parser_ldpred2_auto.add_argument(
-    "--covariate_file", type=str,
+    "--covariate-file", type=str,
     help="covariance file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.cov"
 )
 parser_ldpred2_auto.add_argument(
-    "--Eigenvec-file", type=str,
+    "--eigenvec-file", type=str,
     help="eigenvec file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
@@ -103,11 +104,11 @@ parser.add_argument(
     default='config.yaml',
     help="config YAML file")
 parser.add_argument(
-    "--sumstats_file", type=str,
+    "--sumstats-file", type=str,
     default=os.path.join("QC_data", 'Height.QC.gz'),
     help="summary statistics file")
 parser.add_argument(
-    "--pheno_file", type=str,
+    "--pheno-file", type=str,
     default="/REF/examples/prsice2/EUR.height",
     help="phenotype file")
 parser.add_argument(
@@ -115,16 +116,16 @@ parser.add_argument(
     default="Height",
     help="phenotype name (must be a column header in ``pheno_file``)")
 parser.add_argument(
-    "--phenotype_class", type=str,
+    "--phenotype-class", type=str,
     default="CONTINUOUS",
     help="phenotype class",
     choices=['CONTINUOUS', 'BINARY'])
 parser.add_argument(
-    "--geno_file_prefix", type=str,
+    "--geno-file-prefix", type=str,
     default="EUR",
     help="file path to .bed, .bim, .fam, etc. files")
 parser.add_argument(
-    "--output_dir", type=str,
+    "--output-dir", type=str,
     help="Output file directory",
     default="PGS_prsice2")
 
@@ -190,7 +191,8 @@ slurm_header = f'''#!/bin/sh
 
 # environment variables for sh and slurm scripts
 env_keys = [
-    'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE', 'LDPRED2_REF',
+    'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE', 
+    'LDPRED2_SCRIPTS', 'LDPRED2_REF',
     'SINGULARITY_BIND', 'GUNZIP', 'GZIP', 'AWK',
     'RSCRIPT', 'PLINK', 'PRSICE', 'PYTHON'
 ]

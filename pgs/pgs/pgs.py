@@ -649,14 +649,14 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'find_best_fit_pgs.R'),
-            self.pheno_file,
-            self.eigenvec_file,
-            self.covariate_file,
-            self.phenotype,
-            os.path.join(self.output_dir, self.data_prefix),
-            ','.join([str(x) for x in self.range_list]),
-            str(self.nPCs),
-            os.path.join(self.output_dir, 'best_fit_prs.csv')
+            '--phenotype-file', self.pheno_file,
+            '--eigenvec-file', self.eigenvec_file,
+            '--cov-file', self.covariate_file,
+            '--phenotype', self.phenotype,
+            '--data-prefix', os.path.join(self.output_dir, self.data_prefix),
+            '--thresholds', ','.join([str(x) for x in self.range_list]),
+            '--nPCs', str(self.nPCs),
+            '--results-file', os.path.join(self.output_dir, 'best_fit_prs.csv')
         ])
 
         return command
@@ -834,10 +834,10 @@ class PGS_PRSice2(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'generate_covariate.R'),
-            self.covariate_file,
-            self.eigenvec_file,
-            self._Covariate_file,
-            str(self.nPCs)])
+            '--cov-file', self.covariate_file,
+            '--eigenvec-file', self.eigenvec_file,
+            '--covariate-file', self._Covariate_file,
+            '--nPCs', str(self.nPCs)])
 
         return command
 
@@ -947,7 +947,7 @@ class PGS_LDpred2(BasePGS):
                  output_dir='PGS_ldpred2_inf',
                  method='inf',
                  fileGenoRDS='EUR.rds',
-                 file_keep_snps='/REF/hapmap3/w_hm3.justrs',
+                 # file_keep_snps='/REF/hapmap3/w_hm3.justrs',
                  **kwargs):
         '''
         Parameters
@@ -970,8 +970,8 @@ class PGS_LDpred2(BasePGS):
             LDpred2 method, either "inf" (default) or "auto"
         fileGenoRDS: str
             base name for .rds file output
-        file_keep_snps: str or None
-            File with RSIDs of SNPs to keep (optional)
+        # file_keep_snps: str or None
+        #     File with RSIDs of SNPs to keep (optional)
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
@@ -991,7 +991,7 @@ class PGS_LDpred2(BasePGS):
         # set attributes
         self.method = method
         self.fileGenoRDS = fileGenoRDS
-        self.file_keep_snps = file_keep_snps
+        # self.file_keep_snps = file_keep_snps
 
         # inferred
         self._fileGeno = self.geno_file_prefix + '.bed'
@@ -1002,8 +1002,8 @@ class PGS_LDpred2(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('/ldpred2_scripts', 'createBackingFile.R'),
-            self._fileGeno,
-            self.fileGenoRDS
+            '--file-input', self._fileGeno,
+            '--file-output', self.fileGenoRDS
         ])
         return command
 
@@ -1050,7 +1050,7 @@ class PGS_LDpred2(BasePGS):
         ----------
         create_backing_file: bool
             if True (default), prepend statements for running the
-            ``$LDPRED2_SCRIPTS/createBackingFile.R`` script, 
+            ``$LDPRED2_SCRIPTS/createBackingFile.R`` script,
             generating ``fileGenoRDS``
 
         Returns
@@ -1066,9 +1066,9 @@ class PGS_LDpred2(BasePGS):
             '--sumstats', self.sumstats_file,
             '--out', self._file_out,
         ])
-        if self.file_keep_snps is not None:
-            tmp_cmd1 = ' '.join(
-                [tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
+        # if self.file_keep_snps is not None:
+        #     tmp_cmd1 = ' '.join(
+        #         [tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -1267,9 +1267,11 @@ class Standard_GWAS_QC(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'create_valid_sample.R'),
+            '--file-input',
             os.path.join(
                 self.output_dir,
                 self.data_prefix + self.data_postfix + '.het'),
+            '--file-output',
             os.path.join(
                 self.output_dir,
                 self.data_prefix + '.valid.sample'),
@@ -1280,12 +1282,16 @@ class Standard_GWAS_QC(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'strand_flipping.R'),
-            self.geno_file_prefix + '.bim',
+            '--bim-file', self.geno_file_prefix + '.bim',
+            '--QC-file',
             os.path.join(self.output_dir,
                          self.phenotype + self.data_postfix + '.gz'),
+            '--QC-snplist-file',
             os.path.join(self.output_dir,
                          self.data_prefix + self.data_postfix + '.snplist'),
+            '--ai-file',
             os.path.join(self.output_dir, self.data_prefix + '.a1'),
+            '--mismatch-file',
             os.path.join(self.output_dir, self.data_prefix + '.mismatch')
         ])
         command += [cmd]
@@ -1319,12 +1325,15 @@ class Standard_GWAS_QC(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'create_QC_valid.R'),
+            '--file-valid',
             os.path.join(
                 self.output_dir,
                 self.data_prefix + '.valid.sample'),
+            '--file-sexcheck',
             os.path.join(
                 self.output_dir,
                 self.data_prefix + self.data_postfix + '.sexcheck'),
+            '--file-output',
             os.path.join(
                 self.output_dir,
                 self.data_prefix + self.data_postfix + '.valid')

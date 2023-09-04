@@ -4,25 +4,25 @@ library(data.table)
 library(magrittr)
 
 par <- arg_parser('find best-fit PRS')
-par <- add_argument(par, "file_pheno", help="Input file with phenotypes")
-par <- add_argument(par, "file_eigenvec", help=".eigenvec input file")
-par <- add_argument(par, "file_cov", help=".cov input file")
-par <- add_argument(par, "phenotype", help="Phenotype ID")
-par <- add_argument(par, "data_prefix", help='file prefix')
-par <- add_argument(par, "thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1", 
+par <- add_argument(par, "--phenotype-file", help="Input file with phenotypes")
+par <- add_argument(par, "--eigenvec-file", help=".eigenvec input file")
+par <- add_argument(par, "--cov-file", help=".cov input file")
+par <- add_argument(par, "--phenotype", help="Phenotype ID")
+par <- add_argument(par, "--data-prefix", help='file prefix')
+par <- add_argument(par, "--thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1", 
                     help="comma-sep list of threshold values")
-par <- add_argument(par, "nPCs", type="integer", default=6, 
+par <- add_argument(par, "--nPCs", type="integer", default=6, 
                     help="Integer number of Principal Components (PCs)")
-par <- add_argument(par, "results_file", help="Output file with best-fit results (.csv)")
+par <- add_argument(par, "--results-file", help="Output file with best-fit results (.csv)")
 
 parsed <- parse_args(par)
 
 p.threshold <- as.double(as.list(strsplit(parsed$thresholds, ',')[[1]]))
 
-phenotype_data <- fread(parsed$file_pheno)
-pcs <- fread(parsed$file_eigenvec, header=F) %>%
+phenotype_data <- fread(parsed$phenotype_file)
+pcs <- fread(parsed$eigenvec_file, header=F) %>%
     setnames(., colnames(.), c("FID", "IID", paste0("PC",1:parsed$nPCs)) )
-covariate <- fread(parsed$file_cov)
+covariate <- fread(parsed$cov_file)
 pheno <- merge(phenotype_data, covariate) %>%
         merge(., pcs)
 

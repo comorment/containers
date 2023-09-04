@@ -42,7 +42,9 @@ Get a list of options:
 
 ```
 $ python3 pgs_exec.py --help
-usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--Sumstats_file SUMSTATS_FILE] [--Pheno_file PHENO_FILE] [--Geno_file GENO_FILE] [--Output_dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}] {plink,prsice2,ldpred2-inf,ldpred2-auto} ...
+usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--config CONFIG] [--sumstats-file SUMSTATS_FILE] [--pheno-file PHENO_FILE] [--phenotype PHENOTYPE]
+           [--phenotype-class {CONTINUOUS,BINARY}] [--geno-file-prefix GENO_FILE_PREFIX] [--output-dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}]
+           {plink,prsice2,ldpred2-inf,ldpred2-auto} ...
 
 A pipeline for PGS analysis
 
@@ -53,13 +55,18 @@ optional arguments:
   -h, --help            show this help message and exit
   --method {plink,prsice2,ldpred2-inf,ldpred2-auto}
                         Method for PGS
-  --Sumstats_file SUMSTATS_FILE
+  --config CONFIG       config YAML file
+  --sumstats-file SUMSTATS_FILE
                         summary statistics file
-  --Pheno_file PHENO_FILE
-                        Phenotype file
-  --Geno_file GENO_FILE
+  --pheno-file PHENO_FILE
+                        phenotype file
+  --phenotype PHENOTYPE
+                        phenotype name (must be a column header in ``pheno_file``)
+  --phenotype-class {CONTINUOUS,BINARY}
+                        phenotype class
+  --geno-file-prefix GENO_FILE_PREFIX
                         file path to .bed, .bim, .fam, etc. files
-  --Output_dir OUTPUT_DIR
+  --output-dir OUTPUT_DIR
                         Output file directory
   --runtype {sh,slurm,subprocess}
                         operation mode
@@ -69,35 +76,34 @@ Example w. PRSice2 as subprocess on synthetic dataset (``pgs_exec_example_1.sh``
 
 ```
 python3 pgs_exec.py \
-    --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
-    --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
-    --Phenotype 'trait1' \
-    --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
-    --Output_dir 'results/PGS_synthetic_prsice2' \
+    --sumstats-file /REF/examples/ldpred2/trait1.sumstats.gz \
+    --pheno-file /REF/examples/ldpred2/simu.pheno \
+    --phenotype trait1 \
+    --geno-file-prefix /REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1 \
+    --output-dir output/PGS_synthetic_prsice2 \
     --runtype 'subprocess' \
     'prsice2' \
-    --Cov_file '/REF/examples/prsice2/EUR.cov' \
-    --Eigenvec-file 'g1000_eur_chr21to22_hm3rnd1.eigenvec'
+    --covariate-file '/REF/examples/prsice2/EUR.cov' \
+    --eigenvec-file 'output/g1000_eur_chr21to22_hm3rnd1.eigenvec'
 ```
 
 > **_NOTE:_**  The last two lines will override settings for ``method: prsice2`` in ``config.yaml`` file, being parsed to the ``PRSice2.r`` script
 
-Example w. LDpred2-inf via shell (``sh``) script on synthetic dataset (``pgs_exec_example_2.sh``):
+Example w. LDpred2-auto via shell (``sh``) script on synthetic dataset (``pgs_exec_example_2.sh``):
 
 ```
 python3 pgs_exec.py \
-    --Sumstats_file '/REF/examples/ldpred2/trait1.sumstats.gz' \
-    --Pheno_file '/REF/examples/ldpred2/simu.pheno' \
-    --Phenotype 'trait1' \
-    --Geno_file '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
-    --Output_dir 'results/PGS_synthetic_LDpred2_inf' \
+    --sumstats-file '/REF/examples/ldpred2/trait1.sumstats.gz' \
+    --pheno-file '/REF/examples/ldpred2/simu.pheno' \
+    --phenotype 'trait1' \
+    --geno-file-prefix '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
+    --output-dir 'output/PGS_synthetic_LDpred2_auto' \
     --runtype 'sh' \
-    'ldpred2-inf' \
-    --file_keep_snps '/REF/hapmap3/w_hm3.justrs' \
-    'fileGenoRDS' 'g1000_eur_chr21to22_hm3rnd1.rds' \
-    'col-pheno' 'trait1' \
+    'ldpred2-auto' \
+    'file-keep-snps' '/REF/hapmap3/w_hm3.justrs' \
+    'fileGenoRDS' 'output/g1000_eur_chr21to22_hm3rnd1.rds' \
     'chr2use' '21,22' \
-    'cores' '2'
+    'cores' 4
 ```
 
 Which generates a shell script that can be run as

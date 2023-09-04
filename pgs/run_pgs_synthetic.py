@@ -9,7 +9,7 @@ from pgs import pgs
 
 if __name__ == '__main__':
     # load config.yaml file as dict
-    with open("config.yaml", 'r') as stream:
+    with open('config.yaml', 'r', encoding='utf-8') as stream:
         config = yaml.safe_load(stream)
 
     #######################################
@@ -78,7 +78,6 @@ if __name__ == '__main__':
     pgs.run_call(call)
 
     # file names
-    # Eigenval_file = f'{data_prefix}.eigenval'
     eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
 
     #######################################
