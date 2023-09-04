@@ -23,19 +23,19 @@ if __name__ == '__main__':
     # Setup inputs and outputs
     #######################################
     # input (shared)
-    Sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
-    Pheno_file = '/REF/examples/ldpred2/simu.pheno'
-    Phenotype = 'trait1'
-    Phenotype_class = 'CONTINUOUS'
-    Geno_file = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
-    Data_postfix = ''
+    sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
+    pheno_file = '/REF/examples/ldpred2/simu.pheno'
+    phenotype = 'trait1'
+    phenotype_class = 'CONTINUOUS'
+    geno_file_prefix = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
+    data_postfix = ''
 
     # Output root directory (will be created if it does not exist)
-    Output_dir = 'output'
-    os.makedirs(Output_dir, exist_ok=True)
+    output_dir = 'output'
+    os.makedirs(output_dir, exist_ok=True)
 
     # LDpred2 specific
-    fileGenoRDS = os.path.join(Output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
+    fileGenoRDS = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
 
     # method specific input
     Cov_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
@@ -64,33 +64,33 @@ if __name__ == '__main__':
     #######################################
     # Preprocessing
     #######################################
-    # Create <Data_prefix>.eigenval/eigenvec files using plink
+    # Create <data_prefix>.eigenval/eigenvec files using plink
     # written to output directory
     # TODO: move out
-    Data_prefix = os.path.split(Geno_file)[-1]
+    data_prefix = os.path.split(geno_file_prefix)[-1]
     call = ' '.join(
         [os.environ['PLINK'],
-         '--bfile', Geno_file,
+         '--bfile', geno_file_prefix,
          '--pca', str(config['plink']['nPCs']),
-         '--out', os.path.join(Output_dir, Data_prefix)
+         '--out', os.path.join(output_dir, data_prefix)
          ]
     )
     pgs.run_call(call)
 
     # file names
-    # Eigenval_file = f'{Data_prefix}.eigenval'
-    Eigenvec_file = f'{os.path.join(Output_dir, Data_prefix)}.eigenvec'
+    # Eigenval_file = f'{data_prefix}.eigenval'
+    Eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
 
     #######################################
     # Plink
     #######################################
     plink = pgs.PGS_Plink(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Phenotype_class=Phenotype_class,
-        Geno_file=Geno_file,
-        Output_dir=os.path.join(Output_dir, 'PGS_synthetic_plink'),
+        sumstats_file=sumstats_file,
+        pheno_file=pheno_file,
+        phenotype=phenotype,
+        phenotype_class=phenotype_class,
+        geno_file_prefix=geno_file_prefix,
+        output_dir=os.path.join(output_dir, 'PGS_synthetic_plink'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['plink'],
@@ -117,12 +117,12 @@ if __name__ == '__main__':
     # PRSice-2
     #######################################
     prsice2 = pgs.PGS_PRSice2(
-        Sumstats_file=Sumstats_file,
-        Pheno_file=Pheno_file,
-        Phenotype=Phenotype,
-        Phenotype_class='CONTINUOUS',
-        Geno_file=Geno_file,
-        Output_dir=os.path.join(Output_dir, 'PGS_synthetic_prsice2'),
+        sumstats_file=sumstats_file,
+        pheno_file=pheno_file,
+        phenotype=phenotype,
+        phenotype_class='CONTINUOUS',
+        geno_file_prefix=geno_file_prefix,
+        output_dir=os.path.join(output_dir, 'PGS_synthetic_prsice2'),
         Cov_file=Cov_file,
         Eigenvec_file=Eigenvec_file,
         **config['prsice2'],
@@ -141,13 +141,13 @@ if __name__ == '__main__':
     ############################################
     for method in ['inf', 'auto']:
         ldpred2 = pgs.PGS_LDpred2(
-            Sumstats_file=Sumstats_file,
-            Pheno_file=Pheno_file,
-            Phenotype=Phenotype,
-            Phenotype_class='CONTINUOUS',
-            Geno_file=Geno_file,
-            Output_dir=os.path.join(
-                Output_dir, f'PGS_synthetic_LDpred2_{method}'),
+            sumstats_file=sumstats_file,
+            pheno_file=pheno_file,
+            phenotype=phenotype,
+            phenotype_class='CONTINUOUS',
+            geno_file_prefix=geno_file_prefix,
+            output_dir=os.path.join(
+                output_dir, f'PGS_synthetic_LDpred2_{method}'),
             method=method,
             fileGenoRDS=fileGenoRDS,
             **config['ldpred2']

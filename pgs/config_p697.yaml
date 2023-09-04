@@ -27,6 +27,8 @@ environ_inferred:
   SIF: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17/singularity"
   # folder containing  full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data
   LDPRED2_REF: "$ROOT_DIR/data/durable/users/espehage/comorment/ldpred2_ref"
+  # folder containing LDpred2 R scripts
+  LDPRED2_SCRIPTS: "$CONTAINERS/scripts/pgs/LDpred2"
 
   # some processed MOBA files
   MOBA: '$ROOT_DIR/cluster/users/ofrei/2022_moba_height_traj'
@@ -40,6 +42,7 @@ environ_inferred:
 SINGULARITY_BIND: 
   # REF: '$REFERENCE'
   ldpred2_ref: '$LDPRED2_REF'
+  ldpred2_scripts: '$LDPRED2_SCRIPTS'
   MOBA: '$MOBA'
   SUMSTATS: '$SUMSTATS'
 

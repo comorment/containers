@@ -103,28 +103,28 @@ parser.add_argument(
     default='config.yaml',
     help="config YAML file")
 parser.add_argument(
-    "--Sumstats_file", type=str,
+    "--sumstats_file", type=str,
     default=os.path.join("QC_data", 'Height.QC.gz'),
     help="summary statistics file")
 parser.add_argument(
-    "--Pheno_file", type=str,
+    "--pheno_file", type=str,
     default="/REF/examples/prsice2/EUR.height",
-    help="Phenotype file")
+    help="phenotype file")
 parser.add_argument(
-    "--Phenotype", type=str,
+    "--phenotype", type=str,
     default="Height",
-    help="Phenotype name (must be a column header in Pheno_file)")
+    help="phenotype name (must be a column header in ``pheno_file``)")
 parser.add_argument(
-    "--Phenotype_class", type=str,
+    "--phenotype_class", type=str,
     default="CONTINUOUS",
-    help="Phenotype class",
-    choices=['CONTINUOUS', 'BINARY', 'ORDINAL', 'NOMINAL'])
+    help="phenotype class",
+    choices=['CONTINUOUS', 'BINARY'])
 parser.add_argument(
-    "--Geno_file", type=str,
+    "--geno_file_prefix", type=str,
     default="EUR",
     help="file path to .bed, .bim, .fam, etc. files")
 parser.add_argument(
-    "--Output_dir", type=str,
+    "--output_dir", type=str,
     help="Output file directory",
     default="PGS_prsice2")
 
@@ -167,7 +167,8 @@ pgs.set_env(config)
 #######################################
 # update config with additional kwargs
 if len(unknowns) > 0:
-    d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
+    # d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
+    d = dict(zip(unknowns[::2], unknowns[1::2]))
     config[parsed_args.method.split('-')[0]].update(d)
 
 # job file headers
@@ -178,8 +179,8 @@ bash_header = '''#\\!/bin/sh'''
 jobname = '-'.join([config['slurm']['job_name'], parsed_args.method, now])
 slurm_header = f'''#!/bin/sh
 #SBATCH --job-name={jobname}
-#SBATCH --output={os.path.join(parsed_args.Output_dir, jobname + now + '.txt')}
-#SBATCH --error={os.path.join(parsed_args.Output_dir, jobname + now + '.txt')}
+#SBATCH --output={os.path.join(parsed_args.output_dir, jobname + now + '.txt')}
+#SBATCH --error={os.path.join(parsed_args.output_dir, jobname + now + '.txt')}
 #SBATCH --account=$SBATCH_ACCOUNT  # project ID
 #SBATCH --time={config['slurm']['time']}
 #SBATCH --cpus-per-task={config['slurm']['cpus_per_task']}

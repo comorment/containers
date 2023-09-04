@@ -61,7 +61,7 @@ print(glance(linear.fit))
 if (parsed$phenotype_class == "BINARY") {
     print(paste('Nagelkerke R2 (null model):', null.eval))
     print(paste('Nagelkerke R2 (full model):', linear.eval))
-} else if {
+} else if (parsed$phenotype_class == "CONTINUOUS") {
     print(paste('R2 (null model):', null.eval))
     print(paste('R2 (full model):', linear.eval))
 }

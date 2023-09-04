@@ -21,9 +21,9 @@
 
 import abc
 import os
+import subprocess
 import pandas as pd
 import numpy as np
-import subprocess
 
 
 _MAJOR = "1"
@@ -114,61 +114,61 @@ def run_call(call):
 
 
 def post_run_plink(
-        Output_dir,
-        Data_prefix,
+        output_dir,
+        data_prefix,
         best_fit_file='best_fit_prs.csv',
         score_file='test.score'):
     '''
     Read best-fit predictions and export standardized ``test.score`` file
-    to Output_dir from class PGS_Plink output
+    to output_dir from class PGS_Plink output
 
     Parameters
     ----------
-    Output_dir: path
+    output_dir: path
         path to output directory
-    Data_prefix: str
+    data_prefix: str
         standard file name prefix (for .bed, .bim, .fam, etc.)
     best_fit_file: str
-        .csv file in ``Output_dir`` with best fit Threshold value.
+        .csv file in ``output_dir`` with best fit Threshold value.
         Default: 'best_fit_prs.csv'
     score_file: str
-        test score file in ``Output_dir``. Default: 'test.score'
+        test score file in ``output_dir``. Default: 'test.score'
     '''
     best_fit = pd.read_csv(
         os.path.join(
-            Output_dir,
+            output_dir,
             best_fit_file))
 
-    f = f"{Data_prefix}.{best_fit['Threshold'].values[0]}.profile"
+    f = f"{data_prefix}.{best_fit['Threshold'].values[0]}.profile"
     scores = pd.read_csv(
-        os.path.join(Output_dir, f),
+        os.path.join(output_dir, f),
         delim_whitespace=True,
         usecols=['IID', 'FID', 'SCORE'])
     scores.rename(columns={'SCORE': 'score'}, inplace=True)
-    scores.to_csv(os.path.join(Output_dir, score_file),
+    scores.to_csv(os.path.join(output_dir, score_file),
                   sep=' ', index=False)
 
 
-def post_run_prsice2(Output_dir, Data_prefix, score_file='test.score'):
+def post_run_prsice2(output_dir, data_prefix, score_file='test.score'):
     '''
     Read best-fit predictions and export standardized ``test.score`` file
-    to Output_dir from class PGS_PRSice2 output
+    to output_dir from class PGS_PRSice2 output
 
     Parameters
     ----------
-    Output_dir: path
+    output_dir: path
         path to output directory
-    Data_prefix: str
+    data_prefix: str
         standard file name prefix (for .bed, .bim, .fam, etc.)
     score_file: str
-        test score file in ``Output_dir``. Default: 'test.score'
+        test score file in ``output_dir``. Default: 'test.score'
     '''
     scores = pd.read_csv(
-        os.path.join(Output_dir, Data_prefix + '.best'),
+        os.path.join(output_dir, data_prefix + '.best'),
         delim_whitespace=True,
         usecols=['IID', 'FID', 'PRS'])
     scores.rename(columns={'PRS': 'score'}, inplace=True)
-    scores.to_csv(os.path.join(Output_dir, score_file),
+    scores.to_csv(os.path.join(output_dir, score_file),
                   sep=' ', index=False)
 
 
@@ -234,7 +234,7 @@ def set_env(config):
         if os.path.isdir(os.path.expandvars(val)):
             os.environ[key] = os.path.expandvars(val)
         else:
-            mssg = (f'Path {os.path.expandvars(val)} for variable {key}' +
+            mssg = (f'Path {os.path.expandvars(val)} for variable {key} ' +
                     'does not exist. Revise config.yaml!')
             raise FileNotFoundError(mssg)
 
@@ -276,54 +276,52 @@ class BasePGS(abc.ABC):
 
     @abc.abstractmethod
     def __init__(self,
-                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-                 Pheno_file='/REF/examples/prsice2/EUR.height',
-                 Phenotype='Height',
-                 Phenotype_class='CONTINUOUS',
-                 Geno_file='/REF/examples/prsice2/EUR',
-                 Output_dir='qc-output',
+                 sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 pheno_file='/REF/examples/prsice2/EUR.height',
+                 phenotype='Height',
+                 phenotype_class='CONTINUOUS',
+                 geno_file_prefix='/REF/examples/prsice2/EUR',
+                 output_dir='qc-output',
                  **kwargs):
         """
         Parameters
         ----------
-        Sumstats_file: str
+        sumstats_file: str
             summary statistics file (.gz)
-        Pheno_file: str
+        pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str or None
+        phenotype: str or None
             if not ``None``, phenotype name (must be a column
-            header in ``Pheno_file``)
-        Phenotype_class: str
+            header in ``pheno_file``)
+        phenotype_class: str
             phenotype class, either 'CONTINUOUS' or 'BINARY'
-        Geno_file: str
+        geno_file_prefix: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
-        Data_prefix: str
-            file prefix for QC'd .bed, .bim, .fam files
-        Output_dir: str
+        output_dir: str
             path for output files (<path>)
         **kwargs
 
         Attributes
         ----------
-        Data_prefix: str
+        data_prefix: str
             file name prefix of .bed, .bim, etc. files
         """
         # set attributes
-        self.Sumstats_file = Sumstats_file
-        self.Pheno_file = Pheno_file
-        self.Phenotype = Phenotype
-        self.Phenotype_class = Phenotype_class
-        self.Geno_file = Geno_file
-        self.Output_dir = Output_dir
+        self.sumstats_file = sumstats_file
+        self.pheno_file = pheno_file
+        self.phenotype = phenotype
+        self.phenotype_class = phenotype_class
+        self.geno_file_prefix = geno_file_prefix
+        self.output_dir = output_dir
 
         self.kwargs = kwargs
 
         # inferred
-        self.Data_prefix = os.path.split(self.Geno_file)[-1]
+        self.data_prefix = os.path.split(self.geno_file_prefix)[-1]
 
-        # create Output_dir
-        os.makedirs(self.Output_dir, exist_ok=True)
+        # create output_dir
+        os.makedirs(self.output_dir, exist_ok=True)
 
     @abc.abstractmethod
     def get_str(self):
@@ -340,12 +338,12 @@ class PGS_Plink(BasePGS):
     """
 
     def __init__(self,
-                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-                 Pheno_file='/REF/examples/prsice2/EUR.height',
-                 Phenotype='Height',
-                 Phenotype_class='CONTINUOUS',
-                 Geno_file='QC_data/EUR',
-                 Output_dir='PGS_plink',
+                 sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 pheno_file='/REF/examples/prsice2/EUR.height',
+                 phenotype='Height',
+                 phenotype_class='CONTINUOUS',
+                 geno_file_prefix='QC_data/EUR',
+                 output_dir='PGS_plink',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  clump_p1=1,
@@ -361,19 +359,19 @@ class PGS_Plink(BasePGS):
         '''
         Parameters
         ----------
-        Sumstats_file: str
+        sumstats_file: str
             summary statistics file (.gz)
-        Pheno_file: str
+        pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str or None
+        phenotype: str or None
             if not ``None``, phenotype name (must be a column
-            header in ``Pheno_file``)
-        Phenotype_class: str
+            header in ``pheno_file``)
+        phenotype_class: str
             phenotype class, either 'CONTINUOUS' or 'BINARY'
-        Geno_file: str
+        geno_file_prefix: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
-        Output_dir: str
+        output_dir: str
             path for output files (<path>)
         Cov_file: str
             path to covariance file (.cov)
@@ -404,25 +402,25 @@ class PGS_Plink(BasePGS):
 
         Attributes
         ----------
-        Data_prefix: str
+        data_prefix: str
             file name prefix of .bed, .bim, etc. files
 
         '''
-        super().__init__(Sumstats_file=Sumstats_file,
-                         Pheno_file=Pheno_file,
-                         Phenotype=Phenotype,
-                         Phenotype_class=Phenotype_class,
-                         Geno_file=Geno_file,
-                         Output_dir=Output_dir,
+        super().__init__(sumstats_file=sumstats_file,
+                         pheno_file=pheno_file,
+                         phenotype=phenotype,
+                         phenotype_class=phenotype_class,
+                         geno_file_prefix=geno_file_prefix,
+                         output_dir=output_dir,
                          **kwargs)
         # set attributes
         if Cov_file is None or Eigenvec_file is None:
             self.Cov_file = os.path.join(
-                self.Output_dir,
-                self.Data_prefix + '.')
+                self.output_dir,
+                self.data_prefix + '.')
             self.Eigenvec_file = os.path.join(
-                self.Output_dir,
-                self.Data_prefix + '.eigenvec')
+                self.output_dir,
+                self.data_prefix + '.eigenvec')
         else:
             for fpath in [Cov_file, Eigenvec_file]:
                 try:
@@ -453,11 +451,11 @@ class PGS_Plink(BasePGS):
 
         # inferred
         self._transformed_file = os.path.join(
-            Output_dir,
+            output_dir,
             '.'.join(os.path.split(
-                self.Sumstats_file)[-1].split('.')[:-1]
+                self.sumstats_file)[-1].split('.')[:-1]
                 + ['transformed']))
-        self._range_list_file = os.path.join(self.Output_dir, 'range_list')
+        self._range_list_file = os.path.join(self.output_dir, 'range_list')
 
     def _preprocessing_update_effect_size(self):
         '''
@@ -467,7 +465,7 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'update_effect_size.R'),
-            self.Sumstats_file,
+            self.sumstats_file,
             self._transformed_file])
 
         return command
@@ -480,7 +478,7 @@ class PGS_Plink(BasePGS):
         Parameters
         ----------
         update_effect_size: bool
-            if False, use Sumstats_file for --clump param
+            if False, use sumstats_file for --clump param
         Returns
         -------
         str
@@ -488,17 +486,17 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$PLINK',
             '--bfile',
-            self.Geno_file,
+            self.geno_file_prefix,
             '--clump-p1', str(self.clump_p1),
             '--clump-r2', str(self.clump_r2),
             '--clump-kb', str(self.clump_kb),
             '--clump',
             (self._transformed_file
-                if update_effect_size else self.Sumstats_file),
+                if update_effect_size else self.sumstats_file),
             '--clump-snp-field', self.clump_snp_field,  #
             '--clump-field', self.clump_field,
             '--threads', str(self.kwargs['threads']),
-            '--out', os.path.join(self.Output_dir, self.Data_prefix)
+            '--out', os.path.join(self.output_dir, self.data_prefix)
         ])
 
         return command
@@ -514,9 +512,9 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$AWK',
             "'NR!=1{print $3}'",
-            os.path.join(self.Output_dir, self.Data_prefix + '.clumped'),
+            os.path.join(self.output_dir, self.data_prefix + '.clumped'),
             '>',
-            os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
+            os.path.join(self.output_dir, self.data_prefix + '.valid.snp'),
         ])
 
         return command
@@ -528,7 +526,7 @@ class PGS_Plink(BasePGS):
         Parameters
         ----------
         update_effect_size: bool
-            if False, use Sumstats_file as input
+            if False, use sumstats_file as input
 
         Returns
         -------
@@ -536,18 +534,18 @@ class PGS_Plink(BasePGS):
         '''
         command = ''
         if not update_effect_size:
-            # unzip Sumstats file to Output_dir allowing parsing
+            # unzip Sumstats file to output_dir allowing parsing
             # it to Plink using --score
             command += ' '.join([
                 '$PYTHON',
                 '-c',
-                f"""'from pgs import pgs; pgs.df_colums_to_file("{self.Sumstats_file}", "{self._transformed_file}")'"""  # noqa: 501
+                f"""'from pgs import pgs; pgs.df_colums_to_file("{self.sumstats_file}", "{self._transformed_file}")'"""  # noqa: 501
                 '\n'
             ])
         command += ' '.join([
             '$PYTHON',
             '-c',
-            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.Output_dir, self.clump_snp_field + ".pvalue")}", ["{self.clump_snp_field}", "{self.clump_field}"])'"""  # noqa: 501
+            f"""'from pgs import pgs; pgs.df_colums_to_file("{self._transformed_file}", "{os.path.join(self.output_dir, self.clump_snp_field + ".pvalue")}", ["{self.clump_snp_field}", "{self.clump_field}"])'"""  # noqa: 501
         ])
         return command
 
@@ -570,18 +568,18 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$PLINK',
             '--bfile',
-            self.Geno_file,
+            self.geno_file_prefix,
             '--score',
             self._transformed_file,
             ' '.join([str(x) for x in self.score_args]),
             '--q-score-range',
             self._range_list_file,
-            os.path.join(self.Output_dir, self.clump_snp_field + '.pvalue'),
+            os.path.join(self.output_dir, self.clump_snp_field + '.pvalue'),
             '--extract',
-            os.path.join(self.Output_dir, self.Data_prefix + '.valid.snp'),
+            os.path.join(self.output_dir, self.data_prefix + '.valid.snp'),
             '--threads', str(self.kwargs['threads']),
             '--out',
-            os.path.join(self.Output_dir, self.Data_prefix)
+            os.path.join(self.output_dir, self.data_prefix)
         ])
 
         return command
@@ -620,21 +618,21 @@ class PGS_Plink(BasePGS):
             tmp_str_0 = ' '.join([
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--indep-pairwise',
                 ' '.join([str(x) for x in self.strat_indep_pairwise]),
-                '--out', os.path.join(self.Output_dir, self.Data_prefix)
+                '--out', os.path.join(self.output_dir, self.data_prefix)
             ])
 
             # Then we calculate the first N PCs
             tmp_str_1 = ' '.join([
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--extract',
-                os.path.join(self.Output_dir, self.Data_prefix) + '.prune.in',
+                os.path.join(self.output_dir, self.data_prefix) + '.prune.in',
                 '--pca', str(self.nPCs),
-                '--out', os.path.join(self.Output_dir, self.Data_prefix)
+                '--out', os.path.join(self.output_dir, self.data_prefix)
             ])
 
             return '\n'.join([tmp_str_0, tmp_str_1])
@@ -651,20 +649,20 @@ class PGS_Plink(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'find_best_fit_pgs.R'),
-            self.Pheno_file,
+            self.pheno_file,
             self.Eigenvec_file,
             self.Cov_file,
-            self.Phenotype,
-            os.path.join(self.Output_dir, self.Data_prefix),
+            self.phenotype,
+            os.path.join(self.output_dir, self.data_prefix),
             ','.join([str(x) for x in self.range_list]),
             str(self.nPCs),
-            os.path.join(self.Output_dir, 'best_fit_prs.csv')
+            os.path.join(self.output_dir, 'best_fit_prs.csv')
         ])
 
         return command
 
     def _generate_post_run_str(self):
-        arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
+        arg = ','.join([f'"{self.output_dir}"', f'"{self.data_prefix}"'])
         cmd = ' '.join([
             '$PYTHON', '-c',
             f"""'from pgs.pgs import post_run_plink; post_run_plink({arg})'"""
@@ -685,14 +683,14 @@ class PGS_Plink(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
-            '--pheno-file', self.Pheno_file,
-            '--phenotype', self.Phenotype,
-            '--phenotype-class', self.Phenotype_class,
-            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--pheno-file', self.pheno_file,
+            '--phenotype', self.phenotype,
+            '--phenotype-class', self.phenotype_class,
+            '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
             '--eigenvec-file', self.Eigenvec_file,
             '--covariate-file', self.Cov_file,
-            '--out', os.path.join(self.Output_dir, 'test_summary')
+            '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
 
@@ -744,12 +742,12 @@ class PGS_PRSice2(BasePGS):
     """
 
     def __init__(self,
-                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-                 Pheno_file='/REF/examples/prsice2/EUR.height',
-                 Phenotype='Height',
-                 Phenotype_class='CONTINUOUS',
-                 Geno_file='/REF/examples/prsice2/EUR',
-                 Output_dir='PGS_prsice2',
+                 sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 pheno_file='/REF/examples/prsice2/EUR.height',
+                 phenotype='Height',
+                 phenotype_class='CONTINUOUS',
+                 geno_file_prefix='/REF/examples/prsice2/EUR',
+                 output_dir='PGS_prsice2',
                  Cov_file='/REF/examples/prsice2/EUR.cov',
                  Eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  nPCs=6,
@@ -759,19 +757,19 @@ class PGS_PRSice2(BasePGS):
         '''
         Parameters
         ----------
-        Sumstats_file: str
+        sumstats_file: str
             summary statistics file (.gz)
-        Pheno_file: str
+        pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str or None
+        phenotype: str or None
             if not ``None``, phenotype name (must be a column
-            header in ``Pheno_file``)
-        Phenotype_class: str
+            header in ``pheno_file``)
+        phenotype_class: str
             phenotype class, either 'CONTINUOUS' or 'BINARY'
-        Geno_file: str
+        geno_file_prefix: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
-        Output_dir: str
+        output_dir: str
             path for output files (<path>)
         Cov_file: str or None
             path to covariate file (.cov)
@@ -792,15 +790,15 @@ class PGS_PRSice2(BasePGS):
 
         Attributes
         ----------
-        Data_prefix: str
+        data_prefix: str
             file name prefix of .bed, .bim, etc. files
         '''
-        super().__init__(Sumstats_file=Sumstats_file,
-                         Pheno_file=Pheno_file,
-                         Phenotype=Phenotype,
-                         Phenotype_class=Phenotype_class,
-                         Geno_file=Geno_file,
-                         Output_dir=Output_dir,
+        super().__init__(sumstats_file=sumstats_file,
+                         pheno_file=pheno_file,
+                         phenotype=phenotype,
+                         phenotype_class=phenotype_class,
+                         geno_file_prefix=geno_file_prefix,
+                         output_dir=output_dir,
                          **kwargs)
         # set attributes
         self.Cov_file = Cov_file
@@ -818,8 +816,8 @@ class PGS_PRSice2(BasePGS):
         else:
             if self.Cov_file is not None and self.Eigenvec_file is not None:
                 self._Covariate_file = os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix + '.covariate')
+                    self.output_dir,
+                    self.data_prefix + '.covariate')
             else:
                 self._Covariate_file = None
 
@@ -852,18 +850,18 @@ class PGS_PRSice2(BasePGS):
         -------
         str
         '''
-        target = self.Geno_file
-        binary_target = "T" if self.Phenotype_class == "BINARY" else "F"
+        target = self.geno_file_prefix
+        binary_target = "T" if self.phenotype_class == "BINARY" else "F"
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'PRSice.R'),
             '--prsice /usr/bin/PRSice_linux',
-            f'--base {self.Sumstats_file}',
+            f'--base {self.sumstats_file}',
             f'--target {target}',
             f'--binary-target {binary_target}',
-            f'--pheno {self.Pheno_file}',
-            f'--pheno-col {self.Phenotype}',
-            f'--out {os.path.join(self.Output_dir, self.Data_prefix)}'
+            f'--pheno {self.pheno_file}',
+            f'--pheno-col {self.phenotype}',
+            f'--out {os.path.join(self.output_dir, self.data_prefix)}'
         ])
         if self._Covariate_file is not None:
             cmd0 = self._generate_covariate_str()
@@ -882,7 +880,7 @@ class PGS_PRSice2(BasePGS):
         return command
 
     def _generate_post_run_str(self):
-        arg = ','.join([f'"{self.Output_dir}"', f'"{self.Data_prefix}"'])
+        arg = ','.join([f'"{self.output_dir}"', f'"{self.data_prefix}"'])
         cmd = ' '.join([
             '$PYTHON', '-c',
             f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""  # noqa: E501
@@ -904,14 +902,14 @@ class PGS_PRSice2(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
-            '--pheno-file', self.Pheno_file,
-            '--phenotype', self.Phenotype,
-            '--phenotype-class', self.Phenotype_class,
-            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--pheno-file', self.pheno_file,
+            '--phenotype', self.phenotype,
+            '--phenotype-class', self.phenotype_class,
+            '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{self.nPCs}',
             '--eigenvec-file', self.Eigenvec_file,
             '--covariate-file', self.Cov_file,
-            '--out', os.path.join(self.Output_dir, 'test_summary')
+            '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
 
@@ -941,12 +939,12 @@ class PGS_LDpred2(BasePGS):
     """
 
     def __init__(self,
-                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-                 Pheno_file='/REF/examples/prsice2/EUR.height',
-                 Phenotype='Height',
-                 Phenotype_class='CONTINUOUS',
-                 Geno_file='/REF/examples/prsice2/EUR',
-                 Output_dir='PGS_ldpred2_inf',
+                 sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 pheno_file='/REF/examples/prsice2/EUR.height',
+                 phenotype='Height',
+                 phenotype_class='CONTINUOUS',
+                 geno_file_prefix='/REF/examples/prsice2/EUR',
+                 output_dir='PGS_ldpred2_inf',
                  method='inf',
                  fileGenoRDS='EUR.rds',
                  file_keep_snps='/REF/hapmap3/w_hm3.justrs',
@@ -954,19 +952,19 @@ class PGS_LDpred2(BasePGS):
         '''
         Parameters
         ----------
-        Sumstats_file: str
+        sumstats_file: str
             summary statistics file (.gz)
-        Pheno_file: str
+        pheno_file: str
             phenotype file (for instance, .height)
-        Phenotype: str or None
+        phenotype: str or None
             if not ``None``, phenotype name (must be a column
-            header in ``Pheno_file``)
-        Phenotype_class: str
+            header in ``pheno_file``)
+        phenotype_class: str
             phenotype class, either 'CONTINUOUS' or 'BINARY'
-        Geno_file: str
+        geno_file_prefix: str
             path to QC'd .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
-        Output_dir: str
+        output_dir: str
             path for output files (<path>)
         method: str
             LDpred2 method, either "inf" (default) or "auto"
@@ -977,17 +975,17 @@ class PGS_LDpred2(BasePGS):
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
-            the ``Rscripts/ldpred2.R`` script
+            the ``$LDPRED2_SCRIPTS/ldpred2.R`` script
             (see file for full set of options).
             If the option is only a flag without value, set value
             as None-type or empty string.
         '''
-        super().__init__(Sumstats_file=Sumstats_file,
-                         Pheno_file=Pheno_file,
-                         Phenotype=Phenotype,
-                         Phenotype_class=Phenotype_class,
-                         Geno_file=Geno_file,
-                         Output_dir=Output_dir,
+        super().__init__(sumstats_file=sumstats_file,
+                         pheno_file=pheno_file,
+                         phenotype=phenotype,
+                         phenotype_class=phenotype_class,
+                         geno_file_prefix=geno_file_prefix,
+                         output_dir=output_dir,
                          **kwargs)
 
         # set attributes
@@ -996,14 +994,14 @@ class PGS_LDpred2(BasePGS):
         self.file_keep_snps = file_keep_snps
 
         # inferred
-        self._fileGeno = self.Geno_file + '.bed'
-        self._file_out = os.path.join(self.Output_dir, 'test.score')
+        self._fileGeno = self.geno_file_prefix + '.bed'
+        self._file_out = os.path.join(self.output_dir, 'test.score')
 
     def _run_createBackingFile(self):
         # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
         command = ' '.join([
             '$RSCRIPT',
-            os.path.join('Rscripts', 'createBackingFile.R'),
+            os.path.join('/ldpred2_scripts', 'createBackingFile.R'),
             self._fileGeno,
             self.fileGenoRDS
         ])
@@ -1033,14 +1031,14 @@ class PGS_LDpred2(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'evaluate_model.R'),
-            '--pheno-file', self.Pheno_file,
-            '--phenotype', self.Phenotype,
-            '--phenotype-class', self.Phenotype_class,
-            '--score-file', os.path.join(self.Output_dir, 'test.score'),
+            '--pheno-file', self.pheno_file,
+            '--phenotype', self.phenotype,
+            '--phenotype-class', self.phenotype_class,
+            '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{nPCs}',
             '--eigenvec-file', Eigenvec_file,
             '--covariate-file', Cov_file,
-            '--out', os.path.join(self.Output_dir, 'test_summary')
+            '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
 
@@ -1052,7 +1050,8 @@ class PGS_LDpred2(BasePGS):
         ----------
         create_backing_file: bool
             if True (default), prepend statements for running the
-            ``Rscripts/createBackingFile.R`` script, generating fileGenoRDS
+            ``$LDPRED2_SCRIPTS/createBackingFile.R`` script, 
+            generating ``fileGenoRDS``
 
         Returns
         -------
@@ -1061,10 +1060,10 @@ class PGS_LDpred2(BasePGS):
         '''
         tmp_cmd1 = ' '.join([
             '$RSCRIPT',
-            os.path.join('Rscripts', 'ldpred2.R'),
+            os.path.join('/ldpred2_scripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
-            '--geno-file', self.fileGenoRDS,
-            '--sumstats', self.Sumstats_file,
+            '--geno-file-rds', self.fileGenoRDS,
+            '--sumstats', self.sumstats_file,
             '--out', self._file_out,
         ])
         if self.file_keep_snps is not None:
@@ -1093,12 +1092,12 @@ class Standard_GWAS_QC(BasePGS):
     '''
 
     def __init__(self,
-                 Sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
-                 Pheno_file='/REF/examples/prsice2/EUR.height',
-                 Geno_file='/REF/examples/prsice2/EUR',
-                 Output_dir='QC_data',
-                 Phenotype='Height',
-                 Data_postfix='.QC',
+                 sumstats_file='/REF/examples/prsice2/Height.gwas.txt.gz',
+                 pheno_file='/REF/examples/prsice2/EUR.height',
+                 geno_file_prefix='/REF/examples/prsice2/EUR',
+                 output_dir='QC_data',
+                 phenotype='Height',
+                 data_postfix='.QC',
                  QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
                                    'geno': 0.01, 'mind': 0.01},
                  QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]},
@@ -1107,18 +1106,18 @@ class Standard_GWAS_QC(BasePGS):
         '''
         Parameters
         ----------
-        Sumstats_file: str
+        sumstats_file: str
             summary statistics file (.gz)
-        Pheno_file: str
+        pheno_file: str
             phenotype file (for instance, .height)
-        Geno_file: str
+        geno_file_prefix: str
             path to (raw) .bed, .bim, .fam files (w.o. file ending)
             (</ENV/path/to/data/file>)
-        Output_dir: str
+        output_dir: str
             path for output files (<path>)
-        Phenotype: str
+        phenotype: str
             default: 'Height'
-        Data_postfix: str
+        data_postfix: str
             default: '.QC'
         QC_target_kwargs: dict
             key, values
@@ -1128,19 +1127,19 @@ class Standard_GWAS_QC(BasePGS):
             keys, values
         **kwargs
         '''
-        super().__init__(Sumstats_file=Sumstats_file,
-                         Pheno_file=Pheno_file,
-                         Geno_file=Geno_file,
-                         Output_dir=Output_dir,
+        super().__init__(sumstats_file=sumstats_file,
+                         pheno_file=pheno_file,
+                         geno_file_prefix=geno_file_prefix,
+                         output_dir=output_dir,
                          **kwargs)
-        self.Phenotype = Phenotype
-        self.Data_postfix = Data_postfix
+        self.phenotype = phenotype
+        self.data_postfix = data_postfix
         self.QC_target_kwargs = QC_target_kwargs
         self.QC_prune_kwargs = QC_prune_kwargs
         self.QC_relatedness_prune_kwargs = QC_relatedness_prune_kwargs
 
-        # create Output_dir
-        os.makedirs(self.Output_dir, exist_ok=True)
+        # create output_dir
+        os.makedirs(self.output_dir, exist_ok=True)
 
     def get_str(self):
         '''
@@ -1150,30 +1149,30 @@ class Standard_GWAS_QC(BasePGS):
         # Filter summary statistics file, zip output.
         cmd = ' '.join(['$GUNZIP',
                         '-c',
-                        self.Sumstats_file,
+                        self.sumstats_file,
                         '|\\\n',
                         '$AWK',
                         "'NR==1 || ($11 > 0.01) && ($10 > 0.8) {print}'",
                         '|\\\n',
                         '$GZIP',
                         '->',
-                        os.path.join(self.Output_dir,
-                                     self.Phenotype + '.gz')])
+                        os.path.join(self.output_dir,
+                                     self.phenotype + '.gz')])
         command += [cmd]
 
         # Remove duplicates
         cmd = ' '.join(['$GUNZIP',
                         '-c',
-                        os.path.join(self.Output_dir,
-                                     self.Phenotype + '.gz'),
+                        os.path.join(self.output_dir,
+                                     self.phenotype + '.gz'),
                         '|\\\n',
                         '$AWK',
                         "'{seen[$3]++; if(seen[$3]==1){ print}}'",
                         '|\\\n',
                         '$GZIP',
                         '->',
-                        os.path.join(self.Output_dir,
-                                     self.Phenotype + '.nodup.gz')])
+                        os.path.join(self.output_dir,
+                                     self.phenotype + '.nodup.gz')])
         command += [cmd]
 
         # Retain nonambiguous SNPs:
@@ -1182,8 +1181,8 @@ class Standard_GWAS_QC(BasePGS):
                 '$GUNZIP',
                 '-c',
                 os.path.join(
-                    self.Output_dir,
-                    self.Phenotype +
+                    self.output_dir,
+                    self.phenotype +
                     '.nodup.gz'),
                 '|\\\n',
                 '$AWK',
@@ -1192,9 +1191,9 @@ class Standard_GWAS_QC(BasePGS):
                 '$GZIP',
                 '->',
                 os.path.join(
-                    self.Output_dir,
-                    self.Phenotype +
-                    self.Data_postfix + '.gz')])
+                    self.output_dir,
+                    self.phenotype +
+                    self.data_postfix + '.gz')])
         command += [cmd]
 
         # QC target data
@@ -1203,13 +1202,13 @@ class Standard_GWAS_QC(BasePGS):
         cmd = ' '.join([
             '$PLINK',
             '--bfile',
-            self.Geno_file,
+            self.geno_file_prefix,
             '--write-snplist',
             '--make-just-fam',
             '--out',
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix) + self.Data_postfix
+                self.output_dir,
+                self.data_prefix) + self.data_postfix
         ])
         cmd = ' '.join([cmd, convert_dict_to_str(self.QC_target_kwargs)])
         command += [cmd]
@@ -1219,22 +1218,22 @@ class Standard_GWAS_QC(BasePGS):
             [
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--keep',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.fam'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.fam'),
                 '--extract',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.snplist'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.snplist'),
                 '--out',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix),
             ])
         cmd = ' '.join([cmd, convert_dict_to_str(self.QC_prune_kwargs)])
         command += [cmd]
@@ -1244,23 +1243,23 @@ class Standard_GWAS_QC(BasePGS):
             [
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--extract',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.prune.in'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.prune.in'),
                 '--keep',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.fam'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.fam'),
                 '--het',
                 '--out',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix)])
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix)])
         command += [cmd]
 
         # remove individuals with F coefficients that are more than 3 standard
@@ -1269,11 +1268,11 @@ class Standard_GWAS_QC(BasePGS):
             '$RSCRIPT',
             os.path.join('Rscripts', 'create_valid_sample.R'),
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix + self.Data_postfix + '.het'),
+                self.output_dir,
+                self.data_prefix + self.data_postfix + '.het'),
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix + '.valid.sample'),
+                self.output_dir,
+                self.data_prefix + '.valid.sample'),
         ])
         command += [cmd]
 
@@ -1281,13 +1280,13 @@ class Standard_GWAS_QC(BasePGS):
         cmd = ' '.join([
             '$RSCRIPT',
             os.path.join('Rscripts', 'strand_flipping.R'),
-            self.Geno_file + '.bim',
-            os.path.join(self.Output_dir,
-                         self.Phenotype + self.Data_postfix + '.gz'),
-            os.path.join(self.Output_dir,
-                         self.Data_prefix + self.Data_postfix + '.snplist'),
-            os.path.join(self.Output_dir, self.Data_prefix + '.a1'),
-            os.path.join(self.Output_dir, self.Data_prefix + '.mismatch')
+            self.geno_file_prefix + '.bim',
+            os.path.join(self.output_dir,
+                         self.phenotype + self.data_postfix + '.gz'),
+            os.path.join(self.output_dir,
+                         self.data_prefix + self.data_postfix + '.snplist'),
+            os.path.join(self.output_dir, self.data_prefix + '.a1'),
+            os.path.join(self.output_dir, self.data_prefix + '.mismatch')
         ])
         command += [cmd]
 
@@ -1296,23 +1295,23 @@ class Standard_GWAS_QC(BasePGS):
             [
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--extract',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.prune.in'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.prune.in'),
                 '--keep',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
+                    self.output_dir,
+                    self.data_prefix +
                     '.valid.sample'),
                 '--check-sex',
                 '--out',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix)])
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix)])
         command += [cmd]
 
         # Assign individuals as biologically male if F-statistic is > 0.8;
@@ -1321,14 +1320,14 @@ class Standard_GWAS_QC(BasePGS):
             '$RSCRIPT',
             os.path.join('Rscripts', 'create_QC_valid.R'),
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix + '.valid.sample'),
+                self.output_dir,
+                self.data_prefix + '.valid.sample'),
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix + self.Data_postfix + '.sexcheck'),
+                self.output_dir,
+                self.data_prefix + self.data_postfix + '.sexcheck'),
             os.path.join(
-                self.Output_dir,
-                self.Data_prefix + self.Data_postfix + '.valid')
+                self.output_dir,
+                self.data_prefix + self.data_postfix + '.valid')
         ])
         command += [cmd]
 
@@ -1338,22 +1337,22 @@ class Standard_GWAS_QC(BasePGS):
             [
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--extract',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.prune.in'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.prune.in'),
                 '--keep',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix + '.valid'),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix + '.valid'),
                 '--out',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix)])
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix)])
         cmd = ' '.join([cmd, convert_dict_to_str(
             self.QC_relatedness_prune_kwargs)])
         command += [cmd]
@@ -1363,34 +1362,34 @@ class Standard_GWAS_QC(BasePGS):
             [
                 '$PLINK',
                 '--bfile',
-                self.Geno_file,
+                self.geno_file_prefix,
                 '--make-bed',
                 '--keep',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix +
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix +
                     '.rel.id'),
                 '--out',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix),
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix),
                 '--extract',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
-                    self.Data_postfix +
+                    self.output_dir,
+                    self.data_prefix +
+                    self.data_postfix +
                     '.snplist'),
                 '--a1-allele',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
+                    self.output_dir,
+                    self.data_prefix +
                     '.a1'),
                 '--exclude',
                 os.path.join(
-                    self.Output_dir,
-                    self.Data_prefix +
+                    self.output_dir,
+                    self.data_prefix +
                     '.mismatch')])
         command += [cmd]
 
