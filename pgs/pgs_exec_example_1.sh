@@ -11,4 +11,4 @@ python3 pgs_exec.py \
     --runtype subprocess \
     prsice2 \
     --covariate-file /REF/examples/prsice2/EUR.cov \
-    --eigenvec-file output/g1000_eur_chr21to22_hm3rnd1.eigenvec
+    --eigenvec-file output/PGS_synthetic_prsice2/g1000_eur_chr21to22_hm3rnd1.eigenvec

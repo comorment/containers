@@ -68,17 +68,17 @@ if __name__ == '__main__':
     # written to output directory
     # TODO: move out
     data_prefix = os.path.split(geno_file_prefix)[-1]
-    call = ' '.join(
-        [os.environ['PLINK'],
-         '--bfile', geno_file_prefix,
-         '--pca', str(config['plink']['nPCs']),
-         '--out', os.path.join(output_dir, data_prefix)
-         ]
-    )
-    pgs.run_call(call)
+    # call = ' '.join(
+    #     [os.environ['PLINK'],
+    #      '--bfile', geno_file_prefix,
+    #      '--pca', str(config['plink']['nPCs']),
+    #      '--out', os.path.join(output_dir, data_prefix)
+    #      ]
+    # )
+    # pgs.run_call(call)
 
-    # file names
-    eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
+    # # file names
+    # eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
 
     #######################################
     # Plink
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         geno_file_prefix=geno_file_prefix,
         output_dir=os.path.join(output_dir, 'PGS_synthetic_plink'),
         covariate_file=covariate_file,
-        eigenvec_file=eigenvec_file,
+        eigenvec_file=f'{os.path.join(output_dir, "PGS_synthetic_plink", data_prefix)}.eigenvec',
         **config['plink'],
     )
 
@@ -123,7 +123,8 @@ if __name__ == '__main__':
         geno_file_prefix=geno_file_prefix,
         output_dir=os.path.join(output_dir, 'PGS_synthetic_prsice2'),
         covariate_file=covariate_file,
-        eigenvec_file=eigenvec_file,
+        # eigenvec_file=eigenvec_file,
+        eigenvec_file=f'{os.path.join(output_dir, "PGS_synthetic_prsice2", data_prefix)}.eigenvec',
         **config['prsice2'],
     )
 
@@ -134,6 +135,8 @@ if __name__ == '__main__':
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
+
+    raise Exception
 
     ############################################
     # LDpred2 infinitesimal and automatic models

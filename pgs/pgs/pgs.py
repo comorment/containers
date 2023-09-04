@@ -330,6 +330,12 @@ class BasePGS(abc.ABC):
         '''
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_model_evaluation_str(self):
+        '''
+        Required public method
+        '''
+        raise NotImplementedError
 
 class PGS_Plink(BasePGS):
     """
@@ -669,6 +675,19 @@ class PGS_Plink(BasePGS):
         ])
         return cmd
 
+    def _generate_eigenvec_eigenval_files(self):
+        '''
+        Return string which can be included in job script for 
+        generating .eigenvec and .eigenval files in the output directory
+        '''
+        command = ' '.join([
+            '$PLINK',
+            '--bfile', self.geno_file_prefix,
+            '--pca', str(self.nPCs),
+            '--out', os.path.join(self.output_dir, self.data_prefix)
+        ])
+        return command
+
     def get_model_evaluation_str(self):
         '''
         Return callable string for fitting a simple
@@ -711,6 +730,10 @@ class PGS_Plink(BasePGS):
         mssg = 'mode must be "preprocessing", "basic", or "stratification"'
         assert mode in ['preprocessing', 'basic', 'stratification'], mssg
         commands = []
+
+        if not os.path.isfile(self.eigenvec_file):
+            commands += [self._generate_eigenvec_eigenval_files()]
+
         if mode == 'preprocessing':
             commands += [
                 (self._preprocessing_update_effect_size()
@@ -913,6 +936,19 @@ class PGS_PRSice2(BasePGS):
         ])
         return cmd
 
+    def _generate_eigenvec_eigenval_files(self):
+        '''
+        Return string which can be included in job script for 
+        generating .eigenvec and .eigenval files in the output directory
+        '''
+        command = ' '.join([
+            '$PLINK',
+            '--bfile', self.geno_file_prefix,
+            '--pca', str(self.nPCs),
+            '--out', os.path.join(self.output_dir, self.data_prefix)
+        ])
+        return command
+    
     def get_str(self):
         '''
         Public method to create commands
@@ -922,14 +958,14 @@ class PGS_PRSice2(BasePGS):
         list of str
             list of command line statements for analysis run
         '''
-        if self._Covariate_file is not None:
-            cmd0 = self._generate_covariate_str()
-        else:
-            cmd0 = ''
+        commands = []
+        if not os.path.isfile(self.eigenvec_file):
+            commands += [self._generate_eigenvec_eigenval_files()]
 
-        return [cmd0,
-                self._generate_run_str(),
-                self._generate_post_run_str()]
+        if self._Covariate_file is not None:
+            commands += [self._generate_covariate_str()]
+
+        return commands + [self._generate_run_str(), self._generate_post_run_str()]
 
 
 class PGS_LDpred2(BasePGS):

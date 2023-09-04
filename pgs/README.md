@@ -81,10 +81,10 @@ python3 pgs_exec.py \
     --phenotype trait1 \
     --geno-file-prefix /REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1 \
     --output-dir output/PGS_synthetic_prsice2 \
-    --runtype 'subprocess' \
+    --runtype subprocess \
     'prsice2' \
     --covariate-file '/REF/examples/prsice2/EUR.cov' \
-    --eigenvec-file 'output/g1000_eur_chr21to22_hm3rnd1.eigenvec'
+    --eigenvec-file 'output/PGS_synthetic_prsice2/g1000_eur_chr21to22_hm3rnd1.eigenvec'
 ```
 
 > **_NOTE:_**  The last two lines will override settings for ``method: prsice2`` in ``config.yaml`` file, being parsed to the ``PRSice2.r`` script
