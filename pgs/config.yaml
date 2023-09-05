@@ -3,7 +3,7 @@ slurm:
   job_name: pgs
   account: p697_norment
   time: "00:30:00"
-  cpus_per_task: 2
+  cpus_per_task: 4
   mem_per_cpu: 4000MB
   partition: normal
 

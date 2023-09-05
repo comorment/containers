@@ -123,7 +123,6 @@ if __name__ == '__main__':
         geno_file_prefix=geno_file_prefix,
         output_dir=os.path.join(output_dir, 'PGS_synthetic_prsice2'),
         covariate_file=covariate_file,
-        # eigenvec_file=eigenvec_file,
         eigenvec_file=f'{os.path.join(output_dir, "PGS_synthetic_prsice2", data_prefix)}.eigenvec',
         **config['prsice2'],
     )
@@ -136,7 +135,6 @@ if __name__ == '__main__':
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
 
-    raise Exception
 
     ############################################
     # LDpred2 infinitesimal and automatic models
@@ -158,9 +156,14 @@ if __name__ == '__main__':
         for call in ldpred2.get_str(create_backing_file=True):
             pgs.run_call(call)
 
+        # create .eigenvec and .cov files in ``output_dir`` 
+        # for post run model evaluation:
+        call = ldpred2.generate_eigenvec_eigenval_files(nPCs=6)
+        pgs.run_call(call)
+
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            eigenvec_file=eigenvec_file,
+            eigenvec_file=f'{os.path.join(ldpred2.output_dir, data_prefix)}.eigenvec',
             nPCs=6,
             covariate_file=covariate_file)
         pgs.run_call(call)

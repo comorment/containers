@@ -331,11 +331,34 @@ class BasePGS(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_model_evaluation_str(self):
+    def get_model_evaluation_str(self,
+                                 eigenvec_file=None,
+                                 nPCs=None,
+                                 covariate_file=None):
         '''
         Required public method
         '''
         raise NotImplementedError
+
+    def _generate_eigenvec_eigenval_files(self, nPCs=20):
+        '''
+        Return string which can be included in job script for 
+        generating .eigenvec and .eigenval files in the output directory
+        using PLINK
+        
+        Parameters
+        ----------
+        nPCs: int
+            number of PCs to account for
+        '''
+        command = ' '.join([
+            '$PLINK',
+            '--bfile', self.geno_file_prefix,
+            '--pca', str(nPCs),
+            '--out', os.path.join(self.output_dir, self.data_prefix)
+        ])
+        return command
+
 
 class PGS_Plink(BasePGS):
     """
@@ -357,10 +380,10 @@ class PGS_Plink(BasePGS):
                  clump_kb=250,
                  clump_snp_field='SNP',
                  clump_field='P',
-                 range_list=[0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5],
-                 strat_indep_pairwise=[250, 50, 0.25],
+                 range_list=None,
+                 strat_indep_pairwise=None,
                  nPCs=6,
-                 score_args=[3, 4, 12, 'header'],
+                 score_args=None,
                  **kwargs):
         '''
         Parameters
@@ -436,6 +459,13 @@ class PGS_Plink(BasePGS):
 
             self.covariate_file = covariate_file
             self.eigenvec_file = eigenvec_file
+
+        if range_list is None:
+            range_list = [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
+        if strat_indep_pairwise is None:
+            strat_indep_pairwise = [250, 50, 0.25]
+        if score_args is None:
+            score_args = [3, 4, 12, 'header']
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -675,19 +705,6 @@ class PGS_Plink(BasePGS):
         ])
         return cmd
 
-    def _generate_eigenvec_eigenval_files(self):
-        '''
-        Return string which can be included in job script for 
-        generating .eigenvec and .eigenval files in the output directory
-        '''
-        command = ' '.join([
-            '$PLINK',
-            '--bfile', self.geno_file_prefix,
-            '--pca', str(self.nPCs),
-            '--out', os.path.join(self.output_dir, self.data_prefix)
-        ])
-        return command
-
     def get_model_evaluation_str(self):
         '''
         Return callable string for fitting a simple
@@ -732,7 +749,7 @@ class PGS_Plink(BasePGS):
         commands = []
 
         if not os.path.isfile(self.eigenvec_file):
-            commands += [self._generate_eigenvec_eigenval_files()]
+            commands += [self._generate_eigenvec_eigenval_files(nPCs=self.nPCs)]
 
         if mode == 'preprocessing':
             commands += [
@@ -935,19 +952,6 @@ class PGS_PRSice2(BasePGS):
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
-
-    def _generate_eigenvec_eigenval_files(self):
-        '''
-        Return string which can be included in job script for 
-        generating .eigenvec and .eigenval files in the output directory
-        '''
-        command = ' '.join([
-            '$PLINK',
-            '--bfile', self.geno_file_prefix,
-            '--pca', str(self.nPCs),
-            '--out', os.path.join(self.output_dir, self.data_prefix)
-        ])
-        return command
     
     def get_str(self):
         '''
@@ -960,7 +964,7 @@ class PGS_PRSice2(BasePGS):
         '''
         commands = []
         if not os.path.isfile(self.eigenvec_file):
-            commands += [self._generate_eigenvec_eigenval_files()]
+            commands += [self._generate_eigenvec_eigenval_files(nPCs=self.nPCs)]
 
         if self._Covariate_file is not None:
             commands += [self._generate_covariate_str()]
@@ -983,7 +987,6 @@ class PGS_LDpred2(BasePGS):
                  output_dir='PGS_ldpred2_inf',
                  method='inf',
                  fileGenoRDS='EUR.rds',
-                 # file_keep_snps='/REF/hapmap3/w_hm3.justrs',
                  **kwargs):
         '''
         Parameters
@@ -1043,7 +1046,23 @@ class PGS_LDpred2(BasePGS):
         ])
         return command
 
-    def get_model_evaluation_str(self, eigenvec_file, nPCs, covariate_file):
+    def generate_eigenvec_eigenval_files(self, nPCs=20):
+        '''
+        Return string which can be included in job script for 
+        generating .eigenvec and .eigenval files in the output directory
+        using PLINK
+
+        Parameters
+        ----------
+        nPCs: int
+            number of PCs to account for
+        '''
+        return super()._generate_eigenvec_eigenval_files(nPCs)
+
+    def get_model_evaluation_str(self, 
+                                 eigenvec_file=None, 
+                                 nPCs=None, 
+                                 covariate_file=None):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
