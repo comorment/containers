@@ -48,14 +48,13 @@ usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
 
 # PGS demo output 
-pgs/QC_data
-pgs/PGS_*
-pgs/results/*
-pgs/output/*
-pgs/logs/*
-pgs/tmp-data/*
-pgs/slurm_job_scripts/*
-pgs/bash_scripts/*
+scripts/pgs/pgs_toolkit/QC_data
+scripts/pgs/pgs_toolkit/PGS_*
+scripts/pgs/pgs_toolkit/output/*
+scripts/pgs/pgs_toolkit/logs/*
+scripts/pgs/pgs_toolkit/tmp-data/*
+scripts/pgs/pgs_toolkit/slurm_job_scripts/*
+scripts/pgs/pgs_toolkit/bash_scripts/*
 *.eigenval
 *.eigenvec
 *.cov
