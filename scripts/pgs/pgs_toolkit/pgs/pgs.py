@@ -85,24 +85,37 @@ def convert_dict_to_str(d, key_prefix='--'):
     return cmd
 
 
-def extract_variables(df, variables, pheno_dict_map, log):
-    cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
-    other_vars = ['FID', 'IID'] + \
-        [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
+# def extract_variables(df, variables, pheno_dict_map, log):
+#     '''
+#     Parameters
+#     ----------
+#     df: pd.DataFrame
+#         dataframe with variables
+#     variables: list of str
+#         list of variables to extract
+#     pheno_dict_map: dict
+#         dictionary with variable names as keys and
+#         variable types as values
+#     log: logging.Logger
+#         logger object
+#     '''
+#     cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
+#     other_vars = ['FID', 'IID'] + \
+#         [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
 
-    dummies = df[other_vars]
-    for var in cat_vars:
-        new = pd.get_dummies(df[var], prefix=var)
-        dummies = dummies.join(new)
+#     dummies = df[other_vars]
+#     for var in cat_vars:
+#         new = pd.get_dummies(df[var], prefix=var)
+#         dummies = dummies.join(new)
 
-        # drop most frequent variable for ref category
-        drop_col = df.groupby([var]).size().idxmax()
-        dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
+#         # drop most frequent variable for ref category
+#         drop_col = df.groupby([var]).size().idxmax()
+#         dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
 
-        log.log(
-            f'Variable {var} will be extracted as dummy, ' +
-            f'dropping {drop_col} label (most frequent)')
-    return dummies.copy()
+#         log.log(
+#             f'Variable {var} will be extracted as dummy, ' +
+#             f'dropping {drop_col} label (most frequent)')
+#     return dummies.copy()
 
 
 def run_call(call):
@@ -215,6 +228,8 @@ def df_colums_to_file(
 
 def set_env(config):
     '''Function to set environment variables from config.yaml
+
+    TODO: add defaults
 
     Parameters
     ----------
@@ -537,7 +552,7 @@ class PGS_Plink(BasePGS):
 
         return command
 
-    def _preprocessing_extract_index_SNP_ID(self):
+    def _preprocessing_extract_index_snp_id(self):
         '''
         Extract index SNP ID to (generating .valid.snp file)
 
@@ -756,7 +771,7 @@ class PGS_Plink(BasePGS):
                 (self._preprocessing_update_effect_size()
                     if update_effect_size else None),
                 self._preprocessing_clumping(update_effect_size),
-                self._preprocessing_extract_index_SNP_ID(),
+                self._preprocessing_extract_index_snp_id(),
                 self._preprocessing_extract_p_values(update_effect_size)]
             return list(filter(lambda item: item is not None, commands))
         elif mode in ['basic', 'stratification']:
@@ -1029,13 +1044,12 @@ class PGS_LDpred2(BasePGS):
         # set attributes
         self.method = method
         self.fileGenoRDS = fileGenoRDS
-        # self.file_keep_snps = file_keep_snps
 
         # inferred
         self._fileGeno = self.geno_file_prefix + '.bed'
         self._file_out = os.path.join(self.output_dir, 'test.score')
 
-    def _run_createBackingFile(self):
+    def _run_create_backing_file(self):
         # Convert plink files to bigSNPR backingfile(s) (.rds/.bk)
         command = ' '.join([
             '$RSCRIPT',
@@ -1120,9 +1134,6 @@ class PGS_LDpred2(BasePGS):
             '--sumstats', self.sumstats_file,
             '--out', self._file_out,
         ])
-        # if self.file_keep_snps is not None:
-        #     tmp_cmd1 = ' '.join(
-        #         [tmp_cmd1, '--file-keep-snps', self.file_keep_snps])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -1130,7 +1141,7 @@ class PGS_LDpred2(BasePGS):
 
         # return calls
         if create_backing_file:
-            tmp_cmd0 = self._run_createBackingFile()
+            tmp_cmd0 = self._run_create_backing_file()
             return [tmp_cmd0, tmp_cmd1]
         else:
             return [tmp_cmd1]
@@ -1143,6 +1154,8 @@ class Standard_GWAS_QC(BasePGS):
 
     Based on the tutorial
     https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
+
+    Use with caution. This class is not fully tested.
     '''
 
     def __init__(self,
@@ -1152,10 +1165,9 @@ class Standard_GWAS_QC(BasePGS):
                  output_dir='QC_data',
                  phenotype='Height',
                  data_postfix='.QC',
-                 QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
-                                   'geno': 0.01, 'mind': 0.01},
-                 QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]},
-                 QC_relatedness_prune_kwargs={'rel-cutoff': 0.125},
+                 QC_target_kwargs=None,
+                 QC_prune_kwargs=None,
+                 QC_relatedness_prune_kwargs=None,
                  **kwargs):
         '''
         Parameters
@@ -1174,11 +1186,11 @@ class Standard_GWAS_QC(BasePGS):
         data_postfix: str
             default: '.QC'
         QC_target_kwargs: dict
-            key, values
+            default: {'maf': 0.01, 'hwe': 1e-6, 'geno': 0.01, 'mind': 0.01}
         QC_prune_kwargs: dict
-            keys, values
+            default: {'indep-pairwise': [200, 50, 0.25]}
         QC_relatedness_prune_kwargs: dict
-            keys, values
+            defaultL: {'rel-cutoff': 0.125}
         **kwargs
         '''
         super().__init__(sumstats_file=sumstats_file,
@@ -1186,6 +1198,16 @@ class Standard_GWAS_QC(BasePGS):
                          geno_file_prefix=geno_file_prefix,
                          output_dir=output_dir,
                          **kwargs)
+
+        if QC_target_kwargs is None:
+            QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
+                              'geno': 0.01, 'mind': 0.01}
+        if QC_prune_kwargs is None:
+            QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]},
+        if QC_relatedness_prune_kwargs is None:
+            QC_relatedness_prune_kwargs={'rel-cutoff': 0.125},
+
+        # set attributes
         self.phenotype = phenotype
         self.data_postfix = data_postfix
         self.QC_target_kwargs = QC_target_kwargs
