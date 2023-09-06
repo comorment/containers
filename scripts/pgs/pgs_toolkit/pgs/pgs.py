@@ -340,7 +340,7 @@ class BasePGS(abc.ABC):
         '''
         raise NotImplementedError
 
-    def _generate_eigenvec_eigenval_files(self, nPCs=20):
+    def _generate_eigenvec_eigenval_files(self, nPCs=6):
         '''
         Return string which can be included in job script for 
         generating .eigenvec and .eigenval files in the output directory
@@ -985,7 +985,7 @@ class PGS_LDpred2(BasePGS):
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='/REF/examples/prsice2/EUR',
                  output_dir='PGS_ldpred2_inf',
-                 method='inf',
+                 method='auto',
                  fileGenoRDS='EUR.rds',
                  **kwargs):
         '''
@@ -1006,11 +1006,10 @@ class PGS_LDpred2(BasePGS):
         output_dir: str
             path for output files (<path>)
         method: str
-            LDpred2 method, either "inf" (default) or "auto"
+            LDpred2 method, either "auto" (default) or 
+            "inf" for infinitesimal
         fileGenoRDS: str
             base name for .rds file output
-        # file_keep_snps: str or None
-        #     File with RSIDs of SNPs to keep (optional)
 
         **kwargs
             dict of additional keyword/arguments pairs parsed to
@@ -1046,7 +1045,7 @@ class PGS_LDpred2(BasePGS):
         ])
         return command
 
-    def generate_eigenvec_eigenval_files(self, nPCs=20):
+    def generate_eigenvec_eigenval_files(self, nPCs=6):
         '''
         Return string which can be included in job script for 
         generating .eigenvec and .eigenval files in the output directory
