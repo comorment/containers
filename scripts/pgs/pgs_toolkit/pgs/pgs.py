@@ -475,6 +475,7 @@ class PGS_Plink(BasePGS):
             self.covariate_file = covariate_file
             self.eigenvec_file = eigenvec_file
 
+        # set default values
         if range_list is None:
             range_list = [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
         if strat_indep_pairwise is None:
