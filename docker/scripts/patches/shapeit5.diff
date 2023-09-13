@@ -1,0 +1,75 @@
+diff --git a/ligate/makefile b/ligate/makefile
+index 2d8c428..e063cc1 100644
+--- a/ligate/makefile
++++ b/ligate/makefile
+@@ -29,8 +29,8 @@ BFILE=bin/$(NAME)
+ EXEFILE=bin/$(NAME)_static
+ 
+ #CONDITIONAL PATH DEFINITON
+-system: DYN_LIBS=-lz -lpthread -lbz2 -llzma
+-system: HTSSRC=/usr/local
++system: DYN_LIBS=-lz -lpthread -lbz2 -llzma -lcurl -lcrypto
++system: HTSSRC=/usr
+ system: HTSLIB_INC=$(HTSSRC)/include/htslib
+ system: HTSLIB_LIB=$(HTSSRC)/lib/libhts.a
+ system: BOOST_INC=/usr/include
+diff --git a/phase_common/makefile b/phase_common/makefile
+index e2a051c..9b47951 100644
+--- a/phase_common/makefile
++++ b/phase_common/makefile
+@@ -29,8 +29,8 @@ BFILE=bin/$(NAME)
+ EXEFILE=bin/$(NAME)_static
+ 
+ #CONDITIONAL PATH DEFINITON
+-system: DYN_LIBS=-lz -lpthread -lbz2 -llzma
+-system: HTSSRC=/usr/local
++system: DYN_LIBS=-lz -lpthread -lbz2 -llzma -lcurl -lcrypto
++system: HTSSRC=/usr
+ system: HTSLIB_INC=$(HTSSRC)/include/htslib
+ system: HTSLIB_LIB=$(HTSSRC)/lib/libhts.a
+ system: BOOST_INC=/usr/include
+diff --git a/phase_rare/makefile b/phase_rare/makefile
+index e2a051c..9b47951 100644
+--- a/phase_rare/makefile
++++ b/phase_rare/makefile
+@@ -29,8 +29,8 @@ BFILE=bin/$(NAME)
+ EXEFILE=bin/$(NAME)_static
+ 
+ #CONDITIONAL PATH DEFINITON
+-system: DYN_LIBS=-lz -lpthread -lbz2 -llzma
+-system: HTSSRC=/usr/local
++system: DYN_LIBS=-lz -lpthread -lbz2 -llzma -lcurl -lcrypto
++system: HTSSRC=/usr
+ system: HTSLIB_INC=$(HTSSRC)/include/htslib
+ system: HTSLIB_LIB=$(HTSSRC)/lib/libhts.a
+ system: BOOST_INC=/usr/include
+diff --git a/simulate/makefile b/simulate/makefile
+index e2a051c..9b47951 100644
+--- a/simulate/makefile
++++ b/simulate/makefile
+@@ -29,8 +29,8 @@ BFILE=bin/$(NAME)
+ EXEFILE=bin/$(NAME)_static
+ 
+ #CONDITIONAL PATH DEFINITON
+-system: DYN_LIBS=-lz -lpthread -lbz2 -llzma
+-system: HTSSRC=/usr/local
++system: DYN_LIBS=-lz -lpthread -lbz2 -llzma -lcurl -lcrypto
++system: HTSSRC=/usr
+ system: HTSLIB_INC=$(HTSSRC)/include/htslib
+ system: HTSLIB_LIB=$(HTSSRC)/lib/libhts.a
+ system: BOOST_INC=/usr/include
+diff --git a/switch/makefile b/switch/makefile
+index 2d8c428..e063cc1 100644
+--- a/switch/makefile
++++ b/switch/makefile
+@@ -29,8 +29,8 @@ BFILE=bin/$(NAME)
+ EXEFILE=bin/$(NAME)_static
+ 
+ #CONDITIONAL PATH DEFINITON
+-system: DYN_LIBS=-lz -lpthread -lbz2 -llzma
+-system: HTSSRC=/usr/local
++system: DYN_LIBS=-lz -lpthread -lbz2 -llzma -lcurl -lcrypto
++system: HTSSRC=/usr
+ system: HTSLIB_INC=$(HTSSRC)/include/htslib
+ system: HTSLIB_LIB=$(HTSSRC)/lib/libhts.a
+ system: BOOST_INC=/usr/include
