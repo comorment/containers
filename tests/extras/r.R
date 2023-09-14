@@ -43,7 +43,7 @@ libraries_to_check <- c(
     "tools",
     "TwoSampleMR",
     "xgboost",
-    "zlibbioc"  
+    "zlibbioc"
     )
 
 # Define a test

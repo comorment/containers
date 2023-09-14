@@ -1,5 +1,5 @@
 require(devtools)
-url <- "https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16"
+url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 devtools::install_version('argparser', version='0.7.1', repos=url, dependencies=dependencies, upgrade=upgrade)

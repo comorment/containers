@@ -1,4 +1,4 @@
-url <- "https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16"
+url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 devtools::install_github('dajiangliu/rareGWAMA', ref='72e962dae19dc07251244f6c33275ada189c2126', repos=url, dependencies=dependencies, upgrade=upgrade)

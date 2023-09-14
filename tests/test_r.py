@@ -31,6 +31,13 @@ def test_r_R_packages():
     assert out.returncode == 0
 
 
+def test_r_R_moar_packages():
+    pwd = os.getcwd()
+    call = f'singularity run --home={pwd} {pth} Rscript {pwd}/tests/extras/r_moar.R'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
 def test_r_R_rmarkdown():
     pwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
