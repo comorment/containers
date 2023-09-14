@@ -9,7 +9,7 @@ par <- add_argument(par, "--eigenvec-file", help=".eigenvec input file")
 par <- add_argument(par, "--cov-file", help=".cov input file")
 par <- add_argument(par, "--phenotype", help="Phenotype ID")
 par <- add_argument(par, "--data-prefix", help='file prefix')
-par <- add_argument(par, "--thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1", 
+par <- add_argument(par, "--thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5,1", 
                     help="comma-sep list of threshold values")
 par <- add_argument(par, "--nPCs", type="integer", default=6, 
                     help="Integer number of Principal Components (PCs)")

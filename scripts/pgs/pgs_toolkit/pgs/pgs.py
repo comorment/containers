@@ -85,39 +85,6 @@ def convert_dict_to_str(d, key_prefix='--'):
     return cmd
 
 
-# def extract_variables(df, variables, pheno_dict_map, log):
-#     '''
-#     Parameters
-#     ----------
-#     df: pd.DataFrame
-#         dataframe with variables
-#     variables: list of str
-#         list of variables to extract
-#     pheno_dict_map: dict
-#         dictionary with variable names as keys and
-#         variable types as values
-#     log: logging.Logger
-#         logger object
-#     '''
-#     cat_vars = [x for x in variables if pheno_dict_map[x] == 'NOMINAL']
-#     other_vars = ['FID', 'IID'] + \
-#         [x for x in variables if pheno_dict_map[x] != 'NOMINAL']
-
-#     dummies = df[other_vars]
-#     for var in cat_vars:
-#         new = pd.get_dummies(df[var], prefix=var)
-#         dummies = dummies.join(new)
-
-#         # drop most frequent variable for ref category
-#         drop_col = df.groupby([var]).size().idxmax()
-#         dummies.drop('{}_{}'.format(var, drop_col), axis=1, inplace=True)
-
-#         log.log(
-#             f'Variable {var} will be extracted as dummy, ' +
-#             f'dropping {drop_col} label (most frequent)')
-#     return dummies.copy()
-
-
 def run_call(call):
     '''run subprocess call'''
     print(f'\nevaluating: {call}\n')
@@ -255,9 +222,9 @@ def set_env(config):
 
     print(
         '\nenvironment variables in use:\n',
-        '\n'.join(f'{key}: {val}' for key, val in os.environ.items()
-                  if key in dict(**config['environ'],
-                                 **config['environ_inferred']).keys()),
+        '\n'.join(f'\t{key}: {val}' for key, val in os.environ.items()
+                  if key in {**config['environ'],
+                             **config['environ_inferred']}.keys()),
         '\n')
 
     # set SINGULARITY_BIND to mount volumes in containers:
@@ -340,16 +307,6 @@ class BasePGS(abc.ABC):
 
     @abc.abstractmethod
     def get_str(self):
-        '''
-        Required public method
-        '''
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_model_evaluation_str(self,
-                                 eigenvec_file=None,
-                                 nPCs=None,
-                                 covariate_file=None):
         '''
         Required public method
         '''
@@ -1204,9 +1161,9 @@ class Standard_GWAS_QC(BasePGS):
             QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
                               'geno': 0.01, 'mind': 0.01}
         if QC_prune_kwargs is None:
-            QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]},
+            QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]}
         if QC_relatedness_prune_kwargs is None:
-            QC_relatedness_prune_kwargs={'rel-cutoff': 0.125},
+            QC_relatedness_prune_kwargs={'rel-cutoff': 0.125}
 
         # set attributes
         self.phenotype = phenotype

@@ -2,11 +2,11 @@ library(argparser, quietly=T)
 
 # capture command-line input
 par <- arg_parser('Perform strand-flipping as described at https://choishingwan.github.io/PRS-Tutorial/target/#mismatching-snps')
-par <- add_argument(par, "bim_file", help=".bim input file")
-par <- add_argument(par, "QC_file", help=".QC.gz input file")
-par <- add_argument(par, "QC_snplist_file", help=".QC.snplist input file")
-par <- add_argument(par, "ai_file", help=".ai output file")
-par <- add_argument(par, "mismatch_file", help=".mismatch output file")
+par <- add_argument(par, "--bim-file", help=".bim input file")
+par <- add_argument(par, "--QC-file", help=".QC.gz input file")
+par <- add_argument(par, "--QC-snplist-file", help=".QC.snplist input file")
+par <- add_argument(par, "--ai-file", help=".ai output file")
+par <- add_argument(par, "--mismatch-file", help=".mismatch output file")
 parsed <- parse_args(par)
 
 # 1. Load the bim file, the summary statistic and the QC SNP list into R
