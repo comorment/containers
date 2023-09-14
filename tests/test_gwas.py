@@ -190,3 +190,9 @@ def test_gwas_vcftools():
     call = f'singularity run {pth} vcftools --version'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
+
+
+def test_gwas_duohmm():
+    call = f'singularity run {pth} duohmm'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
