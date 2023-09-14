@@ -42,6 +42,7 @@ The detailed description of the available container [files](https://github.com/c
   | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)
   | gwas.sif          | bolt                | v2.4 July 22, 2022                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | cat-bgen            | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | gwas.sif          | duohmm              | 95bd395                                   | [MIT](https://opensource.org/licenses/MIT)
   | gwas.sif          | eagle               | v2.4.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | edit-bgen           | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
   | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)

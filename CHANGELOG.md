@@ -44,13 +44,13 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Added tools ``beagle``, ``eagle``, ``switchError``, ``shapeit5`` to ``gwas.sif`` container + tests
+* Added phasing/imputation tools ``beagle``, ``duohmm``, ``eagle``,  ``shapeit5``, ``switchError``, to ``gwas.sif`` container + updated tests
 * Updated `gwas.sif` Dockerfile and installed shell scripts (misc. dependencies updates, installing ``gcta`` version 1.93.3beta2)
 * Fix issue that shell script wouldn't capture failing statements
 * Rebuilt `gwas.sif` using Docker `--no-cache` option to fix missing `minimac4` binary, w. md5 checksum:
 
   ```
-  e5f846b51477027675b85523e3dfe666  singularity/gwas.sif
+  a1dd235221902741bf5773945a584e47  singularity/gwas.sif
   ```
 
 ### Removed

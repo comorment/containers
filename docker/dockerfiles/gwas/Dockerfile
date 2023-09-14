@@ -164,4 +164,10 @@ RUN bash /tmp/beagle/install_beagle.sh && \
     rm -rf /tmp/beagle
 
 
+# duohmm
+WORKDIR /tmp/duohmm
+COPY /scripts/install_duohmm.sh /tmp/duohmm/
+RUN bash /tmp/duohmm/install_duohmm.sh && \
+    rm -rf /tmp/duohmm
+
 WORKDIR /tools
