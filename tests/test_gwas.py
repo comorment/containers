@@ -158,7 +158,7 @@ def test_gwas_shapeit4():
 
 
 def test_gwas_shapeit5():
-    for binary in ['phase_common', 'phase_rare', 
+    for binary in ['phase_common', 'phase_rare',
                    'ligate', 'switch', 'xcftools']:
         call = f'singularity run {pth} {binary} --help'
         out = subprocess.run(call.split(' '))
