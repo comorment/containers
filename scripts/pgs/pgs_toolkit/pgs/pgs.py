@@ -822,14 +822,15 @@ class PGS_PRSice2(BasePGS):
         self.MAF = MAF
         self.INFO = INFO
 
-        # deal with covariate file, generate from covariate_file and eigenvec_file if
-        # needed
+        # deal with covariate file, generate from covariate_file
+        # and eigenvec_file if needed
         if 'cov' in self.kwargs.keys():
             self._Covariate_file = self.kwargs.pop('cov')
             print(f'cov={self._Covariate_file} argument found in kwargs.',
                   'eigenvec_file and covariate_file args will be ignored.')
         else:
-            if self.covariate_file is not None and self.eigenvec_file is not None:
+            if self.covariate_file is not None \
+                    and self.eigenvec_file is not None:
                 self._Covariate_file = os.path.join(
                     self.output_dir,
                     self.data_prefix + '.covariate')
