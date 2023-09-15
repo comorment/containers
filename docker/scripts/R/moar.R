@@ -6,8 +6,10 @@ devtools::install_version('brant', version='0.3-0', repos=url, dependencies=depe
 devtools::install_version('brms', version='2.18.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('carat', version='2.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('corrplot', version='0.92', repos=url, dependencies=dependencies, upgrade=upgrade)
+devtools::install_version('CPBayes', version='1.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('dendextend', version='1.16.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('fastICA', version='1.2-3', repos=url, dependencies=dependencies, upgrade=upgrade)
+devtools::install_version('GCPBayes', version='4.0.0', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('geepack', version='1.3.9', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('ggthemes', version='4.2.4', repos=url, dependencies=dependencies, upgrade=upgrade)
 devtools::install_version('ggpubr', version='0.6.0', repos=url, dependencies=dependencies, upgrade=upgrade)
@@ -33,6 +35,7 @@ devtools::install_version('survminer', version='0.4.9', repos=url, dependencies=
 devtools::install_version('tree', version='1.0-43', repos=url, dependencies=dependencies, upgrade=upgrade)
 
 
+BiocManager::install(c('ASSET'), version='3.12')
 BiocManager::install(c('clusterProfiler'), version='3.12')
 
 devtools::install_github('norment/normentR', ref='dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1', repos=url, dependencies=dependencies, upgrade=upgrade)
