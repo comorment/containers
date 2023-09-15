@@ -314,10 +314,10 @@ class BasePGS(abc.ABC):
 
     def _generate_eigenvec_eigenval_files(self, nPCs=6):
         '''
-        Return string which can be included in job script for 
+        Return string which can be included in job script for
         generating .eigenvec and .eigenval files in the output directory
         using PLINK
-        
+
         Parameters
         ----------
         nPCs: int
@@ -722,7 +722,9 @@ class PGS_Plink(BasePGS):
         commands = []
 
         if not os.path.isfile(self.eigenvec_file):
-            commands += [self._generate_eigenvec_eigenval_files(nPCs=self.nPCs)]
+            commands += [
+                self._generate_eigenvec_eigenval_files(
+                    nPCs=self.nPCs)]
 
         if mode == 'preprocessing':
             commands += [
@@ -925,7 +927,7 @@ class PGS_PRSice2(BasePGS):
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
-    
+
     def get_str(self):
         '''
         Public method to create commands
@@ -937,12 +939,15 @@ class PGS_PRSice2(BasePGS):
         '''
         commands = []
         if not os.path.isfile(self.eigenvec_file):
-            commands += [self._generate_eigenvec_eigenval_files(nPCs=self.nPCs)]
+            commands += [
+                self._generate_eigenvec_eigenval_files(
+                    nPCs=self.nPCs)]
 
         if self._Covariate_file is not None:
             commands += [self._generate_covariate_str()]
 
-        return commands + [self._generate_run_str(), self._generate_post_run_str()]
+        return commands + [self._generate_run_str(),
+                           self._generate_post_run_str()]
 
 
 class PGS_LDpred2(BasePGS):
@@ -979,7 +984,7 @@ class PGS_LDpred2(BasePGS):
         output_dir: str
             path for output files (<path>)
         method: str
-            LDpred2 method, either "auto" (default) or 
+            LDpred2 method, either "auto" (default) or
             "inf" for infinitesimal
         fileGenoRDS: str
             base name for .rds file output
@@ -1019,7 +1024,7 @@ class PGS_LDpred2(BasePGS):
 
     def generate_eigenvec_eigenval_files(self, nPCs=6):
         '''
-        Return string which can be included in job script for 
+        Return string which can be included in job script for
         generating .eigenvec and .eigenval files in the output directory
         using PLINK
 
@@ -1030,9 +1035,9 @@ class PGS_LDpred2(BasePGS):
         '''
         return super()._generate_eigenvec_eigenval_files(nPCs)
 
-    def get_model_evaluation_str(self, 
-                                 eigenvec_file=None, 
-                                 nPCs=None, 
+    def get_model_evaluation_str(self,
+                                 eigenvec_file=None,
+                                 nPCs=None,
                                  covariate_file=None):
         '''
         Return callable string for fitting a simple
@@ -1158,12 +1163,12 @@ class Standard_GWAS_QC(BasePGS):
                          **kwargs)
 
         if QC_target_kwargs is None:
-            QC_target_kwargs={'maf': 0.01, 'hwe': 1e-6,
-                              'geno': 0.01, 'mind': 0.01}
+            QC_target_kwargs = {'maf': 0.01, 'hwe': 1e-6,
+                                'geno': 0.01, 'mind': 0.01}
         if QC_prune_kwargs is None:
-            QC_prune_kwargs={'indep-pairwise': [200, 50, 0.25]}
+            QC_prune_kwargs = {'indep-pairwise': [200, 50, 0.25]}
         if QC_relatedness_prune_kwargs is None:
-            QC_relatedness_prune_kwargs={'rel-cutoff': 0.125}
+            QC_relatedness_prune_kwargs = {'rel-cutoff': 0.125}
 
         # set attributes
         self.phenotype = phenotype
