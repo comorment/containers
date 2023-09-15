@@ -27,11 +27,46 @@ The basic requirements for running these codes (sans project specific genomics d
 
 Running these codes requires Python 3.6+ (tested/developed mainly using Python 3.9+) and a working Singularity/Apptainer installation.
 
+### Input files
+
+To work with these codes, some input files are required. These are:
+
+#### Summary statistics
+
+GWAS summary files formatted according to the [sumstats specification](./../../../docs/specifications/sumstats_specification.md)
+
+#### Phenotypic data
+
+Phenotypic data formatted according to the [phenotype specification](./../../../docs/specifications/pheno_specification.md)
+
+#### Genotypic data
+
+Genotypic data formatted according to the [genotype specification](./../../../docs/specifications/geno_specification.md)
+
+#### Covariate data
+
+Phenotypic data formatted according to the [covariate specification](./../../../docs/specifications/pheno_specification.md)
+
+
+### Output files
+
+The output will be written to the ``output/`` directory, which is created if it does not exist. The output directory will contain subdirectories for each PGS method, e.g., ``output/PGS_synthetic_plink/``. The output files will be named ``<phenotype>.<method>.pgs`` and ``<phenotype>.<method>.pgs.summary``. The ``.pgs`` file contains the PGS scores, while the ``.pgs.summary`` file contains some summary statistics for the PGS scores, e.g., R2, AIC, BIC, etc.
+
 ### Python runtime scripts
 
 #### ``run_pgs_synthetic.py``
 
-Run PGS using PLINK, PRSice2 and LDpred2 on synthetic data:
+Run PGS using PLINK, PRSice2 and LDpred2 on synthetic data provided in this repository, namely the files:
+
+- summary statistics: ``/REF/examples/ldpred2/trait1.sumstats.gz``
+- phenotype data ``/REF/examples/ldpred2/simu.pheno``
+- genotype data ``/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed/bim/fam``
+- covariatees: ``/REF/examples/prsice2/EUR.cov``
+
+> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory 
+``ldpred2_ref`` as defined in the ``config.yaml`` file.
+
+Running the script:
 
 ```
 $ python3 run_pgs_synthetic.py
@@ -51,9 +86,25 @@ environment variables in use:
 
 > **_NOTE:_**  The script may require other packages than Python builtins, such as ``pandas`` and ``pyyaml``. Install these by issuing ``pip install <package>`` in the current Python environment. There is also ``pip install -r requirements.txt``
 
+The output will be added to the ``output/PGS_synthetic_<method>/`` directories.
+
+
 #### ``run_pgs_w_QC.py``
 
-Run PGS using PLINK, PRSice2 and LDpred2 on tutorial data, which performs some basic QC steps on the data based on suggestions from this [tutorial](https://choishingwan.github.io/PRS-Tutorial/ldpred2/):
+Run PGS using PLINK, PRSice2 and LDpred2 on tutorial data provided in this manuscript, which performs some basic QC steps on the data based on suggestions from this [tutorial](https://choishingwan.github.io/PRS-Tutorial/ldpred2/). 
+
+The main input files are:
+
+- summary statistics: ``/REF/examples/prsice2/Height.gwas.txt.gz``
+- phenotype data: ``/REF/examples/prsice2/EUR.height``
+- genotype data: ``/REF/examples/prsice2/EUR.bed/bim/fam``
+- covariates: ``/REF/examples/prsice2/EUR.cov``
+- eigenvectors: ``/REF/examples/prsice2/EUR.eigenvec``
+
+> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory 
+``ldpred2_ref`` as defined in the ``config.yaml`` file.
+
+Running the script:
 
 ```
 python3 run_pgs_w_QC.py
