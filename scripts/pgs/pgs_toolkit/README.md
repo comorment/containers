@@ -25,7 +25,7 @@ The basic requirements for running these codes (sans project specific genomics d
 
 ## Running the codes
 
-Running these codes requires Python 3.6+ (tested/developed mainly using Python 3.9+) and a working Singularity/Apptainer installation.
+Running these codes requires Python 3.8+ (tested/developed mainly using Python 3.9+) and a working Singularity/Apptainer installation.
 
 ### Input files
 
@@ -45,12 +45,11 @@ Genotypic data formatted according to the [genotype specification](./../../../do
 
 #### Covariate data
 
-Phenotypic data formatted according to the [covariate specification](./../../../docs/specifications/pheno_specification.md)
-
+Covariate data formatted according to the [covariate specification](./../../../docs/specifications/pheno_specification.md)
 
 ### Output files
 
-The output will be written to the ``output/`` directory, which is created if it does not exist. The output directory will contain subdirectories for each PGS method, e.g., ``output/PGS_synthetic_plink/``. The output files will be named ``<phenotype>.<method>.pgs`` and ``<phenotype>.<method>.pgs.summary``. The ``.pgs`` file contains the PGS scores, while the ``.pgs.summary`` file contains some summary statistics for the PGS scores, e.g., R2, AIC, BIC, etc.
+The output will be written to a user-specified ``output/`` directory, which is created if it does not exist. The output directory will contain subdirectories for each PGS method, e.g., ``output/PGS_synthetic_plink/``. The output files will be named ``<phenotype>.<method>.pgs`` and ``<phenotype>.<method>.pgs.summary``. The ``.pgs`` file contains the PGS scores, while the ``.pgs.summary`` file contains some summary statistics for the PGS scores, e.g., R2, AIC, BIC, etc.
 
 ### Python runtime scripts
 
@@ -59,12 +58,11 @@ The output will be written to the ``output/`` directory, which is created if it 
 Run PGS using PLINK, PRSice2 and LDpred2 on synthetic data provided in this repository, namely the files:
 
 - summary statistics: ``/REF/examples/ldpred2/trait1.sumstats.gz``
-- phenotype data ``/REF/examples/ldpred2/simu.pheno``
-- genotype data ``/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed/bim/fam``
-- covariatees: ``/REF/examples/prsice2/EUR.cov``
+- phenotype data: ``/REF/examples/ldpred2/simu.pheno``
+- genotype data: ``/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1.bed/bim/fam``
+- covariate data: ``/REF/examples/prsice2/EUR.cov``
 
-> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory 
-``ldpred2_ref`` as defined in the ``config.yaml`` file.
+> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory ``ldpred2_ref`` as defined in the ``config.yaml`` file.
 
 Running the script:
 
@@ -88,10 +86,9 @@ environment variables in use:
 
 The output will be added to the ``output/PGS_synthetic_<method>/`` directories.
 
-
 #### ``run_pgs_w_QC.py``
 
-Run PGS using PLINK, PRSice2 and LDpred2 on tutorial data provided in this manuscript, which performs some basic QC steps on the data based on suggestions from this [tutorial](https://choishingwan.github.io/PRS-Tutorial/ldpred2/). 
+Run PGS using PLINK, PRSice2 and LDpred2 on tutorial data provided in this repository, including some basic QC steps on the data based on suggestions from this [tutorial](https://choishingwan.github.io/PRS-Tutorial/ldpred2/).
 
 The main input files are:
 
@@ -101,8 +98,7 @@ The main input files are:
 - covariates: ``/REF/examples/prsice2/EUR.cov``
 - eigenvectors: ``/REF/examples/prsice2/EUR.eigenvec``
 
-> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory 
-``ldpred2_ref`` as defined in the ``config.yaml`` file.
+> **_NOTE:_**  Files from a full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data is required and should be located in a directory ``ldpred2_ref`` as defined in the ``config.yaml`` file.
 
 Running the script:
 
@@ -123,8 +119,7 @@ Get a list of options:
 
 ```
 $ python3 pgs_exec.py --help
-usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--config CONFIG] [--sumstats-file SUMSTATS_FILE] [--pheno-file PHENO_FILE] [--phenotype PHENOTYPE]
-           [--phenotype-class {CONTINUOUS,BINARY}] [--geno-file-prefix GENO_FILE_PREFIX] [--output-dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}]
+usage: PGS [-h] [--method {plink,prsice2,ldpred2-inf,ldpred2-auto}] [--config CONFIG] [--sumstats-file SUMSTATS_FILE] [--pheno-file PHENO_FILE] [--phenotype PHENOTYPE] [--phenotype-class {CONTINUOUS,BINARY}] [--geno-file-prefix GENO_FILE_PREFIX] [--output-dir OUTPUT_DIR] [--runtype {sh,slurm,subprocess}]
            {plink,prsice2,ldpred2-inf,ldpred2-auto} ...
 
 A pipeline for PGS analysis
@@ -160,37 +155,137 @@ python3 pgs_exec.py \
     --sumstats-file /REF/examples/ldpred2/trait1.sumstats.gz \
     --pheno-file /REF/examples/ldpred2/simu.pheno \
     --phenotype trait1 \
+    --phenotype-class CONTINUOUS \
     --geno-file-prefix /REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1 \
     --output-dir output/PGS_synthetic_prsice2 \
     --runtype subprocess \
-    'prsice2' \
-    --covariate-file '/REF/examples/prsice2/EUR.cov' \
-    --eigenvec-file 'output/PGS_synthetic_prsice2/g1000_eur_chr21to22_hm3rnd1.eigenvec'
+    prsice2 \
+    --covariate-file /REF/examples/prsice2/EUR.cov \
+    --eigenvec-file output/PGS_synthetic_prsice2/g1000_eur_chr21to22_hm3rnd1.eigenvec
 ```
 
 > **_NOTE:_**  The last two lines will override settings for ``method: prsice2`` in ``config.yaml`` file, being parsed to the ``PRSice2.r`` script
 
-Example w. LDpred2-auto via shell (``sh``) script on synthetic dataset (``pgs_exec_example_2.sh``):
+Example w. LDpred2-inf via shell (``sh``) script on synthetic dataset (``pgs_exec_example_2.sh``):
 
 ```
 python3 pgs_exec.py \
-    --sumstats-file '/REF/examples/ldpred2/trait1.sumstats.gz' \
-    --pheno-file '/REF/examples/ldpred2/simu.pheno' \
-    --phenotype 'trait1' \
-    --geno-file-prefix '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1' \
-    --output-dir 'output/PGS_synthetic_LDpred2_auto' \
-    --runtype 'sh' \
-    'ldpred2-auto' \
-    'file-keep-snps' '/REF/hapmap3/w_hm3.justrs' \
-    'fileGenoRDS' 'output/g1000_eur_chr21to22_hm3rnd1.rds' \
-    'chr2use' '21,22' \
-    'cores' 4
+    --sumstats-file /REF/examples/ldpred2/trait1.sumstats.gz \
+    --pheno-file /REF/examples/ldpred2/simu.pheno \
+    --phenotype trait1 \
+    --phenotype-class CONTINUOUS \
+    --geno-file-prefix /REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1 \
+    --output-dir output/PGS_synthetic_LDpred2_inf \
+    --runtype sh \
+    ldpred2-inf \
+    --covariate-file /REF/examples/prsice2/EUR.cov \
+    --eigenvec-file output/PGS_synthetic_LDpred2_inf/g1000_eur_chr21to22_hm3rnd1.eigenvec \
+    --file-geno-rds output/PGS_synthetic_LDpred2_inf/g1000_eur_chr21to22_hm3rnd1.rds \
+    file-keep-snps /REF/hapmap3/w_hm3.justrs \
+    chr2use 21,22
 ```
 
 Which generates a shell script that can be run as
 
 ```
-bash bash_scripts/ldpred-inf.sh
+bash bash_scripts/ldpred2-inf-230918-12:26:35.sh  # YYMMDD-HH:MM:SS is appended to file name 
 ```
 
 > **_NOTE_** Replacing ``--runtype 'sh'`` with ``--runtype 'slurm'`` and ``'ldpred2-inf'`` by ``'ldpred2-auto'`` generates a slurm jobscript using LDpred2-auto which can be submitted by issuing ``bash slurm_job_scripts/ldpred2-auto.job`` (cf. ``pgs_exec_example_3.sh``)
+
+
+## Config file
+
+The ``config.yaml`` file defines some parameters for Slurm jobscripts, job environment, and PGS methods in a [YAML](https://yaml.org) file. The parameters defined throughout the file are:
+
+### parameters to pass for SLURM jobs
+
+Entries that will be put in the [SLURM](https://slurm.schedmd.com) job scripts. These are:
+
+```
+slurm:
+  job_name: pgs  # 
+  account: p697_norment  # 
+  time: "00:30:00"  # expected runtime
+  cpus_per_task: 4  # number of CPU cores per task
+  mem_per_cpu: 4000MB
+  partition: normal
+
+  # list of modules to load in SLURM jobs
+  module_load:
+    - singularity/3.7.3  # cf. the output of: "module spider singularity"
+```
+
+
+### environment variables (edit as necessary)
+
+Control where the PGS tools are located, where the reference data is located, etc. These are:
+
+```
+environ:
+  # mandatory root directory containing all inferred directories (edit as necessary).
+  ROOT_DIR: "/nrec/space/espenh"
+
+# dependent environment variables (edit as necessary)
+# NB: "SIF" is mandatory
+environ_inferred:
+  # folder containing full clone of https://github.com/comorment/containers
+  CONTAINERS: '$ROOT_DIR/containers'
+  # reference data within containers repo
+  REFERENCE: "$CONTAINERS/reference"
+  # directory with singularity containers (.sif files)
+  SIF: "$CONTAINERS/singularity"
+  # folder containing  full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data
+  LDPRED2_REF: "$ROOT_DIR/ldpred2_ref"
+  # folder containing LDpred2 R scripts
+  LDPRED2_SCRIPTS: "$CONTAINERS/scripts/pgs/LDpred2"
+
+# for SINGULARITY_BIND variable to set in job scripts
+# NB! will be set as "export SINGULARITY_BIND=value0:/key0,value1:/key1,..."
+# NB! Also mandatory
+SINGULARITY_BIND: 
+  REF: '$REFERENCE'
+  ldpred2_ref: '$LDPRED2_REF'
+  ldpred2_scripts: '$LDPRED2_SCRIPTS'
+```
+
+### Parameters specific to each PGS calculating tool
+
+Refer class documentation of each tool for details
+
+#### Plink
+
+used by class ``PGS_PLINK``
+```
+plink:
+  clump_p1: 1
+  clump_r2: 0.1
+  clump_kb: 250
+  range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
+  strat_indep_pairwise: [250, 50, 0.25]
+  nPCs: 6
+  score_columns: [SNP, A1, BETA]
+  threads: 4
+```
+
+#### PRSice-2
+
+used by class ``PGS_PRSice2``
+
+```
+prsice2:
+  MAF: 0.01
+  INFO: 0.8
+  nPCs: 6
+  thread: 4
+```
+
+#### LDpred2
+
+used by class ``PGS_LDpred2``
+
+```
+ldpred2:
+  nPCs: 6
+  cores: 4
+```

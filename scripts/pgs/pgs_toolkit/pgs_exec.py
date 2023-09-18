@@ -78,6 +78,11 @@ parser_ldpred2_inf.add_argument(
     help="eigenvec file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
+parser_ldpred2_inf.add_argument(
+    "--file-geno-rds", type=str,
+    help="eigenvec file (for model evaluation)",
+    default="PGS_ldpred2_inf/EUR.rds"
+)
 
 # method ldpred2-auto:
 parser_ldpred2_auto = subparsers.add_parser('ldpred2-auto')
@@ -96,7 +101,11 @@ parser_ldpred2_auto.add_argument(
     help="eigenvec file (for model evaluation)",
     default="/REF/examples/prsice2/EUR.eigenvec"
 )
-
+parser_ldpred2_auto.add_argument(
+    "--file-geno-rds", type=str,
+    help="eigenvec file (for model evaluation)",
+    default="PGS_ldpred2_auto/EUR.rds"
+)
 
 # shared arguments
 parser.add_argument(
@@ -168,13 +177,12 @@ pgs.set_env(config)
 #######################################
 # update config with additional kwargs
 if len(unknowns) > 0:
-    # d = {k: v for k, v in zip(unknowns[::2], unknowns[1::2])}
     d = dict(zip(unknowns[::2], unknowns[1::2]))
     config[parsed_args.method.split('-')[0]].update(d)
 
 # job file headers
 currentDateAndTime = datetime.datetime.now()
-now = currentDateAndTime.strftime('%y%d%d-%H:%M:%S')
+now = currentDateAndTime.strftime('%y%m%d-%H:%M:%S')
 
 bash_header = '''#\\!/bin/sh'''
 jobname = '-'.join([config['slurm']['job_name'], parsed_args.method, now])
@@ -219,22 +227,31 @@ elif parsed_args.method == 'ldpred2-inf':
     args = args_dict.copy()
     for key in ['eigenvec_file', 'covariate_file']:
         args.pop(key)
+    conf = config['ldpred2'].copy()
+    nPCs = conf.pop('nPCs')
     pgs_instance = pgs.PGS_LDpred2(
         method='inf',
         **args,
-        **config['ldpred2']
+        **conf
     )
     commands = pgs_instance.get_str(create_backing_file=True)
+    commands += [pgs_instance.generate_eigenvec_eigenval_files(
+        nPCs=nPCs)]
+
 elif parsed_args.method == 'ldpred2-auto':
     args = args_dict.copy()
     for key in ['eigenvec_file', 'covariate_file']:
         args.pop(key)
+    conf = config['ldpred2'].copy()
+    nPCs = conf.pop('nPCs')
     pgs_instance = pgs.PGS_LDpred2(
         method='auto',
         **args,
-        **config['ldpred2']
+        **conf
     )
     commands = pgs_instance.get_str(create_backing_file=True)
+    commands += [pgs_instance.generate_eigenvec_eigenval_files(
+        nPCs=nPCs)]
 else:
     raise NotImplementedError
 

@@ -13,6 +13,6 @@ python3 pgs_exec.py \
     ldpred2-auto \
     --covariate-file output/PGS_MoBa_LDpred2_auto/master_file.cov \
     --eigenvec-file output/PGS_MoBa_LDpred2_auto/master_file.eigenvec \
-    fileGenoRDS MoBaPsychGen_v1-500kSNPs-child.rds
+    --file-geno-rds output/PGS_MoBa_LDpred2_auto/MoBaPsychGen_v1-500kSNPs-child.rds
     
 

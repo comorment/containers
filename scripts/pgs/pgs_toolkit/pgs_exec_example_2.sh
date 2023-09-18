@@ -11,8 +11,8 @@ python3 pgs_exec.py \
     --runtype sh \
     ldpred2-inf \
     --covariate-file /REF/examples/prsice2/EUR.cov \
-    --eigenvec-file output/g1000_eur_chr21to22_hm3rnd1.eigenvec \
-    fileGenoRDS output/g1000_eur_chr21to22_hm3rnd1.rds \
+    --eigenvec-file output/PGS_synthetic_LDpred2_inf/g1000_eur_chr21to22_hm3rnd1.eigenvec \
+    --file-geno-rds output/PGS_synthetic_LDpred2_inf/g1000_eur_chr21to22_hm3rnd1.rds \
     file-keep-snps /REF/hapmap3/w_hm3.justrs \
-    chr2use 21,22 \
-    cores 4
+    chr2use 21,22
+    

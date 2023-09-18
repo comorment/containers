@@ -40,7 +40,8 @@ if __name__ == '__main__':
     eigenvec_file = '/REF/examples/prsice2/EUR.eigenvec'
 
     # LDpred2
-    fileGenoRDS = os.path.join(output_dir, 'EUR.rds')  # put in working directory as both LDpred2 methods use it
+    # put in working directory as both LDpred2 methods use it
+    file_geno_rds = os.path.join(output_dir, 'EUR.rds')
 
     #######################################
     # Update method-specific configs
@@ -51,7 +52,6 @@ if __name__ == '__main__':
 
     # update plink config
     config['plink'].update({
-        'score_args': [3, 4, 12, 'header'],  # SNP, A1, OR columns in sumstats
     })
 
     # update prsice2 config
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         pgs.run_call(call)
 
     # "Cleaned" geno_file_prefix from QC step
-    Geno_file_post_QC = os.path.join(
+    geno_file_post_qc = os.path.join(
         qc.output_dir,
         qc.data_prefix + qc.data_postfix)
     # "Cleaned" summary statistics
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         pheno_file=pheno_file,
         phenotype=phenotype,
         phenotype_class=phenotype_class,
-        geno_file_prefix=Geno_file_post_QC,
+        geno_file_prefix=geno_file_post_qc,
         output_dir=os.path.join(output_dir, 'PGS_plink'),
         covariate_file=covariate_file,
         eigenvec_file=eigenvec_file,
@@ -134,7 +134,7 @@ if __name__ == '__main__':
         pheno_file=pheno_file,
         phenotype=phenotype,
         phenotype_class=phenotype_class,
-        geno_file_prefix=Geno_file_post_QC,
+        geno_file_prefix=geno_file_post_qc,
         output_dir=os.path.join(output_dir, 'PGS_prsice2'),
         covariate_file=covariate_file,
         eigenvec_file=eigenvec_file,
@@ -159,10 +159,10 @@ if __name__ == '__main__':
             pheno_file=pheno_file,
             phenotype=phenotype,
             phenotype_class=phenotype_class,
-            geno_file_prefix=Geno_file_post_QC,
+            geno_file_prefix=geno_file_post_qc,
             output_dir=os.path.join(output_dir, f'PGS_LDpred2_{method}'),
             method=method,
-            fileGenoRDS=fileGenoRDS,
+            file_geno_rds=file_geno_rds,
             **config['ldpred2']
         )
         # run
@@ -172,6 +172,6 @@ if __name__ == '__main__':
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             eigenvec_file=eigenvec_file,
-            nPCs=config['plink']['nPCs'],
+            nPCs=config['ldpred2']['nPCs'],
             covariate_file=covariate_file)
         pgs.run_call(call)

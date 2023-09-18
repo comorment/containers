@@ -35,7 +35,7 @@ if __name__ == '__main__':
     os.makedirs(output_dir, exist_ok=True)
 
     # LDpred2 specific
-    fileGenoRDS = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
+    file_geno_rds = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
 
     # method specific input
     # seems valid, not 100% sure.
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             geno_file_prefix=geno_file_prefix,
             output_dir=output_dir_ldpred2,
             method=method,
-            fileGenoRDS=fileGenoRDS,
+            file_geno_rds=file_geno_rds,
             **config['ldpred2']
         )
         # run
@@ -154,12 +154,13 @@ if __name__ == '__main__':
 
         # create .eigenvec and .cov files in ``output_dir``
         # for post run model evaluation:
-        call = ldpred2.generate_eigenvec_eigenval_files(nPCs=6)
+        call = ldpred2.generate_eigenvec_eigenval_files(
+            nPCs=config['ldpred2']['nPCs'])
         pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             eigenvec_file=eigenvec_file.format(output_dir_ldpred2),
-            nPCs=6,
+            nPCs=config['ldpred2']['nPCs'],
             covariate_file=covariate_file)
         pgs.run_call(call)

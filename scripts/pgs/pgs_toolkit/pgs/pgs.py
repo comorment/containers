@@ -399,8 +399,8 @@ class PGS_Plink(BasePGS):
         # score_args: list
         #     plink --score arguments (default: [3, 4, 12, 'header'])
         score_columns: list of str
-            for plink's --score, column names in sumstats_file. Requires header.
-            Defaut: ['SNP', 'A1', 'BETA']
+            for plink's --score, column names in sumstats_file.
+            Requires header. Default: ['SNP', 'A1', 'BETA']
         **kwargs
 
         Attributes
@@ -582,10 +582,11 @@ class PGS_Plink(BasePGS):
         '''
 
         # determine --score argument based on column names
-        header = pd.read_csv(self._transformed_file, 
+        header = pd.read_csv(self._transformed_file,
                              nrows=0,
                              delim_whitespace=True).columns.tolist()
-        score_args = [header.index(x) + 1 for x in self.score_columns] + ['header']
+        score_args = [
+            header.index(x) + 1 for x in self.score_columns] + ['header']
 
         command = ' '.join([
             '$PLINK',
@@ -978,7 +979,7 @@ class PGS_LDpred2(BasePGS):
                  geno_file_prefix='/REF/examples/prsice2/EUR',
                  output_dir='PGS_ldpred2_inf',
                  method='auto',
-                 fileGenoRDS='EUR.rds',
+                 file_geno_rds='PGS_ldpred2_inf/EUR.rds',
                  **kwargs):
         '''
         Parameters
@@ -1000,7 +1001,7 @@ class PGS_LDpred2(BasePGS):
         method: str
             LDpred2 method, either "auto" (default) or
             "inf" for infinitesimal
-        fileGenoRDS: str
+        file_geno_rds: str
             base name for .rds file output
 
         **kwargs
@@ -1020,10 +1021,10 @@ class PGS_LDpred2(BasePGS):
 
         # set attributes
         self.method = method
-        self.fileGenoRDS = fileGenoRDS
+        self.file_geno_rds = file_geno_rds
 
         # inferred
-        self._fileGeno = self.geno_file_prefix + '.bed'
+        self._file_geno = self.geno_file_prefix + '.bed'
         self._file_out = os.path.join(self.output_dir, 'test.score')
 
     def _run_create_backing_file(self):
@@ -1031,8 +1032,8 @@ class PGS_LDpred2(BasePGS):
         command = ' '.join([
             '$RSCRIPT',
             os.path.join('/ldpred2_scripts', 'createBackingFile.R'),
-            '--file-input', self._fileGeno,
-            '--file-output', self.fileGenoRDS
+            '--file-input', self._file_geno,
+            '--file-output', self.file_geno_rds
         ])
         return command
 
@@ -1096,7 +1097,7 @@ class PGS_LDpred2(BasePGS):
         create_backing_file: bool
             if True (default), prepend statements for running the
             ``$LDPRED2_SCRIPTS/createBackingFile.R`` script,
-            generating ``fileGenoRDS``
+            generating ``file_geno_rds``
 
         Returns
         -------
@@ -1107,14 +1108,19 @@ class PGS_LDpred2(BasePGS):
             '$RSCRIPT',
             os.path.join('/ldpred2_scripts', 'ldpred2.R'),
             '--ldpred-mode', self.method,
-            '--geno-file-rds', self.fileGenoRDS,
+            '--geno-file-rds', self.file_geno_rds,
             '--sumstats', self.sumstats_file,
             '--out', self._file_out,
         ])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
-            tmp_cmd1 = ' '.join([tmp_cmd1, convert_dict_to_str(self.kwargs)])
+            kwargs = self.kwargs.copy()
+            try:
+                kwargs.pop('nPCs')
+            except KeyError:
+                pass
+            tmp_cmd1 = ' '.join([tmp_cmd1, convert_dict_to_str(kwargs)])
 
         # return calls
         if create_backing_file:

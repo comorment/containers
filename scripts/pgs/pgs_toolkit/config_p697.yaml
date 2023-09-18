@@ -61,10 +61,13 @@ plink:
 
 # PRSice-2
 prsice2:
+  MAF: 0.01
+  INFO: 0.8
   nPCs: 6
   thread: 16
 
 # LDpred2
 ldpred2:
+  nPCs: 6
   cores: 16
 
