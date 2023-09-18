@@ -115,9 +115,7 @@ def post_run_plink(
         test score file in ``output_dir``. Default: 'test.score'
     '''
     best_fit = pd.read_csv(
-        os.path.join(
-            output_dir,
-            best_fit_file))
+        os.path.join(output_dir, best_fit_file))
 
     f = f"{data_prefix}.{best_fit['Threshold'].values[0]}.profile"
     scores = pd.read_csv(
@@ -355,7 +353,8 @@ class PGS_Plink(BasePGS):
                  range_list=None,
                  strat_indep_pairwise=None,
                  nPCs=6,
-                 score_args=None,
+                 score_columns=None,
+                 # score_args=None,
                  **kwargs):
         '''
         Parameters
@@ -397,8 +396,11 @@ class PGS_Plink(BasePGS):
             (default: [250, 50, 0.25])
         nPCs: int
             plink --pca parameter value (default: 6)
-        score_args: list
-            plink --score arguments (default: [3, 4, 12, 'header'])
+        # score_args: list
+        #     plink --score arguments (default: [3, 4, 12, 'header'])
+        score_columns: list of str
+            for plink's --score, column names in sumstats_file. Requires header.
+            Defaut: ['SNP', 'A1', 'BETA']
         **kwargs
 
         Attributes
@@ -437,8 +439,10 @@ class PGS_Plink(BasePGS):
             range_list = [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
         if strat_indep_pairwise is None:
             strat_indep_pairwise = [250, 50, 0.25]
-        if score_args is None:
-            score_args = [3, 4, 12, 'header']
+        if score_columns is None:
+            score_columns = ['SNP', 'A1', 'BETA']
+        # if score_args is None:
+        #     score_args = [3, 4, 12, 'header']
 
         # clumping params
         self.clump_p1 = clump_p1
@@ -456,7 +460,9 @@ class PGS_Plink(BasePGS):
         # number of principal componentes
         self.nPCs = nPCs
 
-        self.score_args = score_args
+        self.score_columns = score_columns
+
+        # self.score_args = score_args
 
         # inferred
         self._transformed_file = os.path.join(
@@ -574,13 +580,20 @@ class PGS_Plink(BasePGS):
         -------
         str
         '''
+
+        # determine --score argument based on column names
+        header = pd.read_csv(self._transformed_file, 
+                             nrows=0,
+                             delim_whitespace=True).columns.tolist()
+        score_args = [header.index(x) + 1 for x in self.score_columns] + ['header']
+
         command = ' '.join([
             '$PLINK',
             '--bfile',
             self.geno_file_prefix,
             '--score',
             self._transformed_file,
-            ' '.join([str(x) for x in self.score_args]),
+            ' '.join([str(x) for x in score_args]),
             '--q-score-range',
             self._range_list_file,
             os.path.join(self.output_dir, self.clump_snp_field + '.pvalue'),

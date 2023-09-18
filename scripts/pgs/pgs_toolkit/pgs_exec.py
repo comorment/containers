@@ -191,7 +191,7 @@ slurm_header = f'''#!/bin/sh
 
 # environment variables for sh and slurm scripts
 env_keys = [
-    'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE', 
+    'ROOT_DIR', 'CONTAINERS', 'SIF', 'REFERENCE',
     'LDPRED2_SCRIPTS', 'LDPRED2_REF',
     'SINGULARITY_BIND', 'GUNZIP', 'GZIP', 'AWK',
     'RSCRIPT', 'PLINK', 'PRSICE', 'PYTHON'

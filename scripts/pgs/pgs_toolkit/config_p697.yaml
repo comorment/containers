@@ -55,6 +55,7 @@ plink:
   clump_kb: 250
   range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
   strat_indep_pairwise: [250, 50, 0.25]
+  score_columns: [SNP, A1, BETA]
   nPCs: 6
   threads: 16
 

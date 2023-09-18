@@ -38,7 +38,8 @@ if __name__ == '__main__':
     fileGenoRDS = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
 
     # method specific input
-    covariate_file = '/REF/examples/prsice2/EUR.cov'  # seems valid, not 100% sure.
+    # seems valid, not 100% sure.
+    covariate_file = '/REF/examples/prsice2/EUR.cov'
 
     #######################################
     # Update method-specific configs
@@ -49,7 +50,6 @@ if __name__ == '__main__':
 
     # update plink config
     config['plink'].update({
-        'score_args': [9, 1, 3, 'header'],  # SNP, A1, BETA columns in sumstats
     })
 
     # update prsice2 config
@@ -64,34 +64,26 @@ if __name__ == '__main__':
     #######################################
     # Preprocessing
     #######################################
-    # Create <data_prefix>.eigenval/eigenvec files using plink
+    # For <data_prefix>.eigenval/eigenvec files generated using plink
     # written to output directory
-    # TODO: move out
     data_prefix = os.path.split(geno_file_prefix)[-1]
-    # call = ' '.join(
-    #     [os.environ['PLINK'],
-    #      '--bfile', geno_file_prefix,
-    #      '--pca', str(config['plink']['nPCs']),
-    #      '--out', os.path.join(output_dir, data_prefix)
-    #      ]
-    # )
-    # pgs.run_call(call)
-
-    # # file names
-    # eigenvec_file = f'{os.path.join(output_dir, data_prefix)}.eigenvec'
+    eigenvec_file = f'{os.path.join("{}", data_prefix)}.eigenvec'
 
     #######################################
     # Plink
     #######################################
+    output_dir_plink = os.path.join(
+        output_dir,
+        'PGS_synthetic_plink')
     plink = pgs.PGS_Plink(
         sumstats_file=sumstats_file,
         pheno_file=pheno_file,
         phenotype=phenotype,
         phenotype_class=phenotype_class,
         geno_file_prefix=geno_file_prefix,
-        output_dir=os.path.join(output_dir, 'PGS_synthetic_plink'),
+        output_dir=output_dir_plink,
         covariate_file=covariate_file,
-        eigenvec_file=f'{os.path.join(output_dir, "PGS_synthetic_plink", data_prefix)}.eigenvec',
+        eigenvec_file=eigenvec_file.format(output_dir_plink),
         **config['plink'],
     )
 
@@ -115,15 +107,18 @@ if __name__ == '__main__':
     #######################################
     # PRSice-2
     #######################################
+    output_dir_prsice2 = os.path.join(
+        output_dir,
+        'PGS_synthetic_prsice2')
     prsice2 = pgs.PGS_PRSice2(
         sumstats_file=sumstats_file,
         pheno_file=pheno_file,
         phenotype=phenotype,
         phenotype_class='CONTINUOUS',
         geno_file_prefix=geno_file_prefix,
-        output_dir=os.path.join(output_dir, 'PGS_synthetic_prsice2'),
+        output_dir=output_dir_prsice2,
         covariate_file=covariate_file,
-        eigenvec_file=f'{os.path.join(output_dir, "PGS_synthetic_prsice2", data_prefix)}.eigenvec',
+        eigenvec_file=eigenvec_file.format(output_dir_prsice2),
         **config['prsice2'],
     )
 
@@ -135,19 +130,20 @@ if __name__ == '__main__':
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
 
-
     ############################################
     # LDpred2 infinitesimal and automatic models
     ############################################
     for method in ['inf', 'auto']:
+        output_dir_ldpred2 = os.path.join(
+            output_dir,
+            f'PGS_synthetic_LDpred2_{method}')
         ldpred2 = pgs.PGS_LDpred2(
             sumstats_file=sumstats_file,
             pheno_file=pheno_file,
             phenotype=phenotype,
             phenotype_class='CONTINUOUS',
             geno_file_prefix=geno_file_prefix,
-            output_dir=os.path.join(
-                output_dir, f'PGS_synthetic_LDpred2_{method}'),
+            output_dir=output_dir_ldpred2,
             method=method,
             fileGenoRDS=fileGenoRDS,
             **config['ldpred2']
@@ -156,14 +152,14 @@ if __name__ == '__main__':
         for call in ldpred2.get_str(create_backing_file=True):
             pgs.run_call(call)
 
-        # create .eigenvec and .cov files in ``output_dir`` 
+        # create .eigenvec and .cov files in ``output_dir``
         # for post run model evaluation:
         call = ldpred2.generate_eigenvec_eigenval_files(nPCs=6)
         pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            eigenvec_file=f'{os.path.join(ldpred2.output_dir, data_prefix)}.eigenvec',
+            eigenvec_file=eigenvec_file.format(output_dir_ldpred2),
             nPCs=6,
             covariate_file=covariate_file)
         pgs.run_call(call)
