@@ -644,6 +644,7 @@ class PGS_Plink(BasePGS):
                 self.geno_file_prefix,
                 '--indep-pairwise',
                 ' '.join([str(x) for x in self.strat_indep_pairwise]),
+                '--threads', str(self.kwargs['threads']),
                 '--out', os.path.join(self.output_dir, self.data_prefix)
             ])
 
@@ -655,6 +656,7 @@ class PGS_Plink(BasePGS):
                 '--extract',
                 os.path.join(self.output_dir, self.data_prefix) + '.prune.in',
                 '--pca', str(self.nPCs),
+                '--threads', str(self.kwargs['threads']),
                 '--out', os.path.join(self.output_dir, self.data_prefix)
             ])
 
@@ -1264,6 +1266,7 @@ class Standard_GWAS_QC(BasePGS):
             self.geno_file_prefix,
             '--write-snplist',
             '--make-just-fam',
+            '--threads', str(self.kwargs['threads']),
             '--out',
             os.path.join(
                 self.output_dir,
@@ -1288,6 +1291,7 @@ class Standard_GWAS_QC(BasePGS):
                     self.output_dir,
                     self.data_prefix +
                     self.data_postfix + '.snplist'),
+                '--threads', str(self.kwargs['threads']),
                 '--out',
                 os.path.join(
                     self.output_dir,
@@ -1314,6 +1318,7 @@ class Standard_GWAS_QC(BasePGS):
                     self.data_prefix +
                     self.data_postfix + '.fam'),
                 '--het',
+                '--threads', str(self.kwargs['threads']),
                 '--out',
                 os.path.join(
                     self.output_dir,
@@ -1372,6 +1377,7 @@ class Standard_GWAS_QC(BasePGS):
                     self.data_prefix +
                     '.valid.sample'),
                 '--check-sex',
+                '--threads', str(self.kwargs['threads']),
                 '--out',
                 os.path.join(
                     self.output_dir,
@@ -1416,6 +1422,7 @@ class Standard_GWAS_QC(BasePGS):
                     self.output_dir,
                     self.data_prefix +
                     self.data_postfix + '.valid'),
+                '--threads', str(self.kwargs['threads']),
                 '--out',
                 os.path.join(
                     self.output_dir,
@@ -1454,6 +1461,7 @@ class Standard_GWAS_QC(BasePGS):
                     self.output_dir,
                     self.data_prefix +
                     '.a1'),
+                '--threads', str(self.kwargs['threads']),
                 '--exclude',
                 os.path.join(
                     self.output_dir,
