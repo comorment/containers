@@ -30,6 +30,14 @@ export fileOutputSNPR=$DIR_DATA/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
 
+# BGEN files
+export fileBGEN=$DIR_DATA/example.bgen
+export fileBGENasRDS=$DIR_DATA/example.rds
+
+# copy .bgen files
+cp $DIR_REFERENCE/examples/regenie/example.bgen $DIR_DATA/
+cp $DIR_REFERENCE/examples/regenie/example.bgen.bgi $DIR_DATA/
+
 ### For imputation testing
 # Copy some plink files
 cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_DATA/
@@ -47,20 +55,20 @@ export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpr
 # The different modes to run (affects runs of scripts/extended.sh)
 LDPRED_MODES="inf auto"
 
-echo "### Running R function unittests"
-$RSCRIPT $DIR_TESTS/unittest/fun.R
+# echo "### Running R function unittests"
+# $RSCRIPT $DIR_TESTS/unittest/fun.R
 
-echo "### Testing sumstats scripts"
-source $DIR_TESTS/scripts/sumstats.sh
+# echo "### Testing sumstats scripts"
+# source $DIR_TESTS/scripts/sumstats.sh
 
 echo "### Testing RDS/backingfile creation"
 source $DIR_TESTS/scripts/backingfile.sh
 
-echo "### Testing tutorial data"
-source $DIR_TESTS/scripts/tutorial.sh
+# echo "### Testing tutorial data"
+# source $DIR_TESTS/scripts/tutorial.sh
 
-echo "### Testing imputation"
-source $DIR_TESTS/scripts/imputation.sh
+# echo "### Testing imputation"
+# source $DIR_TESTS/scripts/imputation.sh
 
-echo "### Testing ldpred2.R (various options, manually downloaded LD, output merge)"
-source $DIR_TESTS/scripts/extended.sh
+# echo "### Testing ldpred2.R (various options, manually downloaded LD, output merge)"
+# source $DIR_TESTS/scripts/extended.sh

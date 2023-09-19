@@ -9,3 +9,11 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 
 dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
+# check that file overwrite works
+dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileInputGeno $fileOutputSNPR --overwrite T )
+if [ $? -eq 1 ]; then echo "$dump"; exit; fi
+
+# check that .bgen file can be converted
+# dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileBGEN $fileBGENasRDS)
+# if [ $? -eq 1 ]; then echo "$dump"; exit; fi
