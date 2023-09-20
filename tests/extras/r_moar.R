@@ -103,7 +103,6 @@ libraries_to_check <- c(
     "MultiABEL",
     "org.Hs.eg.db",
     "phenotools",
-    "PLACO",
     "pracma",
     "psych",
     "rtracklayer",

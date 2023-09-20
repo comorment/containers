@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # helper script to change ownership to $USER of built container,
 # and moving file to the appropriate directory in repository
-set -e
+set -eou pipefail
 
 if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     echo "Must run script with sudo or as root"

@@ -40,16 +40,18 @@ RUN R -e "install.packages('devtools', version='2.4.5', repos='https://packagema
 COPY /scripts/R/cran.R .
 RUN Rscript cran.R
 
+# Bioconductor distributed packages:
+COPY /scripts/R/bioconductor.R .
+RUN Rscript bioconductor.R
+
 # GitHub distributed packages:
+ARG GITHUB_PAT=foo
+ENV GITHUB_TOKEN=$GITHUB_PAT
 COPY /scripts/R/github.R .
 RUN Rscript github.R
 
 # Misc. packages
-COPY /scripts/R/misc.R .
-RUN Rscript misc.R
-
-# moar packages that people want
-COPY /scripts/R/moar.R .
-RUN Rscript moar.R
+COPY /scripts/R/source.R .
+RUN Rscript source.R
 
 WORKDIR /tools
