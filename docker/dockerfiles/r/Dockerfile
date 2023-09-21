@@ -52,9 +52,7 @@ RUN Rscript github.R
 
 # Misc. packages
 COPY /scripts/R/source.R .
-RUN Rscript source.R
-
-# clean up
-RUN rm -rf /tmp/*
+RUN Rscript source.R && \
+    rm -rf /tmp/*
 
 WORKDIR /tools
