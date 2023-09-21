@@ -54,4 +54,7 @@ RUN Rscript github.R
 COPY /scripts/R/source.R .
 RUN Rscript source.R
 
+# clean up
+RUN rm -rf /tmp/*
+
 WORKDIR /tools

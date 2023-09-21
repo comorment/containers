@@ -2,79 +2,99 @@ require(devtools)
 url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
-devtools::install_version('argparser', version='0.7.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('arsenal', version='3.6.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('bigreadr', version='0.2.5', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('bigsnpr', version='1.11.6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('BiocManager', version='1.30.19', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('brant', version='0.3-0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('brms', version='2.18.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('carat', version='2.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('circlize', version='0.4.15', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('correlation', version='0.8.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('corrplot', version='0.92', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('CPBayes', version='1.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('DescTools', version='0.99.47', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('data.table', version='1.14.6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('dendextend', version='1.16.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('dplyr', version='1.1.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('flextable', version='0.8.5', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('fmsb', version='0.7.5', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('GCPBayes', version='4.0.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('geepack', version='1.3.9', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggalluvial', version='0.12.4', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggcorrplot', version='0.1.4', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggplot2', version='3.4.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggseg', version='1.6.5', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggseg3d', version='1.6.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggstar', version='1.0.4', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggthemes', version='4.2.4', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ggpubr', version='0.6.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('glue', version='1.6.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('gplots', version='3.1.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('gtsummary', version='1.7.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('fastICA', version='1.2-3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('fcfdr', version='1.0.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('foreign', version='0.8-84', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('homologene', version='1.4.68.19.3.27', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('imputeMissings', version='0.0.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('jtools', version='2.2.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('lavaan', version='0.6-14', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('limma', version='2.10.7', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('lmerTest', version='3.1-3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('magrittr', version='2.0.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('MatrixEQTL', version='2.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('mgcv', version='1.8-41', repos=url, dependencies=dependencies, upgrade=upgrade)  # has gamm function
-devtools::install_version('miniCRAN', version='0.2.16', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('moments', version='0.14.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('MultiABEL', version='1.1-6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('MVN', version='5.9', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('mvtnorm', version='1.1-3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('optparse', version='1.7.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('parameters', version='0.20.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('patchwork', version='1.1.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('pracma', version='2.4.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('pROC', version='1.18.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('qqman', version='0.1.8', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('reghelper', version='1.1.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('remotes', version='2.4.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('rjags', version='4-13', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('ROCR', version='1.0-11', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('rmarkdown', version='2.20', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('rstan', version='2.21.8', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('runonce', version='0.2.3', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('scales', version='1.2.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('semptools', version='0.2.9.6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('seqminer', version='8.6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('semTools', version='0.5-6', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('simplecolors', version='0.1.1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('sp', version='1.6-0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('splines2', version='0.4.7', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('stringr', version='1.5.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('survey', version='4.1-1', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('survminer', version='0.4.9', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('tibble', version='3.1.8', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('tidyr', version='1.3.0', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('tree', version='1.0-43', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('vctrs', version='0.5.2', repos=url, dependencies=dependencies, upgrade=upgrade)
-devtools::install_version('xgboost', version='1.7.3.1', repos=url, dependencies=dependencies, upgrade=upgrade)
+
+# CRAN packages w. version
+packages <- list(
+    argparser = '0.7.1',
+    arsenal = '3.6.3',
+    bigreadr = '0.2.5',
+    bigsnpr = '1.11.6',
+    BiocManager = '1.30.19',
+    brant = '0.3-0',
+    brms = '2.18.0',
+    carat = '2.1.0',
+    circlize = '0.4.15',
+    correlation = '0.8.3',
+    corrplot = '0.92',
+    CPBayes = '1.1.0',
+    DescTools = '0.99.47',
+    'data.table' = '1.14.6',
+    dendextend = '1.16.0',
+    dplyr = '1.1.0',
+    flextable = '0.8.5',
+    fmsb = '0.7.5',
+    GCPBayes = '4.0.0',
+    geepack = '1.3.9',
+    ggalluvial = '0.12.4',
+    ggcorrplot = '0.1.4',
+    ggplot2 = '3.4.1',
+    ggseg = '1.6.5',
+    ggseg3d = '1.6.3',
+    ggstar = '1.0.4',
+    ggthemes = '4.2.4',
+    ggpubr = '0.6.0',
+    glue = '1.6.2',
+    gplots = '3.1.3',
+    gtsummary = '1.7.0',
+    fastICA = '1.2-3',
+    fcfdr = '1.0.0',
+    foreign = '0.8-84',
+    homologene = '1.4.68.19.3.27',
+    imputeMissings = '0.0.3',
+    jtools = '2.2.1',
+    lavaan = '0.6-14',
+    lmerTest = '3.1-3',
+    magrittr = '2.0.3',
+    MatrixEQTL = '2.3',
+    mgcv = '1.8-41',  # has gamm function
+    miniCRAN = '0.2.16',
+    moments = '0.14.1',
+    MultiABEL = '1.1-6',
+    MVN = '5.9',
+    mvtnorm = '1.1-3',
+    optparse = '1.7.3',
+    parameters = '0.20.2',
+    patchwork = '1.1.2',
+    pracma = '2.4.2',
+    pROC = '1.18.0',
+    qqman = '0.1.8',
+    reghelper = '1.1.1',
+    remotes = '2.4.2',
+    rjags = '4-13',
+    ROCR = '1.0-11',
+    rmarkdown = '2.20',
+    rstan = '2.21.8',
+    runonce = '0.2.3',
+    scales = '1.2.1',
+    semptools = '0.2.9.6',
+    seqminer = '8.6',
+    semTools = '0.5-6',
+    simplecolors = '0.1.1',
+    sp = '1.6-0',
+    splines2 = '0.4.7',
+    stringr = '1.5.0',
+    survey = '4.1-1',
+    survminer = '0.4.9',
+    tibble = '3.1.8',
+    tidyr = '1.3.0',
+    tree = '1.0-43',
+    vctrs = '0.5.2',
+    xgboost = '1.7.3.1')
+ 
+# install package from CRAN and quit with error if installation fails
+for (package in names(packages)) {
+    version <- packages[[package]]
+
+    tryCatch(
+    {
+        devtools::install_version(package, version=version, repos=url, dependencies=dependencies, upgrade=upgrade)
+    },
+    error = function(e) {
+        cat("Error occurred during package installation:\n")
+        print(e)
+        quit(status=1, save='no')
+    },
+    finally = {
+    }
+    )
+}
