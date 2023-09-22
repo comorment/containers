@@ -9,7 +9,7 @@ from pgs import pgs
 
 if __name__ == '__main__':
     # load config_p697.yaml file as dict
-    with open("config_p697.yaml", 'r') as stream:
+    with open("config_p697.yaml", 'r', encoding='utf-8') as stream:
         config = yaml.safe_load(stream)
 
     #######################################
@@ -20,7 +20,6 @@ if __name__ == '__main__':
     pgs.set_env(config)
 
     # input (shared)
-    # sumstats_file = '/SUMSTATS/STD/UKB_HEIGHT_2018_irnt.sumstats.gz'
     sumstats_file = '/MOBA/out/run10_regenie_height_8y_rint.gz'
     pheno_file = '/MOBA/master_file.csv'
     phenotype = 'height_8y_rint'
@@ -34,16 +33,10 @@ if __name__ == '__main__':
     eigenvec_file = os.path.join(output_dir, 'master_file.eigenvec')
     covariate_file = os.path.join(output_dir, 'master_file.cov')
 
-    # for "PRSice --extract" arg (throws an error othervise):
-    Valid_file = os.path.join(output_dir,
-                              os.path.split(geno_file_prefix)[1]) + '.valid'
-
     # update prsice2 config
     config['prsice2'].update({
-        'pheno-col': phenotype,  # redundant with the preprocessing
-        'pvalue': 'P',  # 'PVAL'   # for UKB_HEIGHT sumstats
-        # 'extract': Valid_file,  # for UKB_HEIGHT sumstats
-        # 'ignore-fid': ''
+        'pheno-col': phenotype,
+        'pvalue': 'P',
     })
 
     #######################################
@@ -59,7 +52,7 @@ if __name__ == '__main__':
         os.path.join('Rscripts', 'generate_eigenvec.R'),
         '--pheno-file', pheno_file,
         '--eigenvec-file', eigenvec_file,
-        '--pca', str(config['plink']['nPCs'])
+        '--nPCs', str(config['prsice2']['nPCs'])
     ])
     pgs.run_call(call)
 
@@ -77,13 +70,13 @@ if __name__ == '__main__':
     # extract pheno file with FID, IID, <phenotype> columns
     # as PRSice.R script assumes FID and IID as first two cols,
     # and aint f'n smart enough to work around this.
-    Pheno_file_prsice = os.path.join(output_dir, f'master_file.{phenotype}')
+    pheno_file_prsice = os.path.join(output_dir, f'master_file.{phenotype}')
     call = ' '.join([
         '$RSCRIPT',
         os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', pheno_file,
         '--columns', 'FID', 'IID', phenotype,
-        '--output-file', Pheno_file_prsice,
+        '--output-file', pheno_file_prsice,
         '--header', 'T',
         '--na', 'NA',
         '--sep', '" "',
@@ -95,7 +88,7 @@ if __name__ == '__main__':
     #######################################
     prsice2 = pgs.PGS_PRSice2(
         sumstats_file=sumstats_file,
-        pheno_file=Pheno_file_prsice,
+        pheno_file=pheno_file_prsice,
         phenotype=phenotype,
         geno_file_prefix=geno_file_prefix,
         output_dir=output_dir,

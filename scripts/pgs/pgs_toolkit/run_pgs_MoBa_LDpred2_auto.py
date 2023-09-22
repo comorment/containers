@@ -10,7 +10,7 @@ from pgs import pgs
 
 if __name__ == '__main__':
     # load config_p697.yaml file as dict
-    with open("config_p697.yaml", 'r') as stream:
+    with open("config_p697.yaml", 'r', encoding='utf-8') as stream:
         config = yaml.safe_load(stream)
 
     #######################################
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     data_postfix = ''
 
     # LDpred2 specific
-    fileGenoRDS = 'MoBaPsychGen_v1-500kSNPs-child.rds'
+    file_geno_rds = 'MoBaPsychGen_v1-500kSNPs-child.rds'
 
     # find suitable number of cores
     if 'SLURM_NTASKS' in os.environ:
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # Update ldpred2 config
     config['ldpred2'].update({
         'cores': ncores,
-        'file_keep_snps': None,
+        'geno-impute-zero': ''  # needed to deal with missingness
     })
 
     #######################################
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             os.path.join('Rscripts', 'generate_eigenvec.R'),
             '--pheno-file', pheno_file,
             '--eigenvec-file', eigenvec_file,
-            '--pca', str(config['plink']['nPCs'])
+            '--nPCs', str(config['plink']['nPCs'])
         ])
         pgs.run_call(call)
 
@@ -101,16 +101,21 @@ if __name__ == '__main__':
             geno_file_prefix=geno_file_prefix,
             output_dir=output_dir,
             method=method,
-            fileGenoRDS=os.path.join(output_dir, fileGenoRDS),
+            file_geno_rds=os.path.join(output_dir, file_geno_rds),
             **config['ldpred2']
         )
-        # run
+        # run.
+        # Note that this step will produce potentially huge
+        # <file_geno_rds>.rds/.bk files in <output_dir>,
+        # hence for repeated runs it is better to convert the
+        # genotypic files (.bed/.bim/.fam) files once and
+        # forall and put in a suitable location.
         for call in ldpred2.get_str(create_backing_file=True):
             pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
             eigenvec_file=os.path.join(output_dir, 'master_file.eigenvec'),
-            nPCs=str(config['plink']['nPCs']),
+            nPCs=str(config['ldpred2']['nPCs']),
             covariate_file=os.path.join(output_dir, 'master_file.cov'))
         pgs.run_call(call)

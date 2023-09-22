@@ -9,7 +9,7 @@ from pgs import pgs
 
 if __name__ == '__main__':
     # load config_p697.yaml file as dict
-    with open("config_p697.yaml", 'r') as stream:
+    with open("config_p697.yaml", 'r', encoding='utf-8') as stream:
         config = yaml.safe_load(stream)
 
     #######################################
@@ -36,13 +36,6 @@ if __name__ == '__main__':
 
     # update plink config
     config['plink'].update({
-        'clump_p1': 1,
-        'clump_r2': 0.1,
-        'clump_kb': 250,
-        'range_list': [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1],
-        'strat_indep_pairwise': [250, 50, 0.25],
-        'nPCs': 6,
-        'score_args': [1, 4, 9, 'header'],  # SNP, A1, BETA
     })
 
     #######################################
@@ -53,12 +46,13 @@ if __name__ == '__main__':
     os.makedirs(output_dir, exist_ok=True)
 
     # extract precomputed PCs from pheno_file
+    # instead of using PLINK
     call = ' '.join([
         '$RSCRIPT',
         os.path.join('Rscripts', 'generate_eigenvec.R'),
         '--pheno-file', pheno_file,
         '--eigenvec-file', eigenvec_file,
-        '--pca', str(config['plink']['nPCs'])
+        '--nPCs', str(config['plink']['nPCs'])
     ])
     pgs.run_call(call)
 
@@ -73,16 +67,15 @@ if __name__ == '__main__':
     ])
     pgs.run_call(call)
 
-    # extract pheno file with FID, IID, <phenotype> columns
-    # as PRSice.R script assumes FID and IID as first two cols,
-    # and aint f'n smart enough to work around this.
-    Pheno_file_plink = os.path.join(output_dir, f'master_file.{phenotype}')
+    # extract pheno file with FID, IID, <phenotype> columns,
+    # avoiding some table merge issues that may occur.
+    pheno_file_plink = os.path.join(output_dir, f'master_file.{phenotype}')
     call = ' '.join([
         '$RSCRIPT',
         os.path.join('Rscripts', 'extract_columns.R'),
         '--input-file', pheno_file,
         '--columns', 'FID', 'IID', phenotype,
-        '--output-file', Pheno_file_plink,
+        '--output-file', pheno_file_plink,
         '--header', 'T',
         '--na', 'NA',
         '--sep', '" "',
@@ -94,7 +87,7 @@ if __name__ == '__main__':
     #######################################
     plink = pgs.PGS_Plink(
         sumstats_file=sumstats_file,
-        pheno_file=Pheno_file_plink,
+        pheno_file=pheno_file_plink,
         phenotype=phenotype,
         geno_file_prefix=geno_file_prefix,
         output_dir=output_dir,
