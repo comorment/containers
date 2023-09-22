@@ -49,7 +49,29 @@ Covariate data formatted according to the [covariate specification](./../../../d
 
 ### Output files
 
-The output will be written to a user-specified ``output/`` directory, which is created if it does not exist. The output directory will contain subdirectories for each PGS method, e.g., ``output/PGS_synthetic_plink/``. The output files will be named ``<phenotype>.<method>.pgs`` and ``<phenotype>.<method>.pgs.summary``. The ``.pgs`` file contains the PGS scores, while the ``.pgs.summary`` file contains some summary statistics for the PGS scores, e.g., R2, AIC, BIC, etc.
+The output will be written to a user-specified ``output/`` directory, which is created if it does not exist. The output directory will contain subdirectories for each PGS method, e.g., ``output/PGS_synthetic_plink/`` as specified in the runtime scripts. 
+
+#### PGS scores
+
+The individ level output file shared by all PGS methods is named ``test.score``. The text file contains the PGS scores for each individual in the phenotype file. The first two columns are ``FID`` and ``IID``. The third column ``score`` is the PGS score.
+
+> **_NOTE:_** For PLINK and PRSice-2, the ``score`` column contains the "best" PGS score, i.e., the one with the highest R2 for the tested range of p-value thresholds. The scores for each p-value threshold are also written to the output directory as separate files.
+
+#### Summary statistics
+
+The file ``test_summary.txt`` contains the R GLM summary statistics for the PGS model in plain-text format,
+while ``test_summary.csv`` contains the GLM summary statistics in tabular (.csv) format.
+Both the full model and the null model are reported, typically on the form
+
+**full model**
+$$y ~ score + PC_1 + PC_2 + ... + PC_n + SEX$$
+
+**null model**
+$$y_{null} ~ PC_1 + PC_2 + ... + PC_n + SEX$$
+
+For binary traits, the GLM should use the binomial family and the logit link function to fit the model.
+
+#### 
 
 ### Python runtime scripts
 

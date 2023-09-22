@@ -906,8 +906,12 @@ class PGS_PRSice2(BasePGS):
         # deal with kwargs
         if len(self.kwargs) > 0:
             for key, value in self.kwargs.items():
-                command = ' '.join(
-                    [command, f'--{key} {value or ""}'])
+                if key == 'bar-levels':
+                    command = ' '.join(
+                        [command, f"--{key} {','.join([str(x) for x in value])}"])
+                else:
+                    command = ' '.join(
+                        [command, f'--{key} {value or ""}'])
 
         return command
 
