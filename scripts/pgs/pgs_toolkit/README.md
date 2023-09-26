@@ -59,9 +59,9 @@ The individ level output file shared by all PGS methods is named ``test.score``.
 
 #### Summary statistics
 
-The file ``test_summary.txt`` contains the R GLM summary statistics for the PGS model in plain-text format,
-while ``test_summary.csv`` contains the GLM summary statistics in tabular (.csv) format.
-Both the full model and the null model are reported, typically on the form
+The file ``test_summary.txt`` contains the R (generalized) linear model (LM/GLM) summary statistics for the PGS model in plain-text format,
+while ``test_summary.csv`` contains the LM/GLM summary statistics in tabular (.csv) format.
+Both the full model and the null model are reported, typically assumed to be on the form
 
 **full model**
 $$y ~ score + PC_1 + PC_2 + ... + PC_n + SEX$$
@@ -69,9 +69,13 @@ $$y ~ score + PC_1 + PC_2 + ... + PC_n + SEX$$
 **null model**
 $$y_{null} ~ PC_1 + PC_2 + ... + PC_n + SEX$$
 
+**nocov model**
+$$y_{nocov} ~ score$$
+
 For binary traits, the GLM should use the binomial family and the logit link function to fit the model.
 
-#### 
+For binary traits, we also summarize Odds Ratios (OR) and 95% confidence intervals (CI) for the PGS models.
+These outputs are written to plaintext and tabular files named ``test_summary.or.txt`` and ``test_summary.<null/full/nocov>.or.csv``, respectively.
 
 ### Python runtime scripts
 
