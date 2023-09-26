@@ -130,8 +130,7 @@ python3 run_pgs_w_QC.py
 
 #### ``run_pgs_MoBa_*.py``
 
-Run PGS using PLINK, PRSice2 and LDpred2, respectively on MoBa data (only on TSD)
-
+Run basic PGS for height using PLINK, PRSice2 and LDpred2, respectively on MoBa child sample data (only on TSD p697).
 
 ### ``pgs_exec.py`` command line tool
 
