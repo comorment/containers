@@ -20,9 +20,9 @@ environ:
 # NB: "SIF" is mandatory
 environ_inferred:
   # folder containing full clone of https://github.com/comorment/containers
-  CONTAINERS: '$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17'
+  CONTAINERS: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17"
   # reference data within containers repo
-  # REFERENCE: "$CONTAINERS/reference"
+  REFERENCE: "$CONTAINERS/reference"
   # directory with singularity containers (.sif files)
   SIF: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17/singularity"
   # folder containing  full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data
@@ -31,20 +31,20 @@ environ_inferred:
   LDPRED2_SCRIPTS: "$CONTAINERS/scripts/pgs/LDpred2"
 
   # some processed MOBA files
-  MOBA: '$ROOT_DIR/cluster/users/ofrei/2022_moba_height_traj'
+  MOBA: "$ROOT_DIR/cluster/users/ofrei/2022_moba_height_traj"
   # summary statistics
-  SUMSTATS: '$ROOT_DIR/cluster/projects/SUMSTATv2'
+  SUMSTATS: "$ROOT_DIR/cluster/projects/SUMSTATv2"
 
 
 # for SINGULARITY_BIND variable to set in job scripts.
 # NB! will be set as "export SINGULARITY_BIND=value0:/key0,value1:/key1,..."
 # NB! Also mandatory
 SINGULARITY_BIND: 
-  # REF: '$REFERENCE'
-  ldpred2_ref: '$LDPRED2_REF'
-  ldpred2_scripts: '$LDPRED2_SCRIPTS'
-  MOBA: '$MOBA'
-  SUMSTATS: '$SUMSTATS'
+  REF: "$REFERENCE"
+  ldpred2_ref: "$LDPRED2_REF"
+  ldpred2_scripts: "$LDPRED2_SCRIPTS"
+  MOBA: "$MOBA"
+  SUMSTATS: "$SUMSTATS"
 
 
 ## Parameters specific to each PGS calculating tool (refer documentation of each tool):
