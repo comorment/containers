@@ -1,7 +1,7 @@
 LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-bp pos --col-A1 a1 --col-A2 a0 \
+  --col-snp-id rsid --col-bp ignored --col-A1 a1 --col-A2 a0 \
   --out ${fileOut}_imputed.inf"
 
 # Create sumstats with characters in chromosome column
@@ -36,14 +36,14 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R --file-keep-snps $fileKeepSNPS \
   --merge-by-rsid \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr Chr --col-bp pos --col-A1 a0 --col-A2 a1 \
+  --col-snp-id rsid --col-chr Chr --col-bp ignored --col-A1 a0 --col-A2 a1 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
 
-echo "TEST error: Bad ldpred mode"
+echo "Test error: Bad ldpred mode"
 dump=$( { $LDP --ldpred-mode infinite --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 0 ]; then echo "No error received"; exit; fi
 
-echo "TEST error: Bad imputation mode"
+echo "Test error: Bad imputation mode"
 dump=$( { $LDP --ldpred-mode inf --geno-impute bad-mode --out $fileOut.inf; } 2>&1 )
 if [ $? -eq 0 ]; then echo "No error received"; exit; fi
 
