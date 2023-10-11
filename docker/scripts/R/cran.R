@@ -49,6 +49,7 @@ packages <- list(
     mgcv = '1.8-41',  # has gamm function
     miniCRAN = '0.2.16',
     moments = '0.14.1',
+    MplusAutomation = '1.1.0',
     MultiABEL = '1.1-6',
     MVN = '5.9',
     mvtnorm = '1.1-3',
@@ -56,6 +57,7 @@ packages <- list(
     parameters = '0.20.2',
     patchwork = '1.1.2',
     pracma = '2.4.2',
+    PredictABEL = '1.2-4',
     pROC = '1.18.0',
     qqman = '0.1.8',
     reghelper = '1.1.1',
