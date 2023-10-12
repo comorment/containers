@@ -53,6 +53,7 @@ par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinites
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", flag=TRUE)
+par <- add_argument(par, "--tmp-dir", help="Directory to store temporary files. Default is output of base::tempdir()", default=tempdir())
 
 parsed <- parse_args(par)
 
@@ -233,7 +234,11 @@ drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
 
 cat('\n### Loading LD reference from ', fileLD, '\n')
-tmp <- tempfile(tmpdir = "tmp-data")
+if (file.exists(parsed$tmp_dir)) {
+  tmp_file <- tempfile(tmpdir=parsed$tmp_dir)
+} else {
+  stop("Temporary directory", parsed$tmp_dir, "does not exist or is not writable")
+}
 ld_size <- 0; corr <- NULL
 for (chr in chr2use) {
   ## indices in 'df_beta' corresponding to a particular 'chr'
@@ -253,7 +258,7 @@ for (chr in chr2use) {
   corr_chr <- readRDS(fileLD_chr)[ind.chr3, ind.chr3]
 
   if (is.null(corr)) {
-    corr <- as_SFBM(corr_chr, tmp, compact = TRUE)
+    corr <- as_SFBM(corr_chr, tmp_file, compact = TRUE)
   } else {
     corr$add_columns(corr_chr, nrow(corr))
   }
@@ -319,4 +324,4 @@ if (fileOutputMerge) cat('Merging by', paste0(fileOutputMergeIDs, collapse=', ')
 writeScore(obj.bigSNP$fam, fileOutput, nameScore, fileOutputMerge, fileOutputMergeIDs)
 cat('Scores written to', fileOutput, '\n')
 # Drop temporary file
-fileRemoved <- file.remove(paste0(tmp, '.sbk'))
+fileRemoved <- file.remove(paste0(tmp_file, '.sbk'))

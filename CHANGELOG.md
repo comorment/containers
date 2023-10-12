@@ -39,6 +39,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.3.7] - 2023-10-12
+
+* User-set directory for temporary files during LDpred2 runs, by default `base::tempdir()`
+
 ## [1.3.6] - 2023-08-17
 
 ### Fixed
