@@ -154,19 +154,19 @@ cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
 
 # rename pos column in map_ldref if another genomic build is assumed:
-if (!parsed$genomic_build %in% c('hg18', 'hg19', 'hg38')) stop('Genomic build should be one of "hg19", "hg18", "hg38"') {
-  if (parsed$genomic_build == 'hg_38') {
-    cat('Renaming "pos_hg38" column in LD reference meta info as "pos"\n')
-    map_ldref$pos <- map_ldref$pos_hg38
-    map_ldref$pos_hg38 <- NULL
-  } else if (parsed$genomic_build == 'hg_18') {
-    cat('Renaming "pos_hg18" column in LD reference meta info as "pos"\n')
-    map_ldref$pos <- map_ldref$pos_hg18
-    map_ldref$pos_hg18 <- NULL
-  } else {
-    # pass
-  }
+if (!parsed$genomic_build %in% c('hg18', 'hg19', 'hg38')) stop('Genomic build should be one of "hg19", "hg18", "hg38"')
+if (parsed$genomic_build == 'hg_38') {
+  cat('Renaming "pos_hg38" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg38
+  map_ldref$pos_hg38 <- NULL
+} else if (parsed$genomic_build == 'hg_18') {
+  cat('Renaming "pos_hg18" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg18
+  map_ldref$pos_hg18 <- NULL
+} else {
+  # pass
 }
+
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
