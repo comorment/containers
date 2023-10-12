@@ -9,6 +9,7 @@ coms <- commandArgs()
 coms <- coms[substr(coms, 1, 7) == '--file=']
 dirScript <- dirname(substr(coms, 8, nchar(coms)))
 source(paste0(dirScript, '/fun.R'))
+source(paste0(dirScript, '/funMatrix.R'))
 
 par <- arg_parser('Split LD matrices into blocks using bigSNPr')
 # Mandatory arguments
@@ -18,6 +19,13 @@ par <- add_argument(par, '--file-output-ld-blocks', help='Template name of outpu
 
 # Optional arguments
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
+# Parameters to bigsnpr::ldsplit
+par <- add_argument(par, '--min-size', nargs=1, default=50, help='Minimum number of variants in each block. See bigsnpr::ldsplit.')
+par <- add_argument(par, '--max-size-weights', nargs=2, help='Weights for providing an range of block sizes to try.
+                    The number of columns in each matrix is divided by the first (weight 1) and second (weight 2) argument and a logarithmic sequence created, 
+                    implying Thus [weight 1] > [weight 2]. Defaults to [30 5].')
+par <- add_argument(par, '--max-r2', nargs=1, default=0.3, help='Maximum squared correlation between variants in different blocks. See bigsnpr::snp_ldsplit')
+par <- add_argument(par, '--thr-r2', nargs=1, default=0.02, help='Threshold under which squared correlations are ignored. See bigsnpr::snp_ldsplit')
 
 parsed <- parse_args(par)
 # Chromosomes to use
@@ -28,31 +36,22 @@ fileLDBlocks <- parsed$file_ld_blocks
 fileOutputLDBlocks <- parsed$file_output_ld_blocks
 if (!dir.exists(dirname(fileLDBlocks))) dir.create(dirname(fileLDBlocks))
 fileLDMap <- parsed$file_ld_map
+argMaxR2 <- parsed$max_r2
+argMinSize <- parsed$min_size
+argThrR2 <- parsed$thr_r2
+argWeights <- parsed$max_size_weights
+if (isVarNA(argWeights)) {
+  argWeights <- c(30, 5)
+}
+if (argWeights[2] >= argWeights[1]) stop('First weight to --max-size-weights should be greater than the second, received: ', paste(argWeights))
 
+cat('Processing chromosome\n')
 for (chr in chr2use) {
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   outputFileName <- str_replace(fileOutputLDBlocks, '@', toString(chr))
   cat('\t', chr, ': Loading LD from', basename(fileName), '\n')
   mat <- readRDS(fileName)
-  nc <- ncol(mat)
-  sequence <- round(seq_log(nc/30, nc/5, length.out=20))
-  splits <- snp_ldsplit(mat, thr_r2 = 0.02, min_size=50, max_size = sequence, max_r2 = 0.1)
-  #best_split <- splits %>%
-  #  arrange(cost2 * (5 + cost)) %>% slice(1) 
-  #str(best_split)
-  costs <- with(splits, cost2 * (5 + cost))
-  #str(splits)
-  best <- splits[order(costs),]
-  best <- best[1,]
-  #str(best)
-  allSize <- best$all_size[[1]]
-  str(allSize)
-  bestGroup <- rep(seq_along(allSize), allSize)
-  mat <- as(as(mat, 'generalMatrix'), 'TsparseMatrix')
-  #str(bestGroup)
-  mat@x <- ifelse(bestGroup[mat@i + 1L] == bestGroup[mat@j + 1L], mat@x, 0)
-  mat <- Matrix::drop0(mat)
-  #mat <- as(mat, 'symmetrixMatrix')
+  mat <- LDSplitMatrix(mat, thrR2=argThrR2, minSize=argMinSize, maxSizeWeightLower=argWeights[1], maxSizeWeightUpper=argWeights[2], maxR2=argMaxR2)
   cat('\tWriting LD to', basename(outputFileName), '\n')
   saveRDS(mat, file=outputFileName)
 }
