@@ -234,11 +234,8 @@ drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
 
 cat('\n### Loading LD reference from ', fileLD, '\n')
-if (file.exists(parsed$tmp_dir)) {
-  tmp_file <- tempfile(tmpdir=parsed$tmp_dir)
-} else {
-  stop("Temporary directory", parsed$tmp_dir, "does not exist or is not writable")
-}
+if (!file.exists(parsed$tmp_dir)) stop("Temporary directory", parsed$tmp_dir, "does not exist") 
+tmp_file <- tempfile(tmpdir=parsed$tmp_dir)
 ld_size <- 0; corr <- NULL
 for (chr in chr2use) {
   ## indices in 'df_beta' corresponding to a particular 'chr'
