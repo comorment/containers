@@ -23,6 +23,13 @@ intervals <- function (mat) {
 
 roundToThousands <- function (x) round(x/1000)
 
+getLogBlockSequence <- function (nMatCols, lower=30, upper=5, length=20) {
+  if (lower <= 0 | upper <= 0) stop('lower/upper weights need to be positive numbers')
+  blockSizes <- seq_log(nMatCols/lower, nMatCols/upper, length)
+  if (sum(nMatCols < blockSizes)) stop('Requested block size is greater than matrix columns (', nMatCols,')')
+  round(blockSizes)
+}
+
 # Plotting
 #' @param mat A correlation matrix
 #' @param positions Positions of each matrix column
