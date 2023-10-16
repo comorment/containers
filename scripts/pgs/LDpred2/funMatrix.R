@@ -1,19 +1,24 @@
 ### Function applicable to matrixes of type dsCMatrix (maybe other types aswell)
 ### Main purpose is to summarize LD matrixes
 # Count zeroes in a symmetric matrix. For the dsCMatrix this is just the length of the @slot
+#' @param mat A symmetric/square matrix
 nonZeroesCount <- function (mat) {
+  require(Matrix)
   length(mat@x)*2 + ncol(mat)
 }
 
+# Fraction zeroes
 nonZeroesFraction <- function (mat) {
   o <- nonZeroesCount(mat)
   o/length(mat)
 }
 
+# Percentage zeroes
 nonZeroesPercentage <- function (mat) {
   100*nonZeroesFraction(mat)
 }
 
+# Percentage entries with correlations between -1 to 1 in steps of 0.02
 intervals <- function (mat) {
   steps <- seq(-1, 1, by=.02)
   tb <- table(cut(mat@x, breaks=steps, include.lowest=T))
@@ -28,6 +33,26 @@ getLogBlockSequence <- function (nMatCols, lower=30, upper=5, length=20) {
   blockSizes <- seq_log(nMatCols/lower, nMatCols/upper, length)
   if (sum(nMatCols < blockSizes)) stop('Requested block size is greater than matrix columns (', nMatCols,')')
   round(blockSizes)
+}
+# LD splitting of a correlation matrix
+# Arguments are passed to bigsnpr::ldsplit
+LDSplitMatrix <- function (mat, thrR2, minSize, maxSizeWeightLower, maxSizeWeightUpper, maxR2) {
+  nc <- ncol(mat)
+  # Maximum variants in each block
+  sequence <- round(seq_log(nc/maxSizeWeightLower, nc/maxSizeWeightUpper, length.out=20))
+  splits <- snp_ldsplit(mat, thr_r2 = thrR2, min_size=minSize, max_size = sequence, max_r2 = maxR2)
+  
+  # Select the best split
+  costs <- with(splits, cost2 * (5 + cost))
+  best <- splits[order(costs),]
+  best <- best[1,]
+  allSize <- best$all_size[[1]]
+  bestGroup <- rep(seq_along(allSize), allSize)
+  mat <- as(as(mat, 'generalMatrix'), 'TsparseMatrix')
+  # Replace elements outside splits with 0
+  mat@x <- ifelse(bestGroup[mat@i + 1L] == bestGroup[mat@j + 1L], mat@x, 0)
+  # Drop zeroes
+  Matrix::drop0(mat)
 }
 
 # Plotting
