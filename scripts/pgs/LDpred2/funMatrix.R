@@ -1,16 +1,14 @@
 ### Function applicable to matrixes of type dsCMatrix (maybe other types aswell)
 ### Main purpose is to summarize LD matrixes
-# Count zeroes in a symmetric matrix. For the dsCMatrix this is just the length of the @slot
-#' @param mat A symmetric/square matrix
+# Non-zeroes count
 nonZeroesCount <- function (mat) {
-  require(Matrix)
-  length(mat@x)*2 + ncol(mat)
+  require(Matrix, quietly = T)
+  nnzero(mat)
 }
-
 # Fraction zeroes
 nonZeroesFraction <- function (mat) {
   o <- nonZeroesCount(mat)
-  o/length(mat)
+  o/(ncol(mat)*nrow(mat))
 }
 
 # Percentage zeroes
@@ -28,6 +26,7 @@ intervals <- function (mat) {
 
 roundToThousands <- function (x) round(x/1000)
 
+# Create a logarithmic sequence
 getLogBlockSequence <- function (nMatCols, lower=30, upper=5, length=20) {
   if (lower <= 0 | upper <= 0) stop('lower/upper weights need to be positive numbers')
   blockSizes <- seq_log(nMatCols/lower, nMatCols/upper, length)
@@ -37,15 +36,18 @@ getLogBlockSequence <- function (nMatCols, lower=30, upper=5, length=20) {
 # LD splitting of a correlation matrix
 # Arguments are passed to bigsnpr::ldsplit
 LDSplitMatrix <- function (mat, thrR2, minSize, maxSizeWeightLower, maxSizeWeightUpper, maxR2) {
+  require(Matrix)
   nc <- ncol(mat)
   # Maximum variants in each block
   sequence <- round(seq_log(nc/maxSizeWeightLower, nc/maxSizeWeightUpper, length.out=20))
+  if (any(minSize > sequence)) stop('Minimum block size (', minSize,') is higher than minimum of upper block size limit (', min(sequence),')')
   splits <- snp_ldsplit(mat, thr_r2 = thrR2, min_size=minSize, max_size = sequence, max_r2 = maxR2)
-  
+  if (is.null(splits)) stop('Failed splitting LD matrix. Try alternative parameters')
   # Select the best split
   costs <- with(splits, cost2 * (5 + cost))
   best <- splits[order(costs),]
   best <- best[1,]
+  cat('Retaining ', round(100*best$perc_kept, 2), '% of non-zero entries.\n')
   allSize <- best$all_size[[1]]
   bestGroup <- rep(seq_along(allSize), allSize)
   mat <- as(as(mat, 'generalMatrix'), 'TsparseMatrix')
@@ -57,7 +59,7 @@ LDSplitMatrix <- function (mat, thrR2, minSize, maxSizeWeightLower, maxSizeWeigh
 
 # Plotting
 #' @param mat A correlation matrix
-#' @param positions Positions of each matrix column
+#' @param positions Positions of each matrix column, if NULL column index will be used
 plotLD <- function (mat,threshold, positions=NULL) {
   require(ggplot2, quietly = T)
   suppressMessages(require(tidyverse, quietly = T, warn.conflicts = F)) # Tidyverse throws some maskings of methods in dplyr
@@ -65,16 +67,18 @@ plotLD <- function (mat,threshold, positions=NULL) {
   mat <- as(as(mat, 'generalMatrix'), 'TsparseMatrix')
   upper <- (mat@i <= mat@j)
   df <- data.frame(i=mat@i[upper], j=mat@j[upper], r2=mat@x[upper])
+  labFun <-  function (x) x;
   if (!is.null(positions)) {
     df$i <- positions[df$i+1]
     df$j <- positions[df$j+1]
+    labFun <- roundToThousands
   }
   df$y <- with(df, (j-i)/2)
   plt <- ggplot(subset(df, abs(r2) > threshold)) +
     geom_point(aes(i + y, y, color=r2, alpha=r2), size=rel(0.01)) +
     coord_fixed(ratio=3) + scale_colour_gradientn(colours = rev(heat.colors(100))) +
-    scale_y_continuous(labels=roundToThousands) +
-    scale_x_continuous(labels=roundToThousands) +
+    scale_y_continuous(labels=labFun) +
+    scale_x_continuous(labels=labFun) +
     labs(x='Position', y='Distance') +
     scale_alpha(guide='none')
   plt

@@ -74,20 +74,27 @@ for (chrom in chr2use) {
   mat <- readRDS(fileName)
   if (argPlot) {
     positions <- NULL
+    yLab <- 'Distance (columns)'
     if (argPlotScaleX == 'basepair') {
       positions <- subset(LDMap, chr==chrom)$pos
-      print(length(positions))
+      yLab <- 'Distance (kb)'
     }
-    plt <- plotLD(mat, argPlotThreshold, positions) + labs(x=paste0('Chr ', chrom), y='Distance (kb)')
+    plt <- plotLD(mat, argPlotThreshold, positions) + labs(x=paste0('Chr ', chrom), y=yLab)
     ix <- paste0('c', chrom)
     plts[[ix]] <- plt
     #ggsave(plt, width=14, height=4,file=str_replace(argPlotFileOut, '@', toString(chr)))
   }
   if (!is.na(argNonZeroes) | argIntervals) {
     res <- eval(parse(text=func))
-    nms <- c('CHR', names(res))
+    nms <- names(res)
+    cnames <- c('CHR')
+    if (argIntervals) {
+      cnames <- c(cnames, nms)
+    } else {
+      cnames <- c(cnames, func)
+    }
     output <- rbind(output, c(chrom, res))
-    colnames(output) <- nms
+    colnames(output) <- cnames
   }
   gc(verbose=F)
 }
@@ -95,7 +102,7 @@ for (chrom in chr2use) {
 if (argPlot) {
   cat('Writing plot', argPlotFileOut, '\n')
   plt <- plot_grid(plotlist=plts, ncol=1)
-  ggsave(plt, width=14, height=4*length(chr2use), file=argPlotFileOut, bg='white')
+  ggsave(plt, width=14, height=4*length(chr2use), file=argPlotFileOut, bg='white', limitsize=F)
 }
 
 if (!is.na(argNonZeroes)) {

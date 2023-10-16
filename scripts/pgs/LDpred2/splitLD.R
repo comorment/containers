@@ -21,7 +21,7 @@ par <- add_argument(par, '--file-output-ld-blocks', help='Template name of outpu
 par <- add_argument(par, "--chr2use", nargs=Inf, help="List of chromosomes to use (by default it uses chromosomes 1 to 22)")
 # Parameters to bigsnpr::ldsplit
 par <- add_argument(par, '--min-size', nargs=1, default=50, help='Minimum number of variants in each block. See bigsnpr::ldsplit.')
-par <- add_argument(par, '--max-size-weights', nargs=2, help='Weights for providing an range of block sizes to try.
+par <- add_argument(par, '--max-size-weights', nargs=2, help='Weights for providing an upper range of block sizes to try. See bigsnpr::ldsplit.
                     The number of columns in each matrix is divided by the first (weight 1) and second (weight 2) argument and a logarithmic sequence created, 
                     implying Thus [weight 1] > [weight 2]. Defaults to [30 5].')
 par <- add_argument(par, '--max-r2', nargs=1, default=0.3, help='Maximum squared correlation between variants in different blocks. See bigsnpr::snp_ldsplit')
@@ -42,16 +42,19 @@ argThrR2 <- parsed$thr_r2
 argWeights <- parsed$max_size_weights
 if (isVarNA(argWeights)) {
   argWeights <- c(30, 5)
+} else {
+  argWeights <- as.integer(argWeights)
 }
-if (argWeights[2] >= argWeights[1]) stop('First weight to --max-size-weights should be greater than the second, received: ', paste(argWeights))
+str(argWeights)
+if (argWeights[2] >= argWeights[1]) stop('First weight to --max-size-weights should be greater than the second, received: ', argWeights)
 
 cat('Processing chromosome\n')
 for (chr in chr2use) {
   fileName <- str_replace(fileLDBlocks, "@", toString(chr))
   outputFileName <- str_replace(fileOutputLDBlocks, '@', toString(chr))
-  cat('\t', chr, ': Loading LD from', basename(fileName), '\n')
+  cat('\t', chr, ': Loading LD from ', basename(fileName), '\n\t\t', sep='')
   mat <- readRDS(fileName)
   mat <- LDSplitMatrix(mat, thrR2=argThrR2, minSize=argMinSize, maxSizeWeightLower=argWeights[1], maxSizeWeightUpper=argWeights[2], maxR2=argMaxR2)
-  cat('\tWriting LD to', basename(outputFileName), '\n')
+  cat('\t\tWriting LD to', basename(outputFileName), '\n')
   saveRDS(mat, file=outputFileName)
 }

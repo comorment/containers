@@ -30,6 +30,9 @@ export fileOutputSNPR=$DIR_DATA/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
 
+# Some testing functions
+source $DIR_TESTS/scripts/functions.sh
+
 ### For imputation testing
 # Copy some plink files
 cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_DATA/
@@ -39,7 +42,6 @@ cp $DIR_REFERENCE/examples/prsice2/EUR.fam $DIR_DATA/
 fileImpute=$DIR_DATA/EUR
 # Imputed file
 fileImputed=$DIR_DATA/EUR_imputed
-
 
 # Create shortcut environment variable for Rscript 
 export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"

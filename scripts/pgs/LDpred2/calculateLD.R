@@ -33,8 +33,8 @@ par <- add_argument(par, "--thres-r2", default=0.01, nargs=1, help="Threshold to
 par <- add_argument(par, "--cores", default=nb_cores(), nargs=1, help="Specify the number of processor cores to use, otherwise use the available - 1")
 
 parsed <- parse_args(par)
-fileLDBlocks <- parsed$file_ld_blocks
-if (!dir.exists(dirname(fileLDBlocks))) dir.create(dirname(fileLDBlocks))
+fileLDChr <- parsed$file_ld_chr
+if (!dir.exists(dirname(fileLDChr))) dir.create(dirname(fileLDChr))
 fileLDMap <- parsed$file_ld_map
 fileKeepSNPs <- parsed$extract
 # Sumstats file
@@ -133,13 +133,13 @@ for (chr in chr2use) {
   # nDataPoints could probably be a higher nr. I put this here to ensure that filtering
   # works and that the resulting MAP has NA's in it.
   if (nDataPoints == 0) {
-    warning('\nSkipping chromosome', chr,'. Reason: 0 SNPs available\n')
+    warning('\nSkipping chromosome ', chr,'. Reason: 0 SNPs available\n')
     next
   }
 
   corr0 <- snp_cor(G, ind.col=indices.G, ind.row=individualSample, size=argWindowSize/1000,
                    infos.pos=GD[indices.G], ncores=NCORES, thr_r2=argThresholdR2)
-  fileName <- str_replace(fileLDBlocks, "@", toString(chr))
+  fileName <- str_replace(fileLDChr, "@", toString(chr))
   ld <- Matrix::colSums(corr0^2)
   MAP$ld[indices.G] <- ld
   saveRDS(corr0, file=fileName)
