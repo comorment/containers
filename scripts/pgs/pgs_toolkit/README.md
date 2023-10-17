@@ -64,13 +64,13 @@ while ``test_summary.csv`` contains the LM/GLM summary statistics in tabular (.c
 Both the full model and the null model are reported, typically assumed to be on the form
 
 **full model**
-$$y ~ score + PC_1 + PC_2 + ... + PC_n + SEX$$
+$$y \sim PGS_\mathrm{score} + PC_1 + PC_2 + ... + PC_n + SEX$$
 
 **null model**
-$$y_{null} ~ PC_1 + PC_2 + ... + PC_n + SEX$$
+$$y_\mathrm{null} \sim PC_1 + PC_2 + ... + PC_n + SEX$$
 
 **nocov model**
-$$y_{nocov} ~ score$$
+$$y_\mathrm{nocov} ~ PGS_\mathrm{score}$$
 
 For binary traits, the GLM should use the binomial family and the logit link function to fit the model.
 
