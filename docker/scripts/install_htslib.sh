@@ -1,12 +1,11 @@
 #!/bin/sh
-
-set -e
+set -euo pipefail
 
 # additional deps
 apt-get update && apt-get install --no-install-recommends \
     libbz2-dev=1.0.8-2 \
     liblzma-dev=5.2.4-1ubuntu1.1 \
-    libssl-dev=1.1.1f-1ubuntu2.16 \
+    libssl-dev=1.1.1f-1ubuntu2.19 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

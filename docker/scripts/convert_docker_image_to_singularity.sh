@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -eou pipefail
+set -euo pipefail
 
 # This script documents how to build the singularity container
 # from the Dockerfile

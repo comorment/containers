@@ -1,4 +1,5 @@
 #!/bin/sh
+set -euo pipefail
 
 # deps
 apt-get update && apt-get install --no-install-recommends \

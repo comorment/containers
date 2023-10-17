@@ -1,8 +1,9 @@
 #!/bin/sh
+set -euo pipefail
 
 # gcta
-curl -O -J -L https://yanglab.westlake.edu.cn/software/gcta/bin/gcta_1.93.2beta.zip && \
-    unzip -j  gcta_1.93.2beta.zip && \
-    rm -rf gcta_1.93.2beta.zip
+curl -O -J -L https://github.com/jianyangqt/gcta/releases/download/v1.93.3beta2/gcta_1.93.3beta2.zip && \
+    unzip -j  gcta_1.93.3beta2.zip && \
+    rm -rf gcta_1.93.3beta2.zip
 
 cp gcta64  /bin

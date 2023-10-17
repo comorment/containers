@@ -1,5 +1,5 @@
 # gwas container
-FROM 'ubuntu:20.04'
+FROM ubuntu:20.04
 
 ENV TZ=Europe
 ENV DEBIAN_FRONTEND noninteractive
@@ -83,7 +83,7 @@ COPY /scripts/install_vcftools.sh /tmp/vcftools/
 RUN bash /tmp/vcftools/install_vcftools.sh && \
     rm -rf /tmp/vcftools
 
-# HTSlib (dependency for bcftools & shapeit4)
+# HTSlib (dependency for bcftools & shapeit4++)
 WORKDIR /tmp/htslib
 COPY /scripts/install_htslib.sh /tmp/htslib/
 RUN bash /tmp/htslib/install_htslib.sh && \
@@ -134,10 +134,40 @@ COPY /scripts/patches/shapeit4.makefile.diff /tmp/shapeit4/
 RUN bash /tmp/shapeit4/install_shapeit4.sh && \
     rm -rf /tmp/shapeit4
 
-# ldak
-WORKDIR /tmp/ldak
-COPY /scripts/install_ldak.sh /tmp/ldak
-run bash /tmp/ldak/install_ldak.sh && \
-    rm -rf /tmp/ldak
+# shapeit5
+WORKDIR /tmp/shapeit5
+COPY /scripts/install_shapeit5.sh /tmp/shapeit5/
+COPY /scripts/patches/shapeit5.diff /tmp/shapeit5/
+COPY /scripts/patches/xcftools.diff /tmp/shapeit5/
+RUN bash /tmp/shapeit5/install_shapeit5.sh && \
+    rm -rf /tmp/shapeit5
+
+# eagle
+WORKDIR /tmp/eagle
+COPY /scripts/patches/eagle.diff /tmp/eagle/
+COPY /scripts/install_eagle.sh /tmp/eagle/
+RUN bash /tmp/eagle/install_eagle.sh && \
+    rm -rf /tmp/eagle
+
+# switchError
+WORKDIR /tmp/switchError
+COPY /scripts/patches/switchError.diff /tmp/switchError//
+COPY /scripts/install_switchError.sh /tmp/switchError/
+RUN bash /tmp/switchError/install_switchError.sh && \
+    rm -rf /tmp/switchError
+
+# beagle
+WORKDIR /tmp/beagle
+COPY /scripts/install_beagle.sh /tmp/beagle/
+COPY /scripts/stub.sh /tmp/beagle/
+RUN bash /tmp/beagle/install_beagle.sh && \
+    rm -rf /tmp/beagle
+
+
+# duohmm
+WORKDIR /tmp/duohmm
+COPY /scripts/install_duohmm.sh /tmp/duohmm/
+RUN bash /tmp/duohmm/install_duohmm.sh && \
+    rm -rf /tmp/duohmm
 
 WORKDIR /tools
