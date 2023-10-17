@@ -30,6 +30,15 @@ export fileOutputSNPR=$DIR_DATA/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
 
+# BGEN files
+export fileBGEN=$DIR_DATA/example.bgen
+export fileBGENasRDS=$DIR_DATA/example.rds
+export fileSNPlist=$DIR_DATA/example.snps
+
+# copy .bgen files
+cp $DIR_REFERENCE/examples/regenie/example.bgen $fileBGEN
+cp $DIR_REFERENCE/examples/regenie/example.bgen.bgi $fileBGEN.bgi
+
 ### For imputation testing
 # Copy some plink files
 cp $DIR_REFERENCE/examples/prsice2/EUR.bed $DIR_DATA/
@@ -40,9 +49,10 @@ fileImpute=$DIR_DATA/EUR
 # Imputed file
 fileImputed=$DIR_DATA/EUR_imputed
 
-
 # Create shortcut environment variable for Rscript 
 export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
+export BGENIX="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/gwas.sif bgenix"
+export PYTHON="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/python3.sif python"
 
 # The different modes to run (affects runs of scripts/extended.sh)
 LDPRED_MODES="inf auto"
