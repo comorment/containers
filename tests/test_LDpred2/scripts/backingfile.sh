@@ -15,5 +15,5 @@ if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 dump=$( $BGENIX -g $fileBGEN -incl-range 1:0- -list > $fileSNPlist )
 dump=$( $PYTHON -c "import os; import pandas as pd; df = pd.read_csv('$fileSNPlist', delim_whitespace=True, skipfooter=1, skiprows=[0], engine='python'); df = df[['chromosome', 'position', 'first_allele', 'alternative_alleles']]; df.to_csv('$fileSNPlist', index=False, sep='_', header=False)" )
 # Then, create backing file
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R $fileBGEN $fileBGENasRDS --file-snp-list $fileSNPlist )
+dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R --file-input $fileBGEN --file-output $fileBGENasRDS --file-snp-list $fileSNPlist )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
