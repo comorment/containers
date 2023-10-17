@@ -1,3 +1,6 @@
+#!/bin/sh
+set -euo pipefail
+
 # python appears to be a build time dependency
 apt-get update && apt-get install -y  --no-install-recommends python3=3.8.2-0ubuntu2 && \
     apt-get clean && \

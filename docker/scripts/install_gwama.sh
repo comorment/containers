@@ -1,3 +1,6 @@
+#!/bin/sh
+set -euo pipefail
+
 wget --no-check-certificate http://www.geenivaramu.ee/tools/GWAMA_v2.2.2.zip && \
     unzip GWAMA_v2.2.2.zip && \
     make && \

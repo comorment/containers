@@ -7,6 +7,7 @@ Test module for ``gwas.sif`` build
 import os
 import subprocess
 import tempfile
+import pytest
 
 
 pth = os.path.join('singularity', 'gwas.sif')
@@ -14,6 +15,12 @@ pth = os.path.join('singularity', 'gwas.sif')
 
 def test_gwas_bcftools():
     call = f'singularity run {pth} bcftools --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
+def test_gwas_beagle():
+    call = f'singularity run {pth} beagle'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
@@ -27,6 +34,12 @@ def test_gwas_bgenix():
 
 def test_gwas_bolt():
     call = f'singularity run {pth} bolt -h'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
+def test_gwas_eagle():
+    call = f'singularity run {pth} eagle -h'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
@@ -144,6 +157,21 @@ def test_gwas_shapeit4():
     assert out.returncode == 0
 
 
+def test_gwas_shapeit5():
+    for binary in ['phase_common', 'phase_rare',
+                   'ligate', 'switch', 'xcftools']:
+        call = f'singularity run {pth} {binary} --help'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
+
+@pytest.mark.xfail(reason="no help function for switchError")
+def test_gwas_switchError():
+    call = f'singularity run {pth} switchError --reg foo --gen foo --hap foo --fam foo --ps foo --out foo --maf 0.0'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
 def test_gwas_simu():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
@@ -160,5 +188,11 @@ def test_gwas_simu():
 
 def test_gwas_vcftools():
     call = f'singularity run {pth} vcftools --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
+def test_gwas_duohmm():
+    call = f'singularity run {pth} duohmm'
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0

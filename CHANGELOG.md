@@ -39,6 +39,30 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+
+## [1.4.0] - 2023-10-18
+
+### Added
+
+* Added phasing/imputation tools ``beagle``, ``duohmm``, ``eagle``,  ``shapeit5``, ``switchError``, to ``gwas.sif`` container + updated tests
+
+### Fixed 
+
+* Fix issue that shell script wouldn't capture failing statements
+
+### Updated
+
+* Updated `gwas.sif` Dockerfile and installed shell scripts (misc. dependencies updates, installing ``gcta`` version 1.93.3beta2)
+* Rebuilt `gwas.sif` using Docker `--no-cache` option to fix missing `minimac4` binary, w. md5 checksum:
+
+  ```
+  a1dd235221902741bf5773945a584e47  singularity/gwas.sif
+  ```
+
+### Removed
+
+* Removed unused `install_miniconda.sh` script from `src/scripts` folder
+
 ## [1.3.9] - 2023-10-17
 
 ### Added
@@ -131,7 +155,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 * Updated file and folder layout, fixing minor documentation issues. Moving from ``m2r2`` to ``Myst-parser`` for Sphinx-generated online docs.
 * Rebuilt the R container
 
-* ````
+* ```
   1d435af6003bbca95ef8cc062bf666fc  singularity/r.sif
   ```
 

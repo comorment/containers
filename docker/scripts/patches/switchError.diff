@@ -1,0 +1,51 @@
+diff --git a/makefile b/makefile
+index 29aa8b7..424b5f0 100644
+--- a/makefile
++++ b/makefile
+@@ -1,12 +1,12 @@
+ ##########################################
+ # SET CORRECTLY THESE 6 PATHS TO COMPILE #
+ ##########################################
+-BOOST_INC=
+-BOOST_LIB=
+-RMATH_INC=
+-RMATH_LIB=
+-HTSLD_INC=
+-HTSLD_LIB=
++BOOST_INC=/usr/include
++BOOST_LIB=/usr/lib/x86_64-linux-gnu
++RMATH_INC=/usr/include
++RMATH_LIB=/usr/lib
++HTSLD_INC=/usr/include
++HTSLD_LIB=/usr/lib
+ 
+ #COMPILER MODE C++11
+ CXX=g++ -std=c++0x
+@@ -17,10 +17,10 @@ CXXFLAG_DBG=-g
+ CXXFLAG_WRN=-Wall -Wextra -Wno-sign-compare -Wno-unused-local-typedefs -Wno-deprecated -Wno-unused-parameter
+ 
+ #BASE LIBRARIES
+-LIB_FLAGS=-lz -lbz2 -lm -lpthread -llzma
++LIB_FLAGS=-lz -lbz2 -lm -lpthread -llzma -lcurl -lcrypto
+ 
+ #FILE LISTS
+-BFILE=bin/swithError
++BFILE=bin/switchError
+ HFILE=$(shell find src -name *.h)
+ TFILE=$(shell find lib -name *.h)
+ CFILE=$(shell find src -name *.cpp)
+@@ -31,10 +31,10 @@ VPATH=$(shell for file in `find src -name *.cpp`; do echo $$(dirname $$file); do
+ all: desktop
+ 
+ #UNIGE DESKTOP RELEASE VERSION
+-desktop: RMATH_INC=$(HOME)/Tools/R-3.5.1/src/include
+-desktop: RMATH_LIB=$(HOME)/Tools/R-3.5.1/src/nmath/standalone
+-desktop: HTSLD_INC=$(HOME)/Tools/htslib-1.9
+-desktop: HTSLD_LIB=$(HOME)/Tools/htslib-1.9
++desktop: RMATH_INC=/usr/include
++desktop: RMATH_LIB=/usr/lib
++desktop: HTSLD_INC=/usr/include
++desktop: HTSLD_LIB=/usr/lib
+ desktop: BOOST_INC=/usr/include
+ desktop: BOOST_LIB=/usr/lib/x86_64-linux-gnu
+ desktop: CXXFLAG=$(CXXFLAG_REL) $(CXXFLAG_WRN)
