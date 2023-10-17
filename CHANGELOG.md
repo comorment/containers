@@ -44,15 +44,23 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 * Added `<containers>/scripts/pgs/pgs_toolkit`, a Python toolkit for computing PGS using LDpred2, PRSice2 or PLINK
+* Added `<containers>docker/scripts/build_docker.sh` script replacing corresponding build statement in `Makefile`
+* Added test for `gcta`
 
 ### Updated
 
 * Updated `r.sif` build with many additional R packages, with corresponding updates to build recipes and tests
+* Use [`https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16`](https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16) as main R package repo
 * `r.sif` md5 checksum:
   
     ```
     1280ba24d99664d450b2e4c4a9c00587  singularity/r.sif
     ```
+* Updated GitHub workflow versions to current versions
+
+### Removed
+
+* removed logging of `docker build ...` in `docker/Makefile` (issues with piping to `tee` in case of build errors)
 
 ## [1.4.0] - 2023-10-17
 
