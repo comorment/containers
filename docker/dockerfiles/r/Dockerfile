@@ -36,16 +36,23 @@ RUN bash /tmp/prsice/install_prsice.sh && \
 # R packages.
 # CRAN packages
 WORKDIR /tmp/
-RUN R -e "install.packages('devtools', version='2.4.5', repos='https://packagemanager.rstudio.com/cran/__linux__/focal/2023-02-16', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
+RUN R -e "install.packages('devtools', version='2.4.5', repos='https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
 COPY /scripts/R/cran.R .
 RUN Rscript cran.R
 
+# Bioconductor distributed packages:
+COPY /scripts/R/bioconductor.R .
+RUN Rscript bioconductor.R
+
 # GitHub distributed packages:
+ARG GITHUB_PAT=foo
+ENV GITHUB_TOKEN=$GITHUB_PAT
 COPY /scripts/R/github.R .
 RUN Rscript github.R
 
 # Misc. packages
-COPY /scripts/R/misc.R .
-RUN Rscript misc.R
+COPY /scripts/R/source.R .
+RUN Rscript source.R && \
+    rm -rf /tmp/*
 
 WORKDIR /tools

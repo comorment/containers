@@ -17,7 +17,7 @@ We also assume the following commands are executed from the current folder
 
 ### Note on help functions
 
-The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) is set up using the [argparser](www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
+The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) is set up using the [argparser](https://www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
 The help output from each script can printed to the terminal, issuing:
 
 ```
@@ -72,7 +72,7 @@ An example use of [imputeGenotypes.R](https://github.com/comorment/containers/bl
 
 ```
 # Convert from plink format to bigSNPR .rds/.bk files
-$RSCRIPT createBackingFile.R <fileGeno>.nomiss.bed <fileGeno>.nomiss.rds
+$RSCRIPT createBackingFile.R --file-input <fileGeno>.nomiss.bed --file-output <fileGeno>.nomiss.rds
 
 # Copy these files if you wish to leave the original files unchanged
 cp <fileGeno>.rds <fileGeno>.nomiss.rds
@@ -85,7 +85,7 @@ Another option is to use plink's ``--fill-missing-a2`` option, and re-run ``crea
 ```
 export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
 $PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.nomiss
-$RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
+$RSCRIPT createBackingFile.R --file-input EUR.nomiss.bed --file-output EUR.nomiss.rds
 $RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
 ```
 
@@ -134,7 +134,7 @@ export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
-$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+$RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
 
 # create genetics maps directory, download and process
 mkdir -p 100genomes/maps
@@ -218,7 +218,7 @@ export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
-$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+$RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
 
 # run LDpred2 infinitesimal mode
 $RSCRIPT ldpred2.R --ldpred-mode inf \
@@ -280,7 +280,7 @@ export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
-$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+$RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
 
 # impute
 $RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fileGenoRDS

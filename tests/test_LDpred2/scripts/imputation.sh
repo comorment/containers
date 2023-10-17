@@ -1,6 +1,6 @@
 
 # Convert to bigsnpr
-dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R /REF/examples/prsice2/EUR.bed $fileImpute.rds )
+dump=$( $RSCRIPT $DIR_SCRIPTS/createBackingFile.R --file-input /REF/examples/prsice2/EUR.bed --file-output $fileImpute.rds )
 if [ $? -eq 1 ]; then echo "$dump"; exit; fi
 # Test simple imputation 
 

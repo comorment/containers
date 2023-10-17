@@ -43,6 +43,24 @@ LDpred2.html
 *.rds
 *.bk
 *.sbk
+*.error
 usecases/LDpred2/EUR.imputed.*
 usecases/LDpred2/test.score.*
 
+# PGS demo output 
+scripts/pgs/pgs_toolkit/QC_data
+scripts/pgs/pgs_toolkit/PGS_*
+scripts/pgs/pgs_toolkit/output/*
+scripts/pgs/pgs_toolkit/logs/*
+scripts/pgs/pgs_toolkit/tmp-data/*
+scripts/pgs/pgs_toolkit/slurm_job_scripts/*
+scripts/pgs/pgs_toolkit/bash_scripts/*
+*.eigenval
+*.eigenvec
+*.cov
+
+# Jupyter+IPython
+.cache
+.local
+.ipython
+.jupyter

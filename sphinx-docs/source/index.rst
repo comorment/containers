@@ -43,6 +43,7 @@ hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/contain
    scripts/gwas/README
    scripts/pgs/README
    scripts/pgs/LDpred2/README
+   scripts/pgs/pgs_toolkit/README
 
 .. toctree::
    :caption: Singularity

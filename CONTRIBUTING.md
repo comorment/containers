@@ -100,7 +100,7 @@ When you're ready to contribute code to address an open issue, please follow the
     Our continuous integration (CI) testing runs [a number of checks](https://github.com/comorment/containers/actions) for each pull request on [GitHub Actions](https://github.com/features/actions). 
     You can run most of these tests locally, which is something you should do *before* opening a PR to help speed up the review process and make it easier for us.
 
-    And finally, please update the [CHANGELOG](./CHANGELOG.md) with notes on your contribution in the "Unreleased" section at the top.
+    And finally, please update the [CHANGELOG](https://github.com/comorment/containers/blob/main/CHANGELOG.md) with notes on your contribution in the "Unreleased" section at the top.
 
     After all of the above checks have passed, you can now open [a new GitHub pull request](https://github.com/comorment/containers/pulls).
     Make sure you have a clear description of the problem and the solution, and include a link to relevant issues.

@@ -327,7 +327,9 @@ tryCatch(
     message(er)
     cat('\n\nErrors regarding "missingness in X" may be solved by imputing genotype data or passing --geno-impute-zero\n')
     er
-  }, warning=function(er) {
+    quit(status=1, save='no')
+  }, 
+  warning=function(er) {
     cat('bigstatsr::big_prodVec threw a warning:\n')
     message(er)
   }
