@@ -53,6 +53,7 @@ par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinites
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", flag=TRUE)
+par <- add_argument(par, "--genomic-build", help="Genomic build to use. Either hg19, hg18 or hg38", default="hg19", nargs=1)
 
 parsed <- parse_args(par)
 
@@ -151,6 +152,21 @@ if (genoImputeZero) {
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
+
+# rename pos column in map_ldref if another genomic build is assumed:
+if (!parsed$genomic_build %in% c('hg18', 'hg19', 'hg38')) stop('Genomic build should be one of "hg19", "hg18", "hg38"')
+if (parsed$genomic_build == 'hg_38') {
+  cat('Renaming "pos_hg38" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg38
+  map_ldref$pos_hg38 <- NULL
+} else if (parsed$genomic_build == 'hg_18') {
+  cat('Renaming "pos_hg18" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg18
+  map_ldref$pos_hg18 <- NULL
+} else {
+  # pass
+}
+
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
