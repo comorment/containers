@@ -39,6 +39,12 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.3.7] - 2023-10-17
+
+### Added
+
+* Added a feature to read and convert BGEN (.bgen) files to ``scripts/pgs/LDpred2/createBackingFile.R``
+
 ## [1.3.6] - 2023-08-17
 
 ### Fixed
