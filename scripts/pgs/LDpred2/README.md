@@ -17,7 +17,7 @@ We also assume the following commands are executed from the current folder
 
 ### Note on help functions
 
-The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) is set up using the [argparser](www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
+The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) is set up using the [argparser](https://www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
 The help output from each script can printed to the terminal, issuing:
 
 ```
