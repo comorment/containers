@@ -38,6 +38,13 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Misc
 
 * Miscellaneous goes here
+
+## [1.3.9] - 2023-10-17
+
+### Added
+
+* User-set directory option for temporary files during LDpred2 runs, by default `base::tempdir()`
+
 ## [1.3.8] - 2023-10-17
 
 ### Fixed
@@ -49,6 +56,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 * Added a feature to read and convert BGEN (.bgen) files to ``scripts/pgs/LDpred2/createBackingFile.R``
+
+## [1.3.7] - 2023-10-12
+
+* User-set directory for temporary files during LDpred2 runs, by default `base::tempdir()`
 
 ## [1.3.6] - 2023-08-17
 

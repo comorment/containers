@@ -43,7 +43,7 @@ usage: ldpred2.R [--] [--help] [--out-merge] [--geno-impute-zero]
        N-CONTROLS] [--name-score NAME-SCORE] [--hyper-p-length
        HYPER-P-LENGTH] [--hyper-p-max HYPER-P-MAX] [--ldpred-mode
        LDPRED-MODE] [--cores CORES] [--set-seed SET-SEED]
-       [--genomic-build GENOMIC-BUILD]
+       [--genomic-build GENOMIC-BUILD] [--tmp-dir TMP-DIR]
 
 Calculate polygenic scores using ldpred2
 
@@ -336,3 +336,20 @@ As above, ``<path/to/containers`` should point to the cloned ``containers`` repo
 Entries like ``--partition=normal`` may also be adapted for different HPC resources.
 Then, the job can be submitted to the queue by issuing ``sbatch run_ldpred2_slurm.job``.
 The status of running jobs can usually be enquired by issuing ``squeue -u $USER``.
+
+
+### Redirect temporary file output
+
+By default, the LDpred2.R script will put large file(s) in the system temporary directory (using `base::tempdir()`).
+For use on HPC resources, use of the designated `$SCRATCH`, `$LOCALTMP`, or `$TMPDIR` directories is recommended to avoid
+filling up the system temporary directory.
+
+One can redirect the temporary file output by setting the `TMPDIR` environment variable to a mounted directory on the HPC resource, 
+by incorporating the following lines to the job script:
+
+```
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,$SCRATCH:/scratch
+export SINGULARITYENV_TMPDIR=/scratch
+```
+
+Otherwise, the location of temporary files can be specified by the `--tmp-dir` argument to the `ldpred2.R` script.
