@@ -70,7 +70,7 @@ $$y \sim PGS_\mathrm{score} + PC_1 + PC_2 + ... + PC_n + SEX$$
 $$y_\mathrm{null} \sim PC_1 + PC_2 + ... + PC_n + SEX$$
 
 **nocov model**
-$$y_\mathrm{nocov} ~ PGS_\mathrm{score}$$
+$$y_\mathrm{nocov} \sim PGS_\mathrm{score}$$
 
 For binary traits, the GLM should use the binomial family and the logit link function to fit the model.
 
