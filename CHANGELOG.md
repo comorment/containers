@@ -42,11 +42,17 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [1.4.0] - 2023-10-18
 
-### Fixed
+### Added
 
 * Added phasing/imputation tools ``beagle``, ``duohmm``, ``eagle``,  ``shapeit5``, ``switchError``, to ``gwas.sif`` container + updated tests
-* Updated `gwas.sif` Dockerfile and installed shell scripts (misc. dependencies updates, installing ``gcta`` version 1.93.3beta2)
+
+### Fixed 
+
 * Fix issue that shell script wouldn't capture failing statements
+
+### Updated
+
+* Updated `gwas.sif` Dockerfile and installed shell scripts (misc. dependencies updates, installing ``gcta`` version 1.93.3beta2)
 * Rebuilt `gwas.sif` using Docker `--no-cache` option to fix missing `minimac4` binary, w. md5 checksum:
 
   ```
@@ -56,6 +62,28 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Removed
 
 * Removed unused `install_miniconda.sh` script from `src/scripts` folder
+
+## [1.3.9] - 2023-10-17
+
+### Added
+
+* User-set directory option for temporary files during LDpred2 runs, by default `base::tempdir()`
+
+## [1.3.8] - 2023-10-17
+
+### Fixed
+
+* Added `--genomic-build hg18/hg19/hg38` option to `ldpred2.R` to use correct LD reference meta file ``pos`` column name
+
+## [1.3.7] - 2023-10-17
+
+### Added
+
+* Added a feature to read and convert BGEN (.bgen) files to ``scripts/pgs/LDpred2/createBackingFile.R``
+
+## [1.3.7] - 2023-10-12
+
+* User-set directory for temporary files during LDpred2 runs, by default `base::tempdir()`
 
 ## [1.3.6] - 2023-08-17
 
