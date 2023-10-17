@@ -53,6 +53,7 @@ par <- add_argument(par, "--ldpred-mode", help='Ether "auto" or "inf" (infinites
 par <- add_argument(par, "--cores", help="Number of CPU cores to use, otherwise use the available number of cores minus 1", default=nb_cores())
 par <- add_argument(par, '--set-seed', help="Set a seed for reproducibility", nargs=1)
 par <- add_argument(par, "--merge-by-rsid", help="Merge using rsid (the default is to merge by chr:bp:a1:a2 codes).", flag=TRUE)
+par <- add_argument(par, "--genomic-build", help="Genomic build to use. Either hg19, hg18 or hg38", default="hg19", nargs=1)
 par <- add_argument(par, "--tmp-dir", help="Directory to store temporary files. Default is output of base::tempdir()", default=tempdir())
 
 parsed <- parse_args(par)
@@ -135,6 +136,9 @@ if (fileOutputMerge) {
   verifyScoreOutputFile(fileOutput, nameScore, fileOutputMergeIDs)
 }
 
+# check if tmp dir exists
+if (!file.exists(parsed$tmp_dir)) stop("Temporary directory", parsed$tmp_dir, "does not exist") 
+
 cat('Loading backingfile:', fileGeno ,'\n')
 obj.bigSNP <- snp_attach(fileGeno)
 
@@ -152,6 +156,21 @@ if (genoImputeZero) {
 
 cat('\n### Reading LD reference meta-file from ', fileMetaLD, '\n')
 map_ldref <- readRDS(fileMetaLD)
+
+# rename pos column in map_ldref if another genomic build is assumed:
+if (!parsed$genomic_build %in% c('hg18', 'hg19', 'hg38')) stop('Genomic build should be one of "hg19", "hg18", "hg38"')
+if (parsed$genomic_build == 'hg_38') {
+  cat('Renaming "pos_hg38" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg38
+  map_ldref$pos_hg38 <- NULL
+} else if (parsed$genomic_build == 'hg_18') {
+  cat('Renaming "pos_hg18" column in LD reference meta info as "pos"\n')
+  map_ldref$pos <- map_ldref$pos_hg18
+  map_ldref$pos_hg18 <- NULL
+} else {
+  # pass
+}
+
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)
@@ -234,7 +253,6 @@ drops <- c("_NUM_ID_.ss", "rsid.ss", 'block_id', 'pos_hg18', 'pos_hg38')
 df_beta <- df_beta[ , !(names(df_beta) %in% drops)]  
 
 cat('\n### Loading LD reference from ', fileLD, '\n')
-if (!file.exists(parsed$tmp_dir)) stop("Temporary directory", parsed$tmp_dir, "does not exist") 
 tmp_file <- tempfile(tmpdir=parsed$tmp_dir)
 ld_size <- 0; corr <- NULL
 for (chr in chr2use) {

@@ -38,6 +38,17 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Misc
 
 * Miscellaneous goes here
+## [1.3.8] - 2023-10-17
+
+### Fixed
+
+* Added `--genomic-build hg18/hg19/hg38` option to `ldpred2.R` to use correct LD reference meta file ``pos`` column name
+
+## [1.3.7] - 2023-10-17
+
+### Added
+
+* Added a feature to read and convert BGEN (.bgen) files to ``scripts/pgs/LDpred2/createBackingFile.R``
 
 ## [1.3.7] - 2023-10-12
 

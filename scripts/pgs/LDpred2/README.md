@@ -42,8 +42,8 @@ usage: ldpred2.R [--] [--help] [--out-merge] [--geno-impute-zero]
        EFFECTIVE-SAMPLE-SIZE] [--n-cases N-CASES] [--n-controls
        N-CONTROLS] [--name-score NAME-SCORE] [--hyper-p-length
        HYPER-P-LENGTH] [--hyper-p-max HYPER-P-MAX] [--ldpred-mode
-       LDPRED-MODE] [--cores CORES] [--set-seed SET-SEED] [--tmp-dir
-       TMP-DIR]
+       LDPRED-MODE] [--cores CORES] [--set-seed SET-SEED]
+       [--genomic-build GENOMIC-BUILD] [--tmp-dir TMP-DIR]
 
 Calculate polygenic scores using ldpred2
 
@@ -88,6 +88,15 @@ $PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.
 $RSCRIPT createBackingFile.R EUR.nomiss.bed EUR.nomiss.rds
 $RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
 ```
+
+### Note on genomic builds
+
+By default the LDpred2 scripts assume that the genotype data and summary statistics use build GRCh37/hg19, 
+but there are no explicit checks for consistent builds across input files.
+If the genotype data and summary statistics file use another build, the ``--genomic-build <build>`` flag should be used to specify build version,
+parsing either `hg18`, `hg19` or `hg38` as argument.
+As of now, setting this argument will affect the loading of LD metadata only, but not the genotype data or summary statistics.
+A symptom of using the wrong build is that the script will match only a small fraction of variants between the genotype data, summary statistics file and/or LD reference data.
 
 ### Optional: Estimating linkage disequillibrium (LD)
 
