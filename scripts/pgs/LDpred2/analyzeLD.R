@@ -82,7 +82,6 @@ for (chrom in chr2use) {
     plt <- plotLD(mat, argPlotThreshold, positions) + labs(x=paste0('Chr ', chrom), y=yLab)
     ix <- paste0('c', chrom)
     plts[[ix]] <- plt
-    #ggsave(plt, width=14, height=4,file=str_replace(argPlotFileOut, '@', toString(chr)))
   }
   if (!is.na(argNonZeroes) | argIntervals) {
     res <- eval(parse(text=func))
