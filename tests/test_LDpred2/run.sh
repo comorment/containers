@@ -1,8 +1,13 @@
 #!/bin/bash
-## Note
+##################################################
+### Unit- and end-to-end tests of scripts related 
+### to bigsnpr R-package (mainly LDpred2)
+##################################################
+
+## Notes
 # 	- The script will echo output when an exit code does not equal the expected.
-# 	- But it seems that container errors are not captured
-# 	- Output is not echoed for an expected error
+#		This does not include warnings.
+# 	- It seems that container errors are not captured
 # 	- There is a warning produced for the tutorial data:
 # Warning message:
 # In merge.data.table(as.data.table(sumstats4), as.data.table(info_snp),  :
@@ -10,6 +15,21 @@
 # This is likely due to that in the tutorial data, genomic positions are provided
 # in the genotype data and this causes a duplication when these positions are merged
 # once again during certain tests.
+
+### End-to-end tests
+# Tests make use of functions defined in scripts/functions.sh
+# Unexpected exception: testSuccess command arg1 arg2 ...
+# Exception expected: testException command arg1 arg2 ...
+
+### Unittests
+# These files are located in unittests/ and are named after which file they
+# test. For example tests/test_LDpred2/unittests/fun.R tests R functions defined in
+# scripts/pgs/ldpred2/fun.R while tests/test_LDpred2/unittests/tutorial.R
+# tests output from tests/test_LDpred2/scripts/tutorial.sh
+
+##################################################
+### Environment/function definitions             
+##################################################
 
 export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
@@ -60,6 +80,9 @@ source $DIR_TESTS/scripts/functions.sh
 # The different modes to run (affects runs of scripts/extended.sh)
 LDPRED_MODES="inf auto"
 
+##################################################
+### Testing scripts             
+##################################################
 echo "### Running R function unittests"
 #$RSCRIPT $DIR_TESTS/unittest/fun.R
 
