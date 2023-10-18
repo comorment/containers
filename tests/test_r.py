@@ -46,6 +46,17 @@ def test_r_R_rmarkdown():
         assert pdf_output
 
 
+def test_r_gcta():
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as d:
+        os.chdir(d)
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
+        os.chdir(cwd)
+        call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
+        out = subprocess.run(call.split(' '))
+        assert out.returncode == 0
+
+
 def test_r_bigsnpr():
     pwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:

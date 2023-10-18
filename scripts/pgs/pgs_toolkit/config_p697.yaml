@@ -1,0 +1,76 @@
+# parameters to pass for SLURM jobs
+slurm:
+  job_name: pgs
+  account: p697_norment
+  time: "00:30:00"
+  cpus_per_task: 16
+  mem_per_cpu: 4000MB
+  partition: normal
+
+  # list of modules to load in SLURM jobs
+  module_load:
+    - singularity/3.7.3
+
+# environment variables (edit as necessary)
+environ:
+  # mandatory root directory containing all inferred directories (edit as necessary)
+  ROOT_DIR: "/ess/p697"
+  
+# dependent environment variables (edit as necessary)
+# NB: "SIF" is mandatory
+environ_inferred:
+  # folder containing full clone of https://github.com/comorment/containers
+  CONTAINERS: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17"
+  # reference data within containers repo
+  REFERENCE: "$CONTAINERS/reference"
+  # directory with singularity containers (.sif files)
+  SIF: "$ROOT_DIR/data/durable/users/espehage/comorment/containers-fix-17/singularity"
+  # folder containing  full clone of https://github.com/comorment/ldpred2_ref with LDpred2 reference data
+  LDPRED2_REF: "$ROOT_DIR/data/durable/users/espehage/comorment/ldpred2_ref"
+  # folder containing LDpred2 R scripts
+  LDPRED2_SCRIPTS: "$CONTAINERS/scripts/pgs/LDpred2"
+
+  # some processed MOBA files
+  MOBA: "$ROOT_DIR/cluster/users/ofrei/2022_moba_height_traj"
+  # summary statistics
+  SUMSTATS: "$ROOT_DIR/cluster/projects/SUMSTATv2"
+
+
+# for SINGULARITY_BIND variable to set in job scripts.
+# NB! will be set as "export SINGULARITY_BIND=value0:/key0,value1:/key1,..."
+# NB! Also mandatory
+SINGULARITY_BIND: 
+  REF: "$REFERENCE"
+  ldpred2_ref: "$LDPRED2_REF"
+  ldpred2_scripts: "$LDPRED2_SCRIPTS"
+  MOBA: "$MOBA"
+  SUMSTATS: "$SUMSTATS"
+
+
+## Parameters specific to each PGS calculating tool (refer documentation of each tool):
+# Plink
+plink:
+  clump_p1: 1
+  clump_r2: 0.1
+  clump_kb: 250
+  range_list: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
+  strat_indep_pairwise: [250, 50, 0.25]
+  score_columns: [SNP, A1, BETA]
+  nPCs: 6
+  threads: 16
+
+# PRSice-2
+prsice2:
+  bar-levels: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
+  MAF: 0.01
+  INFO: 0.8
+  no-regress: 
+  fastscore:
+  nPCs: 6
+  thread: 16
+
+# LDpred2
+ldpred2:
+  nPCs: 6
+  cores: 16
+

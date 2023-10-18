@@ -1,4 +1,5 @@
 #!/bin/sh
+set -euo pipefail
 
 export VERSION="v2.3.5"
                            
