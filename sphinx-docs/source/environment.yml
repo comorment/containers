@@ -9,3 +9,4 @@ dependencies:
   - sphinx-design
   - myst-parser
   - make
+  - linkify-it-py
