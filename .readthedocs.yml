@@ -1,14 +1,16 @@
 version: 2
 
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "mambaforge-22.9"
+
 sphinx:
   configuration: sphinx-docs/source/conf.py
 
-formats: all
-
-build:
-  os: "ubuntu-22.04"
-  tools:
-    python: "mambaforge-22.9"
+formats:
+  - pdf
+  - epub
 
 conda:
   environment: sphinx-docs/source/environment.yml
