@@ -20,7 +20,7 @@ par <- add_argument(par, '--file-out-sep', nargs=1, default='\t', help='Separato
 # Plotting
 par <- add_argument(par, '--plot', flag=T, help='Plot the LD structure')
 par <- add_argument(par, '--plot-threshold', default=0.2, help='Absolute value of correlation threshold to include in plot.')
-par <- add_argument(par, '--plot-scale-x', nargs=1, default='relative', help='X-scale in plot. "relative" indicates position in gentic correlation matrix, "basepair" physical positions.')
+par <- add_argument(par, '--plot-scale-x', nargs=1, default='relative', help='X-scale in plot. "relative" indicates position in genetic correlation matrix, "basepair" physical positions.')
 par <- add_argument(par, '--plot-file-out', nargs=1, help='Name of plot output file.')
 # Summary arguments
 par <- add_argument(par, '--non-zeroes', nargs=1, help='"Count", "fraction", or "percentage" non-zero elements in the matrixes')
@@ -28,7 +28,6 @@ par <- add_argument(par, '--intervals', flag=T, help='% values from -1 to 1 in i
 # Figures
 # Chromosome selection
 par <- add_argument(par, '--chr2use', nargs=Inf, help='List of chromosomes to use (by default it uses chromosomes 1 to 22)')
-
 
 ## Parse arguments
 parsed <- parse_args(par)
@@ -43,14 +42,13 @@ if (!is.na(argNonZeroes)) {
 }
 argIntervals <- parsed$intervals
 if (argIntervals) func <- 'intervals(mat)'
+
 # Plotting
 argPlot <- parsed$plot
 argPlotThreshold <- parsed$plot_threshold
 argPlotFileOut <- parsed$plot_file_out
 argPlotScaleX <- parsed$plot_scale_x
 if (argPlotScaleX == 'basepair' & is.null(LDMap)) stop('Plotting on the basepair scale requires --file-ld-map to be specified')
-if (argPlot) {
-}
 
 # Output
 fileOut <- parsed$file_out

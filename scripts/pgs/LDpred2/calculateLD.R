@@ -40,12 +40,12 @@ fileKeepSNPs <- parsed$extract
 # Sumstats file
 fileSumstats <- parsed$sumstats[1]
 columnRsidSumstats <- parsed$sumstats[2]
-# Extract individuals
+# Check extract individuals
 extractIndividuals <- parsed$extract_individuals
 if (!is.na(extractIndividuals)) {
   if (!file.exists(extractIndividuals)) stop('--extract-individuals: Could not find file ', extractIndividuals)
 }
-# Sample individuals
+# Check sample individuals
 sampleIndividuals <- parsed$sample_individuals
 if (!is.na(sampleIndividuals)) {
   sampleIndividuals <- as.numeric(sampleIndividuals)
@@ -136,7 +136,6 @@ for (chr in chr2use) {
     warning('\nSkipping chromosome ', chr,'. Reason: 0 SNPs available\n')
     next
   }
-
   corr0 <- snp_cor(G, ind.col=indices.G, ind.row=individualSample, size=argWindowSize/1000,
                    infos.pos=GD[indices.G], ncores=NCORES, thr_r2=argThresholdR2)
   fileName <- str_replace(fileLDChr, "@", toString(chr))
@@ -145,5 +144,5 @@ for (chr in chr2use) {
   saveRDS(corr0, file=fileName)
 }
 cat('\nWriting map to', fileLDMap, '\n')
-MAP <- subset(MAP, rsid %in% SNPs)
+MAP <- MAP[useSNPs,]
 saveRDS(MAP, file=fileLDMap)

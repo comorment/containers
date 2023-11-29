@@ -167,10 +167,7 @@ if (parsed$genomic_build == 'hg_38') {
   cat('Renaming "pos_hg18" column in LD reference meta info as "pos"\n')
   map_ldref$pos <- map_ldref$pos_hg18
   map_ldref$pos_hg18 <- NULL
-} else {
-  # pass
 }
-
 
 cat('\n### Reading summary statistics', fileSumstats,'\n')
 sumstats <- bigreadr::fread2(fileSumstats)

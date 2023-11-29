@@ -13,7 +13,7 @@ source(paste0(dirScript, '/funMatrix.R'))
 
 par <- arg_parser('Split LD matrices into blocks using bigSNPr')
 ## Mandatory arguments
-par <- add_argument(par, "--file-ld-blocks", nargs=1, default="LD_with_blocks_chr@.rds", help="Template name of LD files using @ to indicate chromosome nr")
+par <- add_argument(par, "--file-ld-chr", nargs=1, default="LD_with_blocks_chr@.rds", help="Template name of LD files using @ to indicate chromosome nr")
 par <- add_argument(par, "--file-ld-map", nargs=1, default="map.rds", help="Name of LD map file")
 par <- add_argument(par, '--file-output-ld-blocks', help='Template name of output files using @ to indicate chromosome nr')
 
@@ -32,9 +32,9 @@ parsed <- parse_args(par)
 chr2use <- parsed$chr2use
 if (any(is.na(chr2use))) chr2use <- 1:22
 
-fileLDBlocks <- parsed$file_ld_blocks
+fileLDChr <- parsed$file_ld_chr
 fileOutputLDBlocks <- parsed$file_output_ld_blocks
-if (!dir.exists(dirname(fileLDBlocks))) dir.create(dirname(fileLDBlocks))
+if (!dir.exists(dirname(fileOutputLDBlocks))) dir.create(dirname(fileOutputLDBlocks))
 fileLDMap <- parsed$file_ld_map
 argMaxR2 <- parsed$max_r2
 argMinSize <- parsed$min_size
@@ -45,12 +45,16 @@ if (isVarNA(argWeights)) {
 } else {
   argWeights <- as.integer(argWeights)
 }
-str(argWeights)
+
 if (argWeights[2] >= argWeights[1]) stop('First weight to --max-size-weights should be greater than the second, received: ', argWeights)
 
 cat('Processing chromosome\n')
 for (chr in chr2use) {
-  fileName <- str_replace(fileLDBlocks, "@", toString(chr))
+  fileName <- str_replace(fileLDChr, "@", toString(chr))
+  if (!file.exists(fileName)) {
+    cat('\tSkipping chromosome', chr, 'File not found\n')
+    next
+  }
   outputFileName <- str_replace(fileOutputLDBlocks, '@', toString(chr))
   cat('\t', chr, ': Loading LD from ', basename(fileName), '\n\t\t', sep='')
   mat <- readRDS(fileName)

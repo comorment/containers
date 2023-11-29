@@ -36,7 +36,7 @@ getLogBlockSequence <- function (nMatCols, lower=30, upper=5, length=20) {
 # LD splitting of a correlation matrix
 # Arguments are passed to bigsnpr::ldsplit
 LDSplitMatrix <- function (mat, thrR2, minSize, maxSizeWeightLower, maxSizeWeightUpper, maxR2) {
-  require(Matrix)
+  require(Matrix, quietly=T)
   nc <- ncol(mat)
   # Maximum variants in each block
   sequence <- round(seq_log(nc/maxSizeWeightLower, nc/maxSizeWeightUpper, length.out=20))
@@ -59,6 +59,7 @@ LDSplitMatrix <- function (mat, thrR2, minSize, maxSizeWeightLower, maxSizeWeigh
 
 # Plotting
 #' @param mat A correlation matrix
+#' @param threshold A threshold of correlations to include
 #' @param positions Positions of each matrix column, if NULL column index will be used
 plotLD <- function (mat,threshold, positions=NULL) {
   require(ggplot2, quietly = T)
