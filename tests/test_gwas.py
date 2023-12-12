@@ -103,7 +103,7 @@ def test_gwas_king():
 
 def test_gwas_ldak():
     """test ldak"""
-    call = f'singularity run {pth} ldak5.linux --version'
+    call = f'singularity run {pth} ldak --make-snps 1 --num-samples 1 --num-snps 1'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
@@ -195,7 +195,7 @@ def test_gwas_shapeit5():
 
 def test_gwas_snptest():
     """test snptest"""
-    call = f'singularity run {pth} snptest --version'
+    call = f'singularity run {pth} snptest -help'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
