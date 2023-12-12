@@ -39,7 +39,20 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
-## [1.5.1] - 2023-10.20
+## [1.6.0] - 2023-12-12
+
+### Added
+
+- Added `gdb` debugger, `ldak` and `snptest` binaries to `gwas.sif` container
+- Added tests for `ldak` and `snptest` binaries in `gwas.sif` container
+
+### Updated
+
+- updated `metal` to version `2020-05-05` in `gwas.sif`
+- updated `qctool` to `v2.2.2` and added related binaries `inthinnerator`, `hptest`, `ldbird` and `selfmap` to `gwas.sif`
+- rebuild `gwas.sif` (md5 checksum: )
+
+## [1.5.1] - 2023-10-20
 
 ### Fixed
 
