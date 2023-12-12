@@ -50,7 +50,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 - updated `metal` to version `2020-05-05` in `gwas.sif`
 - updated `qctool` to `v2.2.2` and added related binaries `inthinnerator`, `hptest`, `ldbird` and `selfmap` to `gwas.sif`
-- rebuild `gwas.sif` (md5 checksum: )
+- rebuilt `gwas.sif` (md5 checksum b6104b58d21f862f9d61a86d9d4802a6)
 
 ## [1.5.1] - 2023-10-20
 
