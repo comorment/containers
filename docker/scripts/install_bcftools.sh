@@ -3,8 +3,8 @@ set -euo pipefail
 
 # deps 
 apt-get update && apt-get install -y --no-install-recommends \
-    libcurl4-gnutls-dev=7.68.0-1ubuntu2.19 \
-    libperl-dev=5.30.0-9ubuntu0.4 \
+    libcurl4-gnutls-dev=7.68.0-1ubuntu2.21 \
+    libperl-dev=5.30.0-9ubuntu0.5 \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
