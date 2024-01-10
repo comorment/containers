@@ -30,12 +30,14 @@
 ##################################################
 ### Environment/function definitions             
 ##################################################
+timeStart=$(date +%s)
 
 export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 export DIR_SIF=$DIR_BASE/singularity
 export DIR_TESTS=$DIR_BASE/tests/test_LDpred2
+export DIR_TEMP=$DIR_TESTS/temp
 export DIR_DATA=$DIR_TESTS/data
 export DIR_SCRIPTS=$DIR_BASE/scripts/pgs/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
@@ -84,7 +86,7 @@ LDPRED_MODES="inf auto"
 ### Testing scripts             
 ##################################################
 echo "### Running R function unittests"
-#$RSCRIPT $DIR_TESTS/unittest/fun.R
+$RSCRIPT $DIR_TESTS/unittest/fun.R
 
 echo "### Testing sumstats scripts"
 #source $DIR_TESTS/scripts/sumstats.sh
@@ -103,3 +105,6 @@ echo "### Testing imputation"
 
 echo "### Testing ldpred2.R (various options, manually downloaded LD, output merge)"
 #source $DIR_TESTS/scripts/extended.sh
+
+echo "Minutes passed:"
+awk "BEGIN {printf \"%.2f\n\", (`date +%s` - $timeStart)/60}"

@@ -161,3 +161,30 @@ rename_columns <- function(df, old_names, new_names) {
   colnames(df)[match(old_names, colnames(df))] <- new_names
   return(df)
 }
+
+# Filter SNPs from an LD meta-file using a file with RSIDs and/or sumstats and return a vector of RSIDs
+# that are present in either list
+#' @param map A <bigsnp>$map data frame
+#' @param fileSNPs A file with RSIDs
+#' @param fileSumstats A sumstat file (or any file with several columns)
+#' @param verbose Print progress
+#' @return A vector of RSIDs overlapping with map, fileSNPs and fileSumstats
+filterSNPs <- function(map, fileSNPs=NULL, fileSumstats=NULL, fileSumstatsCol=NULL, verbose=T) {
+  if (!('marker.ID' %in% colnames(map))) stop('Missing column: marker.ID')
+  snps <- map$marker.ID
+  snpsBefore <- length(snps)
+  snpList <- c()
+  if (!isVarNAorNULL(fileSNPs)) {
+    snpList <- read.table(fileSNPs)[,1]
+    if (verbose) cat('Read', length(snpList), 'SNPs from', fileSNPs, '\n')
+  }
+  if (!isVarNAorNULL(fileSumstats)) {
+    dfSumStats <- data.table::fread(fileSumstats, sep="auto", data.table=F)
+    if (verbose) cat('Read', nrow(dfSumStats), 'SNPs from:', fileSumstats, '\n')
+    if (!fileSumstatsCol %in% colnames(dfSumStats)) stop('Column ', fileSumstatsCol, ' not present in ', fileSumstats)
+    snpList <- c(snpList, dfSumStats[,fileSumstatsCol])
+  }
+  if (length(snpList) > 0) snps <- snps[snps %in% snpList]
+  if (verbose) cat('Retained', nrow(snps), 'out of', snpsBefore, 'SNPs\n')
+  snps
+}

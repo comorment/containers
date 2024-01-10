@@ -84,23 +84,14 @@ MAP <- obj.bigSNP$map
 GD <- snp_asGeneticPos(CHR, POS, dir=dirGeneticMaps, type=argGeneticMapsType, ncores=NCORES)
 if (is.null(GD)) stop('Genetic distance is not available')
 MAP <- MAP[,c('chromosome', 'marker.ID', 'physical.pos', 'allele1', 'allele2')]
-colnames(MAP) <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 
-SNPs <- MAP$rsid
-if (!is.na(fileKeepSNPs)) {
-  cat('Reading SNPs from --file-keep-snps:', fileKeepSNPs, '\n')
-  keepSNPs <- read.table(fileKeepSNPs)[,1]
-  cat('Read', length(keepSNPs), 'SNPs\n')
-  SNPs <- SNPs[SNPs %in% keepSNPs]
-}
-if (!is.na(fileSumstats)) {
-  cat('Reading SNPs from sumstat file --sumstats:', fileSumstats, '\n')
-  dfSumStats <- data.table::fread(fileSumstats, sep="auto", data.table=F)
-  cat('Read', nrow(dfSumStats), 'SNPs\n')
-  SNPs <- SNPs[SNPs %in% dfSumStats[,columnRsidSumstats]]
-}
+# Filtering SNPs (if those arguments have been provided)
+SNPs <- filterSNPs(MAP, fileKeepSNPs, fileSumstats, columnRsidSumstats)
+colnames(MAP) <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 useSNPs <- MAP$rsid %in% SNPs
-cat('A total of', sum(useSNPs), 'will be used for LD calculation\n')
+nSNPs <- sum(useSNPs)
+if (nSNPs == 0) stop('No SNPs available.')
+cat('A total of', nSNPs, 'will be used for LD calculation\n')
 
 individualSample <- rows_along(G)
 # Extract individuals
@@ -123,6 +114,7 @@ if (!is.na(sampleIndividuals)) {
 cat('Calculating SNP correlation/LD using', NCORES, 'cores\n')
 temp <- tempfile(tmpdir='temp')
 cat('Using file', temp, 'to store matrixes\n')
+
 MAP$ld <- NA
 cat('Chromosome: ')
 for (chr in chr2use) {

@@ -18,9 +18,9 @@ function testCommand () {
 }
 # Test successful command
 function testSuccess () {
-	testCommand 0 ${@:1}
+	testCommand 0 $@
 }
 # Test failing command
 function testException () {
-	testCommand 1 ${2:@}
+	testCommand 1 $@
 }

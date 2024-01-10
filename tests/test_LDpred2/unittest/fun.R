@@ -1,6 +1,8 @@
 library(testthat)
 dirScripts <- Sys.getenv('DIR_SCRIPTS')
 dirTests <- Sys.getenv('DIR_TESTS')
+dirTemp <- Sys.getenv('DIR_TEMP')
+fileTutorialSumstats <- Sys.getenv('fileInputSumStats')
 source(paste0(dirScripts, '/fun.R'))
 
 context("Test functions")
@@ -104,4 +106,21 @@ test_that("Test rename_columns", {
   expect_true(hasAllColumns(rename_columns(sumstats, c('A1', 'A2', 'N'), c('EffectAllele', 'OtherAllele', 'Neff')), c('EffectAllele', 'OtherAllele', 'Neff')))
   expect_error(rename_columns(sumstats, c('A1', 'A2'), c('A1', 'A2', 'N')))
   expect_error(rename_columns(sumstats, c('A1', 'A2', 'N'), c('A1', 'A2')))
+})
+
+# Create some test data
+library(bigsnpr, quietly=T)
+map <- snp_attach(Sys.getenv('fileOutputSNPR'))$map
+drawSnps <- sample(nrow(map), 5)
+map <- map[drawSnps,]
+snpsExpectedA <- map$marker.ID
+snpsExpectedB <- map$marker.ID[4:5]
+fileSnplist <- paste0(dirTemp, '/snplist')
+write.table(snpsExpectedB, file=fileSnplist)
+
+test_that('Test filter SNPS', {
+  expect_equal(filterSNPs(map, NULL, fileTutorialSumstats, 'rsid', verbose=FALSE), snpsExpectedA)
+  expect_equal(filterSNPs(map, fileSnplist, fileTutorialSumstats, 'rsid', verbose=FALSE), snpsExpectedA)
+  expect_equal(filterSNPs(map, fileSnplist, verbose=FALSE), snpsExpectedB)
+  expect_error(filterSNPs(map, NULL, fileTutorialSumstats, 'bad', verbose=FALSE))
 })
