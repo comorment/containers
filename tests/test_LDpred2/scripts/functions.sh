@@ -16,11 +16,11 @@ function testCommand () {
 		echoRed "<=== END ERROR"
 	fi
 }
-# Test successful command
+# Test command expected to succeed
 function testSuccess () {
 	testCommand 0 $@
 }
-# Test failing command
+# Test command expected to fail
 function testException () {
 	testCommand 1 $@
 }
