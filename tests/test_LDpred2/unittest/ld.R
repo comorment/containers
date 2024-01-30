@@ -40,8 +40,6 @@ test_that('Test analyzeLD.R: Plots', {
 })
 
 quit('no')
-
-
 # Prerequisites
 obj.bigSNP <- snp_attach(Sys.getenv('fileOutputSNPR'))
 G <- obj.bigSNP$genotypes
