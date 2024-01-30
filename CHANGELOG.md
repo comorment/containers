@@ -39,6 +39,12 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.6.0] - 2023-10-20
+
+### Added
+
+* Added `samtools` to `gwas.sif` container
+
 ## [1.5.1] - 2023-10.20
 
 ### Fixed

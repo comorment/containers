@@ -151,6 +151,12 @@ def test_gwas_regenie():
     assert out.returncode == 0
 
 
+def test_gwas_samtools():
+    call = f'singularity run {pth} samtools --help'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
+
+
 def test_gwas_shapeit4():
     call = f'singularity run {pth} shapeit4.2 --help'
     out = subprocess.run(call.split(' '))

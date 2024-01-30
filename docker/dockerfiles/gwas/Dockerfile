@@ -170,4 +170,11 @@ COPY /scripts/install_duohmm.sh /tmp/duohmm/
 RUN bash /tmp/duohmm/install_duohmm.sh && \
     rm -rf /tmp/duohmm
 
+
+# samtools
+WORKDIR /tmp/samtools
+COPY /scripts/install_samtools.sh /tmp/samtools/
+RUN bash /tmp/samtools/install_samtools.sh && \
+    rm -rf /tmp/samtools
+
 WORKDIR /tools

@@ -59,6 +59,7 @@ The detailed description of the available container [files](https://github.com/c
   | gwas.sif          | plink2_avx2         | v2.00a3.6LM AVX2 Intel (24 Jan 2020)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | PRSice_linux        | 2.3.3 (2020-08-05)                        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | gwas.sif          | regenie             | v3.2.8                                    | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | gwas.sif          | samtools            | v1.12                                     | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
   | gwas.sif          | shapeit4.2          | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
   | gwas.sif          | shapeit5 phase_rare | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
   | gwas.sif          | shapeit5 phase_common | v5.1.1                                  | [MIT](https://opensource.org/licenses/MIT)
