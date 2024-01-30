@@ -2,9 +2,11 @@
 set -euo pipefail
 
 # metal
-wget --no-check-certificate http://csg.sph.umich.edu/abecasis/metal/download/Linux-metal.tar.gz && \
-   tar -xvzf Linux-metal.tar.gz && \
-   rm -rf  Linux-metal.tar.gz
+wget --no-check-certificate https://github.com/statgen/METAL/archive/refs/tags/2020-05-05.tar.gz
+tar -xvzf 2020-05-05.tar.gz
 
-mv generic-metal/* .
-cp metal  /bin
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ../METAL-2020-05-05/.
+make -j4
+make install
+cp bin/metal /bin

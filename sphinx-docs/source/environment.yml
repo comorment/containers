@@ -3,9 +3,10 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.11
   - sphinx
   - sphinx_rtd_theme
   - sphinx-design
   - myst-parser
   - make
+  - linkify-it-py
