@@ -22,6 +22,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 * Additions goes here
+- Added scripts to analyze and filter bigSNPR LD matrixes (`scripts/pgs/LDpred2/analyzeLD.R`, `scripts/pgs/LDpred2/splitLD.R`).
 
 ### Updated
 
