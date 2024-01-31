@@ -166,7 +166,7 @@ rename_columns <- function(df, old_names, new_names) {
 # Mainly used to filter snps
 #' @param dta Either a data frame or vector
 #' @param fileFilter A file with RSIDs
-#' @param colMap Column name in map to filter on
+#' @param colFilter Column name in dta to filter on
 #' @param col The column name in fileSNPs if different than the first
 #' @param verbose Print progress
 #' @return Same object type as dta, filtered for entries in fileFilter

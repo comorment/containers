@@ -98,8 +98,6 @@ cat('A total of', nSNPs, 'will be used for LD calculation\n')
 individualSample <- rows_along(G)
 # Extract individuals
 if (!is.na(extractIndividuals)) {
-  #inds <- data.table::fread(extractIndividuals)
-  #indIds <- obj.bigSNP$fam$sample.ID %in% inds[,1]
   indIds <- filterFromFile(obj.bigSNP$fam, extractIndividuals, colFilter='sample.ID')
   cat('Extracting ', sum(indIds), ' individuals\n')
   individualSample <- which(obj.bigSNP$fam$sample.ID %in% indIds)
