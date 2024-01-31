@@ -108,19 +108,21 @@ test_that("Test rename_columns", {
   expect_error(rename_columns(sumstats, c('A1', 'A2', 'N'), c('A1', 'A2')))
 })
 
-# Create some test data
+# Create some test data for filtering SNPs
 library(bigsnpr, quietly=T)
 map <- snp_attach(Sys.getenv('fileOutputSNPR'))$map
 drawSnps <- sample(nrow(map), 5)
 map <- map[drawSnps,]
-snpsExpectedA <- map$marker.ID
-snpsExpectedB <- map$marker.ID[4:5]
+snpsExpectedA <- map
+snpsExpectedB <- map[4:5,]
 fileSnplist <- paste0(dirTemp, '/snplist')
-write.table(snpsExpectedB, file=fileSnplist)
+write.table(snpsExpectedB$marker.ID, file=fileSnplist, row.names = F)
 
 test_that('Test filter SNPS', {
-  expect_equal(filterSNPs(map, NULL, fileTutorialSumstats, 'rsid', verbose=FALSE), snpsExpectedA)
-  expect_equal(filterSNPs(map, fileSnplist, fileTutorialSumstats, 'rsid', verbose=FALSE), snpsExpectedA)
-  expect_equal(filterSNPs(map, fileSnplist, verbose=FALSE), snpsExpectedB)
-  expect_error(filterSNPs(map, NULL, fileTutorialSumstats, 'bad', verbose=FALSE))
+  expect_equal(filterFromFile(map, fileTutorialSumstats, colFilter='marker.ID', col='rsid', verbose=FALSE), snpsExpectedA)
+  expect_equal(filterFromFile(map, fileSnplist, colFilter='marker.ID', verbose=FALSE), snpsExpectedB)
+  expect_equal(filterFromFile(map, fileSnplist, colFilter='marker.ID', col=NA, verbose=FALSE), snpsExpectedB)
+  expect_equal(filterFromFile(map$marker.ID, fileSnplist, verbose=FALSE), snpsExpectedB$marker.ID)
+  expect_error(filterFromFile(map, fileTutorialSumstats, colFilter='marker.ID', col='bad', verbose=FALSE))
+  expect_error(filterFromFile(map, 'missing-file', colMap='marker.ID', verbose=FALSE))
 })

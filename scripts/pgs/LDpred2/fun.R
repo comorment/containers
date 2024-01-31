@@ -162,29 +162,32 @@ rename_columns <- function(df, old_names, new_names) {
   return(df)
 }
 
-# Filter SNPs from an LD meta-file using a file with RSIDs and/or sumstats and return a vector of RSIDs
-# that are present in either list
-#' @param map A <bigsnp>$map data frame
-#' @param fileSNPs A file with RSIDs
-#' @param fileSumstats A sumstat file (or any file with several columns)
+# Filter a data frame or a vector using values in a file
+# Mainly used to filter snps
+#' @param dta Either a data frame or vector
+#' @param fileFilter A file with RSIDs
+#' @param colMap Column name in map to filter on
+#' @param col The column name in fileSNPs if different than the first
 #' @param verbose Print progress
-#' @return A vector of RSIDs overlapping with map, fileSNPs and fileSumstats
-filterSNPs <- function(map, fileSNPs=NULL, fileSumstats=NULL, fileSumstatsCol=NULL, verbose=T) {
-  if (!('marker.ID' %in% colnames(map))) stop('Missing column: marker.ID')
-  snps <- map$marker.ID
-  snpsBefore <- length(snps)
-  snpList <- c()
-  if (!isVarNAorNULL(fileSNPs)) {
-    snpList <- read.table(fileSNPs)[,1]
-    if (verbose) cat('Read', length(snpList), 'SNPs from', fileSNPs, '\n')
+#' @return Same object type as dta, filtered for entries in fileFilter
+filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T) {
+  if (is.data.frame(dta) && !(colFilter %in% colnames(dta))) stop('Missing column in data to filter: ', colFilter)
+  if (!file.exists(fileFilter)) stop('Could not find file: ', fileFilter)
+  rowsBefore <- length(dta)
+  dtaFilter <- data.table::fread(fileFilter, sep='auto', data.table=F)
+  if (is.character(col) && !(col %in% colnames(dtaFilter))) stop('Could not find column ', col, ' in file ', fileFilter)
+  if (is.integer(col) && !(col %in% 1:ncol(dtaFilter))) stop('Only columns indexed 1-', ncol(dtaFilter),' available in file ', fileFilter)
+  if (is.character(col) || is.integer(col)) dtaFilter <- dtaFilter[,col]
+  else dtaFilter <- dtaFilter[,1]
+  if (verbose) cat('Read', length(dtaFilter), 'rows from', fileFilter, '\n')
+  #if (length(dtaFilter) > 0) dta <- dta[dta %in% dtaFilter]
+  if (is.data.frame(dta)) {
+    dta <- dta[dta[,colFilter] %in% dtaFilter,]
+    nKept <- nrow(dta)
+  } else {
+    dta <- dta[dta %in% dtaFilter]
+    nKept <- length(dta)
   }
-  if (!isVarNAorNULL(fileSumstats)) {
-    dfSumStats <- data.table::fread(fileSumstats, sep="auto", data.table=F)
-    if (verbose) cat('Read', nrow(dfSumStats), 'SNPs from:', fileSumstats, '\n')
-    if (!fileSumstatsCol %in% colnames(dfSumStats)) stop('Column ', fileSumstatsCol, ' not present in ', fileSumstats)
-    snpList <- c(snpList, dfSumStats[,fileSumstatsCol])
-  }
-  if (length(snpList) > 0) snps <- snps[snps %in% snpList]
-  if (verbose) cat('Retained', nrow(snps), 'out of', snpsBefore, 'SNPs\n')
-  snps
+  if (verbose) cat('Retained', nrow(dta), 'out of', nKept, 'rows\n')
+  dta
 }

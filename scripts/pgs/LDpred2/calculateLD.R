@@ -86,7 +86,9 @@ if (is.null(GD)) stop('Genetic distance is not available')
 MAP <- MAP[,c('chromosome', 'marker.ID', 'physical.pos', 'allele1', 'allele2')]
 
 # Filtering SNPs (if those arguments have been provided)
-SNPs <- filterSNPs(MAP, fileKeepSNPs, fileSumstats, columnRsidSumstats)
+SNPs <- MAP$marker.ID
+if (!is.na(fileSumstats)) SNPs <- filterFromFile(SNPs, fileSumstats, col=columnRsidSumstats)
+if (!is.na(fileKeepSNPs)) SNPs <- filterFromFile(SNPs, fileKeepSNPs)
 colnames(MAP) <- c('chr', 'rsid', 'pos', 'a1', 'a0')
 useSNPs <- MAP$rsid %in% SNPs
 nSNPs <- sum(useSNPs)
@@ -96,10 +98,11 @@ cat('A total of', nSNPs, 'will be used for LD calculation\n')
 individualSample <- rows_along(G)
 # Extract individuals
 if (!is.na(extractIndividuals)) {
-  inds <- data.table::fread(extractIndividuals)
-  indIds <- obj.bigSNP$fam$sample.ID %in% inds[,1]
+  #inds <- data.table::fread(extractIndividuals)
+  #indIds <- obj.bigSNP$fam$sample.ID %in% inds[,1]
+  indIds <- filterFromFile(obj.bigSNP$fam, extractIndividuals, colFilter='sample.ID')
   cat('Extracting ', sum(indIds), ' individuals\n')
-  individualSample <- which(indIds)
+  individualSample <- which(obj.bigSNP$fam$sample.ID %in% indIds)
 }
 
 # Sample individuals

@@ -217,11 +217,12 @@ sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffect
 
 if (!is.na(fileKeepSNPs)) {
   cat('Filtering SNPs using', fileKeepSNPs, '\n')
-  keepSNPs <- read.table(fileKeepSNPs)
-  nSNPsBefore <- nrow(sumstats)
+  keepSNPs <- filterFromFile()
+  #keepSNPs <- read.table(fileKeepSNPs)
+  #nSNPsBefore <- nrow(sumstats)
   sumstats <- sumstats[sumstats$rsid %in% keepSNPs[,1],]
-  nSNPsAfter <- nrow(sumstats)
-  cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
+  #nSNPsAfter <- nrow(sumstats)
+  #cat('Retained', nSNPsAfter, 'out of', nSNPsBefore,'\n')
 }
 
 # If the statistic is an OR, convert it into a log-OR

@@ -24,10 +24,10 @@ export fileLD25K=$DIR_TESTS/output/ld/map25K.rds
 testSuccess $LDE --sumstats $fileSumstats25k rsid --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $fileLD25K
 
 # Test adding the parameter --thres-r2
-testSuccess $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2 --file-ld-chr $dirOut/ld-chr@.rds --chr2use 21 22
+testSuccess $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2 --chr2use 21 22 --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
 
 echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
-testSuccess $LDE --extract $fileKeepSNPS --file-ld-chr $dirOut/ld-chr@.rds
+testSuccess $LDE --extract $fileKeepSNPS --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
 
 echo "Test sampling individuals (N=400)"
 testSuccess $LDE --sample-individuals 400 --extract $fileKeepSNPS --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
@@ -37,8 +37,8 @@ testSuccess $LDP --ldpred-mode inf --out $fileOut.inf --chr2use 20 21 22
 # Filter out SNPs that overlap with genotypes
 echo "Test LD estimation with SNP filtering"
 cut -f 1 -d , $fileInputSumStats > $DIR_TESTS/data/snps-for-ld.txt
-testSuccess "$LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid"
-testSuccess "$LDP --ldpred-mode auto --out $fileOut.inf --chr2use 20 21 22"
+testSuccess $LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid --file-ld-chr $dirOut/ld-chr@.rds
+testSuccess $LDP --ldpred-mode auto --out $fileOut.inf --chr2use 20 21 22
 
 
 echo "Testing analyzeLD.R"
