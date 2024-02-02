@@ -11,7 +11,7 @@ apt-get update && apt-get install --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # build and install HTSlib
-git clone --depth 1 -b 1.12 https://github.com/samtools/htslib.git --recurse-submodules && \
+git clone --depth 1 -b 1.19.1 https://github.com/samtools/htslib.git --recurse-submodules && \
     cd htslib && \
     autoreconf -i && \
     ./configure --prefix=/usr/ && \

@@ -17,11 +17,14 @@ trap 'exit' ERR
 # this is a personal access token from github with read:packages scope and will have
 # to be updated every 30 days.
 if [ $1 == "r" ]; then
-    source ~/.bash_profile
+    source ~/.bashrc
     if [ -z "$GITHUB_PAT" ]; then
         echo "GITHUB_PAT not set"
         exit 1
     fi
+    # build docker image
+    docker build --build-arg GITHUB_PAT="${GITHUB_PAT}" -t $1 -f dockerfiles/$1/Dockerfile .
+else 
+    # build docker image
+    docker build -t $1 -f dockerfiles/$1/Dockerfile .
 fi
-# build docker image
-docker build --build-arg GITHUB_PAT=$GITHUB_PAT -t $1 -f dockerfiles/$1/Dockerfile .

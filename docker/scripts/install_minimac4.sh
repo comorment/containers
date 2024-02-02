@@ -15,7 +15,8 @@ apt-get update && \
 pip3 install --no-cache-dir cget==0.2.0
 
 # install Minimac4
-git clone --depth 1 -b v4.1.0 https://github.com/statgen/Minimac4.git && \
+VERSION="v4.1.6"
+git clone --depth 1 -b $VERSION https://github.com/statgen/Minimac4.git && \
 cd Minimac4 && \
 cget install -f ./requirements.txt && \
 mkdir build && cd build && \

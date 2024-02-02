@@ -10,7 +10,7 @@ apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # bcftools
-git clone --recurse-submodules --depth 1 -b 1.12 https://github.com/samtools/bcftools.git && \
+git clone --recurse-submodules --depth 1 -b 1.19 https://github.com/samtools/bcftools.git && \
 cd bcftools && \
 autoheader && autoconf && ./configure --enable-libgsl --enable-perl-filters --with-htslib=/usr/ && \
 make -j12 && \

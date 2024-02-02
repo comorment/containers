@@ -1,13 +1,24 @@
 #!/bin/sh
 set -euo pipefail
 
+# install some deps for installing cget
+apt-get update && \
+    apt-get install --no-install-recommends \
+    fossil=1:2.10-1 \
+    -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # qctools
- wget --no-check-certificate https://www.well.ox.ac.uk/~gav/resources/qctool_v2.0.6-Ubuntu16.04-x86_64.tgz && \
-    tar -xvzf qctool_v2.0.6-Ubuntu16.04-x86_64.tgz && \
-    rm -rf  qctool_v2.0.6-Ubuntu16.04-x86_64.tgz
+fossil clone https://code.enkre.net/qctool qctool.fossil -A root
+fossil open qctool.fossil
+fossil checkout e5723df2c0c85959  # 2.2.2
 
+./waf configure --prefix=/usr/
+./waf install
+ln -s /usr/bin/qctool_v2.2.2 /usr/bin/qctool
 
-mv qctool_v2.0.6-Ubuntu16.04-x86_64/* .
-cp qctool  /bin
-
-chmod 755 /bin/qctool
+# remove fossil used to build qctools
+apt-get purge \
+    fossil -y && \
+    apt-get autoremove --purge -y
