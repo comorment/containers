@@ -14,6 +14,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    cmake=3.16.3-1ubuntu1.20.04.1 \
    curl=7.68.0-1ubuntu2.21 \
    dos2unix=7.4.0-2 \
+   gdb=9.1-0ubuntu1 \
    gfortran=4:9.3.0-1ubuntu2 \
    git=1:2.25.1-1ubuntu3.11 \
    less=551-1ubuntu0.1 \

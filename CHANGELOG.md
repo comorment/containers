@@ -39,7 +39,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
-## [1.6.0] - 2024-02-02
+## [1.7.0] - 2024-02-02
 
 ### Added
 
@@ -71,7 +71,20 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Broken `docker/scripts/build_docker.sh` script
 
-## [1.5.1] - 2023-10.20
+## [1.6.0] - 2023-12-12
+
+### Added
+
+- Added `gdb` debugger, `ldak` and `snptest` binaries to `gwas.sif` container
+- Added tests for `ldak` and `snptest` binaries in `gwas.sif` container
+
+### Updated
+
+- updated `metal` to version `2020-05-05` in `gwas.sif`
+- updated `qctool` to `v2.2.2` and added related binaries `inthinnerator`, `hptest`, `ldbird` and `selfmap` to `gwas.sif`
+- rebuilt `gwas.sif` (md5 checksum b6104b58d21f862f9d61a86d9d4802a6)
+
+## [1.5.1] - 2023-10-20
 
 ### Fixed
 

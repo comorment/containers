@@ -59,17 +59,29 @@ COPY /scripts/install_gctb.sh /tmp/gctb/
 RUN bash /tmp/gctb/install_gctb.sh && \
     rm -rf /tmp/gctb
 
-# qctools
-WORKDIR /tmp/qctools
-COPY /scripts/install_qctools.sh /tmp/qctools/
-RUN bash /tmp/qctools/install_qctools.sh && \
-    rm -rf /tmp/qctools
+# qctool
+WORKDIR /tmp/qctool
+COPY /scripts/install_qctools.sh /tmp/qctool/
+RUN bash /tmp/qctool/install_qctools.sh && \
+    rm -rf /tmp/qctool
+
+# snptest
+WORKDIR /tmp/snptest
+COPY /scripts/install_snptest.sh /tmp/snptest/
+RUN bash /tmp/snptest/install_snptest.sh && \
+    rm -rf /tmp/snptest
 
 # king
 WORKDIR /tmp/king
 COPY /scripts/install_king.sh /tmp/king/
 RUN bash /tmp/king/install_king.sh && \
     rm -rf /tmp/king
+
+# ldak
+WORKDIR /tmp/ldak
+COPY /scripts/install_ldak.sh /tmp/ldak/
+RUN bash /tmp/ldak/install_ldak.sh && \
+    rm -rf /tmp/ldak
 
 # metal
 WORKDIR /tmp/metal
