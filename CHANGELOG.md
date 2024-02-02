@@ -60,7 +60,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
   * plink2_avx2 to v2.00a5.10LM AVX2 Intel (5 Jan 2024)
   * PRSice_linux to 2.3.5
   * regenie to 3.4
-  * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe
+  * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe (0.1.17)
 * Rebuilt `gwas.sif` w. md5sum checksum:
   
   ```
