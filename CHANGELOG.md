@@ -39,7 +39,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
-## [1.6.0] - 2023-10-20
+## [1.6.0] - 2024-02-02
 
 ### Added
 
@@ -47,7 +47,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
-* Updated the following binaries (not listing apt package updates)
+* Updated the following binaries (not listing apt package updates) in gwas.sif built
   * bcftools to 1.19
   * bolt to 2.4.1
   * gcta to 1.94.1
@@ -61,6 +61,11 @@ If MD5 sum is not listed for a certain release then it means that the container 
   * PRSice_linux to 2.3.5
   * regenie to 3.4
   * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe
+* Rebuilt `gwas.sif` w. md5sum checksum:
+  
+  ```
+  2ca11e58fafd7b322e766013654647d3  singularity/gwas.sif
+  ```
 
 ### Fixed
 
