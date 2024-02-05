@@ -27,6 +27,13 @@ def test_gwas_beagle():
     assert out.returncode == 0
 
 
+def test_gwas_bedtools():
+    """test bedtools"""
+    call = f'singularity run {pth} bedtools --version'
+    out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0
+
+
 def test_gwas_bgenix():
     """test bgenix, cat-bgen, edit-bgen binaries"""
     for binary in ['bgenix', 'cat-bgen', 'edit-bgen']:
@@ -108,6 +115,13 @@ def test_gwas_ldak():
     assert out.returncode == 0
 
 
+def test_gwas_liftover():
+    """test liftOver"""
+    call = f'singularity run {pth} liftOver -errorHelp'
+    out = subprocess.run(call.split(' '), capture_output=True, check=False)
+    assert out.stdout.decode('utf-8').lower().rfind('error') <= 0
+
+
 def test_gwas_metal():
     """test metal"""
     cwd = os.getcwd()
@@ -173,6 +187,13 @@ def test_gwas_qctools():
 def test_gwas_regenie():
     """test regenie"""
     call = f'singularity run {pth} regenie option --help'
+    out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0
+
+
+def test_gwas_samtools():
+    """test samtools"""
+    call = f'singularity run {pth} samtools --help'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 

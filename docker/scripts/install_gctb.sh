@@ -2,11 +2,12 @@
 set -euo pipefail
 
 # gctb
-wget --no-check-certificate https://cnsgenomics.com/software/gctb/download/gctb_2.02_Linux.zip  && \
-   unzip   gctb_2.02_Linux.zip && \
-   rm -rf gctb_2.02_Linux.zip
+VERSION="2.04.3"
+wget --no-check-certificate https://cnsgenomics.com/software/gctb/download/gctb_${VERSION}_Linux.zip  && \
+   unzip   gctb_${VERSION}_Linux.zip && \
+   rm -rf gctb_${VERSION}_Linux.zip
 
-mv gctb_2.02_Linux/* .
+mv gctb_${VERSION}_Linux/* .
 cp gctb /bin 
 
 chmod 755 /bin/gctb

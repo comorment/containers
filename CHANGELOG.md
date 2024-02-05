@@ -39,6 +39,40 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.7.0] - 2024-02-02
+
+### Added
+
+* Added `samtools 1.19.2`, `bedtools 2.31.1`, `liftOver (latest)` to `gwas.sif` container
+* Added corresponding unit tests
+
+### Updated
+
+* Updated the following binaries (not listing apt package updates) in gwas.sif built
+  * bcftools to 1.19
+  * bolt to 2.4.1
+  * gcta to 1.94.1
+  * gctb to 2.04.3
+  * htslib to 1.19.1
+  * king to 2.3.2
+  * minimac4 to 4.1.6
+  * plink to v1.90b7.2 64-bit (11 Dec 2023)
+  * plink2 to v2.00a5.10LM 64-bit Intel (5 Jan 2024)
+  * plink2_avx2 to v2.00a5.10LM AVX2 Intel (5 Jan 2024)
+  * PRSice_linux to 2.3.5
+  * regenie to 3.4.1
+  * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe (0.1.17dev)
+* Rebuilt `gwas.sif` w. md5sum checksum:
+  
+  ```
+  a775f4216b15b731471821d0c2a0da43  singularity/gwas.sif
+  ```
+* updated installer scripts
+
+### Fixed
+
+* Broken `docker/scripts/build_docker.sh` script
+
 ## [1.6.0] - 2023-12-12
 
 ### Added

@@ -30,13 +30,16 @@ apt-get update && apt-get install -y --no-install-recommends \
    parallel=20161222-1.1 \
    perl=5.30.0-9ubuntu0.5 \
    pkg-config=0.29.1-0ubuntu4 \
+   python3=3.8.2-0ubuntu2 \
    tar=1.30+dfsg-7ubuntu0.20.04.4 \
    tofrodos=1.7.13+ds-4 \
    unzip=6.0-25ubuntu1.1 \
-   vim=2:8.1.2269-1ubuntu5.20 \
+   vim=2:8.1.2269-1ubuntu5.21 \
    wget=1.20.3-1ubuntu2 \
    zlib1g-dev=1:1.2.11.dfsg-2ubuntu1.5 \
    && \
    apt-get clean && \
    rm -rf /var/lib/apt/lists/*
    
+# /usr/bin/python must exist for bgenix, qctool
+update-alternatives --install /usr/bin/python python /usr/bin/python3 10

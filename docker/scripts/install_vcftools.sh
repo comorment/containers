@@ -4,7 +4,7 @@ set -euo pipefail
 # vcfools
 git clone https://github.com/vcftools/vcftools.git && \
     cd vcftools && \
-    git reset --hard 581c231991cb4db017b92eabc573e17128541ab5 && \
+    git reset --hard d511f469e87c2ac9779bcdc3670b2b51667935fe && \
     ./autogen.sh && \
     ./configure && \
 make -j6 && \

@@ -1,29 +1,28 @@
 #!/bin/sh
 set -euo pipefail
 
-# python appears to be a build time dependency
-apt-get update && apt-get install -y  --no-install-recommends python3=3.8.2-0ubuntu2 && \
+# install some deps for installing cget
+apt-get update && \
+    apt-get install --no-install-recommends \
+    fossil=1:2.10-1 \
+    -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# /usr/bin/python must exist
-update-alternatives --install /usr/bin/python python /usr/bin/python3 10
-
 # qctools
-wget --no-check-certificate https://code.enkre.net/qctool/zip/e5723df2c0c85959/qctool.zip
-unzip qctool.zip
-cd qctool
-./waf configure
-./waf
+fossil clone https://code.enkre.net/qctool qctool.fossil -A root
+fossil open qctool.fossil
+fossil checkout e5723df2c0c85959  # 2.2.2
 
-# copy binaries to /bin
-cp build/release/apps/inthinnerator_v2.2.2 /bin/inthinnerator
-cp build/release/apps/hptest_v2.2.2 /bin/hptest
-cp build/release/apps/ldbird_v2.2.2 /bin/ldbird
-cp build/release/apps/qctool_v2.2.2 /bin/qctool
-cp build/release/apps/selfmap_v2.2.2 /bin/selfmap
+./waf configure --prefix=/usr/
+./waf install
+mv /usr/bin/hptest_v2.2.2 /usr/bin/hptest
+mv /usr/bin/inthinnerator_v2.2.2 /usr/bin/inthinnerator
+mv /usr/bin/ldbird_v2.2.2 /usr/bin/ldbird
+mv /usr/bin/qctool_v2.2.2 /usr/bin/qctool
+mv /usr/bin/selfmap_v2.2.2 /usr/bin/selfmap
 
-# remove python
+# remove fossil used to build qctools
 apt-get purge \
-    python3 -y && \
+    fossil -y && \
     apt-get autoremove --purge -y

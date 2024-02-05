@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # gcta
-curl -O -J -L https://github.com/jianyangqt/gcta/releases/download/v1.93.3beta2/gcta_1.93.3beta2.zip && \
-    unzip -j  gcta_1.93.3beta2.zip && \
-    rm -rf gcta_1.93.3beta2.zip
+VERSION="1.94.1"
+curl -O -J -L https://github.com/jianyangqt/gcta/releases/download/v$VERSION/gcta-$VERSION-linux-x86_64-static && \
+    mv gcta-$VERSION-linux-x86_64-static /bin/gcta64 && \
+    chmod +x /bin/gcta64
 
-cp gcta64  /bin

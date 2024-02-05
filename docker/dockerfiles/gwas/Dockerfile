@@ -113,14 +113,6 @@ COPY /scripts/install_flashpca.sh /tmp/flashpca/
 RUN bash /tmp/flashpca/install_flashpca.sh && \
     rm -rf /tmp/flashpca
 
-# regenie
-WORKDIR /tmp/regenie
-COPY /scripts/install_regenie.sh /tmp/regenie/
-RUN bash /tmp/regenie/install_regenie.sh && \
-    rm -rf /tmp/regenie
-# https://github.com/potree/PotreeConverter/issues/281
-ENV LC_ALL="C"
-
 # gwama
 WORKDIR /tmp/gwama
 COPY /scripts/install_gwama.sh /tmp/gwama/
@@ -138,6 +130,14 @@ WORKDIR /tmp/bgenix
 COPY /scripts/install_bgenix.sh /tmp/bgenix/
 RUN bash /tmp/bgenix/install_bgenix.sh && \
     rm -rf /tmp/bgenix
+
+# regenie (install after bgenix)
+WORKDIR /tmp/regenie
+COPY /scripts/install_regenie.sh /tmp/regenie/
+RUN bash /tmp/regenie/install_regenie.sh && \
+    rm -rf /tmp/regenie
+# https://github.com/potree/PotreeConverter/issues/281
+ENV LC_ALL="C"
 
 # shapeit4
 WORKDIR /tmp/shapeit4
@@ -175,11 +175,28 @@ COPY /scripts/stub.sh /tmp/beagle/
 RUN bash /tmp/beagle/install_beagle.sh && \
     rm -rf /tmp/beagle
 
-
 # duohmm
 WORKDIR /tmp/duohmm
 COPY /scripts/install_duohmm.sh /tmp/duohmm/
 RUN bash /tmp/duohmm/install_duohmm.sh && \
     rm -rf /tmp/duohmm
+
+# samtools
+WORKDIR /tmp/samtools
+COPY /scripts/install_samtools.sh /tmp/samtools/
+RUN bash /tmp/samtools/install_samtools.sh && \
+    rm -rf /tmp/samtools
+
+# bedtools
+WORKDIR /tmp/bedtools
+COPY /scripts/install_bedtools.sh /tmp/bedtools/
+RUN bash /tmp/bedtools/install_bedtools.sh && \
+    rm -rf /tmp/bedtools
+
+# liftOver
+WORKDIR /tmp/liftover
+COPY /scripts/install_liftover.sh /tmp/liftover/
+RUN bash /tmp/liftover/install_liftover.sh && \
+    rm -rf /tmp/liftover
 
 WORKDIR /tools
