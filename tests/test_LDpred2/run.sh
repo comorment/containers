@@ -35,6 +35,8 @@ timeStart=$(date +%s)
 export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
+# assume that ldpred2_ref is alongside containers directory:
+export DIR_COMORMENT="$(dirname "$DIR_BASE")" 
 export DIR_SIF=$DIR_BASE/singularity
 export DIR_TESTS=$DIR_BASE/tests/test_LDpred2
 export DIR_TEMP=$DIR_TESTS/temp
@@ -42,7 +44,7 @@ export DIR_DATA=$DIR_TESTS/data
 export DIR_SCRIPTS=$DIR_BASE/scripts/pgs/LDpred2
 export DIR_REFERENCE=$DIR_BASE/reference
 # The location of the comorment/ldpred2_ref repository that containts LD matrixes
-export DIR_REF_LDPRED=$DIR_BASE/../ldpred2_ref
+export DIR_REF_LDPRED=$DIR_COMORMENT/ldpred2_ref
 
 # Tutorial data
 # Phenotypic data is part of public-data3.fam file
