@@ -53,16 +53,16 @@ export filePlotFull=$DIR_TESTS/output/ld-fig-chr.png
 testSuccess $LDA --file-ld-blocks $DIR_TESTS/output/ld/ld-chr@.rds --plot --plot-file-out $filePlotFull
 # Plot chromosome 21 and 22 and switch to "basepair scale"
 export filePlot2122=$DIR_TESTS/output/ld-fig-chr2122.png
-testSuccess $LDA --file-ld-blocks $DIR_REF_LDPRED/ldref_hm3_plus/LD_with_blocks_chr@.rds --file-ld-map $DIR_REF_LDPRED/map_hm3_plus.rds \
+testSuccess $LDA --file-ld-blocks /ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds --file-ld-map /ldpred2_ref/map_hm3_plus.rds \
  --plot --plot-scale-x basepair --plot-file-out $filePlot2122 --chr2use 21 22
 export fileOutputIntervals=$DIR_TESTS/output/ld/intervals.csv
-testSuccess $LDA --intervals --file-ld-blocks $DIR_REF_LDPRED/ldref_hm3_plus/LD_with_blocks_chr@.rds --file-ld-map $DIR_REF_LDPRED/map_hm3_plus.rds \
+testSuccess $LDA --intervals --file-ld-blocks /ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds --file-ld-map /ldpred2_ref/map_hm3_plus.rds \
   --chr2use 21 22 --file-out $fileOutputIntervals
 
 echo "Testing splitLD.R"
-LDS="$RSCRIPT $DIR_SCRIPTS/splitLD.R --file-ld-map $DIR_REF_LDPRED/map_hm3_plus.rds"
+LDS="$RSCRIPT $DIR_SCRIPTS/splitLD.R --file-ld-map /ldpred2_ref/map_hm3_plus.rds"
 # Fails due to bad parameters
-testException $LDS --file-ld-chr $DIR_REF_LDPRED/ldref_hm3_plus/LD_with_blocks_chr@.rds \
+testException $LDS --file-ld-chr /ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds \
  --file-output-ld-blocks $dirOut/ld-blocked-chr@.rds --chr2use 21 --max-size-weights 40 33
 testSuccess $LDS --file-ld-chr $dirOut/ld-chr22.rds \
  --file-output-ld-blocks $dirOut/ld-blocked-chr@.rds --chr2use 21 --max-size-weights 10 5

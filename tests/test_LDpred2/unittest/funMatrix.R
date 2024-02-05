@@ -3,12 +3,11 @@ library(testthat)
 library(bigsnpr, quietly=T)
 dirScripts <- Sys.getenv('DIR_SCRIPTS')
 dirTests <- Sys.getenv('DIR_TESTS')
-dirLDpredRef <- Sys.getenv('DIR_REF_LDPRED')
 source(paste0(dirScripts, '/fun.R'))
 source(paste0(dirScripts, '/funMatrix.R'))
 
 test_that('Test matrix non-zero elements', {
-  mat <- readRDS(paste0(dirLDpredRef,'/ldref_hm3_plus/LD_with_blocks_chr22.rds'))
+  mat <- readRDS('/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr22.rds')
   # Count the number of zeroes as a file verification
   o <- nonZeroesCount(mat)
   expect_equal(36003541, o)
@@ -27,6 +26,6 @@ test_that('Test getLogBlockSequence', {
 
 test_that('Test LDSplitMatrix error handling', {
   require(Matrix)
-  mat <- readRDS(paste0(dirLDpredRef,'/ldref_hm3_plus/LD_with_blocks_chr22.rds'))
+  mat <- readRDS('/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr22.rds')
   expect_error(LDSplitMatrix(mat, thrR2=0.02, minSize=350, maxSizeWeightLower=70, maxSizeWeightUpper=65, maxR2=0.3))
 })
