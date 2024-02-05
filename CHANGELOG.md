@@ -44,6 +44,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 * Added `samtools 1.19.2`, `bedtools 2.31.1`, `liftOver (latest)` to `gwas.sif` container
+* Added corresponding unit tests
 
 ### Updated
 
@@ -59,13 +60,14 @@ If MD5 sum is not listed for a certain release then it means that the container 
   * plink2 to v2.00a5.10LM 64-bit Intel (5 Jan 2024)
   * plink2_avx2 to v2.00a5.10LM AVX2 Intel (5 Jan 2024)
   * PRSice_linux to 2.3.5
-  * regenie to 3.4
-  * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe (0.1.17)
+  * regenie to 3.4.1
+  * vcftools to git SHA: d511f469e87c2ac9779bcdc3670b2b51667935fe (0.1.17dev)
 * Rebuilt `gwas.sif` w. md5sum checksum:
   
   ```
-  2ca11e58fafd7b322e766013654647d3  singularity/gwas.sif
+  a775f4216b15b731471821d0c2a0da43  singularity/gwas.sif
   ```
+* updated installer scripts
 
 ### Fixed
 
