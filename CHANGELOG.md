@@ -22,7 +22,6 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Added
 
 * Additions goes here
-- Added scripts to analyze and filter bigSNPR LD matrixes (`scripts/pgs/LDpred2/analyzeLD.R`, `scripts/pgs/LDpred2/splitLD.R`).
 
 ### Updated
 
@@ -40,18 +39,24 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.7.0] - 2024-02-05
+
+### Added
+
+* Added scripts to analyze and filter bigSNPR LD matrixes (`scripts/pgs/LDpred2/analyzeLD.R`, `scripts/pgs/LDpred2/splitLD.R`).
+
 ## [1.6.0] - 2023-12-12
 
 ### Added
 
-- Added `gdb` debugger, `ldak` and `snptest` binaries to `gwas.sif` container
-- Added tests for `ldak` and `snptest` binaries in `gwas.sif` container
+* Added `gdb` debugger, `ldak` and `snptest` binaries to `gwas.sif` container
+* Added tests for `ldak` and `snptest` binaries in `gwas.sif` container
 
 ### Updated
 
-- updated `metal` to version `2020-05-05` in `gwas.sif`
-- updated `qctool` to `v2.2.2` and added related binaries `inthinnerator`, `hptest`, `ldbird` and `selfmap` to `gwas.sif`
-- rebuilt `gwas.sif` (md5 checksum b6104b58d21f862f9d61a86d9d4802a6)
+* updated `metal` to version `2020-05-05` in `gwas.sif`
+* updated `qctool` to `v2.2.2` and added related binaries `inthinnerator`, `hptest`, `ldbird` and `selfmap` to `gwas.sif`
+* rebuilt `gwas.sif` (md5 checksum b6104b58d21f862f9d61a86d9d4802a6)
 
 ## [1.5.1] - 2023-10-20
 
@@ -76,6 +81,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
     ```
     1280ba24d99664d450b2e4c4a9c00587  singularity/r.sif
     ```
+
 * Updated GitHub workflow versions to current versions
 
 ### Removed
@@ -88,7 +94,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Added phasing/imputation tools ``beagle``, ``duohmm``, ``eagle``,  ``shapeit5``, ``switchError``, to ``gwas.sif`` container + updated tests
 
-### Fixed 
+### Fixed
 
 * Fix issue that shell script wouldn't capture failing statements
 
@@ -196,9 +202,11 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Updated file and folder layout, fixing minor documentation issues. Moving from ``m2r2`` to ``Myst-parser`` for Sphinx-generated online docs.
 * Rebuilt the R container
+
 * ```
   5ecbfc50f96bc6b25f61858927283e2d  singularity/r.sif
   ```
+
 * Rebuilt the R container
 
   ```
@@ -225,7 +233,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Misc
 
-- Python code max line length of 120 chars, ignore number of newlines between functions
+* Python code max line length of 120 chars, ignore number of newlines between functions
 
 ## [1.1] - 2022-12-01
 

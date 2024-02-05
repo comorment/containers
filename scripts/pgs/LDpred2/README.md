@@ -159,7 +159,7 @@ Calls: snp_ldpred2_auto -> %dorng% -> do.call -> <Anonymous> -> <Anonymous>
 ```
 
 The LDpred2 creators recommend to create indpendent LD blocks in these matrixes. the ``splitLD.R`` script can be used for this purpose. The setup is the same as the
-example above, but we add a modified ``$RSCRIPT [...]``` statement using the outputted matrixes from ``calculateLD.R`` as input to ``splitLD.R``. There are several parameters
+example above, but we add a modified ``$RSCRIPT [...]`` statement using the outputted matrixes from ``calculateLD.R`` as input to ``splitLD.R``. There are several parameters
 to this script that will affect the "shape" of these blocks (thus subsequent performance in LDpred2). Consult ``splitLD.R`` and ``bigsnpr::snp_ldsplit`` for details.
 ```
 $RSCRIPT splitLD.R --file-ld-blocks $fileOutLD \
