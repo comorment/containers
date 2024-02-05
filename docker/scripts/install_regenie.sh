@@ -1,8 +1,18 @@
 #!/bin/sh
 set -euo pipefail
 
-wget --no-check-certificate https://github.com/rgcgithub/regenie/releases/download/v3.2.8/regenie_v3.2.8.gz_x86_64_Linux_mkl.zip && \
-    unzip -j regenie_v3.2.8.gz_x86_64_Linux_mkl.zip && \
-    rm -rf regenie_v3.2.8.gz_x86_64_Linux_mkl.zip && \
-    mv regenie_v3.2.8.gz_x86_64_Linux_mkl regenie
+# required for building regenie (doesn't find bgen otherwise)
+VERSION="1.1.7"
+wget http://code.enkre.net/bgen/tarball/release/v$VERSION.tgz && \
+    tar -xvzf v$VERSION.tgz && cd v$VERSION && \
+    ./waf configure && \
+    ./waf && \
+    cd ..
+
+# build regenie
+git clone --depth 1 --branch v3.4.1 https://github.com/rgcgithub/regenie.git
+cd regenie
+BGEN_PATH=../v$VERSION cmake .
+make
+
 cp regenie /bin

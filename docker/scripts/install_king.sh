@@ -9,9 +9,10 @@ apt-get update && apt-get install --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # king
-wget --no-check-certificate https://www.kingrelatedness.com/executables/Linux-king229.tar.gz && \
-    tar -xvzf Linux-king229.tar.gz && \
-    rm -rf Linux-king229.tar.gz
+VERSION="232"
+wget --no-check-certificate https://www.kingrelatedness.com/executables/Linux-king$VERSION.tar.gz && \
+    tar -xvzf Linux-king$VERSION.tar.gz && \
+    rm -rf Linux-king$VERSION.tar.gz
 
 cp king  /bin
 
