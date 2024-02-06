@@ -39,6 +39,12 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.7.1] - 2024-02-06
+
+### Fixed
+
+* Fixed parsing of  `--genomic-build hg18/hg38` in `ldpred2.R`
+
 ## [1.7.0] - 2024-02-02
 
 ### Added
