@@ -39,6 +39,20 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.7.2] - 2024-02-07
+
+### Updated
+
+* Rebuilt `r.sif` container with md5sum checksum:
+  
+  ```
+  3d69fc2168ef98d1eda3da05391cd6e4  singularity/r.sif
+  ```
+
+### Added
+
+* added `CC-GWAS` R package to `r.sif` container
+
 ## [1.7.1] - 2024-02-06
 
 ### Fixed

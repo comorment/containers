@@ -13,11 +13,12 @@ fi
 # exit on errors
 trap 'exit' ERR
 
-# need env variable GITHUB_PAT set in /root/.bashrc of host for r.sif to build.
+# need env variable GITHUB_PAT set in /root/.bash_profile of host for r.sif to build.
 # this is a personal access token from github with read:packages scope and will have
 # to be updated every 30 days.
-if [ $1 == "r.sif" ]; then
-    source ~/.bashrc
+RCONTAINERPREFIX="r"
+if [ $1 == $RCONTAINERPREFIX ]; then
+    source ~/.bash_profile
     if [ -z "$GITHUB_PAT" ]; then
         echo "GITHUB_PAT not set"
         exit 1
