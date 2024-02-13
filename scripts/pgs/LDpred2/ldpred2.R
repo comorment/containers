@@ -302,10 +302,7 @@ if (argLdpredMode == 'inf') {
   )
   ggsave(plt, file=fileOutputPlot)
   cat('Filtering chains\n')
-  range <- sapply(multi_auto, function(auto) diff(range(auto$corr_est)))
-  # Keep chains that pass the filtering below
-  keep <- (range > (0.95 * quantile(range, 0.95)))
-  beta <- rowMeans(sapply(multi_auto[keep], function (auto) auto$beta_est))
+  beta <- getBetasAuto(multi_auto)
 }
 
 cat('Scoring all individuals...\n')

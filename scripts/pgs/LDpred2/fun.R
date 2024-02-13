@@ -191,3 +191,16 @@ filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T)
   if (verbose) cat('Retained', nrow(dta), 'out of', nKept, 'rows\n')
   dta
 }
+
+# Get the betas from snp_ldpred2_auto
+#' @param fitAuto The return value form snp_ldpred2_auto
+#' @param quantile Range of estimates to keep
+getBetasAuto <- function (fitAuto, quantile=0.95) {
+  range <- sapply(fitAuto, function (auto) diff(range(auto$corr_est)))
+  # Keep chains that pass the filtering below
+  nas <- sum(is.na(range))
+  if (nas > 0) cat(nas, 'missing values out of ', length(range), '\n')
+  keep <- (range > (0.95 * quantile(range, 0.95, na.rm=T)))
+  beta <- rowMeans(sapply(fitAuto[keep], function (auto) auto$beta_est))
+  beta
+}
