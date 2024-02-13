@@ -200,7 +200,7 @@ getBetasAuto <- function (fitAuto, quantile=0.95, verbose=T) {
   # Keep chains that pass the filtering below
   keep <- (range > (0.95 * quantile(range, 0.95, na.rm=T)))
   nas <- sum(is.na(keep))
-  if (nas > 0 && verbose) cat('Omitting', nas, 'missing values in correlation range for', length(keep), 'chains\n')
+  if (nas > 0 && verbose) cat('Omitting', nas, 'chains out of', length(keep), ' due to missing values in correlation range\n')
   keep[is.na(keep)] <- F
   beta <- rowMeans(sapply(fitAuto[keep], function (auto) auto$beta_est))
   beta
