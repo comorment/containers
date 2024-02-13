@@ -126,3 +126,12 @@ test_that('Test filter SNPS', {
   expect_error(filterFromFile(map, fileTutorialSumstats, colFilter='marker.ID', col='bad', verbose=FALSE))
   expect_error(filterFromFile(map, 'missing-file', colMap='marker.ID', verbose=FALSE))
 })
+
+# Create some data with similar structure as what is returned from snp_ldpred2_auto
+list1 <- list(list(corr_est=1:10, beta_est=rep(0.1, 10)), list(corr_est=1:10, beta_est=rep(0.2, 10)))
+list2 <- list(list(corr_est=1:10, beta_est=rep(0.1, 10)), list(corr_est=c(1:9, NA), beta_est=rep(0.2, 10)),
+              list(corr_est=1:10, beta_est=rep(0.2, 10)))
+test_that('Test filter chains from snp_ldpred2_auto', {
+  expect_equal(getBetasAuto(list1), rep(0.15, 10))
+  expect_equal(getBetasAuto(list2, verbose=F), rep(0.15, 10))
+})

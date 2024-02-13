@@ -195,14 +195,13 @@ filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T)
 # Get the betas from snp_ldpred2_auto
 #' @param fitAuto The return value form snp_ldpred2_auto
 #' @param quantile Range of estimates to keep
-getBetasAuto <- function (fitAuto, quantile=0.95) {
-  str(fitAuto)
+getBetasAuto <- function (fitAuto, quantile=0.95, verbose=T) {
   range <- sapply(fitAuto, function (auto) diff(range(auto$corr_est)))
-  str(range)
   # Keep chains that pass the filtering below
-  nas <- sum(is.na(range))
-  if (nas > 0) cat('Omitting', nas, 'missing values in correlation range for', length(range), 'chains\n')
   keep <- (range > (0.95 * quantile(range, 0.95, na.rm=T)))
+  nas <- sum(is.na(keep))
+  if (nas > 0 && verbose) cat('Omitting', nas, 'missing values in correlation range for', length(keep), 'chains\n')
+  keep[is.na(keep)] <- F
   beta <- rowMeans(sapply(fitAuto[keep], function (auto) auto$beta_est))
   beta
 }
