@@ -180,7 +180,6 @@ filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T)
   if (is.character(col) || is.integer(col)) dtaFilter <- dtaFilter[,col]
   else dtaFilter <- dtaFilter[,1]
   if (verbose) cat('Read', length(dtaFilter), 'rows from', fileFilter, '\n')
-  #if (length(dtaFilter) > 0) dta <- dta[dta %in% dtaFilter]
   if (is.data.frame(dta)) {
     dta <- dta[dta[,colFilter] %in% dtaFilter,]
     nKept <- nrow(dta)
@@ -196,9 +195,9 @@ filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T)
 #' @param fitAuto The return value form snp_ldpred2_auto
 #' @param quantile Range of estimates to keep
 getBetasAuto <- function (fitAuto, quantile=0.95, verbose=T) {
-  range <- sapply(fitAuto, function (auto) diff(range(auto$corr_est)))
+  corrRange <- sapply(fitAuto, function (auto) diff(range(auto$corr_est, na.rm=T)))
   # Keep chains that pass the filtering below
-  keep <- (range > (0.95 * quantile(range, 0.95, na.rm=T)))
+  keep <- (corrRange > (0.95 * quantile(corrRange, 0.95, na.rm=T)))
   nas <- sum(is.na(keep))
   if (nas > 0 && verbose) cat('Omitting', nas, 'chains out of', length(keep), ' due to missing values in correlation range\n')
   keep[is.na(keep)] <- F
