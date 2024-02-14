@@ -195,7 +195,7 @@ filterFromFile <- function(dta, fileFilter, colFilter=NULL, col=NULL, verbose=T)
 #' @param fitAuto The return value form snp_ldpred2_auto
 #' @param quantile Range of estimates to keep
 getBetasAuto <- function (fitAuto, quantile=0.95, verbose=T) {
-  corrRange <- sapply(fitAuto, function (auto) diff(range(auto$corr_est, na.rm=T)))
+  corrRange <- sapply(fitAuto, function (auto) diff(range(auto$corr_est)))
   # Keep chains that pass the filtering below
   keep <- (corrRange > (0.95 * quantile(corrRange, 0.95, na.rm=T)))
   nas <- sum(is.na(keep))

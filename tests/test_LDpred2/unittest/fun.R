@@ -131,7 +131,10 @@ test_that('Test filter SNPS', {
 list1 <- list(list(corr_est=1:10, beta_est=rep(0.1, 10)), list(corr_est=1:10, beta_est=rep(0.2, 10)))
 list2 <- list(list(corr_est=1:10, beta_est=rep(0.1, 10)), list(corr_est=c(1:9, NA), beta_est=rep(0.2, 10)),
               list(corr_est=1:10, beta_est=rep(0.2, 10)))
+list3 <- list2
+list3[[4]] <- list(corr_est=rep(NA,10), beta_est=rep(0.2, 10))
 test_that('Test filter chains from snp_ldpred2_auto', {
   expect_equal(getBetasAuto(list1), rep(0.15, 10))
   expect_equal(getBetasAuto(list2, verbose=F), rep(0.15, 10))
+  expect_equal(getBetasAuto(list3, verbose=F), rep(0.15, 10))
 })
