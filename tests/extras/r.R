@@ -54,6 +54,7 @@ libraries_to_check <- c(
     "broom",
     "carat",
     "car",
+    "CCGWAS",
     "cfdr",
     "cfdrCommonControls",
     "cfdr.pleio",

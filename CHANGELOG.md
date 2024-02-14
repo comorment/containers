@@ -45,6 +45,26 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Added scripts to analyze and filter bigSNPR LD matrixes (`scripts/pgs/LDpred2/analyzeLD.R`, `scripts/pgs/LDpred2/splitLD.R`).
 
+## [1.7.2] - 2024-02-14
+
+### Updated
+
+* Rebuilt `r.sif` container with md5sum checksum:
+  
+  ```
+  3d69fc2168ef98d1eda3da05391cd6e4  singularity/r.sif
+  ```
+
+### Added
+
+* added `CC-GWAS` R package to `r.sif` container
+
+## [1.7.1] - 2024-02-06
+
+### Fixed
+
+* Fixed parsing of  `--genomic-build hg18/hg38` in `ldpred2.R`
+
 ## [1.7.0] - 2024-02-02
 
 ### Added
