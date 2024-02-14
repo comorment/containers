@@ -16,7 +16,8 @@ packages <- list(
     'MRCIEU/gwasglue2' = '5d4e35bad211299e95e25151972382a1d7b84092',
     'MRCIEU/TwoSampleMR' = 'c174107cfd9ba47cf2f780849a263f37ac472a0e',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
-    'psychgen/phenotools' = 'b744d927a1302d85152917f3802a2212093d588a'
+    'psychgen/phenotools' = 'b744d927a1302d85152917f3802a2212093d588a',
+    'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5'
 )
 
 # install package from GitHub and quit with error if installation fails

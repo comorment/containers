@@ -12,8 +12,8 @@ RUN bash apt_get_essential.sh && \
 
 # deps for R packages
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    libperl-dev=5.30.0-9ubuntu0.3 \
-    libgslcblas0=2.5+dfsg-6build1 \
+    libperl-dev=5.30.0-9ubuntu0.5 \
+    libgslcblas0=2.5+dfsg-6+deb10u1build0.20.04.1 \
     lmodern=2.004.5-6 \
     texlive-latex-extra=2019.202000218-1 && \
     apt-get clean && \
