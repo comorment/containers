@@ -1,0 +1,2 @@
+example_3chr.log filter=lfs diff=lfs merge=lfs -text
+myld.log filter=lfs diff=lfs merge=lfs -text
