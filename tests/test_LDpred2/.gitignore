@@ -1,6 +1,7 @@
 # Store data converted from plink to bigsnpr
 data/
 !data/README
+!data/individual-ids.txt
 !unittest/data/
 # Gentic maps
 maps/

@@ -1,1 +1,3 @@
 bigsnpr files are placed here
+individual-ids.txt contain individual IDs of the first 100 rows in tutorial_data/public-data3.fam
+This file is used for filtering purposes during testing.
