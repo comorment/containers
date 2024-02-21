@@ -1,6 +1,9 @@
-# CoMorMent Containers
+# COSGAP: A COntainerized Statistical Genetics Analysis Pipelines
 
-The goal of the [CoMorMent](https://www.comorment.uio.no) containers repository at <https://github.com/comorment/containers> is to distribute tools for GWAS and post-GWAS analysis in CoMorMent project ([comorment.eu](https://comorment.eu)).
+The goal of this github repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside with their respective reference data and  scripts ("analysis pipelines") to facilitate application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
+with most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://comorment-containers.readthedocs.io/en/latest/).
+
+For an overview of available software, see [here](docs/README.md).
 
 Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [Getting started](#getting-started) section below.
 
@@ -13,6 +16,8 @@ Description of containers and usage instructions are provided in the [docs](http
 More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](https://github.com/comorment/containers/tree/main/usecases) folder.
 
 The history of changes is available in the [CHANGELOG.md](./CHANGELOG.md) file.
+
+If you would like to contribute to developing these containers, please see the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 Additional tools are available in separate repositories:
 
