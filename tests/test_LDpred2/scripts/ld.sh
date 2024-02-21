@@ -29,6 +29,8 @@ testSuccess $LDE --sumstats $fileSumstats25k rsid --thres-r2 0.2 --chr2use 21 22
 echo "Test restricting on SNPs provide by a SNP list file: $fileKeepSNPS"
 testSuccess $LDE --extract $fileKeepSNPS --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
 
+echo "Test extracting individuals using $fileExtractIndividuals"
+testSuccess $LDE --extract-individuals $fileExtractIndividuals --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
 echo "Test sampling individuals (N=400)"
 testSuccess $LDE --sample-individuals 400 --extract $fileKeepSNPS --file-ld-chr $dirOut/ld-chr@.rds --file-ld-map $dirOut/map.rds
 # Test this LDpred on this LD (restrict to chromosomes 20-22

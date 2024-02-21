@@ -54,6 +54,9 @@ export fileOutputSNPR=$DIR_DATA/public-data3.rds
 export fileKeepSNPS=/REF/hapmap3/w_hm3.justrs
 export fileOut=$DIR_TESTS/output/public-data.score
 
+# File with subset of individual IDs from the tutorial data
+export fileExtractIndividuals=$DIR_DATA/individual-ids.txt
+
 # BGEN files
 export fileBGEN=$DIR_DATA/example.bgen
 export fileBGENasRDS=$DIR_DATA/example.rds
