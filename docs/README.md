@@ -16,9 +16,9 @@ Please [open an issue](https://github.com/comorment/containers/issues/new) if yo
 
 To improve interoperability between different tools we developed the following data format specification:
 
-* [Genotypes data](/docs/specifications/geno_specification.md)
-* [Phenotypes data](/docs/specifications/pheno_specification.md)
-* [GWAS Summary Statistics](/docs/specifications/sumstats_specification.md)
+* [Genotypes data](/specifications/geno_specification.md)
+* [Phenotypes data](/specifications/pheno_specification.md)
+* [GWAS Summary Statistics](/specifications/sumstats_specification.md)
 
 These format specifications are applicable to various scripts, released in this repository, including
 

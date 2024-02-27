@@ -3,7 +3,7 @@
 This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
 Further down in this README file you also have an example of how to run [PRSice2](https://www.prsice.info/) software to compute polygenic risk scores.
 
-This will use genotype and phenotype data formatted according to [CoMorMent specifications](./../docs/specifications/README.md),
+This will use genotype and phenotype data formatted according to [CoMorMent specifications](./../specifications/README.md),
 and the helper [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script that reads the phenotype data,
 extracts user-defined subset of phenotypes and covariates,
 and prepares the scripts or SLURM jobs for ``plink2`` and ``regenie`` analysis.
@@ -88,7 +88,7 @@ run2_regenie_PHENO.gz
 run2_regenie_PHENO2.gz
 ```
 
-Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../docs/specifications/sumstats_specification.md).
+Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../specifications/sumstats_specification.md).
 
 It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
 If you have genotypes formatted this way, the only change you need is to change ``--geno-file`` file, pointing it to ``.bgen``  (or a ``.vcf``) file

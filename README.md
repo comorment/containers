@@ -1,4 +1,4 @@
-# COSGAP: A COntainerized Statistical Genetics Analysis Pipelines
+# COSGAP: COntainerized Statistical Genetics Analysis Pipelines
 
 The goal of this github repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside with their respective reference data and  scripts ("analysis pipelines") to facilitate application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
 with most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://comorment-containers.readthedocs.io/en/latest/).

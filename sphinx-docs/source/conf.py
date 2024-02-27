@@ -19,8 +19,8 @@ _release = _d['VERSION']
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'CoMorMent-containers'
-copyright = '2022, Richard Zetterberg, John Shorter, ' + \
+project = 'COSGAP-containers'
+copyright = '2024, Richard Zetterberg, John Shorter, ' + \
     'Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'
 author = 'Richard Zetterberg, John Shorter, ' +\
     'Espen Hagen, Bayram Cevdet Akdeniz, Alexander Frei'

@@ -1,2 +1,5 @@
-```{include} ../../../scripts/README.md
+# Scripts
+```{toctree}
+:caption: Contents
+gwas/README.md
 ```

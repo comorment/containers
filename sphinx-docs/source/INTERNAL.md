@@ -1,4 +1,4 @@
-# Reference
+# Internal usage
 ```{toctree}
 :caption: Contents
 ```

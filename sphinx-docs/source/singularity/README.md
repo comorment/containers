@@ -1,2 +1,7 @@
-```{include} ../../../singularity/README.md
+# Singularity
+```{toctree}
+:caption: Contents
+../docs/singularity/gwas.md
+../docs/singularity/python3.md
+../docs/singularity/r.md
 ```

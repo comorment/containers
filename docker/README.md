@@ -1,3 +1,7 @@
+# Docker
+
+Build recipes for containers using [Docker](https://www.docker.com) and [Singularity](https://sylabs.io/singularity/).
+
 ## Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.

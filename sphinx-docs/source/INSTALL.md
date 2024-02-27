@@ -1,4 +1,4 @@
-# Reference
+# Installation
 ```{toctree}
 :caption: Contents
 ```
