@@ -20,7 +20,7 @@
          Software list
       R.sif
          Software list
-         For more docuemtation on LDpred2 see [scripts] folder.
+         For more documentation on LDpred2 see [scripts] folder.
       ldsc.sif
          * reference overview
          * usage exampe
@@ -48,17 +48,18 @@
    API usage
       pgs_toolkit
    Contributing / dev instructions (wiki-like content)
+   Change log
    Internal usage (p33/p697/Tryggve collaborators)
 
 Welcome to the COSGAP-Container's documentation!
 ================================================
 
-This is the online documentation for the CoMorMent-containers project, 
+This is the online documentation for the COSGAP-Container project, 
 hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::
-   :caption: Containers
-   :maxdepth: 3
+   :caption: Table of Contents
+   :maxdepth: 1
    
    MASTER
 

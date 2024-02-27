@@ -10,5 +10,6 @@ scripts/README.md
 usecases/README.md
 API.md
 CONTRIBUTING.md
+CHANGELOG.md
 INTERNAL.md
 ```
