@@ -1,4 +1,4 @@
-# Summary statistics
+# Summary statistics spec
 
 The results of GWAS are represented as summary statistics, with the following columns:
 
@@ -55,3 +55,7 @@ If you need these columns for ``regenie`` analysis consider also running ``plink
 | Z             | ?             | Z             | Z             | Z             | OK     |
 | FRQ           | FRQ_A_NNN     | FRQ           | EAF           | FRQ           | keep "FRQ" which makes more sense for non-EUR populations     |
 | missing       | ?             | missing       | EAF_1KG       | missing       | not needed     |
+
+## Change log
+
+* ``v0.9`` - first version of this document

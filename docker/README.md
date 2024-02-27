@@ -1,32 +1,3 @@
-# Docker
-
-This repository is used to develop and document [Singularity](https://sylabs.io) or [Apptainer](https://apptainer.org) containers with various software and analytical tools for GWAS and post-GWAS analysis via [Docker](https://www.docker.com).
-
-## Getting started
-
-For new users we recommend to go over introductory instructions in [docs/singularity/hello.md](./../docs/singularity/hello.md), which explain the basic usage of singularity containers, using a minimalistic example (singularity container with ``plink`` binary).
-
-If you would like to contribute to developing these containers, please see the [CONTRIBUTING](./../CONTRIBUTING.md) file.
-
-For a tutorial on GWAS with synthetic data, see [usecases/gwas_demo.md](./../usecases/gwas_demo.md).
-
-### Prerequisites (to running tutorials)
-
-NOTE: This is out of date. Confer [usecases/README.md](./../usecases/README.md).
-
-* download container files shared on the [Google Drive](https://drive.google.com/drive/folders/1mfxZJ-7A-4lDlCkarUCxEf2hBIxQGO69?usp=sharing).
-* download ``comorment_ref.tar.gz`` file from the above Google Drive folder, extract it with ``tar -xzvf comorment_ref.tar.gz`` command,
-  and create an environmental variable ``COMORMENT_REF`` pointing to the folder containing extracted ``comorment_ref.tar.gz`` data.
-  If you want to see the content of ``comorment_ref.tar.gz`` without downloading and extracting,
-  you may take a quick look [here](https://github.com/norment/comorment_data). This is a private repository, and you need to get access.
-  Please contact Oleksandr and Bayram by e-mail and send us your github user name. If you don't have it, create one [here](http://github.com/join).
-* create an empty folder called ``data``, for storing the results and intermediate files produced by running containers.
-  (most instructinos mount this folder like this: ``-B data:/data``).
-
-## Description of available containers
-
-The detailed description of the available container [files](https://github.com/comorment/containers/tree/main/singularity) provided in this repository are found [here](./../docs/singularity/README.md).
-
 ## Software versions
 
   Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.

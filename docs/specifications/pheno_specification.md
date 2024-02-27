@@ -1,4 +1,4 @@
-# Phenotypes and covariates
+# Phenotypes and covariates spec
 
 For phenotypes and covariates, we expect the data to be organized in a single delimiter-separated file (hereinafter referred to as *phenotype file*),
 with rows corresponding to individuals, and columns corresponding to relevant variables of interest or covariates.
@@ -75,3 +75,8 @@ PC2,CONTINUOUS,2nd principal component
 PC3,CONTINUOUS,3rd principal component
 ...
 ```
+
+## Change log
+
+* ``v0.9`` - first version of this document
+* ``v0.9.1`` - specify case/control coding and rename COLUMN->FIELD in the dictionary file

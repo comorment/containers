@@ -1,4 +1,4 @@
-# Genotypes
+# Genotype data spec
 
 We expect imputed genotype data, which may be split into multiple *cohorts* at each site.
 For example, MoBa imputed genotype data is currently split into three cohorts, one per genotype array: GSA, OMNI and HCE.
@@ -47,3 +47,7 @@ Currently we do not require ``IID`` values to be unique across cohorts.
 At of now, we only support the analysis for autosomes (chr 1..22).
 Support for other chromosomes will came later.
 We expect the same set of individuals across all autosomes (chr 1..22).
+
+## Change log
+
+* ``v0.9`` - first version of this document
