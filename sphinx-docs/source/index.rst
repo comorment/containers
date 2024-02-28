@@ -61,7 +61,7 @@ hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/contain
    :caption: Table of Contents
    :maxdepth: 1
    
-   MASTER
+   MAIN
 
 Indices and tables
 ==================
