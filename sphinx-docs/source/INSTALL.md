@@ -1,4 +1,2 @@
-# Installation
-```{toctree}
-:caption: Contents
+```{include} ../../INSTALL.md
 ```
