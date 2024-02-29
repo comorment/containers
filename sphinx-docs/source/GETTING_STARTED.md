@@ -4,5 +4,7 @@ To get started using a bare-bones container setup, please confer the following p
 
 ```{toctree}
 :caption: Contents
-docs/singularity/hello.md
+```
+```{include} ../../docs/singularity/hello.md
+:heading-offset: 1
 ```

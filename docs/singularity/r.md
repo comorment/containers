@@ -3,7 +3,7 @@
 ## Description
 
 The ``r.sif`` container has multiple genomics tools related based on R.
-Please confer this [table](./../../docker/README.md#software-versions) for the more complete list.
+Please confer the [Software](#software) table below for the more complete list.
 
 In addition several standard R packages are also included (e.g. data.table, ggplot2, rmarkdown, etc.)
 
