@@ -39,6 +39,14 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Miscellaneous goes here
 
+## [1.8.1] - 2024-02-29
+
+### Updated
+
+* Bundle of sphinx documentation build updates/restructures
+* Refer to the project as "COSGAP-containers"
+* Minor changes to documentation + suggestion of TOC
+
 ## [1.8.0] - 2024-02-22
 
 ### Added
