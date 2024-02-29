@@ -114,6 +114,8 @@ def parse_args(args):
                               help="covariates to control for (must be columns of the --pheno-file); individuals with "
                               "missing values for any covariates will be excluded not just from <out>.covar, but also "
                               "from <out>.pheno file")
+    pheno_parser.add_argument("--firth", type=str, default="firth-fallback",
+                              help="regression mode for binary phenotypes. select between no-firth, firth-fallback and firth")
     pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*',
                               help="the list of continuous phenotypes to standardize variance; accept the list of "
                               "columns from the --pheno file (if empty, applied to all); doesn't apply to dummy "
@@ -536,6 +538,9 @@ def make_saige_merge_commands(args, logistic, array_spec):
 
 def make_plink2_merge_commands(args, logistic):
     cmd = ''
+    # Move *.glm.logistic.hybrid and *.glm.firth to *.glm.logistic
+    cmd += """find . -type f -name "*.glm.logistic.hybrid" -exec sh -c 'mv "$1" "${1%.glm.logistic.hybrid}.glm.logistic"' _ {} \;\n"""
+    cmd += """find . -type f -name "*.glm.firth" -exec sh -c 'mv "$1" "${1%.glm.firth}.glm.logistic"' _ {} \;\n"""
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
