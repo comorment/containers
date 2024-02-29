@@ -10,3 +10,4 @@ dependencies:
   - myst-parser
   - make
   - linkify-it-py
+  - numpydoc
