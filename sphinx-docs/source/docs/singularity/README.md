@@ -1,2 +1,0 @@
-```{include} ../../../../singularity/README.md
-```
