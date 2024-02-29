@@ -7,6 +7,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../scripts/gwas'))
+sys.path.insert(0, os.path.abspath('../../scripts/pgs/pgs_toolkit'))
 
 
 # -- Release information
@@ -37,11 +39,11 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
     'sphinx_design',
+    'numpydoc',
 ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

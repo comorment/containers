@@ -44,7 +44,7 @@ VERSION = "{0}.{1}.{2}{3}".format(_MAJOR, _MINOR, _PATCH, _SUFFIX)
 __version__ = VERSION
 
 MASTHEAD = "*************************************************\n"
-MASTHEAD += "* pgs.py: pipeline for PGRS analysis\n"
+MASTHEAD += "* pgs.py: pipeline for PGS analysis\n"
 MASTHEAD += "* Version {V}\n".format(V=__version__)
 MASTHEAD += "* (C) 2022 Espen Hagen, Oleksandr Frei, \n"
 MASTHEAD += "* Bayram Akdeniz and Alexey A. Shadrin\n"
@@ -249,8 +249,37 @@ def set_env(config):
 
 
 class BasePGS(abc.ABC):
-    """Base PGRS object declaration with some
+    """
+    Base PGS object declaration with some
     shared properties for subclassing
+
+    Parameters
+    ----------
+    sumstats_file: str
+        summary statistics file (.gz)
+    pheno_file: str
+        phenotype file (for instance, .height)
+    phenotype: str or None
+        if not ``None``, phenotype name (must be a column
+        header in pheno_file)
+    phenotype_class: str
+        phenotype class, either ``CONTINUOUS`` or ``BINARY``
+    geno_file_prefix: str
+        path to QC'd .bed, .bim, .fam files (w.o. file ending)
+        (</ENV/path/to/data/file>)
+    output_dir: str
+        path for output files (<path>)
+    **kwargs
+
+    Attributes
+    ----------
+    data_prefix: str
+        file name prefix of .bed, .bim, etc. files
+
+    Methods
+    -------
+    get_str:
+        abstract method for returning string with commands
     """
     __metaclass__ = abc.ABCMeta
 
@@ -263,30 +292,6 @@ class BasePGS(abc.ABC):
                  geno_file_prefix='/REF/examples/prsice2/EUR',
                  output_dir='qc-output',
                  **kwargs):
-        """
-        Parameters
-        ----------
-        sumstats_file: str
-            summary statistics file (.gz)
-        pheno_file: str
-            phenotype file (for instance, .height)
-        phenotype: str or None
-            if not ``None``, phenotype name (must be a column
-            header in ``pheno_file``)
-        phenotype_class: str
-            phenotype class, either 'CONTINUOUS' or 'BINARY'
-        geno_file_prefix: str
-            path to QC'd .bed, .bim, .fam files (w.o. file ending)
-            (</ENV/path/to/data/file>)
-        output_dir: str
-            path for output files (<path>)
-        **kwargs
-
-        Attributes
-        ----------
-        data_prefix: str
-            file name prefix of .bed, .bim, etc. files
-        """
         # set attributes
         self.sumstats_file = sumstats_file
         self.pheno_file = pheno_file
@@ -320,6 +325,7 @@ class BasePGS(abc.ABC):
         ----------
         nPCs: int
             number of PCs to account for
+        
         '''
         command = ' '.join([
             '$PLINK',
@@ -334,6 +340,63 @@ class PGS_Plink(BasePGS):
     """
     Helper class for setting up Plink PRS analysis.
     Inherited from class ``BasePGS``
+
+    Parameters
+    ----------
+    sumstats_file: str
+        summary statistics file (.gz)
+    pheno_file: str
+        phenotype file (for instance, .height)
+    phenotype: str or None
+        if not ``None``, phenotype name (must be a column
+        header in ``pheno_file``)
+    phenotype_class: str
+        phenotype class, either ``CONTINUOUS`` or ``BINARY``
+    geno_file_prefix: str
+        path to QC'd .bed, .bim, .fam files (w.o. file ending)
+        (</ENV/path/to/data/file>)
+    output_dir: str
+        path for output files (<path>)
+    covariate_file: str
+        path to covariance file (.cov)
+    eigenvec_file: str or None
+        None, or path to eigenvec file (.eigenvec)
+    clump_p1: float
+        plink --clump-p1 parameter value (default: 1)
+    clump_r2: float
+        plink --clump-r2 parameter value (default: 0.1)
+    clump_kb: float
+        plink --clump-r2 parameter value (default: 250)
+    clump_snp_field: str
+        plink --clump-snp-field parameter value (default: 'SNP')
+    clump_field: str
+        plink --clump-field parameter value (default: 'P')
+    range_list: list of floats
+        list of p-value ranges for plink --q-score-range arg.
+        (default: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5])
+    strat_indep_pairwise: list of scalars
+        plink --indep-pairwise parameters for stratification describing
+        window size (kb),  step size (variant ct), r^2 threshold
+        (default: [250, 50, 0.25])
+    nPCs: int
+        plink --pca parameter value (default: 6)
+    # score_args: list
+    #     plink --score arguments (default: [3, 4, 12, 'header'])
+    score_columns: list of str
+        for plink's --score, column names in sumstats_file.
+        Requires header. Default: ['SNP', 'A1', 'BETA']
+    **kwargs
+
+    Attributes
+    ----------
+    data_prefix: str
+        file name prefix of .bed, .bim, etc. files
+
+    Methods
+    -------
+    get_model_evaluation_str:
+
+    get_str:
     """
 
     def __init__(self,
@@ -356,59 +419,6 @@ class PGS_Plink(BasePGS):
                  score_columns=None,
                  # score_args=None,
                  **kwargs):
-        '''
-        Parameters
-        ----------
-        sumstats_file: str
-            summary statistics file (.gz)
-        pheno_file: str
-            phenotype file (for instance, .height)
-        phenotype: str or None
-            if not ``None``, phenotype name (must be a column
-            header in ``pheno_file``)
-        phenotype_class: str
-            phenotype class, either 'CONTINUOUS' or 'BINARY'
-        geno_file_prefix: str
-            path to QC'd .bed, .bim, .fam files (w.o. file ending)
-            (</ENV/path/to/data/file>)
-        output_dir: str
-            path for output files (<path>)
-        covariate_file: str
-            path to covariance file (.cov)
-        eigenvec_file: str or None
-            None, or path to eigenvec file (.eigenvec)
-        clump_p1: float
-            plink --clump-p1 parameter value (default: 1)
-        clump_r2: float
-            plink --clump-r2 parameter value (default: 0.1)
-        clump_kb: float
-            plink --clump-r2 parameter value (default: 250)
-        clump_snp_field: str
-            plink --clump-snp-field parameter value (default: 'SNP')
-        clump_field: str
-            plink --clump-field parameter value (default: 'P')
-        range_list: list of floats
-            list of p-value ranges for plink --q-score-range arg.
-            (default: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5])
-        strat_indep_pairwise: list of scalars
-            plink --indep-pairwise parameters for stratification describing
-            window size (kb),  step size (variant ct), r^2 threshold
-            (default: [250, 50, 0.25])
-        nPCs: int
-            plink --pca parameter value (default: 6)
-        # score_args: list
-        #     plink --score arguments (default: [3, 4, 12, 'header'])
-        score_columns: list of str
-            for plink's --score, column names in sumstats_file.
-            Requires header. Default: ['SNP', 'A1', 'BETA']
-        **kwargs
-
-        Attributes
-        ----------
-        data_prefix: str
-            file name prefix of .bed, .bim, etc. files
-
-        '''
         super().__init__(sumstats_file=sumstats_file,
                          pheno_file=pheno_file,
                          phenotype=phenotype,
@@ -726,7 +736,7 @@ class PGS_Plink(BasePGS):
         mode: str
             'basic' or 'stratification'
         update_effect_size: bool
-            if True, compute PGRS using OR
+            if True, compute PGS using OR
 
         Returns:
         --------
@@ -770,6 +780,51 @@ class PGS_PRSice2(BasePGS):
     """
     Helper class for setting up PRSice-2 PRS analysis.
     Inherited from class ``BasePGS``
+
+    Parameters
+    ----------
+    sumstats_file: str
+        summary statistics file (.gz)
+    pheno_file: str
+        phenotype file (for instance, .height)
+    phenotype: str or None
+        if not ``None``, phenotype name (must be a column
+        header in ``pheno_file``)
+    phenotype_class: str
+        phenotype class, either ``CONTINUOUS`` or ``BINARY``
+    geno_file_prefix: str
+        path to QC'd .bed, .bim, .fam files (w.o. file ending)
+        (</ENV/path/to/data/file>)
+    output_dir: str
+        path for output files (<path>)
+    covariate_file: str or None
+        path to covariate file (.cov)
+    eigenvec_file: str or None
+        path to eigenvec file (.eig) with PCs
+    nPCs: int
+        number of Principal Components (PCs) to include
+        in covariate generation
+    MAF: float
+        base-MAF upper threshold value (0.01)
+    INFO: float
+        base-INFO upper threshold value (0.8)
+    **kwargs
+        dict of additional keyword/arguments pairs parsed to
+        the Rscripts/PRSice.R script (see file for full set of options).
+        If the option is only a flag without value, set value
+        as None-type or empty string.
+
+    Attributes
+    ----------
+    data_prefix: str
+        file name prefix of .bed, .bim, etc. files
+    
+    Methods
+    -------
+    get_model_evaluation_str:
+
+    get_str:
+
     """
 
     def __init__(self,
@@ -785,45 +840,6 @@ class PGS_PRSice2(BasePGS):
                  MAF=0.01,
                  INFO=0.8,
                  **kwargs):
-        '''
-        Parameters
-        ----------
-        sumstats_file: str
-            summary statistics file (.gz)
-        pheno_file: str
-            phenotype file (for instance, .height)
-        phenotype: str or None
-            if not ``None``, phenotype name (must be a column
-            header in ``pheno_file``)
-        phenotype_class: str
-            phenotype class, either 'CONTINUOUS' or 'BINARY'
-        geno_file_prefix: str
-            path to QC'd .bed, .bim, .fam files (w.o. file ending)
-            (</ENV/path/to/data/file>)
-        output_dir: str
-            path for output files (<path>)
-        covariate_file: str or None
-            path to covariate file (.cov)
-        eigenvec_file: str or None
-            path to eigenvec file (.eig) with PCs
-        nPCs: int
-            number of Principal Components (PCs) to include
-            in covariate generation
-        MAF: float
-            base-MAF upper threshold value (0.01)
-        INFO: float
-            base-INFO upper threshold value (0.8)
-        **kwargs
-            dict of additional keyword/arguments pairs parsed to
-            the Rscripts/PRSice.R script (see file for full set of options).
-            If the option is only a flag without value, set value
-            as None-type or empty string.
-
-        Attributes
-        ----------
-        data_prefix: str
-            file name prefix of .bed, .bim, etc. files
-        '''
         super().__init__(sumstats_file=sumstats_file,
                          pheno_file=pheno_file,
                          phenotype=phenotype,
@@ -975,6 +991,43 @@ class PGS_LDpred2(BasePGS):
     """
     Helper class for setting up LDpred2 PRS analysis.
     Inherited from class ``BasePGS``
+
+    Parameters
+    ----------
+    sumstats_file: str
+        summary statistics file (.gz)
+    pheno_file: str
+        phenotype file (for instance, .height)
+    phenotype: str or None
+        if not ``None``, phenotype name (must be a column
+        header in ``pheno_file``)
+    phenotype_class: str
+        phenotype class, either 'CONTINUOUS' or 'BINARY'
+    geno_file_prefix: str
+        path to QC'd .bed, .bim, .fam files (w.o. file ending)
+        (</ENV/path/to/data/file>)
+    output_dir: str
+        path for output files (<path>)
+    method: str
+        LDpred2 method, either "auto" (default) or
+        "inf" for infinitesimal
+    file_geno_rds: str
+        base name for .rds file output
+    **kwargs
+        dict of additional keyword/arguments pairs parsed to
+        the ``$LDPRED2_SCRIPTS/ldpred2.R`` script
+        (see file for full set of options).
+        If the option is only a flag without value, set value
+        as None-type or empty string.    
+    
+    Methods
+    -------
+    generate_eigenvec_eigenval_files:
+
+    get_model_evaluation_str:
+
+    get_str:
+
     """
 
     def __init__(self,
@@ -987,36 +1040,6 @@ class PGS_LDpred2(BasePGS):
                  method='auto',
                  file_geno_rds='PGS_ldpred2_inf/EUR.rds',
                  **kwargs):
-        '''
-        Parameters
-        ----------
-        sumstats_file: str
-            summary statistics file (.gz)
-        pheno_file: str
-            phenotype file (for instance, .height)
-        phenotype: str or None
-            if not ``None``, phenotype name (must be a column
-            header in ``pheno_file``)
-        phenotype_class: str
-            phenotype class, either 'CONTINUOUS' or 'BINARY'
-        geno_file_prefix: str
-            path to QC'd .bed, .bim, .fam files (w.o. file ending)
-            (</ENV/path/to/data/file>)
-        output_dir: str
-            path for output files (<path>)
-        method: str
-            LDpred2 method, either "auto" (default) or
-            "inf" for infinitesimal
-        file_geno_rds: str
-            base name for .rds file output
-
-        **kwargs
-            dict of additional keyword/arguments pairs parsed to
-            the ``$LDPRED2_SCRIPTS/ldpred2.R`` script
-            (see file for full set of options).
-            If the option is only a flag without value, set value
-            as None-type or empty string.
-        '''
         super().__init__(sumstats_file=sumstats_file,
                          pheno_file=pheno_file,
                          phenotype=phenotype,
@@ -1145,6 +1168,34 @@ class Standard_GWAS_QC(BasePGS):
     https://choishingwan.github.io/PRS-Tutorial/target/#qc-of-target-data
 
     Use with caution. This class is not fully tested.
+
+    Parameters
+    ----------
+    sumstats_file: str
+        summary statistics file (.gz)
+    pheno_file: str
+        phenotype file (for instance, .height)
+    geno_file_prefix: str
+        path to (raw) .bed, .bim, .fam files (w.o. file ending)
+        (</ENV/path/to/data/file>)
+    output_dir: str
+        path for output files (<path>)
+    phenotype: str
+        default: 'Height'
+    data_postfix: str
+        default: '.QC'
+    QC_target_kwargs: dict
+        default: {'maf': 0.01, 'hwe': 1e-6, 'geno': 0.01, 'mind': 0.01}
+    QC_prune_kwargs: dict
+        default: {'indep-pairwise': [200, 50, 0.25]}
+    QC_relatedness_prune_kwargs: dict
+        defaultL: {'rel-cutoff': 0.125}
+    **kwargs
+
+    Methods
+    -------
+    get_str:
+
     '''
 
     def __init__(self,
@@ -1158,30 +1209,6 @@ class Standard_GWAS_QC(BasePGS):
                  QC_prune_kwargs=None,
                  QC_relatedness_prune_kwargs=None,
                  **kwargs):
-        '''
-        Parameters
-        ----------
-        sumstats_file: str
-            summary statistics file (.gz)
-        pheno_file: str
-            phenotype file (for instance, .height)
-        geno_file_prefix: str
-            path to (raw) .bed, .bim, .fam files (w.o. file ending)
-            (</ENV/path/to/data/file>)
-        output_dir: str
-            path for output files (<path>)
-        phenotype: str
-            default: 'Height'
-        data_postfix: str
-            default: '.QC'
-        QC_target_kwargs: dict
-            default: {'maf': 0.01, 'hwe': 1e-6, 'geno': 0.01, 'mind': 0.01}
-        QC_prune_kwargs: dict
-            default: {'indep-pairwise': [200, 50, 0.25]}
-        QC_relatedness_prune_kwargs: dict
-            defaultL: {'rel-cutoff': 0.125}
-        **kwargs
-        '''
         super().__init__(sumstats_file=sumstats_file,
                          pheno_file=pheno_file,
                          geno_file_prefix=geno_file_prefix,
