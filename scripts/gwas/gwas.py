@@ -541,8 +541,8 @@ def make_plink2_merge_commands(args, logistic):
     cmd = ''
     # Move *.glm.logistic.hybrid and *.glm.firth to *.glm.logistic
     cmd += """find . -type f -name "*.glm.logistic.hybrid" -exec sh -c 'mv "$1" "${1%.glm.logistic.hybrid}.glm"""
-    cmd += """.logistic"' _ {} \;\n"""
-    cmd += """find . -type f -name "*.glm.firth" -exec sh -c 'mv "$1" "${1%.glm.firth}.glm.logistic"' _ {} \;\n"""
+    cmd += """.logistic"' _ {} \\;\n"""
+    cmd += """find . -type f -name "*.glm.firth" -exec sh -c 'mv "$1" "${1%.glm.firth}.glm.logistic"' _ {} \\;\n"""
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
