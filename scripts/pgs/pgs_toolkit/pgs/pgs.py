@@ -325,7 +325,7 @@ class BasePGS(abc.ABC):
         ----------
         nPCs: int
             number of PCs to account for
-        
+
         '''
         command = ' '.join([
             '$PLINK',
@@ -818,7 +818,7 @@ class PGS_PRSice2(BasePGS):
     ----------
     data_prefix: str
         file name prefix of .bed, .bim, etc. files
-    
+
     Methods
     -------
     get_model_evaluation_str:
@@ -1018,8 +1018,8 @@ class PGS_LDpred2(BasePGS):
         the ``$LDPRED2_SCRIPTS/ldpred2.R`` script
         (see file for full set of options).
         If the option is only a flag without value, set value
-        as None-type or empty string.    
-    
+        as None-type or empty string.
+
     Methods
     -------
     generate_eigenvec_eigenval_files:
