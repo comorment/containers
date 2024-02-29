@@ -1,5 +1,7 @@
 # ``gwas.sif`` container
 
+## Description
+
 The ``gwas.sif`` container file has multiple tools related to imputation and GWAS analysis, as summarized in this [table](./../../docker/README.md#software-versions).
 
 Note that some specific tools (e.g. ``bolt``) are added to the path directly from their ``/tools`` folder (e.g. ``/tools/bolt``) due to hard-linked dependencies.
