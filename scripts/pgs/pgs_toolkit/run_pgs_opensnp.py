@@ -23,23 +23,30 @@ if __name__ == '__main__':
     # Setup inputs and outputs
     #######################################
     # input (shared)
+    sumstats_file = '/opensnp/gwas/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz'
+    pheno_file = '/opensnp/pheno/pheno.csv'
+    phenotype = 'height_cm'
+    phenotype_class = 'CONTINUOUS'
+    geno_file_prefix = '/opensnp/imputed/opensnp_hm3'
+    data_postfix = ''
+    '''
     sumstats_file = '/REF/examples/ldpred2/trait1.sumstats.gz'
     pheno_file = '/REF/examples/ldpred2/simu.pheno'
     phenotype = 'trait1'
     phenotype_class = 'CONTINUOUS'
     geno_file_prefix = '/REF/examples/ldpred2/g1000_eur_chr21to22_hm3rnd1'
     data_postfix = ''
+    '''
 
     # Output root directory (will be created if it does not exist)
     output_dir = 'output'
     os.makedirs(output_dir, exist_ok=True)
 
     # LDpred2 specific
-    file_geno_rds = os.path.join(output_dir, 'g1000_eur_chr21to22_hm3rnd1.rds')
+    file_geno_rds = os.path.join(output_dir, 'opensnp_hm3.rds')
 
     # method specific input
-    # seems valid, not 100% sure.
-    covariate_file = '/REF/examples/prsice2/EUR.cov'
+    covariate_file = pheno_file
 
     #######################################
     # Update method-specific configs
@@ -69,6 +76,7 @@ if __name__ == '__main__':
     data_prefix = os.path.split(geno_file_prefix)[-1]
     eigenvec_file = f'{os.path.join("{}", data_prefix)}.eigenvec'
 
+    '''
     #######################################
     # Plink
     #######################################
@@ -129,14 +137,16 @@ if __name__ == '__main__':
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
+    '''
 
     ############################################
     # LDpred2 infinitesimal and automatic models
     ############################################
-    for method in ['inf', 'auto']:
+    # for method in ['inf', 'auto']:
+    for method in ['auto']:
         output_dir_ldpred2 = os.path.join(
             output_dir,
-            f'PGS_synthetic_LDpred2_{method}')
+            f'PGS_{phenotype}_LDpred2_{method}')
         ldpred2 = pgs.PGS_LDpred2(
             sumstats_file=sumstats_file,
             pheno_file=pheno_file,
