@@ -1,6 +1,6 @@
 # SAIGE demo
 
-This usecase describe how to run Saige analysis (<https://github.com/weizhouUMICH/SAIGE>). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+This usecase describe how to run Saige analysis (<https://github.com/weizhouUMICH/SAIGE>). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in the [INSTALL](../INSTALL.md) section of the main README file.
 
 1. create folder for output
 

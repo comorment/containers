@@ -1,5 +1,7 @@
 # ``hello.sif`` container
 
+## Description
+
 You may use ``hello.sif`` container to familirize yourself with Singularity (https://sylabs.io/docs/),
 and the way it works on your secure HPC environment (TSD, Bianca, Computerome, or similar).
 This singularity container is indented as a demo. 
@@ -89,3 +91,11 @@ The official documentation for singularity on TSD  is available [here](https://w
 * Generally, it is a good idea to add ``--no-home`` argument to your singularity commands, to make sure that that scripts such as ``.bashrc`` do not interfere with singularity container. This also applies if you have custom software installed in your home folder. For other options that control isolation of the containers (i.e. ``--containall`` option) see [here](https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html#using-no-home-and-containall-flags). 
 * If you are a developer, and you would like to generate a singularity container, you may want to do it outside of TSD, and then bring just a ``.sif`` file to TSD. Also, building singularity containers is much easier by building a Docker container first (using ``Dockerfile``), and converting such Docker container to a singularity container.
 
+## Software
+
+List of software included in the container:
+
+  | OS/tool             | version                                   | license
+  | ------------------- | ----------------------------------------- | -------------
+  | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
