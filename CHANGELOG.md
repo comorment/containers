@@ -25,7 +25,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
-* Updates go here
+* Change LDpred2 usage example to use the [OpenSNP](https://github.com/containers/opensnp) based datasets
 
 ### Fixed
 
@@ -38,6 +38,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Misc
 
 * Miscellaneous goes here
+
 
 ## [1.8.1] - 2024-03-05
 
