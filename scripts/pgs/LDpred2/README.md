@@ -306,7 +306,7 @@ export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/
 export fileGeno=/opensnp/imputed/opensnp_hm3.bed
 export fileGenoRDS=opensnp_hm3.rds
 export fileSumstats=/opensnp/gwas/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz
-export fileOut=PGS_Height
+export fileOut=Height
 
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
