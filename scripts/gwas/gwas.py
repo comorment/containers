@@ -114,6 +114,9 @@ def parse_args(args):
                               help="covariates to control for (must be columns of the --pheno-file); individuals with "
                               "missing values for any covariates will be excluded not just from <out>.covar, but also "
                               "from <out>.pheno file")
+    pheno_parser.add_argument("--firth", type=str, default="firth-fallback",
+                              help="regression mode for binary phenotypes. select between no-firth, firth-fallback and "
+                              "firth")
     pheno_parser.add_argument("--variance-standardize", type=str, default=None, nargs='*',
                               help="the list of continuous phenotypes to standardize variance; accept the list of "
                               "columns from the --pheno file (if empty, applied to all); doesn't apply to dummy "
@@ -536,6 +539,10 @@ def make_saige_merge_commands(args, logistic, array_spec):
 
 def make_plink2_merge_commands(args, logistic):
     cmd = ''
+    # Move *.glm.logistic.hybrid and *.glm.firth to *.glm.logistic
+    cmd += """find . -type f -name "*.glm.logistic.hybrid" -exec sh -c 'mv "$1" "${1%.glm.logistic.hybrid}.glm"""
+    cmd += """.logistic"' _ {} \\;\n"""
+    cmd += """find . -type f -name "*.glm.firth" -exec sh -c 'mv "$1" "${1%.glm.firth}.glm.logistic"' _ {} \\;\n"""
     for pheno in args.pheno:
         cmd += '$PYTHON gwas.py merge-plink2 ' + \
             pass_arguments_along(args, ['info-file', 'info', 'maf', 'hwe', 'geno']) + \
@@ -1121,7 +1128,7 @@ def append_job(args, commands, array_spec, slurm_job_index, cmd_file, submit_job
 def rename_iid_column(log, pheno_dict, pheno):
     if np.sum(pheno_dict['TYPE'] == 'IID') != 1:
         raise ValueError('Exacly one column in the dictionary file must be marked as IID')
-    iid_column_name = pheno_dict.loc[pheno_dict['TYPE'] == 'IID', 'FIELD'][0]
+    iid_column_name = pheno_dict.loc[pheno_dict['TYPE'] == 'IID', 'FIELD'].values[0]
     if iid_column_name not in pheno.columns:
         raise ValueError(f'IID column ({iid_column_name}) not present in --pheno-file')
     if (iid_column_name != 'IID') and ('IID' in pheno.columns):
