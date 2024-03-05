@@ -21,31 +21,32 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Additions goes here
-
-### Updated
-
-* Updates goes here
-
-### Fixed
-
-* Fixes goes here
-
-### Removed
-
-* Removals goes here
-
-### Misc
-
-* Miscellaneous goes here
-
-## [1.8.1] - 2024-02-29
+* Additions go here
 
 ### Updated
 
 * Bundle of sphinx documentation build updates/restructures
 * Refer to the project as "COSGAP-containers"
 * Minor changes to documentation + suggestion of TOC
+
+### Fixed
+
+* Fixes go here
+
+### Removed
+
+* Removals go here
+
+### Misc
+
+* Miscellaneous goes here
+
+## [1.8.1] - 2024-03-05
+
+### Fixed
+
+* Fixed parsing of `IID` field in `pheno.dict`
+* Fixed issue with files with different suffixes produced by plink2 for binary phenotypes in `gwas.py`
 
 ## [1.8.0] - 2024-02-22
 
