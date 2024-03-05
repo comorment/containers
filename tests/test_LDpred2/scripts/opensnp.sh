@@ -1,6 +1,6 @@
 # Set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
-export COMORMENT=$DIR_COMORMENT
+export COMORMENT="$(dirname `git rev-parse --show-toplevel`)"
 export SIF=$COMORMENT/containers/singularity
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
