@@ -164,9 +164,9 @@ if __name__ == '__main__':
 
         # create .eigenvec and .cov files in ``output_dir``
         # for post run model evaluation:
-        call = ldpred2.generate_eigenvec_eigenval_files(
-            nPCs=config['ldpred2']['nPCs'])
-        pgs.run_call(call)
+        # call = ldpred2.generate_eigenvec_eigenval_files(
+        #     nPCs=config['ldpred2']['nPCs'])
+        # pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
