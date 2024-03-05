@@ -25,9 +25,9 @@ $RSCRIPT $dirLDpred2/imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fi
 # Generate PGS usign LDPRED-inf
 $RSCRIPT $dirLDpred2/ldpred2.R \
  --ldpred-mode inf \
- --col-stat OR \
+ --col-stat BETA \
  --col-stat-se SE \
- --stat-type OR \
+ --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.inf
@@ -35,9 +35,9 @@ $RSCRIPT $dirLDpred2/ldpred2.R \
 # Generate PGS using LDPRED2-auto
 $RSCRIPT $dirLDpred2/ldpred2.R \
  --ldpred-mode auto \
- --col-stat OR \
+ --col-stat BETA \
  --col-stat-se SE \
- --stat-type OR \
+ --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.auto
