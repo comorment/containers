@@ -159,8 +159,8 @@ if __name__ == '__main__':
             **config['ldpred2']
         )
         # run
-        for call in ldpred2.get_str(create_backing_file=True):
-            pgs.run_call(call)
+        # for call in ldpred2.get_str(create_backing_file=True):
+        #     pgs.run_call(call)
 
         # create .eigenvec and .cov files in ``output_dir``
         # for post run model evaluation:
@@ -170,7 +170,10 @@ if __name__ == '__main__':
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            eigenvec_file=eigenvec_file.format(output_dir_ldpred2),
+            # eigenvec_file=covariate_file,
             nPCs=config['ldpred2']['nPCs'],
-            covariate_file=covariate_file)
+            # covariate_file=covariate_file,
+            categorical_covariates=['sex', 'batch'],
+            continuous_covariates=None,
+            )
         pgs.run_call(call)

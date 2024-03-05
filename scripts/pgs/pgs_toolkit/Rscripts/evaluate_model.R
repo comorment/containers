@@ -14,8 +14,8 @@ par <- add_argument(par, "--phenotype", help="phenotype name (must be a column h
 par <- add_argument(par, "--phenotype-class", help="phenotype class (must be either 'BINARY' or 'CONTINUOUS')")
 par <- add_argument(par, "--score-file", help="input scores from PGS")
 par <- add_argument(par, "--nPCs", help="number of principal components", default=6)
-par <- add_argument(par, "--eigenvec-file", help='eigenvec file')
-par <- add_argument(par, "--covariate-file", help='covariate file')
+par <- add_argument(par, "--continuous-covariates", help="additional column names to include as continuous covariates", nargs='+')
+par <- add_argument(par, "--categorical-covariates", help="additional column names to include as categorical covariates", nargs='+')
 par <- add_argument(par, "--out", help="output stats file prefix (for .txt and .csv)")
 parsed <- parse_args(par)
 
@@ -24,16 +24,24 @@ pheno <- fread(parsed$pheno_file, select=c("FID", "IID", parsed$phenotype))
 scores <- fread(parsed$score_file, select=c("FID", "IID", "score"))
 df <- merge(pheno, scores, by=c("FID", "IID"))
 
-# append columns w. PCs to df
-pcs <- fread(parsed$eigenvec_file, 
-             col.names=c("FID", "IID", paste("PC", 1:parsed$nPCs, sep="")), 
-             select=1:(2 + parsed$nPCs))
-covariate <- fread(parsed$covariate_file)
+# append columns w. PCs and other covariates to df
+pcs <- fread(parsed$pheno_file, 
+             select=c("FID", "IID", paste("PC", 1:parsed$nPCs, sep=""))
+             )
+sel <- c("FID", "IID")
+if (!is.na(parsed$continuous_covariates)) {
+    sel <- unlist(c(sel, strsplit(parsed$continuous_covariates, ',')))
+}
+if (!is.na(parsed$categorical_covariates)) {
+    sel <- unlist(c(sel, strsplit(parsed$categorical_covariates, ',')))
+}
+print(sel)
+covariates <- fread(parsed$pheno_file, select=sel)
 
 df <- merge(df, pcs, by=c("FID", "IID"))
-df <- merge(df, covariate, by=c("FID", "IID"))
+df <- merge(df, covariates, by=c("FID", "IID"))
 cols <- colnames(df)[5:length(df)]
-
+print(paste(colnames(df)))
 
 # fit model
 if (parsed$phenotype_class == "BINARY") {

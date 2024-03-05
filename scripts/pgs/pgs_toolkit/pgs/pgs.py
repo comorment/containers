@@ -1080,9 +1080,12 @@ class PGS_LDpred2(BasePGS):
         return super()._generate_eigenvec_eigenval_files(nPCs)
 
     def get_model_evaluation_str(self,
-                                 eigenvec_file=None,
+                                 #eigenvec_file=None,
                                  nPCs=None,
-                                 covariate_file=None):
+                                 # covariate_file=None,
+                                 categorical_covariates=None,
+                                 continuous_covariates=None,
+                                 ):
         '''
         Return callable string for fitting a simple
         linear model between PGS score and phenotype data
@@ -1111,10 +1114,16 @@ class PGS_LDpred2(BasePGS):
             '--phenotype-class', self.phenotype_class,
             '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{nPCs}',
-            '--eigenvec-file', eigenvec_file,
-            '--covariate-file', covariate_file,
-            '--out', os.path.join(self.output_dir, 'test_summary')
+            # '--eigenvec-file', eigenvec_file,
+            # '--covariate-file', covariate_file,
         ])
+        if categorical_covariates is not None:
+            cmd += ' --categorical-covariates ' + ' '.join(categorical_covariates)
+        if continuous_covariates is not None:
+            cmd += ' --continuous-covariates ' + ' '.join(categorical_covariates)
+
+        cmd += ' ' + ' '.join(['--out', os.path.join(self.output_dir, 'test_summary')])
+
         return cmd
 
     def get_str(self, create_backing_file=True):
