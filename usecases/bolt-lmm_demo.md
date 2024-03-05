@@ -1,6 +1,6 @@
 # Bolt-LMM demo
 
-This usecase describe how to run Bolt-LMM analysis (<https://alkesgroup.broadinstitute.org/BOLT-LMM/BOLT-LMM_manual.html>). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in [Getting started](../README.md#getting-started) section of the main README file.
+This usecase describe how to run Bolt-LMM analysis (<https://alkesgroup.broadinstitute.org/BOLT-LMM/BOLT-LMM_manual.html>). All commands below assume that ``$COMORMENT``, ``$SIF`` and ``$SINGULARITY_BIND`` environmental variables are defined as described in the [INSTALL](../INSTALL.md) file.
 
 1. Create the required LD and pheno files to run Bolt-LMM from [here](https://github.com/comorment/containers/tree/main/reference/examples/boltlmm)
 

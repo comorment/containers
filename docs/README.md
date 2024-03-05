@@ -2,7 +2,9 @@
 
 ## Singularity
 
-The list of all tools is provided on [this](/docs/software_list.md) page.
+The list of all tools is provided in the pages describing each container listed below.
+For a comprehensive understanding of the installation of tools within each container, please confer the build files in the [<containers>/docker](https://github.com/comorment/containers/tree/main/docker) directory.
+
 This software is organized into the following containers:
 * [hello.sif](/docs/singularity/hello.md) - a simple container for demo purpose, allowing to experiment with singularity features
 * [gwas.sif](/docs/singularity/gwas.md) - multiple tools (released as binaries/executables) for imputation and GWAS analysis
@@ -16,9 +18,9 @@ Please [open an issue](https://github.com/comorment/containers/issues/new) if yo
 
 To improve interoperability between different tools we developed the following data format specification:
 
-* [Genotypes data](/docs/specifications/geno_specification.md)
-* [Phenotypes data](/docs/specifications/pheno_specification.md)
-* [GWAS Summary Statistics](/docs/specifications/sumstats_specification.md)
+* [Genotypes data](/specifications/geno_specification.md)
+* [Phenotypes data](/specifications/pheno_specification.md)
+* [GWAS Summary Statistics](/specifications/sumstats_specification.md)
 
 These format specifications are applicable to various scripts, released in this repository, including
 

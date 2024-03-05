@@ -26,6 +26,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 ### Updated
 
 * Change LDpred2 usage example to use the [OpenSNP](https://github.com/containers/opensnp) based datasets
+* Bundle of sphinx documentation build updates/restructures
+* Refer to the project as "COSGAP-containers"
+* Minor changes to documentation + suggestion of TOC
 
 ### Fixed
 
