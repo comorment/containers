@@ -290,19 +290,20 @@ named differently the option ``--out-merge-ids <FID column> <IID column`` should
 The following set of commands gives an example of how to apply LDpred2 on a demo height data:
 
 ```
-# point to input/output files
-export fileGeno=/REF/examples/prsice2/EUR.bed
-export fileGenoRDS=EUR.rds
-export fileSumstats=/REF/examples/prsice2/Height.gwas.txt.gz
-export fileOut=Height
-
-# set environmental variables. Replace "<path/to/comorment>" with 
+# Set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=<path/to/comorment>
 export SIF=$COMORMENT/containers/singularity
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+export OPENSNP=$COMORMENT/opensnp
+export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/opensnp
+
+# Point to LDpred2.R input/output files
+export fileGeno=/opensnp/opensnp_hm3.bed
+export fileGenoRDS=opensnp_hm3.rds
+export fileSumstats=/opensnp/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz
+export fileOut=Height
 
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
@@ -315,9 +316,9 @@ $RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds $fileGenoRDS
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
  --ldpred-mode inf \
- --col-stat OR \
+ --col-stat BETA \
  --col-stat-se SE \
- --stat-type OR \
+ --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.inf
@@ -325,9 +326,9 @@ $RSCRIPT ldpred2.R \
 # Generate PGS using LDPRED2-auto
 $RSCRIPT ldpred2.R \
  --ldpred-mode auto \
- --col-stat OR \
+ --col-stat BETA \
  --col-stat-se SE \
- --stat-type OR \
+ --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
  --sumstats $fileSumstats \
  --out $fileOut.auto

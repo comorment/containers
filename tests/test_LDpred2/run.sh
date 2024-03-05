@@ -36,7 +36,7 @@ export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 # assume that ldpred2_ref is alongside containers directory:
-export DIR_COMORMENT="$(dirname "$DIR_BASE")" 
+export DIR_COMORMENT="$(dirname "$DIR_BASE")"
 export DIR_SIF=$DIR_BASE/singularity
 export DIR_TESTS=$DIR_BASE/tests/test_LDpred2
 export DIR_TEMP=$DIR_TESTS/temp
