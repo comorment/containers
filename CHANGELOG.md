@@ -21,25 +21,25 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Additions goes here
+* Additions go here
 
 ### Updated
 
-* Updates goes here
+* Updates go here
 
 ### Fixed
 
-* Fixes goes here
+* Fixes go here
 
 ### Removed
 
-* Removals goes here
+* Removals go here
 
 ### Misc
 
 * Miscellaneous goes here
 
-## [1.8.3] - 2024-03-05
+## [1.8.1] - 2024-03-05
 
 ### Fixed
 
