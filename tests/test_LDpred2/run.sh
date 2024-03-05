@@ -93,6 +93,10 @@ LDPRED_MODES="inf auto"
 echo "### Running R function unittests"
 $RSCRIPT $DIR_TESTS/unittest/fun.R
 
+echo "### Running opensnp example"
+source $DIR_TESTS/scripts/opensnp.sh
+exit
+
 echo "### Testing sumstats scripts"
 source $DIR_TESTS/scripts/sumstats.sh
 
