@@ -1066,23 +1066,9 @@ class PGS_LDpred2(BasePGS):
         ])
         return command
 
-    def generate_eigenvec_eigenval_files(self, nPCs=6):
-        '''
-        Return string which can be included in job script for
-        generating .eigenvec and .eigenval files in the output directory
-        using PLINK
-
-        Parameters
-        ----------
-        nPCs: int
-            number of PCs to account for
-        '''
-        return super()._generate_eigenvec_eigenval_files(nPCs)
 
     def get_model_evaluation_str(self,
-                                 #eigenvec_file=None,
                                  nPCs=None,
-                                 # covariate_file=None,
                                  categorical_covariates=None,
                                  continuous_covariates=None,
                                  ):
@@ -1094,14 +1080,12 @@ class PGS_LDpred2(BasePGS):
 
         Parameters
         ----------
-        eigenvec_file: path
-            path to file with PCs (no header, columns FID, IID, PC1, PC2, ...)
         nPCs: int
             number of PCs to account for
-        covariate_file: path
-            path to file with covariates
-            (header, columns FID, IID, <covariate>)
-
+        categorical_covariates: list of strings
+            column names that should be treated as categorical covariates (e.g., ``['batch']``)
+        continuous_covariates: list of strings
+            column names that should be treated as continuous covariates (e.g., ``['age']``)
         Returns
         -------
         str
@@ -1114,8 +1098,6 @@ class PGS_LDpred2(BasePGS):
             '--phenotype-class', self.phenotype_class,
             '--score-file', os.path.join(self.output_dir, 'test.score'),
             '--nPCs', f'{nPCs}',
-            # '--eigenvec-file', eigenvec_file,
-            # '--covariate-file', covariate_file,
         ])
         if categorical_covariates is not None:
             cmd += ' --categorical-covariates ' + ' '.join(categorical_covariates)

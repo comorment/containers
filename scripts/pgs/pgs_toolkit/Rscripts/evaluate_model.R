@@ -19,38 +19,33 @@ par <- add_argument(par, "--categorical-covariates", help="additional column nam
 par <- add_argument(par, "--out", help="output stats file prefix (for .txt and .csv)")
 parsed <- parse_args(par)
 
-# df
-pheno <- fread(parsed$pheno_file, select=c("FID", "IID", parsed$phenotype))
-scores <- fread(parsed$score_file, select=c("FID", "IID", "score"))
-df <- merge(pheno, scores, by=c("FID", "IID"))
-
-# append columns w. PCs and other covariates to df
-pcs <- fread(parsed$pheno_file, 
-             select=c("FID", "IID", paste("PC", 1:parsed$nPCs, sep=""))
-             )
-sel <- c("FID", "IID")
+# list of columns to read from pheno_file
+continuous_cols <- c(paste("PC", 1:parsed$nPCs, sep=""))
+categorical_cols <- c()
 if (!is.na(parsed$continuous_covariates)) {
-    sel <- unlist(c(sel, strsplit(parsed$continuous_covariates, ',')))
+    continuous_cols <- unlist(c(continuous_cols, strsplit(parsed$continuous_covariates, ',')))
 }
 if (!is.na(parsed$categorical_covariates)) {
-    sel <- unlist(c(sel, strsplit(parsed$categorical_covariates, ',')))
+    categorical_cols <- unlist(c(categorical_cols, strsplit(parsed$categorical_covariates, ',')))
 }
-print(sel)
-covariates <- fread(parsed$pheno_file, select=sel)
+data_columns <- unlist(c("FID", "IID", parsed$phenotype, continuous_cols, categorical_cols))
+pheno <- fread(parsed$pheno_file, select=data_columns)
 
-df <- merge(df, pcs, by=c("FID", "IID"))
-df <- merge(df, covariates, by=c("FID", "IID"))
-cols <- colnames(df)[5:length(df)]
-print(paste(colnames(df)))
+# combine all data in one dataframe
+scores <- fread(parsed$score_file, select=c("FID", "IID", "score"))
+pheno <- merge(pheno, scores, by=c("FID", "IID"))
 
 # fit model
+model_covariates <- paste(paste(continuous_cols, sep="", collapse="+"), 
+                          '+', paste("as.factor(", categorical_cols, ")", sep="", collapse="+"), 
+                          sep="", collapse="+")
 if (parsed$phenotype_class == "BINARY") {
-    null.formula <- paste(parsed$phenotype, "~", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
-    null.fit <- glm(null.formula, data=df[,-c("FID", "IID")], family="binomial")
-    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
-    linear.fit <- glm(reg.formula, data=df[,-c("FID", "IID")], family="binomial")
+    null.formula <- paste(parsed$phenotype, "~", model_covariates, sep="", collapse="")  %>% as.formula
+    null.fit <- glm(null.formula, data=pheno[,-c("FID", "IID")], family="binomial")
+    reg.formula <- paste(parsed$phenotype, "~score+",model_covariates, sep="", collapse="")  %>% as.formula
+    linear.fit <- glm(reg.formula, data=pheno[,-c("FID", "IID")], family="binomial")
     nocov.formula <- paste(parsed$phenotype, "~score", sep="", collapse="")  %>% as.formula
-    nocov.fit <- glm(nocov.formula, data=df[,-c("FID", "IID")], family="binomial")
+    nocov.fit <- glm(nocov.formula, data=pheno[,-c("FID", "IID")], family="binomial")
     # pseudo R2
     null.eval <- NagelkerkeR2(null.fit)
     linear.eval <- NagelkerkeR2(linear.fit)
@@ -60,12 +55,12 @@ if (parsed$phenotype_class == "BINARY") {
     linear.or <- exp(cbind(OR=coef(linear.fit), confint(linear.fit)))
     nocov.or <- exp(cbind(OR_nocov=coef(null.fit), confint(nocov.fit)))
 } else if (parsed$phenotype_class == "CONTINUOUS") {
-    null.formula <- paste(parsed$phenotype, "~", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
-    null.fit <- lm(null.formula, data=df[,-c("FID", "IID")])
-    reg.formula <- paste(parsed$phenotype, "~score+", paste(cols, sep="", collapse="+"), sep="", collapse="")  %>% as.formula
-    linear.fit <- lm(reg.formula, data=df[,-c("FID", "IID")])
+    null.formula <- paste(parsed$phenotype, "~", model_covariates, sep="", collapse="")  %>% as.formula
+    null.fit <- lm(null.formula, data=pheno[,-c("FID", "IID")])
+    reg.formula <- paste(parsed$phenotype, "~score+", model_covariates, sep="", collapse="")  %>% as.formula
+    linear.fit <- lm(reg.formula, data=pheno[,-c("FID", "IID")])
     nocov.formula <- paste(parsed$phenotype, "~score", sep="", collapse="")  %>% as.formula
-    nocov.fit <- lm(nocov.formula, data=df[,-c("FID", "IID")])
+    nocov.fit <- lm(nocov.formula, data=pheno[,-c("FID", "IID")])
     # R2
     null.eval <- summary(null.fit)$r.squared
     linear.eval <- summary(linear.fit)$r.squared

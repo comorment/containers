@@ -5,6 +5,7 @@
 import os
 import yaml
 from pgs import pgs
+import numpy as np
 
 
 if __name__ == '__main__':
@@ -65,7 +66,7 @@ if __name__ == '__main__':
 
     # update ldpred2 config:
     config['ldpred2'].update({
-        'chr2use': [21, 22],
+        'chr2use': np.arange(12, 23),
     })
 
     #######################################
@@ -142,8 +143,7 @@ if __name__ == '__main__':
     ############################################
     # LDpred2 infinitesimal and automatic models
     ############################################
-    # for method in ['inf', 'auto']:
-    for method in ['auto']:
+    for method in ['inf', 'auto']:
         output_dir_ldpred2 = os.path.join(
             output_dir,
             f'PGS_{phenotype}_LDpred2_{method}')
@@ -159,20 +159,12 @@ if __name__ == '__main__':
             **config['ldpred2']
         )
         # run
-        # for call in ldpred2.get_str(create_backing_file=True):
-        #     pgs.run_call(call)
-
-        # create .eigenvec and .cov files in ``output_dir``
-        # for post run model evaluation:
-        # call = ldpred2.generate_eigenvec_eigenval_files(
-        #     nPCs=config['ldpred2']['nPCs'])
-        # pgs.run_call(call)
+        for call in ldpred2.get_str(create_backing_file=True):
+            pgs.run_call(call)
 
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str(
-            # eigenvec_file=covariate_file,
             nPCs=config['ldpred2']['nPCs'],
-            # covariate_file=covariate_file,
             categorical_covariates=['sex', 'batch'],
             continuous_covariates=None,
             )
