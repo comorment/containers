@@ -5,6 +5,7 @@ export SIF=$COMORMENT/containers/singularity
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
 export OPENSNP=$COMORMENT/opensnp
+export LC_ALL=C # Set locale (get warnings otherwise)
 export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/opensnp,${COMORMENT}:/comorment
 
 # Point to LDpred2.R input/output files
@@ -29,6 +30,7 @@ $RSCRIPT $dirLDpred2/ldpred2.R \
  --col-stat-se SE \
  --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
+ --chr2use 21 22 \
  --sumstats $fileSumstats \
  --out $fileOut.inf
 
@@ -39,6 +41,7 @@ $RSCRIPT $dirLDpred2/ldpred2.R \
  --col-stat-se SE \
  --stat-type BETA \
  --geno-file-rds $fileGenoRDS \
+  --chr2use 21 22 \
  --sumstats $fileSumstats \
  --out $fileOut.auto
  
