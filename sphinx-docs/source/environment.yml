@@ -10,3 +10,9 @@ dependencies:
   - myst-parser
   - make
   - linkify-it-py
+  - numpydoc
+  - numpy
+  - pandas
+  - six
+  - scipy
+  - pyyaml

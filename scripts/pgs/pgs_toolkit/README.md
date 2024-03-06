@@ -33,19 +33,19 @@ To work with these codes, some input files are required. These are:
 
 #### Summary statistics
 
-GWAS summary files formatted according to the [sumstats specification](./../../../docs/specifications/sumstats_specification.md)
+GWAS summary files formatted according to the [sumstats specification](./../../../specifications/sumstats_specification.md)
 
 #### Phenotypic data
 
-Phenotypic data formatted according to the [phenotype specification](./../../../docs/specifications/pheno_specification.md)
+Phenotypic data formatted according to the [phenotype specification](./../../../specifications/pheno_specification.md)
 
 #### Genotypic data
 
-Genotypic data formatted according to the [genotype specification](./../../../docs/specifications/geno_specification.md)
+Genotypic data formatted according to the [genotype specification](./../../../specifications/geno_specification.md)
 
 #### Covariate data
 
-Covariate data formatted according to the [covariate specification](./../../../docs/specifications/pheno_specification.md)
+Covariate data formatted according to the [covariate specification](./../../../specifications/pheno_specification.md)
 
 ### Output files
 

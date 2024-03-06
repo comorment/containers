@@ -1,66 +1,10 @@
+# Docker
+
+Build recipes for containers using [Docker](https://www.docker.com) and [Singularity](https://sylabs.io/singularity/).
+
 ## Software versions
 
-  Below is the list of tools included in the different Dockerfiles and installer bash scripts for each container.
-  Please keep up to date (and update the main [README.md](./../README.md) when pushing new container builds):
-  
-  | container         | OS/tool             | version                                   | license
-  | ----------------- | ------------------- | ----------------------------------------- | -------------
-  | hello.sif         | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | hello.sif         | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | gwas.sif          | bcftools            | 1.19                                      | [MIT/Expat/GPLv3](https://github.com/samtools/bcftools/blob/develop/LICENSE)
-  | gwas.sif          | bedtools            | 2.31.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | beagle              | 22Jul22.46e                               | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | bgenix              | 1.1.7                                     | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | gwas.sif          | bolt                | v2.4.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | cat-bgen            | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | gwas.sif          | duohmm              | 95bd395                                   | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | eagle               | v2.4.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | edit-bgen           | same version as bgenix                    | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | gwas.sif          | flashpca_x86-64     | 2.0                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | gcta64              | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | gctb                | 2.04.3                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | qctool              | 2.2.2, revision e5723df2c0c85959          | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | gwas.sif          | GWAMA               | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-  | gwas.sif          | HTSlib              | 1.19.1                                    | [MIT/Expat/Modified-BSD](https://github.com/samtools/htslib/blob/develop/LICENSE)
-  | gwas.sif          | king                | 2.3.2                                     | [permissive](https://www.kingrelatedness.com/Download.shtml)
-  | gwas.sif          | liftOver            | latest                                    | [permissive](https://genome-store.ucsc.edu)
-  | gwas.sif          | ldak                | 5.2                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | metal               | 2020-05-05                                | -
-  | gwas.sif          | minimac4            | v4.1.6                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | plink               | v1.90b7.2 64-bit (11 Dec 2023)            | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | plink2              | v2.00a5.10LM 64-bit Intel (5 Jan 2024)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | plink2_avx2         | v2.00a5.10LM AVX2 Intel (5 Jan 2024)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | PRSice_linux        | 2.3.5                                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | regenie             | v3.4                                      | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
-  | gwas.sif          | samtools            | v1.19.2                                   | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
-  | gwas.sif          | shapeit4.2          | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | shapeit5 phase_rare | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | shapeit5 phase_common | v5.1.1                                  | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | shapeit5 ligate     | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | shapeit5 switch     | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | shapeit5 xcftools   | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | simu_linux          | v0.9.4                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | gwas.sif          | snptest             | v2.5.6                                    | [permissive](https://www.chg.ox.ac.uk/~gav/snptest/#download)
-  | gwas.sif          | switchError         | 6e688b1                                   | [MIT](https://opensource.org/licenses/MIT)
-  | gwas.sif          | vcftools            | 0.1.17 (git SHA: d511f469e)               | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | python3.sif       | ubuntu              | 20.04 (LTS)                               | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | python3.sif       | LDpred              | 1.0.11                                    | [MIT](https://opensource.org/licenses/MIT)
-  | python3.sif       | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | python3.sif       | python3             | python 3.10.6 + numpy, pandas, etc.       | [PSF](https://docs.python.org/3.10/license.html)
-  | python3.sif       | python_convert      | github commit bcde562                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | r.sif             | R                   | 4.0.5 (2021-03-31) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
-  | r.sif             | gcta64              | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | GenomicSEM          | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | GSMR                | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
-  | r.sif             | rareGWAMA           | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
-  | r.sif             | seqminer            | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
-  | r.sif             | PRSice_linux        | 2.3.5                                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | r.sif             | TwoSampleMR         | [MRCIEU/TwoSampleMR@c174107](https://github.com/MRCIEU/TwoSampleMR/commit/c174107cfd9ba47cf2f780849a263f37ac472a0e)  | [unknown/MIT](https://github.com/MRCIEU/TwoSampleMR#:~:text=Unknown%2C%20MIT%20licenses-,found,-Citation)
-  | r.sif             | snpStats            | v1.40.0                                   | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | saige.sif         | ubuntu              | 16.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | saige.sif         | SAIGE               | version 0.43                              | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+Please confer and update accordingly the software version tables in the respective [singularity](./../singularity/README.md) files for each container.
 
 ## Feedback
 

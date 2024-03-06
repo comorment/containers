@@ -11,13 +11,14 @@ This README assumes the following two repositories are cloned using [git](https:
 
 - <http://github.com/comorment/containers>
 - <https://github.com/comorment/ldpred2_ref>
+- <https://github.com/comorment/opensnp>
 
 We also assume the following commands are executed from the current folder
 (the one containing [createBackingFile.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/createBackingFile.R) and [ldpred2.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2.R) scripts).
 
 ### Note on help functions
 
-The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) is set up using the [argparser](https://www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
+The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.R`, `imputeGenotypes.R`, `complementSum`) are set up using the [argparser](https://www.rdocumentation.org/packages/argparser) package for parsing command line arguments.
 The help output from each script can printed to the terminal, issuing:
 
 ```
@@ -56,14 +57,14 @@ flags:
 
 ### Note on filtering of genotype data
 
-The current version of these scripts conduct no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequillibrium or polygenic scores.
+The current version of these scripts performs no filtering of genotype data (e.g., minor allele frequency, imputation quality) prior to calculating linkage disequilibrium or polygenic scores.
 This should be done for polygenic score analyses intended for publication.
 
 ### Note on missing genotypes
 
 If genotypes are missing LDpred2 will stop and return an error (``Error: You can't have missing values in 'X'.``). One can either pass ``--geno-impute-zero`` to replace missing genotypes with zero or impute with any other tool such as plink,
-or use [imputeGenotypes.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently only "simple" imputation with mode, mean, random or zero is supported by this
-script. For a documentation on these methods see [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
+or use [imputeGenotypes.R](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/imputeGenotypes.R) that works for ``bigSNPR`` (.rds/.bk) files. Currently, only "simple" imputation with mode, mean, random or zero is supported by this
+script. For documentation on these methods see [snp_fastImputeSimple](https://www.rdocumentation.org/packages/bigsnpr/versions/1.6.1/topics/snp_fastImputeSimple).
 
 First, note that using ``--geno-impute-zero`` is costly in computational time so it's better to impute prior to running ldpred2.R. Second, imputeGenotypes.R does not
 create a copy of the genotypes, thus the imputation performed persists. If you wish to keep the original .rds/.bk files you should copy these prior to imputing.
@@ -80,7 +81,7 @@ cp <fileGeno>.bk <fileGeo>.nomiss.bk
 $RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds <fileGeno>.nomiss.rds
 ```
 
-Another option is to use plink's ``--fill-missing-a2`` option, and re-run ``createBackingFile.R``:
+Another option is to use PLINK's ``--fill-missing-a2`` option, and re-run ``createBackingFile.R``:
 
 ```
 export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
@@ -91,26 +92,26 @@ $RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
 
 ### Note on genomic builds
 
-By default the LDpred2 scripts assume that the genotype data and summary statistics use build GRCh37/hg19, 
+By default, the LDpred2 scripts assume that the genotype data and summary statistics use build GRCh37/hg19, 
 but there are no explicit checks for consistent builds across input files.
 If the genotype data and summary statistics file use another build, the ``--genomic-build <build>`` flag should be used to specify build version,
-parsing either `hg18`, `hg19` or `hg38` as argument.
+parsing either `hg18`, `hg19` or `hg38` as an argument.
 As of now, setting this argument will affect the loading of LD metadata only, but not the genotype data or summary statistics.
 A symptom of using the wrong build is that the script will match only a small fraction of variants between the genotype data, summary statistics file and/or LD reference data.
 
-### Optional: Estimating linkage disequillibrium (LD)
+### Optional: Estimating linkage disequilibrium (LD)
 
 LDpred2 uses the LD structure when calculating polygenic scores. By default, the LDpred2.R script uses LD structure based on European samples provided by the LDpred2 authors.
-To instead calculate LD on your own, the ``calculateLD.R`` script can be used. The output from this script can then be used as input to ``LDpred2.R`` (with the optional ``--ld-file`` flag).
+Instead of calculating LD on your own, the ``calculateLD.R`` script can be used. The output from this script can then be used as input to ``LDpred2.R`` (with the optional ``--ld-file`` flag).
 
 It should be noted that creating these LD matrixes may require several steps that are dependent on what type of genotypic data you have. These are not covered in detail here, but a
-first step is to ensure that you filter out related individuals, and use a reasonably sized set of genotyped or well-imputed SNPs. How to restrict individuals and SNPs are covered below. 
+first step is to ensure that you filter out related individuals, and use a reasonably sized set of genotyped or well-imputed SNPs. How to restrict individuals and SNPs is covered below.
 
 First, to use ``calculateLD.R`` you need to download genetic maps from [1000 genomes](https://github.com/joepickrell/1000-genomes-genetic-maps) in order to convert each SNPs physical position to genomic position.
 If you don't provide these files, LDpred2 will try to download these automatically which will cause an error without an internet connection. To prevent this behavior, these should be downloaded manually and
 the folder where they are stored should be passed to the LDpred2-script using the flag ``--dir-genetic-maps your-genetic/maps-directory``.
 
-Two parameters that can be passed to ``calculateLD.R`` and affect the LD estimation are ``--window-size`` (region around index SNP in basepairs) and ``--thres-r2`` (threshold for including
+Two parameters that can be passed to ``calculateLD.R`` and affect the LD estimation are ``--window-size`` (region around index SNP in base pairs) and ``--thres-r2`` (threshold for including
 a SNP correlation in the LD). The default for ``--thres-r2`` is 0 in ``bigsnpr::snp_cor``, but ``calculateLD.R`` has a default of 0.01.
 
 The example script below will output one file per chromosome (``output/ld-chr-1.rds``, ``output/ld-chr-2.rds``, ...) and a "map" indicating the SNPs used in LD estimation (``output/map.rds``).
@@ -158,7 +159,7 @@ Erorr in { : task 1 failed - "L-BFGS-B needs finite values of 'fn'"
 Calls: snp_ldpred2_auto -> %dorng% -> do.call -> <Anonymous> -> <Anonymous>
 ```
 
-The LDpred2 creators recommend to create indpendent LD blocks in these matrixes. the ``splitLD.R`` script can be used for this purpose. The setup is the same as the
+The LDpred2 creators recommend creating independent LD blocks in these matrixes. the ``splitLD.R`` script can be used for this purpose. The setup is the same as the
 example above, but we add a modified ``$RSCRIPT [...]`` statement using the outputted matrixes from ``calculateLD.R`` as input to ``splitLD.R``. There are several parameters
 to this script that will affect the "shape" of these blocks (thus subsequent performance in LDpred2). Consult ``splitLD.R`` and ``bigsnpr::snp_ldsplit`` for details.
 ```
@@ -175,11 +176,11 @@ creators. ``Rscript analyzeLD.R --help`` provides an overview of usage.
 
 ### Effective sample-size
 
-LDpred2 requires information on effective sample-size. There are three ways to provide this to LDpred2:
+LDpred2 requires information on effective sample size. There are three ways to provide this to LDpred2:
 
 - As a column in the summary statistics, defaulting to column `N`. If it is a different column, provide with argument `--col-n`.
 - Manually calculated by providing this number with `--effective-sample-size`.
-- Manually specified by providing number of cases and controls with arguments `--n-cases` and `--n-controls`.
+- Manually specified by providing the number of cases and controls with arguments `--n-cases` and `--n-controls`.
 
 Specifying the effective sample size manually will override any sample size column in the sumstats.
 Providing both `--effective-sample-size` and `--n-cases/--n-controls` will throw an error.
@@ -214,18 +215,18 @@ for fileSumstats in `ls $dirSumstats`; do
 done
 ```
 
-When working within the container, the `--reference argument` can be omitted, but can of course be replaced with anything else along with `--col-reference-snp-id`
+When working within the container, the `--reference argument` can be omitted, but can be replaced with anything else along with `--col-reference-snp-id`
 to set the SNP ID column in the reference file. The argument `--columns-append` controls which columns to append and default to the `#CHROM` and `POS` which are the
 columns of chromosome and position in the `HRC` reference data (default of `--reference` argument). This script will fail if there are duplicate SNPs in any of these
 files that are matched. In the example below, output is piped to gzip. To write directly to a file the arguments `--file-output <output file>` and `--file-output-col-sep`
 controls the location of the output file and the column separator used (defaults to tab, "\t").
 
-**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) are outside the working directory, make sure to append its directory to the `SINGULARITY_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
+**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) areis outside the working directory, make sure to append its directory to the `SINGULARITY_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
 
 ### Synthetic example (chr21 and chr22)
 
-The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than previous example.
-This example require only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files from the [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather then clone the entire repo.
+The following set of commands gives an example of how to apply LDpred2 on a synthetic example generated [here](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/ldpred2_simulations.ipynb). This only uses chr21 and chr22, so it runs much faster than the previous example.
+This example requires only  ``map_hm3_plus.rds``, ``ldref_hm3_plus/LD_with_blocks_chr21.rds``, and ``ldref_hm3_plus/LD_with_blocks_chr22.rds`` files from the [ldpred2_ref](https://github.com/comorment/ldpred2_ref) repository, so you may download them separately rather than clone the entire repo.
 
 ```
 # point to input/output files
@@ -287,7 +288,9 @@ named differently the option ``--out-merge-ids <FID column> <IID column`` should
 
 ### Height example
 
-The following set of commands gives an example of how to apply LDpred2 on a demo height data:
+The following set of commands gives an example of how to apply LDpred2 on genetic data from the [OpenSNP](https://opensnp.org/) project, and a height GWAS sumstats file.
+This example requires the ``opensnp_hm3.*`` and ``UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz`` files from the [opensnp](https://github.com/comorment/opensnp) repository, so you may download them separately rather than clone the entire repo, 
+and place them according to the paths in the script below.
 
 ```
 # Set environmental variables. Replace "<path/to/comorment>" with 
@@ -300,9 +303,9 @@ export OPENSNP=$COMORMENT/opensnp
 export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/opensnp
 
 # Point to LDpred2.R input/output files
-export fileGeno=/opensnp/opensnp_hm3.bed
+export fileGeno=/opensnp/imputed/opensnp_hm3.bed
 export fileGenoRDS=opensnp_hm3.rds
-export fileSumstats=/opensnp/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz
+export fileSumstats=/opensnp/gwas/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz
 export fileOut=Height
 
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
@@ -352,14 +355,14 @@ The script will also output ``.bk`` and ``.rds`` binary files with prefix ``EUR`
 
 ## Slurm job
 
-On an HPC resource the same analysis can be run by first writing a job script [run_ldpred2_slurm.job](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/run_ldpred2_slurm.job).
+On an HPC resource, the same analysis can be run by first writing a job script [run_ldpred2_slurm.job](https://github.com/comorment/containers/blob/main/scripts/pgs/LDpred2/run_ldpred2_slurm.job).
 In order to run the job, first make sure that the ``SBATCH_ACCOUNT`` environment variable is defined:
 
 ```
 export SBATCH_ACCOUNT=project_ID
 ```
 
-where ``project_ID`` is the granted project that compute time is allocated.
+where ``project_ID`` is the granted project that computing time is allocated.
 As above, ``<path/to/containers`` should point to the cloned ``containers`` repository.
 Entries like ``--partition=normal`` may also be adapted for different HPC resources.
 Then, the job can be submitted to the queue by issuing ``sbatch run_ldpred2_slurm.job``.
@@ -373,7 +376,7 @@ For use on HPC resources, use of the designated `$SCRATCH`, `$LOCALTMP`, or `$TM
 filling up the system temporary directory.
 
 One can redirect the temporary file output by setting the `TMPDIR` environment variable to a mounted directory on the HPC resource, 
-by incorporating the following lines to the job script:
+by incorporating the following lines into the job script:
 
 ```
 export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,$SCRATCH:/scratch
