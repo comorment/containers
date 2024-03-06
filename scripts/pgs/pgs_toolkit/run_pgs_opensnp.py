@@ -140,6 +140,7 @@ if __name__ == '__main__':
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
     
+    
     ############################################
     # LDpred2 infinitesimal and automatic models
     ############################################
@@ -168,4 +169,3 @@ if __name__ == '__main__':
         # post run model evaluation
         call = ldpred2.get_model_evaluation_str()
         pgs.run_call(call)
-    
