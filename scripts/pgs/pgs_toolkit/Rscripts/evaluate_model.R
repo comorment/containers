@@ -13,14 +13,13 @@ par <- add_argument(par, "--pheno-file", help="phenotype file")
 par <- add_argument(par, "--phenotype", help="phenotype name (must be a column header in phenotype file)")
 par <- add_argument(par, "--phenotype-class", help="phenotype class (must be either 'BINARY' or 'CONTINUOUS')")
 par <- add_argument(par, "--score-file", help="input scores from PGS")
-par <- add_argument(par, "--nPCs", help="number of principal components", default=6)
 par <- add_argument(par, "--continuous-covariates", help="additional column names to include as continuous covariates", nargs='+')
 par <- add_argument(par, "--categorical-covariates", help="additional column names to include as categorical covariates", nargs='+')
 par <- add_argument(par, "--out", help="output stats file prefix (for .txt and .csv)")
 parsed <- parse_args(par)
 
 # list of columns to read from pheno_file
-continuous_cols <- c(paste("PC", 1:parsed$nPCs, sep=""))
+continuous_cols <- c()
 categorical_cols <- c()
 if (!is.na(parsed$continuous_covariates)) {
     continuous_cols <- unlist(c(continuous_cols, strsplit(parsed$continuous_covariates, ',')))

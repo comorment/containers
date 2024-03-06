@@ -112,22 +112,23 @@ if __name__ == '__main__':
     # post run model evaluation
     call = plink.get_model_evaluation_str()
     pgs.run_call(call)
+    '''
 
     #######################################
     # PRSice-2
     #######################################
     output_dir_prsice2 = os.path.join(
         output_dir,
-        'PGS_synthetic_prsice2')
+        f'PGS_{phenotype}_prsice2')
     prsice2 = pgs.PGS_PRSice2(
         sumstats_file=sumstats_file,
         pheno_file=pheno_file,
         phenotype=phenotype,
         phenotype_class='CONTINUOUS',
         geno_file_prefix=geno_file_prefix,
+        continuous_covariates=[f'PC{x}' for x in range(1, 11)],
+        categorical_covariates=['sex', 'batch'],
         output_dir=output_dir_prsice2,
-        covariate_file=covariate_file,
-        eigenvec_file=eigenvec_file.format(output_dir_prsice2),
         **config['prsice2'],
     )
 
@@ -138,12 +139,12 @@ if __name__ == '__main__':
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
-    '''
-
+    
     ############################################
     # LDpred2 infinitesimal and automatic models
     ############################################
-    for method in ['inf', 'auto']:
+    # for method in ['inf', 'auto']:
+    for method in ['auto']:
         output_dir_ldpred2 = os.path.join(
             output_dir,
             f'PGS_{phenotype}_LDpred2_{method}')
@@ -154,6 +155,8 @@ if __name__ == '__main__':
             phenotype_class='CONTINUOUS',
             geno_file_prefix=geno_file_prefix,
             output_dir=output_dir_ldpred2,
+            continuous_covariates=[f'PC{x}' for x in range(1, 11)],
+            categorical_covariates=['sex', 'batch'],
             method=method,
             file_geno_rds=file_geno_rds,
             **config['ldpred2']
@@ -163,9 +166,6 @@ if __name__ == '__main__':
             pgs.run_call(call)
 
         # post run model evaluation
-        call = ldpred2.get_model_evaluation_str(
-            nPCs=config['ldpred2']['nPCs'],
-            categorical_covariates=['sex', 'batch'],
-            continuous_covariates=None,
-            )
+        call = ldpred2.get_model_evaluation_str()
         pgs.run_call(call)
+    

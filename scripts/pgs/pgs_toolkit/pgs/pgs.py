@@ -258,7 +258,7 @@ class BasePGS(abc.ABC):
     sumstats_file: str
         summary statistics file (.gz)
     pheno_file: str
-        phenotype file (for instance, .height)
+        phenotype file with columns FID, IID, <phenotype>, <cov1>, <cov2>, ...
     phenotype: str or None
         if not ``None``, phenotype name (must be a column
         header in pheno_file)
@@ -267,6 +267,14 @@ class BasePGS(abc.ABC):
     geno_file_prefix: str
         path to QC'd .bed, .bim, .fam files (w.o. file ending)
         (</ENV/path/to/data/file>)
+    continuous_covariates: list of strings or None
+        Column names that should be treated as continuous covariates 
+        for basic model evaluation metrics (e.g., ``['PC1', 'PC2']``).
+        Must exist in ``pheno_file``.
+    categorical_covariates: list of strings or None
+        Column names that should be treated as categorical covariates
+        for basic model evaluation metrics (e.g., ``['SEX']``).
+        Must exist in ``pheno_file``.
     output_dir: str
         path for output files (<path>)
     **kwargs
@@ -290,6 +298,8 @@ class BasePGS(abc.ABC):
                  phenotype='Height',
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='/REF/examples/prsice2/EUR',
+                 continuous_covariates=None,
+                 categorical_covariates=None,
                  output_dir='qc-output',
                  **kwargs):
         # set attributes
@@ -298,6 +308,8 @@ class BasePGS(abc.ABC):
         self.phenotype = phenotype
         self.phenotype_class = phenotype_class
         self.geno_file_prefix = geno_file_prefix
+        self.continuous_covariates=continuous_covariates
+        self.categorical_covariates=categorical_covariates
         self.output_dir = output_dir
 
         self.kwargs = kwargs
@@ -315,6 +327,7 @@ class BasePGS(abc.ABC):
         '''
         raise NotImplementedError
 
+    """
     def _generate_eigenvec_eigenval_files(self, nPCs=6):
         '''
         Return string which can be included in job script for
@@ -334,6 +347,44 @@ class BasePGS(abc.ABC):
             '--out', os.path.join(self.output_dir, self.data_prefix)
         ])
         return command
+    """
+
+    def get_model_evaluation_str(self):
+        '''
+        Return callable string for fitting a simple
+        linear model between PGS score and phenotype data
+        using R stats::lm, printing stats::lm.fit.summary output
+        to file
+
+        Parameters
+        ----------
+        nPCs: int
+            number of PCs to account for
+        categorical_covariates: list of strings
+            column names that should be treated as categorical covariates (e.g., ``['batch']``)
+        continuous_covariates: list of strings
+            column names that should be treated as continuous covariates (e.g., ``['age']``)
+        Returns
+        -------
+        str
+        '''
+        cmd = ' '.join([
+            '$RSCRIPT',
+            os.path.join('Rscripts', 'evaluate_model.R'),
+            '--pheno-file', self.pheno_file,
+            '--phenotype', self.phenotype,
+            '--phenotype-class', self.phenotype_class,
+            '--score-file', os.path.join(self.output_dir, 'test.score'),
+            # '--nPCs', f'{nPCs}',
+        ])
+        if self.categorical_covariates is not None:
+            cmd += ' --categorical-covariates ' + ' '.join(self.categorical_covariates)
+        if self.continuous_covariates is not None:
+            cmd += ' --continuous-covariates ' + ' '.join(self.continuous_covariates)
+
+        cmd += ' ' + ' '.join(['--out', os.path.join(self.output_dir, 'test_summary')])
+
+        return cmd
 
 
 class PGS_Plink(BasePGS):
@@ -704,6 +755,7 @@ class PGS_Plink(BasePGS):
         ])
         return cmd
 
+    """
     def get_model_evaluation_str(self):
         '''
         Return callable string for fitting a simple
@@ -728,6 +780,7 @@ class PGS_Plink(BasePGS):
             '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
+        """
 
     def get_str(self, mode='basic', update_effect_size=False):
         '''
@@ -795,19 +848,16 @@ class PGS_PRSice2(BasePGS):
     geno_file_prefix: str
         path to QC'd .bed, .bim, .fam files (w.o. file ending)
         (</ENV/path/to/data/file>)
+    continuous_covariates: list of strings or None
+        Column names that should be treated as continuous covariates 
+        for basic model evaluation metrics (e.g., ``['PC1', 'PC2']``).
+        Must exist in ``pheno_file``.
+    categorical_covariates: list of strings or None
+        Column names that should be treated as categorical covariates
+        for basic model evaluation metrics (e.g., ``['SEX']``).
+        Must exist in ``pheno_file``.
     output_dir: str
         path for output files (<path>)
-    covariate_file: str or None
-        path to covariate file (.cov)
-    eigenvec_file: str or None
-        path to eigenvec file (.eig) with PCs
-    nPCs: int
-        number of Principal Components (PCs) to include
-        in covariate generation
-    MAF: float
-        base-MAF upper threshold value (0.01)
-    INFO: float
-        base-INFO upper threshold value (0.8)
     **kwargs
         dict of additional keyword/arguments pairs parsed to
         the Rscripts/PRSice.R script (see file for full set of options).
@@ -833,61 +883,51 @@ class PGS_PRSice2(BasePGS):
                  phenotype='Height',
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='/REF/examples/prsice2/EUR',
+                 continuous_covariates=None,
+                 categorical_covariates=None,
                  output_dir='PGS_prsice2',
-                 covariate_file='/REF/examples/prsice2/EUR.cov',
-                 eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
-                 nPCs=6,
-                 MAF=0.01,
-                 INFO=0.8,
                  **kwargs):
         super().__init__(sumstats_file=sumstats_file,
                          pheno_file=pheno_file,
                          phenotype=phenotype,
                          phenotype_class=phenotype_class,
                          geno_file_prefix=geno_file_prefix,
+                         continuous_covariates=continuous_covariates,
+                         categorical_covariates=categorical_covariates,
                          output_dir=output_dir,
                          **kwargs)
-        # set attributes
-        self.covariate_file = covariate_file
-        self.eigenvec_file = eigenvec_file
-        self.nPCs = nPCs
-        self.MAF = MAF
-        self.INFO = INFO
 
-        # deal with covariate file, generate from covariate_file
-        # and eigenvec_file if needed
-        if 'cov' in self.kwargs.keys():
-            self._Covariate_file = self.kwargs.pop('cov')
-            print(f'cov={self._Covariate_file} argument found in kwargs.',
-                  'eigenvec_file and covariate_file args will be ignored.')
-        else:
-            if self.covariate_file is not None \
-                    and self.eigenvec_file is not None:
-                self._Covariate_file = os.path.join(
-                    self.output_dir,
-                    self.data_prefix + '.covariate')
-            else:
-                self._Covariate_file = None
-
-    def _generate_covariate_str(self):
+    def _convert_pheno_file(self):
         '''
-        Generate string which will be included in job script
-        for generating .covariate file combining .cov and .eigenvec
-        input files.
-
-        Returns
-        -------
-        str
+        PRSice_linuq/PRSice.R requires space-delimited files for 
+        --pheno and --cov arguments for prediction accuracy 
+        assessment, while our spec assumes comma separated columns
+        in the ``pheno_file``
         '''
-        command = ' '.join([
+        pheno = ' '.join([
             '$RSCRIPT',
-            os.path.join('Rscripts', 'generate_covariate.R'),
-            '--cov-file', self.covariate_file,
-            '--eigenvec-file', self.eigenvec_file,
-            '--covariate-file', self._Covariate_file,
-            '--nPCs', str(self.nPCs)])
-
-        return command
+            os.path.join('Rscripts', 'extract_columns.R'),
+            '--input-file', self.pheno_file,
+            f'--columns', ','.join(['FID', 'IID', self.phenotype]), 
+            '--output-file', 
+            f'{os.path.join(self.output_dir, "tmp_phenotype.csv")}',
+            '--na NA'
+        ])
+        columns = ['FID', 'IID']
+        if self.continuous_covariates is not None:
+            columns += self.continuous_covariates
+        if self.categorical_covariates is not None:
+            columns += self.categorical_covariates
+        cov = ' '.join([
+            '$RSCRIPT',
+            os.path.join('Rscripts', 'extract_columns.R'),
+            '--input-file', self.pheno_file,
+            f'--columns', ','.join(columns),
+            '--output-file', 
+            f'{os.path.join(self.output_dir, "tmp_covariates.csv")}',
+            '--na NA'
+        ])
+        return [pheno, cov]
 
     def _generate_run_str(self):
         '''
@@ -907,17 +947,24 @@ class PGS_PRSice2(BasePGS):
             f'--base {self.sumstats_file}',
             f'--target {target}',
             f'--binary-target {binary_target}',
-            f'--pheno {self.pheno_file}',
+            f'--pheno {os.path.join(self.output_dir, "tmp_phenotype.csv")}',
             f'--pheno-col {self.phenotype}',
-            f'--out {os.path.join(self.output_dir, self.data_prefix)}'
+            f'--cov {os.path.join(self.output_dir, "tmp_covariates.csv")}'
         ])
-        if self._Covariate_file is not None:
-            cmd0 = self._generate_covariate_str()
-        else:
-            cmd0 = ''
-        command = '\n'.join([
-            cmd0, command
-        ])
+
+        # covariate columns 
+        if (self.continuous_covariates is not None) or (self.categorical_covariates is not None):
+            all_col = []
+            if self.continuous_covariates is not None:
+                all_col += self.continuous_covariates
+            if self.categorical_covariates is not None:
+                all_col += self.categorical_covariates
+            command = ' '.join([command, '--cov-col', ','.join(all_col)])
+            if self.categorical_covariates is not None:
+                command = ' '.join([command, '--cov-factor', ','.join(self.categorical_covariates)])
+
+        # output
+        command = ' '.join([command, f'--out {os.path.join(self.output_dir, self.data_prefix)}'])
 
         # deal with kwargs
         if len(self.kwargs) > 0:
@@ -928,7 +975,7 @@ class PGS_PRSice2(BasePGS):
                 else:
                     command = ' '.join(
                         [command, f'--{key} {value or ""}'])
-
+        
         return command
 
     def _generate_post_run_str(self):
@@ -936,32 +983,6 @@ class PGS_PRSice2(BasePGS):
         cmd = ' '.join([
             '$PYTHON', '-c',
             f"""'from pgs.pgs import post_run_prsice2; post_run_prsice2({arg})'"""  # noqa: E501
-        ])
-        return cmd
-
-    def get_model_evaluation_str(self):
-        '''
-        Return callable string for fitting a simple
-        linear model between PGS score and phenotype data
-        using R stats::lm, printing stats::lm.fit.summary output
-        to file
-
-        Returns
-        -------
-        str
-
-        '''
-        cmd = ' '.join([
-            '$RSCRIPT',
-            os.path.join('Rscripts', 'evaluate_model.R'),
-            '--pheno-file', self.pheno_file,
-            '--phenotype', self.phenotype,
-            '--phenotype-class', self.phenotype_class,
-            '--score-file', os.path.join(self.output_dir, 'test.score'),
-            '--nPCs', f'{self.nPCs}',
-            '--eigenvec-file', self.eigenvec_file,
-            '--covariate-file', self.covariate_file,
-            '--out', os.path.join(self.output_dir, 'test_summary')
         ])
         return cmd
 
@@ -974,17 +995,9 @@ class PGS_PRSice2(BasePGS):
         list of str
             list of command line statements for analysis run
         '''
-        commands = []
-        if not os.path.isfile(self.eigenvec_file):
-            commands += [
-                self._generate_eigenvec_eigenval_files(
-                    nPCs=self.nPCs)]
-
-        if self._Covariate_file is not None:
-            commands += [self._generate_covariate_str()]
-
-        return commands + [self._generate_run_str(),
-                           self._generate_post_run_str()]
+        return self._convert_pheno_file() + [
+            self._generate_run_str(), 
+            self._generate_post_run_str()]
 
 
 class PGS_LDpred2(BasePGS):
@@ -1006,6 +1019,14 @@ class PGS_LDpred2(BasePGS):
     geno_file_prefix: str
         path to QC'd .bed, .bim, .fam files (w.o. file ending)
         (</ENV/path/to/data/file>)
+    continuous_covariates: list of strings or None
+        Column names that should be treated as continuous covariates 
+        for basic model evaluation metrics (e.g., ``['PC1', 'PC2']``).
+        Must exist in ``pheno_file``.
+    categorical_covariates: list of strings or None
+        Column names that should be treated as categorical covariates
+        for basic model evaluation metrics (e.g., ``['SEX']``).
+        Must exist in ``pheno_file``.
     output_dir: str
         path for output files (<path>)
     method: str
@@ -1013,6 +1034,7 @@ class PGS_LDpred2(BasePGS):
         "inf" for infinitesimal
     file_geno_rds: str
         base name for .rds file output
+
     **kwargs
         dict of additional keyword/arguments pairs parsed to
         the ``$LDPRED2_SCRIPTS/ldpred2.R`` script
@@ -1036,6 +1058,8 @@ class PGS_LDpred2(BasePGS):
                  phenotype='Height',
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='/REF/examples/prsice2/EUR',
+                 continuous_covariates=None,
+                 categorical_covariates=None,
                  output_dir='PGS_ldpred2_inf',
                  method='auto',
                  file_geno_rds='PGS_ldpred2_inf/EUR.rds',
@@ -1045,6 +1069,8 @@ class PGS_LDpred2(BasePGS):
                          phenotype=phenotype,
                          phenotype_class=phenotype_class,
                          geno_file_prefix=geno_file_prefix,
+                         continuous_covariates=continuous_covariates,
+                         categorical_covariates=categorical_covariates,
                          output_dir=output_dir,
                          **kwargs)
 
@@ -1065,48 +1091,6 @@ class PGS_LDpred2(BasePGS):
             '--file-output', self.file_geno_rds
         ])
         return command
-
-
-    def get_model_evaluation_str(self,
-                                 nPCs=None,
-                                 categorical_covariates=None,
-                                 continuous_covariates=None,
-                                 ):
-        '''
-        Return callable string for fitting a simple
-        linear model between PGS score and phenotype data
-        using R stats::lm, printing stats::lm.fit.summary output
-        to file
-
-        Parameters
-        ----------
-        nPCs: int
-            number of PCs to account for
-        categorical_covariates: list of strings
-            column names that should be treated as categorical covariates (e.g., ``['batch']``)
-        continuous_covariates: list of strings
-            column names that should be treated as continuous covariates (e.g., ``['age']``)
-        Returns
-        -------
-        str
-        '''
-        cmd = ' '.join([
-            '$RSCRIPT',
-            os.path.join('Rscripts', 'evaluate_model.R'),
-            '--pheno-file', self.pheno_file,
-            '--phenotype', self.phenotype,
-            '--phenotype-class', self.phenotype_class,
-            '--score-file', os.path.join(self.output_dir, 'test.score'),
-            '--nPCs', f'{nPCs}',
-        ])
-        if categorical_covariates is not None:
-            cmd += ' --categorical-covariates ' + ' '.join(categorical_covariates)
-        if continuous_covariates is not None:
-            cmd += ' --continuous-covariates ' + ' '.join(categorical_covariates)
-
-        cmd += ' ' + ' '.join(['--out', os.path.join(self.output_dir, 'test_summary')])
-
-        return cmd
 
     def get_str(self, create_backing_file=True):
         '''

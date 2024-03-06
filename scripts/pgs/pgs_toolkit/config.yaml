@@ -59,15 +59,14 @@ plink:
 # PRSice-2
 prsice2:
   bar-levels: [0.001, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 1]
-  MAF: 0.01
-  INFO: 0.8
-  no-regress: 
+  # MAF: 0.01
+  # INFO: 0.8
+  # no-regress: 
   fastscore:
-  nPCs: 10
   thread: 4
 
 # LDpred2
 ldpred2:
-  nPCs: 10
+  # nPCs: 10
   cores: 4
 

@@ -13,6 +13,6 @@ par <- add_argument(par, "--quote", default=F, type="bool", help="data.table::fw
 parsed <- parse_args(par)
 
 csv <- fread(parsed$input_file)
-cols <- parsed$columns  # c(parsed$columns)
+cols <- parsed$columns
 out <- csv[, ..cols]
 fwrite(out, parsed$output_file, sep=parsed$sep, col.names=parsed$header, na=parsed$na, quote=parsed$quote)
