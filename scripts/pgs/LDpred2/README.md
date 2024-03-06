@@ -221,7 +221,7 @@ columns of chromosome and position in the `HRC` reference data (default of `--re
 files that are matched. In the example below, output is piped to gzip. To write directly to a file the arguments `--file-output <output file>` and `--file-output-col-sep`
 controls the location of the output file and the column separator used (defaults to tab, "\t").
 
-**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) areis outside the working directory, make sure to append its directory to the `SINGULARITY_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
+**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) is outside the working directory, make sure to append its directory to the `SINGULARITY_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
 
 ### Synthetic example (chr21 and chr22)
 
