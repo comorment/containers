@@ -88,6 +88,7 @@ Some resulting figures:
 
 * Manhattan plot for height GWAS:
   ![opensnp_hm3_plink_height_cm.manh.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.manh.png)
+
 * Combined QQ plot for height GWAS:
   ![opensnp_hm3_plink_height_cm.qq.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.qq.png)
 
