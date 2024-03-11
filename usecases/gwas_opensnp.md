@@ -78,134 +78,13 @@ Finally, you need to customize ``--comorment-folder`` folder containing a ``cont
 For more results, see [gwas_demo](https://github.com/comorment/containers/blob/main/usecases/gwas_demo) folder. Main results are the following GWAS summary statistics:
 
 ```
-run1_plink2_CASE.gz
-run1_plink2_CASE2.gz
-run2_regenie_PHENO.gz
-run2_regenie_PHENO2.gz
+opensnp_hm3_plink_height_cm.gz
+opensnp_hm3_plink_regenie_cm.gz
 ```
 
-Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../specifications/sumstats_specification.md).
+Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../specifications/sumstats_specification.md). And corresponding qq and manhattan plots are created
 
-It is also supported to run GWAS on dosages stored in BGEN format, instead of using hard call phenotypes from plink's bed/bim/fam format.
-If you have genotypes formatted this way, the only change you need is to change ``--geno-file`` file, pointing it to ``.bgen``  (or a ``.vcf``) file
-as in this example: [example_3chr_bgen.argsfile](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr_bgen.argsfile).
-It is expected that ``.bgen`` has corresponding ``.sample`` and ``.bgen.bgi`` files.
-Similarly, for a ``.vcf`` (or ``.vcf.gz``) formats you need to generate ``.tbi`` and/or ``.csi`` index files (see <https://www.biostars.org/p/59492/>).
 
-To see more info about ``gwas.py`` arguments, try this:
 
-```
->singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
-```
 
-Key arguments are also described below,
-but the actual ``--help`` output will describe more arguments - we don't copy this information here since gwas.py tool is being actively developed.
 
-```
-usage: gwas.py gwas [-h] [--out OUT] 
-                    [--geno-file GENO_FILE] [--geno-fit-file GENO_FIT_FILE] [--fam FAM]
-                    [--chr2use CHR2USE]                    
-                    [--pheno-file PHENO_FILE] [--dict-file DICT_FILE]
-                    [--covar COVAR [COVAR ...]]
-                    [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
-                    [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
-                    [--analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]]
-
-  --analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]
-
-  --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
-  --geno-file GENO      required argument pointing to a genetic file: (1)
-                        plink's .bed file, or (2) .bgen file, or (3) .pgen
-                        file, or (4) .vcf file. Note that a full name of .bed
-                        (or .bgen, .pgen, .vcf) file is expected here.
-                        Corresponding files should have standard names, e.g.
-                        for plink's format it is expected that .fam and .bim
-                        file can be obtained by replacing .bed extension
-                        accordingly. supports '@' as a place holder for
-                        chromosome labels
-  --geno-fit-file GENO_FIT_FILE
-                        genetic file to use in a first stage of mixed effect
-                        model. Expected to have the same set of individuals as
-                        --geno-file (this is NOT validated by the gwas.py script,
-                        and it is your responsibility to follow this
-                        assumption). Optional for standard association
-                        analysis (e.g. if for plink's glm). The argument
-                        supports the same file types as the --geno-file argument.
-                        Noes not support '@' (because mixed effect tools
-                        typically expect a single file at the first stage.
-  --fam FAM             an argument pointing to a plink's .fam file, use by
-                        gwas.py script to pre-filter phenotype information
-                        (--pheno) with the set of individuals available in the
-                        genetic file (--geno-file / --geno-fit-file). Optional when
-                        either --geno-file or --geno-fit-file is in plink's format,
-                        otherwise required - but IID in this file must be
-                        consistent with identifiers of the genetic file.
-  --chr2use CHR2USE     Chromosome ids to use (e.g. 1,2,3 or 1-4,12,16-20).
-                        Used when '@' is present in --geno-file, and allows to
-                        specify for which chromosomes to run the association
-                        testing.
-  --pheno-file PHENO_FILE
-                        phenotype file, according to CoMorMent spec
-  --dict-file DICT_FILE
-                        phenotype dictionary file, defaults to <pheno>.dict
-  --covar COVAR [COVAR ...]
-                        covariates to control for (must be columns of the
-                        --pheno-file); individuals with missing values for any
-                        covariates will be excluded not just from <out>.covar,
-                        but also from <out>.pheno file
-  --variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]
-                        the list of continuous phenotypes to standardize
-                        variance; accept the list of columns from the --pheno
-                        file (if empty, applied to all); doesn't apply to
-                        dummy variables derived from NOMINAL or BINARY
-                        covariates.
-  --pheno PHENO [PHENO ...]
-                        target phenotypes to run GWAS (must be columns of the
-                        --pheno-file
-
-Filtering options:
-  --info-file INFO_FILE
-                        File with SNP and INFO columns. Values in SNP column must be unique.
-  --info INFO           threshold for filtering on imputation INFO score
-  --maf MAF             threshold for filtering on minor allele frequency
-  --hwe HWE             threshold for filtering on hardy weinberg equilibrium p-value
-  --geno GENO           threshold for filtering on per-variant missingness rate)
-```
-
-## How to run PRSice2 software
-
-Computing polygenic risk scores require (and testing how they work on a known phenotype data)  
-require a similar set input to what you use for running a GWAS analysis,
-with an addition of an ``--sumstats`` argument that points to summary statistics.
-
-You can run an example as follows:
-
-```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
-  --sumstats run1_plink2_CASE.gz \
-  --geno-file /REF/examples/regenie/example_3chr.bed \
-  --geno-ld-file /REF/examples/regenie/example_3chr.bed \
-  --pheno-file /REF/examples/regenie/example_3chr.pheno --pheno CASE CASE2 --covar PC1 PC2 BATCH \
-  --chr2use 1-3 --variance-standardize \
-  --analysis prsice2 --out run3_prsice2 \
-  --keep-ambig  # only for a purpose of this demo; exclude for real analysis (unlee you know why it's there)
-
-export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
-
-cat run3_prsice2_cmd.sh | bash
-```
-
-The resulting ``run3_prsice2.summary`` file looks as follows,
-which is reasonable: PGRS computed based on CASE phenotypes explains CASE phenotype better (P=1.88e-09) than CASE2 phenotype.
-
-```
-Phenotype Set Threshold PRS.R2 Full.R2 Null.R2 Prevalence Coefficient Standard.Error P Num_SNP
-CASE Base 0.9 0.064886 0.818532 0.753646 - 92.0264 15.3183 1.88278e-09 50
-CASE2 Base 0.9 5.09224e-05 0.0334905 0.0334396 - 0.93301 7.02908 0.894402 50
-```
-
-For more information, see this:
-
-```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs --help
-```
