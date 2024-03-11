@@ -21,10 +21,6 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
 --pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie figures --out run2_regenie
-
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr_vcf.argsfile \
---pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis saige figures --out run3_saige
 ```
 
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
@@ -56,7 +52,6 @@ For this small-scale demo example, you could execute the actual GWAS locally on 
 export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
 export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
 export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
-export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif "
 export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
 
 cat run1_plink2_cmd.sh | bash
@@ -113,9 +108,9 @@ usage: gwas.py gwas [-h] [--out OUT]
                     [--covar COVAR [COVAR ...]]
                     [--variance-standardize [VARIANCE_STANDARDIZE [VARIANCE_STANDARDIZE ...]]]
                     [--pheno PHENO [PHENO ...]] [--pheno-na-rep PHENO_NA_REP]
-                    [--analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]]
+                    [--analysis {plink2,regenie,figures} [{plink2,regenie,figures} ...]]
 
-  --analysis {plink2,regenie,saige,figures} [{plink2,regenie,saige,figures} ...]
+  --analysis {plink2,regenie,figures} [{plink2,regenie,figures} ...]
 
   --out OUT             prefix for the output files (<out>.covar, <out>.pheno, etc)
   --geno-file GENO      required argument pointing to a genetic file: (1)

@@ -1,1 +1,0 @@
-out_vcf.log filter=lfs diff=lfs merge=lfs -text
