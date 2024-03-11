@@ -1,6 +1,6 @@
-# GWAS demo
+# GWAS appplication using OPENSNP data
 
-This usecase describe how to run a demo GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/).
+This usecase describe how to run GWAS analysis with [plink2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/) on binary and quantitative traits for [opensnp](https://github.com/comorment/opensnp) data.
 
 This will use genotype and phenotype data formatted according to [CoMorMent specifications](./../specifications/README.md),
 and the helper [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script that reads the phenotype data,
@@ -8,7 +8,7 @@ extracts user-defined subset of phenotypes and covariates,
 and prepares the scripts or SLURM jobs for ``plink2`` and ``regenie`` analysis.
 In this demo, we're using example data from [comorment/opensnp](https://github.com/comorment/opensnp) folder.
 Take a moment to look at the [phenotype file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.csv) and it's [dictionary file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.dict) which will be used throughout this application.
-For genetic data, we're using imputed hard genotype calles in plink format, with ``n=6500`` individuals ([opensnp_hm3.fam](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.fam)) and ``m=500`` SNPs across three chromosomes ([opensnp_hm3.bim](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
+For genetic data, we're using imputed hard genotype calls in plink format, with ``n=6500`` individuals ([opensnp_hm3.fam](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.fam)) and ``m=500`` SNPs across three chromosomes ([opensnp_hm3.bim](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
 Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
 
