@@ -99,9 +99,3 @@ Some resulting figures:
   ![opensnp_hm3_plink_simu1_simutrait1.qq.png](./gwas_opensnp/opensnp_hm3_plink_simu1_simutrait1.qq.png)
 
 
-* Manhattan plot for height GWAS:
- ![opensnp_hm3_plink_height_cm.manh.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.manh.png)
-* Combined QQ plot for height GWAS:
-  ![opensnp_hm3_plink_height_cm.qq.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.qq.png)
-* Combined QQ plot for depression GWAS:
-  ![dep.qq.png](./gwas_real/dep.qq.png)
