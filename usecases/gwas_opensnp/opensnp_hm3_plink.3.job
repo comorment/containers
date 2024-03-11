@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --job-name=gwas
+#SBATCH --account=p697_norment
+#SBATCH --time=06:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem-per-cpu=8000M
+
+
+module load singularity/3.7.1
+
+export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697"
+export SIF=$COMORMENT/containers/singularity
+
+export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
+export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
+export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
+
+$RSCRIPT -e 'library(data.table);library(qqman);library(ggplot2);library(GWASTools);df=read.table("/home/opensnp_hm3_plink_height_cm.gz", header=TRUE);png("/home/opensnp_hm3_plink_height_cm.qq.png", width=600, unit="px", pointsize=12, bg="white");qqPlot(df$P, ci=T, main="height_cm");dev.off();df=df[df$P < 0.05, ];png("/home/opensnp_hm3_plink_height_cm.manh.png", width=1200, unit="px", pointsize=12, bg="white");manhattan(df, chr="CHR", bp="BP", snp="SNP", p="P", main="height_cm");dev.off();'
+

@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --job-name=gwas
+#SBATCH --account=p697_norment
+#SBATCH --time=06:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem-per-cpu=8000M
+#SBATCH --array=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
+
+module load singularity/3.7.1
+
+export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697"
+export SIF=$COMORMENT/containers/singularity
+
+export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
+export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
+export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
+
+$PLINK2  --bfile /REF3/imputed/opensnp_hm3 --no-pheno --chr ${SLURM_ARRAY_TASK_ID} --missing --freq --hardy  --keep /home/opensnp_hm3_plink.pheno --out /home/opensnp_hm3_plink_chr${SLURM_ARRAY_TASK_ID}
+$PLINK2  --bfile /REF3/imputed/opensnp_hm3 --no-pheno --chr ${SLURM_ARRAY_TASK_ID} --glm cols=+a1freq hide-covar --ci 0.95 --pheno /home/opensnp_hm3_plink.pheno --covar /home/opensnp_hm3_plink.covar --out /home/opensnp_hm3_plink_chr${SLURM_ARRAY_TASK_ID}

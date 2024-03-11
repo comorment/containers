@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --job-name=gwas
+#SBATCH --account=p697_norment
+#SBATCH --time=06:00:00
+#SBATCH --cpus-per-task=16
+#SBATCH --mem-per-cpu=8000M
+
+
+module load singularity/3.7.1
+
+export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
+export SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697"
+export SIF=$COMORMENT/containers/singularity
+
+export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
+export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
+export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
+export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+export SAIGE="singularity exec --home $PWD:/home $SIF/saige.sif"
+
+$PYTHON gwas.py merge-plink2  --maf 0.1  --hwe 0.01  --geno 0.5  --sumstats /home/opensnp_hm3_plink_chr@.height_cm.glm.linear --basename /home/opensnp_hm3_plink_chr@ --out /home/opensnp_hm3_plink_height_cm  --chr2use 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 
+
