@@ -100,8 +100,8 @@ Some resulting figures:
 
 
 * Manhattan plot for height GWAS:
-  ![run1_height.plink2.gz.manh.png](./gwas_real/run1_height.plink2.gz.manh.png)
+ ![opensnp_hm3_plink_height_cm.manh.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.manh.png)
 * Combined QQ plot for height GWAS:
-  ![height.qq.png](./gwas_real/height.qq.png)
+  ![opensnp_hm3_plink_height_cm.qq.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.qq.png)
 * Combined QQ plot for depression GWAS:
   ![dep.qq.png](./gwas_real/dep.qq.png)
