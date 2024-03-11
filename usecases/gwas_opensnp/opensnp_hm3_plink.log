@@ -1,1 +1,71 @@
+***********************************************************************
+* gwas.py: pipeline for GWAS analysis
+* Version 1.0.1
+* (C) 2021 Oleksandr Frei, Bayram Akdeniz and Alexey A. Shadrin
+* Norwegian Centre for Mental Disorders Research / University of Oslo
+* Centre for Bioinformatics / University of Oslo
+* GNU General Public License v3
+***********************************************************************
+Call: 
+gwas.py gwas \
+	--geno-file /REF3/imputed/opensnp_hm3.bed \
+	--geno-fit-file /REF3/imputed/opensnp_hm3.bed \
+	--pheno-file /REF3/pheno/pheno.csv \
+	--dict-file /REF3/pheno/pheno.dict \
+	--pheno height_cm \
+	--covar sex batch PC1 PC2 \
+	--analysis plink2 figures \
+	--out opensnp_hm3 \
+	--chr2use 1-22 \
+	--variance-standardize \
+	--maf 0.1 \
+	--geno 0.5 \
+	--hwe 0.01 \
+	--config config.yaml
+Config: 
+{'slurm': {'job_name': 'gwas', 'account': 'p697_norment', 'time': '06:00:00', 'cpus_per_task': 16, 'mem_per_cpu': '8000M', 'module_load': ['singularity/3.7.1']}, 'comorment_folder': '/ess/p697/data/durable/s3-api/github/comorment', 'singularity_bind': '$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697', 'saige': {'cpus_per_task_stage2': 1}}
+Beginning analysis at Wed Mar  6 14:34:57 2024 by p697-bayramc, host p697-appn-norment01.tsd.usit.no
+reading /REF3/imputed/opensnp_hm3.fam...
+done, 4257 rows, 6 cols
+reading /REF3/pheno/pheno.csv...
+done, 5293 rows, 26 cols
+reading /REF3/pheno/pheno.dict...
+done, 26 rows, 3 cols, header:
+          FIELD     TYPE                                        DESCRIPTION
+0           IID      IID                  Subject ID matching genotype file
+1           FID  NOMINAL                               Family ID (not used)
+2         batch  NOMINAL            genotyping batch inferred by GenomePrep
+3           sex  NOMINAL                     sex imputed from genotype data
+4  ambidextrous   BINARY  phenotype - 1 for use left and right hand equa...
+FID column is present in --pheno-file; FID column will be taken from --fam file
+merging --pheno and --fam file...
+n=4184 individuals remain after merging, n=1109 removed
+filtering individuals with missing covariates...
+phenotype height_cm had mean 172.73685 and std 10.55720, and will be standardized
+phenotype PC1 had mean 0.03116 and std 0.06471, and will be standardized
+phenotype PC2 had mean -0.00075 and std 0.03617, and will be standardized
+phenotype PC3 had mean -0.00289 and std 0.01268, and will be standardized
+phenotype PC4 had mean -0.00132 and std 0.04107, and will be standardized
+phenotype PC5 had mean 0.00160 and std 0.00901, and will be standardized
+phenotype PC6 had mean 0.00064 and std 0.03228, and will be standardized
+phenotype PC7 had mean 0.00175 and std 0.01365, and will be standardized
+phenotype PC8 had mean -0.00037 and std 0.03037, and will be standardized
+phenotype PC9 had mean -0.00209 and std 0.00828, and will be standardized
+phenotype PC10 had mean -0.00111 and std 0.00786, and will be standardized
+phenotype simutrait1 had mean 0.00090 and std 0.99685, and will be standardized
+phenotype simutrait2 had mean 0.00455 and std 1.01566, and will be standardized
+phenotype simutrait1_chr2122 had mean -0.00150 and std 0.99369, and will be standardized
+phenotype simutrait2_chr2122 had mean 0.00316 and std 1.00917, and will be standardized
+extracting covariates...
+Variable sex will be extracted as dummie, dropping 1 label (most frequent)
+Variable batch will be extracted as dummie, dropping c1 label (most frequent)
+writing 9 columns (including FID, IID) for n=4184 individuals to opensnp_hm3.covar
+extracting phenotypes...
+variable: height_cm (CONTINUOUS), missing: 3391
+writing 3 columns (including FID, IID) for n=4184 individuals to opensnp_hm3.pheno
+all --pheno variables have type: CONTINUOUS
+selected analysis: linear
+To submit all jobs via SLURM, use the following scripts otherwise execute commands from opensnp_hm3_cmd.sh
+Analysis finished at Wed Mar  6 14:34:57 2024
+Total time elapsed: 0.42s
 
