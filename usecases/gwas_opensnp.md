@@ -10,7 +10,7 @@ In this demo, we're using example data from [comorment/opensnp](https://github.c
 Take a moment to look at the [phenotype file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.csv) and it's [dictionary file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.dict) which will be used throughout this application.
 For genetic data, we're using imputed hard genotype calls in plink format, with ``n=6500`` individuals ([opensnp_hm3.fam](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.fam)) and ``m=500`` SNPs across three chromosomes ([opensnp_hm3.bim](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; 
+Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable. Similarly /REF3 defines the path of the input genome and phenome file ; 
 
 ```
 singularity exec --home $PWD:/home $COMORMENT/containers/singularity/python3.sif python /home/gwas.py gwas \
@@ -34,6 +34,18 @@ singularity exec --home $PWD:/home $COMORMENT/containers/singularity/python3.sif
 --variance-standardize \
 --maf 0.1 --geno 0.5 --hwe 0.01 \
 --config /home/config.yaml 
+
+singularity exec --home $PWD:/home $COMORMENT/containers/singularity/python3.sif python /home/gwas.py gwas \
+--geno-file /REF3/imputed/opensnp_hm3.bed \
+--geno-fit-file /REF3/imputed/opensnp_hm3.bed \
+--pheno-file /REF3/pheno/pheno.csv --dict-file /REF3/pheno/pheno.dict  --pheno simutrait1 \
+--covar sex batch PC1 PC2 \
+--analysis plink2 figures --out /home/opensnp_hm3_plink_simu1 \
+--chr2use 1-22 \
+--variance-standardize \
+--maf 0.1 --geno 0.5 --hwe 0.01 \
+--config /home/config.yaml 
+
 
 ```
 
