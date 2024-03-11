@@ -84,6 +84,13 @@ opensnp_hm3_plink_regenie_cm.gz
 
 Each file is merged across all chromosomes, and has a minimal set of columns (``SNP, CHR, BP, A1, A2, N, Z, BETA, SE, PVAL``), as described in the [specification](./../specifications/sumstats_specification.md). And corresponding qq and manhattan plots are created
 
+Some resulting figures:
+
+* Manhattan plot for height GWAS:
+  ![opensnp_hm3_plink_height_cm.manh.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.manh.png)
+* Combined QQ plot for height GWAS:
+  ![opensnp_hm3_plink_height_cm.qq.png](./gwas_opensnp/opensnp_hm3_plink_height_cm.qq.png)
+
 
 
 
