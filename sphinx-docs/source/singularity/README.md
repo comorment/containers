@@ -11,9 +11,6 @@
 ```{include} ../../../docs/singularity/r.md
 :heading-offset: 1
 ```
-```{include} ../../../docs/singularity/saige.md
-:heading-offset: 1
-```
 ## External
 ```{toctree}
 :caption: Contents

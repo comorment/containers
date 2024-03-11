@@ -73,36 +73,6 @@ def test_gwas_py_regenie():
         assert out.returncode == 0
         os.chdir(cwd)
 
-
-def test_gwas_py_saige():
-    with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
-        os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
-        call = (
-            f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
-            " gwas.py gwas --argsfile"
-            f" {os.path.join(ref, 'example_3chr_vcf.argsfile')} --pheno PHENO"
-            " PHENO2 --covar PC1 PC2 BATCH --analysis saige figures --out"
-            " run3_saige"
-        )
-        out = subprocess.run(call.split(" "))
-        expected_files = [
-            "run3_saige.1.job",
-            "run3_saige.2.job",
-            "run3_saige.3.job",
-            "run3_saige.4.job",
-            "run3_saige.5.job",
-            "run3_saige.log",
-            "run3_saige.pheno",
-            "run3_saige.sample",
-            "run3_saige_cmd.sh",
-        ]
-        assert all(map(os.path.isfile, expected_files))
-        assert out.returncode == 0
-        os.chdir(cwd)
-
-
 def test_gwas_py_variance_standardize():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
