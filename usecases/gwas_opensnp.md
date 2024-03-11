@@ -10,35 +10,37 @@ In this demo, we're using example data from [comorment/opensnp](https://github.c
 Take a moment to look at the [phenotype file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.csv) and it's [dictionary file](https://github.com/comorment/opensnp/blob/main/pheno/pheno.dict) which will be used throughout this application.
 For genetic data, we're using imputed hard genotype calls in plink format, with ``n=6500`` individuals ([opensnp_hm3.fam](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.fam)) and ``m=500`` SNPs across three chromosomes ([opensnp_hm3.bim](https://github.com/comorment/opensnp/tree/main/imputed/opensnp_hm3.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
+Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; 
 
 ```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 figures --out run1_plink2 
+singularity exec --home $PWD:/home $COMORMENT/containers/singularity/python3.sif python /home/gwas.py gwas \
+--geno-file /REF3/imputed/opensnp_hm3.bed \
+--geno-fit-file /REF3/imputed/opensnp_hm3.bed \
+--pheno-file /REF3/pheno/pheno.csv --dict-file /REF3/pheno/pheno.dict  --pheno height_cm \
+--covar sex batch PC1 PC2 \
+--analysis plink2 figures --out /home/opensnp_hm3_plink \
+--chr2use 1-22 \
+--variance-standardize \
+--maf 0.1 --geno 0.5 --hwe 0.01 \
+--config /home/config.yaml 
 
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
---argsfile /REF/examples/regenie/example_3chr.argsfile \
---pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie figures --out run2_regenie
+singularity exec --home $PWD:/home $COMORMENT/containers/singularity/python3.sif python /home/gwas.py gwas \
+--geno-file /REF3/imputed/opensnp_hm3.bed \
+--geno-fit-file /REF3/imputed/opensnp_hm3.bed \
+--pheno-file /REF3/pheno/pheno.csv --dict-file /REF3/pheno/pheno.dict  --pheno height_cm \
+--covar sex batch PC1 PC2 \
+--analysis regenie figures --out /home/opensnp_hm3_regenie \
+--chr2use 1-22 \
+--variance-standardize \
+--maf 0.1 --geno 0.5 --hwe 0.01 \
+--config /home/config.yaml 
 
 ```
 
 Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
-We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
+Note that we are using some flags to call files and options such as: what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
 
-```
-# example_3chr.args file defines the following arguments:
---pheno-file /REF/examples/regenie/example_3chr.pheno 
---geno-fit-file /REF/examples/regenie/example_3chr.bed
---geno-file /REF/examples/regenie/example_3chr.bed
---info-file /REF/examples/regenie/example_3chr.info --info 0.8
---chr2use 1-3
---variance-standardize
---maf 0.1        # normally 0.01 or lower
---geno 0.5       # normally 0.98 or higher
---hwe 0.01       # normaly 1e-10 or lower
-```
 
 In the above example ``--geno-fit-file`` points to the same file as ``--geno-file``, which is NOT how things should be done in a real application. ``--geno-fit-file`` should point to a single genetic file (merged across chromosomes),
 constrained to approximately less than a million SNPs, for example constrain to genotyped SNPs, or constrain to  the set of HapMap3 SNPs. For a real example, see [gwas_real.md](./gwas_real.md).
@@ -62,11 +64,9 @@ cat run2_regenie_cmd.sh | bash
 Otherwise you need to submit the SLURM jobs, generated by gwas.py script. There are two jobs for ``plink2`` analysis: ``run1_plink2.1.job`` and ``run1_plink2.2.job``, and three jobs for ``regenie`` analysis: ``run1_regenie.1.job``, ``run1_regenie.2.job``, ``run1_regenie.3.job`` (and similarly for ``run2``). These jobs must be executed in order, i.e. ``.2.job`` need to wait for ``.1.job``, and ``.3.job`` need to wait for ``.2.job``. You still can submit all jobs at once, but use SLURM's dependency management as described [here](https://stackoverflow.com/questions/19960332/use-slurm-job-id):
 
 ```
-RES=$(sbatch run1_plink2.1.job)
-RES=$(sbatch --dependency=afterany:${RES##* } run1_plink2.2.job)
-RES=$(sbatch run2_regenie.1.job)
-RES=$(sbatch --dependency=afterany:${RES##* } run2_regenie.2.job)
-RES=$(sbatch --dependency=afterany:${RES##* } run2_regenie.3.job)
+RES=$(sbatch /home/opensnp_hm3_plink.1.job)
+RES=$(sbatch --dependency=afterok:${RES##* } /home/opensnp_hm3_plink.2.job)
+RES=$(sbatch --dependency=afterok:${RES##* } /home/opensnp_hm3_plink.3.job)
 ```
 
 To customize parameters in the header of the slurm jobs, use ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu`` arguments of the ``gwas.py`` script (and let us know if there is anything else you need to customize!).
