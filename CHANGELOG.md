@@ -36,18 +36,11 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
-* Removals go here
+* Removed Saige support and Saige-related files
 
 ### Misc
 
 * Miscellaneous goes here
-
-
-## [1.9.1] - 2024-03-11
-
-### Removed
-
-* Removed Saige support
 
 ## [1.8.1] - 2024-03-05
 
