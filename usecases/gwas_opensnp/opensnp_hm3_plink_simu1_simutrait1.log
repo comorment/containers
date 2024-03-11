@@ -1,0 +1,23 @@
+***********************************************************************
+* gwas.py: pipeline for GWAS analysis
+* Version 1.0.1
+* (C) 2021 Oleksandr Frei, Bayram Akdeniz and Alexey A. Shadrin
+* Norwegian Centre for Mental Disorders Research / University of Oslo
+* Centre for Bioinformatics / University of Oslo
+* GNU General Public License v3
+***********************************************************************
+Call: 
+gwas.py merge-plink2 \
+	--maf 0.1 \
+	--hwe 0.01 \
+	--geno 0.5 \
+	--sumstats /home/opensnp_hm3_plink_simu1_chr@.simutrait1.glm.linear \
+	--basename /home/opensnp_hm3_plink_simu1_chr@ \
+	--out /home/opensnp_hm3_plink_simu1_simutrait1 \
+	--chr2use 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
+Beginning analysis at Wed Mar  6 15:04:59 2024 by p697-bayramc, host p697-appn-norment01.tsd.usit.no
+n=931047 SNPs remain after filtering allele frequency on 0.1<=FRQ<=0.9, n=264746 removed
+n=917490 SNPs remain after filtering Hardy Weinberg equilibrium P>=0.01, n=13557 removed
+n=917490 SNPs remain after filtering SNPs missingness F_MISS>=0.5, n=0 removed
+Analysis finished at Wed Mar  6 15:05:20 2024
+Total time elapsed: 21.28s
