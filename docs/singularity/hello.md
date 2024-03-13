@@ -96,6 +96,10 @@ The official documentation for singularity on TSD  is available [here](https://w
 List of software included in the container:
 
   | OS/tool             | version                                   | license
-  | ------------------- | ----------------------------------------- | -------------
+  | ------------------- |------------------------------------------ | -------------
   | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | plink               | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | plink[^1]          | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+
+### References
+
+[^1]: Christopher C Chang, Carson C Chow, Laurent CAM Tellier, Shashaank Vattikuti, Shaun M Purcell, James J Lee, Second-generation PLINK: rising to the challenge of larger and richer datasets, GigaScience, Volume 4, Issue 1, December 2015, s13742–015–0047–8, https://doi.org/10.1186/s13742-015-0047-8

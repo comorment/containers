@@ -11,8 +11,6 @@
 ```{include} ../../../docs/singularity/r.md
 :heading-offset: 1
 ```
-## External
-```{toctree}
-:caption: Contents
-external.md
+```{include} external.md
+:heading-offset: 1
 ```

@@ -29,6 +29,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 * Bundle of sphinx documentation build updates/restructures
 * Refer to the project as "COSGAP-containers"
 * Minor changes to documentation + suggestion of TOC
+* migrate online documentation to [cosgap.readthedocs.io](https://cosgap.readthedocs.io)
+* updated documentation to reflect the new project name
+* added references/urls to software tables in the documentation for hello.sif and gwas.sif
 
 ### Fixed
 
