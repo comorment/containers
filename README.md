@@ -1,7 +1,7 @@
 # COSGAP: COntainerized Statistical Genetics Analysis Pipelines
 
 The goal of this github repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside with their respective reference data and  scripts ("analysis pipelines") to facilitate application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
-with most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://comorment-containers.readthedocs.io/en/latest/).
+with most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://cosgap.readthedocs.io/en/latest/).
 
 For an overview of available software, see [here](docs/README.md).
 
@@ -31,7 +31,7 @@ Additional tools are available in separate repositories:
 ## Project status
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7385621.svg)](https://doi.org/10.5281/zenodo.7385621)
-[![Documentation Status](https://readthedocs.org/projects/comorment-containers/badge/?version=latest)](https://comorment-containers.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/cosgap/badge/?version=latest)](https://cosgap.readthedocs.io/en/latest/?badge=latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Hadolint](https://github.com/comorment/containers/actions/workflows/docker.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker.yml)
 [![Flake8](https://github.com/comorment/containers/actions/workflows/python.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/python.yml)
@@ -51,7 +51,7 @@ See the corresponding [README](./docker/README.md) file therein for details.
 
 ## Online documentation
 
-The online documentation hosted at [comorment-containers.rtfd.io](https://comorment-containers.readthedocs.io) can be built locally using [Sphinx](https://www.sphinx-doc.org/en/master/) in a conda environment as
+The online documentation hosted at [cosgap.rtfd.io](https://cosgap.readthedocs.io) can be built locally using [Sphinx](https://www.sphinx-doc.org/en/master/) in a conda environment as
 
 ```
 cd sphinx-docs/source  # documentation source/config directory
@@ -68,4 +68,4 @@ In order to make a pdf with the documentation, issue
 make pdflatex
 ```
 
-and open ``$PWD/_build/latex/comorment-containers.pdf`` in a pdf viewer.
+and open ``$PWD/_build/latex/cosgap.pdf`` in a pdf viewer.

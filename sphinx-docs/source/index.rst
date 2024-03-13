@@ -51,10 +51,10 @@
    Change log
    Internal usage (p33/p697/Tryggve collaborators)
 
-Welcome to the COSGAP-Container's documentation!
-================================================
+Welcome to the COSGAP's documentation!
+======================================
 
-This is the online documentation for the COSGAP-Container project, 
+This is the online documentation for the COSGAP project, 
 hosted at `GitHub.com/CoMorMent/containers <https://github.com/comorment/containers>`_. 
 
 .. toctree::

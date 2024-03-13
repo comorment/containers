@@ -8,7 +8,7 @@ This document is not for tracking [changes](CHANGELOG.md).
 - Stick to the [semantic versioning scheme](https://semver.org), with the `<MAJOR>.<MINOR>.<PATCH>` numbering [scheme](https://semver.org/#summary) with possible extensions.
 - Every merged PR should bump the version info in ``version/version.py`` depending on the nature of the change (minor fix means bumping `<PATCH>` and so forth).
   Reset the lesser version number (e.g., `<PATCH>`) if the higher version level is incremented (e.g, `<MINOR>`).
-- [comorment-containers.readthedocs.io](https://comorment-containers.rtfd.io) should trigger docs builds automatically with each merged PR.
+- [cosgap.readthedocs.io](https://cosgap.rtfd.io) should trigger docs builds automatically with each merged PR.
 - Make sure that the [CHANGELOG](CHANGELOG.md) is kept up to date.
 - Create a tag for each change in version (excluding `dev`,`rc#` extensions, and similar).
   This can be done by issuing (post merge):
