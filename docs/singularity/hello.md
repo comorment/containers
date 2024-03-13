@@ -95,10 +95,10 @@ The official documentation for singularity on TSD  is available [here](https://w
 
 List of software included in the container:
 
-  | OS/tool             | Reference | version                                   | license
-  | ------------------- | --------- |------------------------------------------ | -------------
-  | ubuntu              |           | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | plink               | [^1]      | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | OS/tool             | version                                   | license
+  | ------------------- |------------------------------------------ | -------------
+  | ubuntu              | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | plink[^1]          | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ### References
 

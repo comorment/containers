@@ -70,3 +70,5 @@ myst_enable_extensions = [
     "substitution",
     "tasklist",
 ]
+
+myst_footnote_transition = False

@@ -17,3 +17,5 @@ For details, see [github.com/comorment/MAGMA](https://github.com/comorment/MAGMA
 
 Causal Mixed Effect Models for Cross-Trait and Cross-Ancestry Analysis.
 For details, see [github.com/comorment/MiXeR](https://github.com/comorment/MiXeR).
+
+# References
