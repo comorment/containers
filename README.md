@@ -44,7 +44,32 @@ Additional tools are available in separate repositories:
 
 ## Cite
 
-If you use the software provided here, please get the citation info via the the "Cite this repository" button on the right side of this page, and cite our preprint:
+If you use the software provided here, please cite our [Zenodo.org](https://zenodo.org) code deposit (change version accordingly):
+```
+Oleksandr Frei, Andreas Jangmo, Espen Hagen, bayramakdeniz, ttfiliz, Richard Zetterberg, & John Shorter. (2024). comorment/containers: Comorment-Containers-v1.8.1 (v1.8.1). Zenodo. https://doi.org/10.5281/zenodo.10782180
+```
+
+Bibtex format:
+```
+@software{oleksandr_frei_2024_10782180,
+  author       = {Oleksandr Frei and
+                  Andreas Jangmo and
+                  Espen Hagen and
+                  bayramakdeniz and
+                  ttfiliz and
+                  Richard Zetterberg and
+                  John Shorter},
+  title        = {comorment/containers: Comorment-Containers-v1.8.1},
+  month        = mar,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {v1.8.1},
+  doi          = {10.5281/zenodo.10782180},
+  url          = {https://doi.org/10.5281/zenodo.10782180}
+}
+```
+
+Please also cite our preprint:
 
 ```
 Akdeniz, B.C., Frei, O., Hagen, E., Filiz, T.T., Karthikeyan, S., Pasman, J.A., Jangmo, A., Bergsted, J., Shorter, J.R., Zetterberg, R., Meijsen, J.J., Sønderby, I.E., Buil, A., Tesli, M., Lu, Y., Sullivan, P., Andreassen, O.A., & Hovig, E. (2022). COGEDAP: A COmprehensive GEnomic Data Analysis Platform. arXiv:2212.14103 [q-bio.GN]. DOI: [10.48550/arXiv.2212.14103](https://doi.org/)
