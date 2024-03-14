@@ -32,6 +32,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 * migrate online documentation to [cosgap.readthedocs.io](https://cosgap.readthedocs.io)
 * updated documentation to reflect the new project name
 * added references/urls to software tables in the documentation for singularity containers
+* update citation info
 
 ### Fixed
 
