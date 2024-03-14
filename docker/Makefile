@@ -1,4 +1,4 @@
-all: hello.sif gwas.sif python3.sif r.sif
+all: hello.sif gwas.sif python3.sif r.sif genopred.sif
 
 %.sif: dockerfiles/%/Dockerfile
 	scripts/build_docker.sh $* && \
