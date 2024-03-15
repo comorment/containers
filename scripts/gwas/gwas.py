@@ -352,7 +352,7 @@ def make_regenie_commands(args, logistic, step):
         (args.extract and args.exclude)
         or (args.extract and (args.exclude_step1 or args.exclude_step2))
         or (args.exclude and (args.extract_step1 or args.extract_step2))
-        ):
+            ):
         raise ValueError("--exclude is not allowed with --extract")
 
     if ('@' in geno_fit_file):
@@ -388,7 +388,7 @@ def make_regenie_commands(args, logistic, step):
         (" --bgen {} --ref-first --sample {}".format(geno_file, sample) if is_bgen else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.step1_pred.list".format(args.out) + \
-        " --chr ${SLURM_ARRAY_TASK_ID}"+ \
+        " --chr ${SLURM_ARRAY_TASK_ID}" + \
         (f" --exclude {args.exclude or args.exclude_step2}" if args.exclude or args.exclude_step2 else "") + \
         (f" --extract {args.extract or args.extract_step2}" if args.extract or args.extract_step2 else "")
 
@@ -458,7 +458,7 @@ def make_plink2_commands(args):
         (" --bgen {} ref-first --sample {}".format(
             geno_file, replace_suffix(geno_file, ".bgen", ".sample")) if is_bgen_file(geno_file) else "") + \
         (" --vcf {} --double-id".format(geno_file) if is_vcf_file(geno_file) else "") + \
-        " --chr ${SLURM_ARRAY_TASK_ID}"+ \
+        " --chr ${SLURM_ARRAY_TASK_ID}" + \
         (f" --exclude {args.exclude}" if args.exclude else "") + \
         (f" --extract {args.extract}" if args.extract else "")
     return cmd
