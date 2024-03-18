@@ -344,7 +344,7 @@ def get_args_from_config(conf_obj, *args):
     def unpack(d, li):
         return unpack(d[li[0]], li[1:]) if len(li) != 0 else d
     try:
-        return " " + " ".join([f"--{k} {v}" if v is not None else f"--{k}" for k,v in unpack(conf_obj, args).items()])
+        return " " + " ".join([f"--{k} {v}" if v is not None else f"--{k}" for k, v in unpack(conf_obj, args).items()])
     except (KeyError, AttributeError):
         return ""
 
