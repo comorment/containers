@@ -141,6 +141,18 @@ def parse_args(args):
                                help="threshold for filtering on hardy weinberg equilibrium p-value")
     filter_parser.add_argument("--geno", type=float, default=None,
                                help="threshold for filtering on per-variant missingness rate)")
+    filter_parser.add_argument("--extract", type=str, default=None,
+                               help="File with a set of SNPs to include in the analysis")
+    filter_parser.add_argument("--extract-step1", type=str, default=None,
+                               help="File with a set of SNPs to include in regenie analysis' step1")
+    filter_parser.add_argument("--extract-step2", type=str, default=None,
+                               help="File with a set of SNPs to include in regenie analysis' step2")
+    filter_parser.add_argument("--exclude", type=str, default=None,
+                               help="File with a set of SNPs to exclude from analysis")
+    filter_parser.add_argument("--exclude-step1", type=str, default=None,
+                               help="File with a set of SNPs to exclude from regenie analysis' step1")
+    filter_parser.add_argument("--exclude-step2", type=str, default=None,
+                               help="File with a set of SNPs to to exclude from regenie analysis' step2")
 
     subparsers = parser.add_subparsers(dest='cmd')
     subparsers.required = True
@@ -332,6 +344,16 @@ def make_regenie_commands(args, logistic, step):
     geno_fit_file = args.geno_fit_file
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
     sample = replace_suffix(geno_file, ".bgen", ".sample")
+    if (args.extract and args.extract_step2) or (args.extract and args.extract_step1):
+        raise ValueError("--extract is not allowed with --extract-step1 or --extract-step2")
+    if (args.extract and args.extract_step2) or (args.extract and args.extract_step1):
+        raise ValueError("--exclude is not allowed with --exclude-step1 or --exclude-step2")
+    if (
+        (args.extract and args.exclude)
+        or (args.extract and (args.exclude_step1 or args.exclude_step2))
+        or (args.exclude and (args.extract_step1 or args.extract_step2))
+            ):
+        raise ValueError("--exclude is not allowed with --extract")
 
     if ('@' in geno_fit_file):
         raise ValueError("--geno-fit-file containing '@' is not allowed in regenie step1 as it requires a single file")
@@ -352,7 +374,9 @@ def make_regenie_commands(args, logistic, step):
         (" --pgen {} --ref-first".format(remove_suffix(geno_fit_file, '.pgen')) if is_pgen else "") + \
         (" --bgen {} --ref-first".format(geno_fit_file) if is_bgen else "") + \
         (" --bt" if logistic else "") + \
-        " --lowmem --lowmem-prefix {}_tmp_preds".format(args.out)
+        " --lowmem --lowmem-prefix {}_tmp_preds".format(args.out) + \
+        (f" --exclude {args.exclude or args.exclude_step1}" if args.exclude or args.exclude_step1 else "") + \
+        (f" --extract {args.extract or args.extract_step1}" if args.extract or args.extract_step1 else "")
 
     is_bed = is_bed_file(geno_file)
     is_pgen = is_pgen_file(geno_file)
@@ -364,7 +388,9 @@ def make_regenie_commands(args, logistic, step):
         (" --bgen {} --ref-first --sample {}".format(geno_file, sample) if is_bgen else "") + \
         (" --bt --firth 0.01 --approx" if logistic else "") + \
         " --pred {}.step1_pred.list".format(args.out) + \
-        " --chr ${SLURM_ARRAY_TASK_ID}"
+        " --chr ${SLURM_ARRAY_TASK_ID}" + \
+        (f" --exclude {args.exclude or args.exclude_step2}" if args.exclude or args.exclude_step2 else "") + \
+        (f" --extract {args.extract or args.extract_step2}" if args.extract or args.extract_step2 else "")
 
     return (cmd + cmd_step1) if step == 1 else (cmd + cmd_step2)
 
@@ -424,14 +450,17 @@ def make_plink2_merge_commands(args, logistic):
 
 def make_plink2_commands(args):
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
-
+    if (args.extract and args.exclude):
+        raise ValueError("--exclude is not allowed with --extract")
     cmd = "$PLINK2 " + \
         (" --bfile {} --no-pheno".format(remove_suffix(geno_file, '.bed')) if is_bed_file(geno_file) else "") + \
         (" --pfile {} --no-pheno".format(remove_suffix(geno_file, '.pgen')) if is_pgen_file(geno_file) else "") + \
         (" --bgen {} ref-first --sample {}".format(
             geno_file, replace_suffix(geno_file, ".bgen", ".sample")) if is_bgen_file(geno_file) else "") + \
         (" --vcf {} --double-id".format(geno_file) if is_vcf_file(geno_file) else "") + \
-        " --chr ${SLURM_ARRAY_TASK_ID}"
+        " --chr ${SLURM_ARRAY_TASK_ID}" + \
+        (f" --exclude {args.exclude}" if args.exclude else "") + \
+        (f" --extract {args.extract}" if args.extract else "")
     return cmd
 
 def make_plink2_glm_commands(args, logistic):
