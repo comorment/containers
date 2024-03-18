@@ -16,5 +16,16 @@ comorment_folder: "/ess/p697/data/durable/s3-api/github/comorment"
 # SINGULARITY_BIND variable to set in SLURM scripts
 singularity_bind: "$COMORMENT/containers/reference:/REF:ro;/ess/p697:/ess/p697"
 
-saige:
-  cpus_per_task_stage2: 1
+# Additional options can be passed to GWAS analyses as in the below examples.
+# Value should be empty for flags.
+
+#regenie:
+#  step1:
+#    force-step1:
+#  step2:
+#    firth:
+#    approx:
+#    pThresh: 0.01
+
+#plink2:
+#  vif: 999
