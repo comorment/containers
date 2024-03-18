@@ -340,6 +340,14 @@ def fix_and_validate_gwas_args(args, log):
     if ('regenie' in args.analysis) and (not args.geno_fit_file):
         raise ValueError('--geno-fit-file must be specified for --analysis regenie')
 
+def get_args_from_config(conf_obj, *args):
+    def unpack(d, li):
+        return unpack(d[li[0]], li[1:]) if len(li) != 0 else d
+    try:
+        return " " + " ".join([f"--{k} {v}" if v is not None else f"--{k}" for k, v in unpack(conf_obj, args).items()])
+    except (KeyError, AttributeError):
+        return ""
+
 def make_regenie_commands(args, logistic, step):
     geno_fit_file = args.geno_fit_file
     geno_file = args.geno_file.replace('@', '${SLURM_ARRAY_TASK_ID}')
@@ -376,7 +384,8 @@ def make_regenie_commands(args, logistic, step):
         (" --bt" if logistic else "") + \
         " --lowmem --lowmem-prefix {}_tmp_preds".format(args.out) + \
         (f" --exclude {args.exclude or args.exclude_step1}" if args.exclude or args.exclude_step1 else "") + \
-        (f" --extract {args.extract or args.extract_step1}" if args.extract or args.extract_step1 else "")
+        (f" --extract {args.extract or args.extract_step1}" if args.extract or args.extract_step1 else "") + \
+        get_args_from_config(args.config_object, 'regenie', 'step1')
 
     is_bed = is_bed_file(geno_file)
     is_pgen = is_pgen_file(geno_file)
@@ -390,7 +399,8 @@ def make_regenie_commands(args, logistic, step):
         " --pred {}.step1_pred.list".format(args.out) + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         (f" --exclude {args.exclude or args.exclude_step2}" if args.exclude or args.exclude_step2 else "") + \
-        (f" --extract {args.extract or args.extract_step2}" if args.extract or args.extract_step2 else "")
+        (f" --extract {args.extract or args.extract_step2}" if args.extract or args.extract_step2 else "") + \
+        get_args_from_config(args.config_object, 'regenie', 'step2')
 
     return (cmd + cmd_step1) if step == 1 else (cmd + cmd_step2)
 
@@ -460,7 +470,8 @@ def make_plink2_commands(args):
         (" --vcf {} --double-id".format(geno_file) if is_vcf_file(geno_file) else "") + \
         " --chr ${SLURM_ARRAY_TASK_ID}" + \
         (f" --exclude {args.exclude}" if args.exclude else "") + \
-        (f" --extract {args.extract}" if args.extract else "")
+        (f" --extract {args.extract}" if args.extract else "") + \
+        get_args_from_config(args.config_object, 'plink2')
     return cmd
 
 def make_plink2_glm_commands(args, logistic):
