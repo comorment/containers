@@ -2,10 +2,9 @@
 
 ## Description
 
-The ``r.sif`` container has multiple genomics tools related based on R.
-Please confer the [Software](#software) table below for the more complete list.
-
-In addition several standard R packages are also included (e.g. data.table, ggplot2, rmarkdown, etc.)
+The ``r.sif`` container has multiple genetics tools based or relying on R, with a full R environment and Rstudio-server, based on the [Rocker Project](https://rocker-project.org/images/) `rocker/verse` image.
+Please refer to the [Software](#software) table below for details.
+In addition, several standard R packages are also included (e.g. data.table, ggplot2, rmarkdown, etc.)
 
 Please report an [issue](https://github.com/comorment/containers/issues) if you encounter errors that have not been reported.
 
@@ -18,11 +17,38 @@ singularity shell --home $PWD:/home $SIF/r.sif
 ```
 
 and then follow the official tutorial <https://cnsgenomics.com/software/gsmr/> .
-Note that ``gcta64`` tool is also include in ``r.sif`` container, as the tutorial depends on it.
+Note that ``gcta64`` tool is also included in ``r.sif`` container, as the tutorial depends on it.
+
+## Invoking Rstudio-server
+
+The `r.sif` container includes Rstudio-server, which can be accessed in a browser running on the host machine by
+
+1. Start Rstudio-server on the local or remote machine as:
+
+  ```
+  cd <working/dir>
+  mkdir -p run var-lib-rstudio-server
+  printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
+  singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
+  ```
+  
+  where `<working/dir>` is the directory where you want to start Rstudio-server, and `<path/to/r.sif>` is the path to the `r.sif` container.
+
+2. (Optional) Create SSH tunnel using port 8787 from the local host to the remote machine
+
+  ```
+  ssh -N -f -L "localhost:8787:localhost:8787" <remote/machine/address>  # replace <remote/machine/address> as necessary
+  ```
+
+3. Then, open [0.0.0.0:8787](https://0.0.0.0:8787) in a web browser on the host.
+
+Please refer to the Rocker Project [documentation](https://rocker-project.org/use/singularity.html) for more details.
 
 ## Software
 
-List of software in the container:
+### Genetic analysis software
+
+List of main software in the container:
 
   | OS/tool                   | version                                   | license
   | ------------------------- | ----------------------------------------- | -------------
@@ -52,3 +78,11 @@ List of software in the container:
 [^prsice]: Shing Wan Choi, Paul F O'Reilly, PRSice-2: Polygenic Risk Score software for biobank-scale data, GigaScience, Volume 8, Issue 7, July 2019, giz082, <https://doi.org/10.1093/gigascience/giz082>
 
 [^twosamplemr]: Hemani, G., Haycock, P., Zheng, J., Gaunt, T., Elsworth, B., & Palmer, T. (2024). TwoSampleMR R package (v0.5.10). Zenodo. <https://doi.org/10.5281/zenodo.10684540>
+
+### R packages
+
+In addition to the `rocker/verse` image and the above genomics tools listed above there are a host of additional R packages and dependencies installed in the container.
+See the installer scripts for [CRAN](https://github.com/comorment/containers/blob/main/docker/scripts/R/cran.R), 
+[Bioconductor](https://github.com/comorment/containers/blob/main/docker/scripts/R/bioconductor.R), 
+[GitHub](https://github.com/comorment/containers/blob/main/docker/scripts/R/github.R), 
+and [source](https://github.com/comorment/containers/blob/main/docker/scripts/R/source.R) packages for details.
