@@ -68,7 +68,8 @@ def test_gwas_gcta():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        call = f'singularity run --home={d}:/home/ {pth} gcta64 --bfile /home/ex --out /home/'
+        call = f'singularity run --home={d}:/home/ {pth} gcta64 ' + \
+            '--bfile /home/ex --out /home/'
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
@@ -97,7 +98,7 @@ def test_gwas_king():
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
         call = ' '.join(
             [f'singularity run --home={d}:/home/ {pth} king -b',
-             f'/home/ex.bed --fam /home/ex.fam --bim /home/ex.bim --related'])
+             '/home/ex.bed --fam /home/ex.fam --bim /home/ex.bim --related'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
@@ -121,8 +122,9 @@ def test_gwas_metal():
     """test metal"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.system(f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz -C {d} ' + 
-                  '--strip-components=1')
+        os.system(
+            f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz -C {d} ' +
+            '--strip-components=1')
         print(os.listdir(d))
         call = \
             f'singularity run --home={d}:/home/ {cwd}/{pth} metal metal.txt'
@@ -233,7 +235,7 @@ def test_gwas_simu():
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
         call = ' '.join(
             [f'singularity run --home={d}:/home/ {pth}',
-             f'simu_linux --bfile /home/ex --qt ',
+             'simu_linux --bfile /home/ex --qt ',
              '--causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
