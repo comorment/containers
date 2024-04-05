@@ -43,7 +43,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Fixes go here
+* Fixed brittle tests if `TMPDIR` is not `/tmp`
 
 ### Removed
 
