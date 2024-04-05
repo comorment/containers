@@ -67,10 +67,8 @@ def test_gwas_gcta():
     """test gcta"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
-        os.chdir(cwd)
-        call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
+        call = f'singularity run --home={d}:/home/ {pth} gcta64 --bfile /home/ex --out /home/'
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
@@ -79,10 +77,8 @@ def test_gwas_gctb():
     """test gctb"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
-        os.chdir(cwd)
-        call = f'singularity run {pth} gctb --bfile {d}/ex --out {d}'
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
+        call = f'singularity run {pth} gctb --bfile ex --out .'
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
@@ -98,19 +94,18 @@ def test_gwas_king():
     """test king"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
-        os.chdir(cwd)
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
         call = ' '.join(
             [f'singularity run --home={d}:/home/ {pth} king -b',
-             f'{d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'])
+             f'/home/ex.bed --fam /home/ex.fam --bim /home/ex.bim --related'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
 
 def test_gwas_ldak():
     """test ldak"""
-    call = f'singularity run {pth} ldak --make-snps 1 --num-samples 1 --num-snps 1'
+    call = (f'singularity run {pth} ldak ' +
+            '--make-snps 1 --num-samples 1 --num-snps 1')
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
@@ -126,11 +121,11 @@ def test_gwas_metal():
     """test metal"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz')
-        os.chdir('GlucoseExample')
+        os.system(f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz -C {d} ' + 
+                  '--strip-components=1')
+        print(os.listdir(d))
         call = \
-            f'singularity run --home=$PWD:/home/ {cwd}/{pth} metal metal.txt'
+            f'singularity run --home={d}:/home/ {cwd}/{pth} metal metal.txt'
         out = subprocess.run(call.split(' '), capture_output=True, check=False)
         assert out.returncode == 0
         # software may not crash on error, checking captured output
@@ -224,7 +219,9 @@ def test_gwas_snptest():
 @pytest.mark.xfail(reason="no help function for switchError")
 def test_gwas_switchError():
     """test switchError"""
-    call = f'singularity run {pth} switchError --reg foo --gen foo --hap foo --fam foo --ps foo --out foo --maf 0.0'
+    call = (f'singularity run {pth} switchError' +
+            '--reg foo --gen foo --hap foo --fam foo ' +
+            '--ps foo --out foo --maf 0.0')
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
@@ -233,12 +230,10 @@ def test_gwas_simu():
     """test simu"""
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
-        os.chdir(cwd)
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
         call = ' '.join(
-            [f'singularity run --home=/tmp/:/home/ {pth}',
-             f'simu_linux --bfile {d}/ex --qt ',
+            [f'singularity run --home={d}:/home/ {pth}',
+             f'simu_linux --bfile /home/ex --qt ',
              '--causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
