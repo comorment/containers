@@ -21,19 +21,23 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Additions goes here
+* Additions go here
 
 ### Updated
 
-* Updates goes here
+* Use OneSNP based data for pgs_toolkit examples
+* pgs_toolkit assumes a single pheno-file with all covariates (PCs, etc.)
+* Bundle of sphinx documentation build updates/restructures
+* Refer to the project as "COSGAP-containers"
+* Minor changes to documentation + suggestion of TOC
 
 ### Fixed
 
-* Fixes goes here
+* Fixes go here
 
 ### Removed
 
-* Removals goes here
+* Removals go here
 
 ### Misc
 
@@ -41,11 +45,10 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ## [1.8.1] - 2024-02-29
 
-### Updated
+### Fixed
 
-* Bundle of sphinx documentation build updates/restructures
-* Refer to the project as "COSGAP-containers"
-* Minor changes to documentation + suggestion of TOC
+* Fixed parsing of `IID` field in `pheno.dict`
+* Fixed issue with files with different suffixes produced by plink2 for binary phenotypes in `gwas.py`
 
 ## [1.8.0] - 2024-02-22
 
