@@ -5,8 +5,6 @@ library(magrittr)
 
 par <- arg_parser('find best-fit PRS')
 par <- add_argument(par, "--phenotype-file", help="Input file with phenotypes")
-par <- add_argument(par, "--eigenvec-file", help=".eigenvec input file")
-par <- add_argument(par, "--cov-file", help=".cov input file")
 par <- add_argument(par, "--phenotype", help="Phenotype ID")
 par <- add_argument(par, "--data-prefix", help='file prefix')
 par <- add_argument(par, "--thresholds", default="0.001,0.05,0.1,0.2,0.3,0.4,0.5,1", 
@@ -22,7 +20,7 @@ p.threshold <- as.double(as.list(strsplit(parsed$thresholds, ',')[[1]]))
 phenotype_data <- fread(parsed$phenotype_file)
 pcs <- fread(parsed$eigenvec_file, header=F) %>%
     setnames(., colnames(.), c("FID", "IID", paste0("PC",1:parsed$nPCs)) )
-covariate <- fread(parsed$cov_file)
+covariate <- fread(parsed$phenotype_file)
 pheno <- merge(phenotype_data, covariate) %>%
         merge(., pcs)
 

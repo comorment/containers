@@ -408,10 +408,10 @@ class PGS_Plink(BasePGS):
         (</ENV/path/to/data/file>)
     output_dir: str
         path for output files (<path>)
-    covariate_file: str
-        path to covariance file (.cov)
-    eigenvec_file: str or None
-        None, or path to eigenvec file (.eigenvec)
+    # covariate_file: str
+    #     path to covariance file (.cov)
+    # eigenvec_file: str or None
+    #     None, or path to eigenvec file (.eigenvec)
     clump_p1: float
         plink --clump-p1 parameter value (default: 1)
     clump_r2: float
@@ -429,13 +429,21 @@ class PGS_Plink(BasePGS):
         plink --indep-pairwise parameters for stratification describing
         window size (kb),  step size (variant ct), r^2 threshold
         (default: [250, 50, 0.25])
-    nPCs: int
-        plink --pca parameter value (default: 6)
+    # nPCs: int
+    #     plink --pca parameter value (default: 6)
     # score_args: list
     #     plink --score arguments (default: [3, 4, 12, 'header'])
     score_columns: list of str
         for plink's --score, column names in sumstats_file.
         Requires header. Default: ['SNP', 'A1', 'BETA']
+    continuous_covariates: list of strings or None
+        Column names that should be treated as continuous covariates 
+        for basic model evaluation metrics (e.g., ``['PC1', 'PC2']``).
+        Must exist in ``pheno_file``.
+    categorical_covariates: list of strings or None
+        Column names that should be treated as categorical covariates
+        for basic model evaluation metrics (e.g., ``['SEX']``).
+        Must exist in ``pheno_file``.
     **kwargs
 
     Attributes
@@ -457,8 +465,8 @@ class PGS_Plink(BasePGS):
                  phenotype_class='CONTINUOUS',
                  geno_file_prefix='QC_data/EUR',
                  output_dir='PGS_plink',
-                 covariate_file='/REF/examples/prsice2/EUR.cov',
-                 eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
+                 # covariate_file='/REF/examples/prsice2/EUR.cov',
+                 # eigenvec_file='/REF/examples/prsice2/EUR.eigenvec',
                  clump_p1=1,
                  clump_r2=0.1,
                  clump_kb=250,
@@ -478,6 +486,7 @@ class PGS_Plink(BasePGS):
                          output_dir=output_dir,
                          **kwargs)
         # set attributes
+        '''
         if covariate_file is None or eigenvec_file is None:
             self.covariate_file = os.path.join(
                 self.output_dir,
@@ -494,6 +503,7 @@ class PGS_Plink(BasePGS):
 
             self.covariate_file = covariate_file
             self.eigenvec_file = eigenvec_file
+        '''
 
         # set default values
         if range_list is None:
@@ -519,7 +529,7 @@ class PGS_Plink(BasePGS):
         self.strat_indep_pairwise = strat_indep_pairwise
 
         # number of principal componentes
-        self.nPCs = nPCs
+        # self.nPCs = nPCs
 
         self.score_columns = score_columns
 
@@ -643,9 +653,10 @@ class PGS_Plink(BasePGS):
         '''
 
         # determine --score argument based on column names
-        header = pd.read_csv(self._transformed_file,
-                             nrows=0,
-                             delim_whitespace=True).columns.tolist()
+        # header = pd.read_csv(self._transformed_file,
+        #                      nrows=0,
+        #                      delim_whitespace=True).columns.tolist()
+        header = pd.read_csv(self.sumstats_file, nrows=0, delim_whitespace=True).columns.tolist()
         score_args = [
             header.index(x) + 1 for x in self.score_columns] + ['header']
 
@@ -800,10 +811,12 @@ class PGS_Plink(BasePGS):
         assert mode in ['preprocessing', 'basic', 'stratification'], mssg
         commands = []
 
+        '''
         if not os.path.isfile(self.eigenvec_file):
             commands += [
                 self._generate_eigenvec_eigenval_files(
                     nPCs=self.nPCs)]
+        '''
 
         if mode == 'preprocessing':
             commands += [

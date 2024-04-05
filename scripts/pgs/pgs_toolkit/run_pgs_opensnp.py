@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     # update ldpred2 config:
     config['ldpred2'].update({
-        'chr2use': np.arange(12, 23),
+        'chr2use': np.arange(2, 23),
     })
 
     #######################################
@@ -91,13 +91,16 @@ if __name__ == '__main__':
         phenotype_class=phenotype_class,
         geno_file_prefix=geno_file_prefix,
         output_dir=output_dir_plink,
-        covariate_file=covariate_file,
-        eigenvec_file=eigenvec_file.format(output_dir_plink),
+        # covariate_file=covariate_file,
+        # eigenvec_file=eigenvec_file.format(output_dir_plink),
+        continuous_covariates=[f'PC{x}' for x in range(1, 11)],
+        categorical_covariates=['sex', 'batch'],
         **config['plink'],
     )
 
     # run preprocessing steps for plink
-    for call in plink.get_str(mode='preprocessing', update_effect_size=False):
+    # for call in plink.get_str(mode='preprocessing', update_effect_size=False):
+    for call in plink.get_str(mode='basic', update_effect_size=False):
         if call is not None:
             pgs.run_call(call)
 
@@ -114,6 +117,7 @@ if __name__ == '__main__':
     pgs.run_call(call)
     '''
 
+    '''
     #######################################
     # PRSice-2
     #######################################
@@ -139,7 +143,7 @@ if __name__ == '__main__':
     # post run model evaluation
     call = prsice2.get_model_evaluation_str()
     pgs.run_call(call)
-    
+    '''
     
     ############################################
     # LDpred2 infinitesimal and automatic models
