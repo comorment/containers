@@ -1,6 +1,13 @@
 #!/bin/sh
 set -euo pipefail
 
+# additional deps
+apt-get update && apt-get install --no-install-recommends \
+    libboost-iostreams-dev=1.71.0.0ubuntu2 \
+    -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # required for building regenie (doesn't find bgen otherwise)
 VERSION="1.1.7"
 wget http://code.enkre.net/bgen/tarball/release/v$VERSION.tgz && \
@@ -13,6 +20,6 @@ wget http://code.enkre.net/bgen/tarball/release/v$VERSION.tgz && \
 git clone --depth 1 --branch v3.4.1 https://github.com/rgcgithub/regenie.git
 cd regenie
 BGEN_PATH=../v$VERSION cmake .
-make
+make HAS_BOOST_IOSTREAM=1
 
 cp regenie /bin

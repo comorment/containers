@@ -3,7 +3,6 @@ set -euo pipefail
 
 # additional deps
 apt-get update && apt-get install --no-install-recommends \
-    libboost-iostreams-dev=1.71.0.0ubuntu2 \
     libboost-program-options-dev=1.71.0.0ubuntu2 \
     -y && \
     apt-get clean && \
