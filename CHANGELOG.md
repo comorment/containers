@@ -26,6 +26,12 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* Rebuilt `gwas.sif` container with md5sum checksum:
+  
+  ```
+  4e295149f3a5e25588cc4a1f1d39876c  singularity/gwas.sif
+  ```
+* Compile regenie with `HAS_BOOST_IOSTREAM=1` and `HTSLIB_PATH` options
 * Change LDpred2 usage example to use the [OpenSNP](https://github.com/containers/opensnp) based datasets
 * Bundle of sphinx documentation build updates/restructures
 * Refer to the project as "COSGAP-containers"
@@ -37,7 +43,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
-* Fixes go here
+* Fixed brittle tests if `TMPDIR` is not `/tmp`
 
 ### Removed
 

@@ -49,10 +49,8 @@ def test_r_R_rmarkdown():
 def test_r_gcta():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as d:
-        os.chdir(d)
-        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz')
-        os.chdir(cwd)
-        call = f'singularity run {pth} gcta64 --bfile {d}/ex --out {d}'
+        os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
+        call = f'singularity run --home={d}:/home/ {pth} gcta64 --bfile /home/ex --out /home/'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
 
