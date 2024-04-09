@@ -19,7 +19,7 @@ wget http://code.enkre.net/bgen/tarball/release/v$VERSION.tgz && \
 # build regenie
 git clone --depth 1 --branch v3.4.1 https://github.com/rgcgithub/regenie.git
 cd regenie
-BGEN_PATH=../v$VERSION cmake .
-make HAS_BOOST_IOSTREAM=1
+BGEN_PATH=../v$VERSION HAS_BOOST_IOSTREAM=1 HTSLIB_PATH=/usr/lib/ cmake .
+make
 
 cp regenie /bin
