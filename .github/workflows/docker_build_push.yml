@@ -25,11 +25,11 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: "{{defaultContext}}:docker"
           push: true
           tags: |
             comorment/hello:latest
             ghcr.io/comorment/hello:latest
           file:
-            ./docker/dockerfiles/hello/Dockerfile
+            ./dockerfiles/hello/Dockerfile
             
