@@ -29,4 +29,6 @@ jobs:
           tags: |
             comorment/hello:latest
             ghcr.io/comorment/hello:latest
-          file: ./docker/dockerfiles/hello/Dockerfile
+          file: 
+            ./docker/dockerfiles/hello/Dockerfile
+            ./docker/scripts/install_plink.sh
