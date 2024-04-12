@@ -31,4 +31,5 @@ jobs:
             ghcr.io/comorment/hello:latest
           file: 
             ./docker/dockerfiles/hello/Dockerfile
+            ./docker/scripts/apt_get_essential.sh
             ./docker/scripts/install_plink.sh
