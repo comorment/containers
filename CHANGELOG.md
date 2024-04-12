@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Added workflow for building containers on GitHub Actions and pushing them to GitHub Container Registry
 * Added options `--extract`, `--extract-step1`, `--extract-step2`, `--exclude`, `--exclude-step1`, and `--exclude-step2` to the `gwas.py` script to enable inclusion and exclusion of SNPs
 * Added Rstudio-server and R packages info to `r.sif` container documentation
 
