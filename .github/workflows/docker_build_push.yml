@@ -28,8 +28,8 @@ jobs:
           context: "{{defaultContext}}:docker"
           push: true
           tags: |
-            comorment/hello:latest
-            ghcr.io/comorment/hello:latest
+            ${{ github.repository_owner }}/hello:latest
+            ghcr.io/${{ github.repository_owner }}/hello:latest
           file:
             ./dockerfiles/hello/Dockerfile
             
