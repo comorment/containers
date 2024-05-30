@@ -30,7 +30,7 @@ export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # run tasks
-$RSCRIPT createBackingFile.R $fileGeno $fileGenoRDS
+$RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
 
 # Generate PGS usign LDPRED-inf
 $RSCRIPT ldpred2.R \
