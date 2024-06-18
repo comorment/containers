@@ -2,10 +2,18 @@
 name: build hello Docker image
 
 on:
+  pull_request:
+    types:
+      - opened
+      - edited
+    branches:
+      - 'main'
+    paths:
+      - 'docker/dockerfiles/hello/Dockerfile'
+      - 'docker/scripts/**'
   push:
     branches:
       - 'main'
-      - 'espenhgn/issue256'
     tags:
       - "v*.*.*"
 
