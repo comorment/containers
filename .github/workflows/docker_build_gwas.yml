@@ -6,9 +6,6 @@ on:
     types: [opened, edited]
     branches:
       - 'main'
-    paths:
-      - 'docker/dockerfiles/gwas/Dockerfile'
-      - 'docker/scripts/**'
   push:
     branches:
       - 'main'
