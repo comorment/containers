@@ -38,10 +38,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}      
       -
         name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:docker"
           push: ${{ github.event_name != 'pull_request' }}
+          secrets: |
+            "github_token=${{ secrets.GITHUB_TOKEN }}"  
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile
