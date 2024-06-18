@@ -3,9 +3,7 @@ name: build gwas Docker image
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
+    types: [opened, edited]
     branches:
       - 'main'
     paths:
