@@ -45,8 +45,8 @@ COPY /scripts/R/bioconductor.R .
 RUN Rscript bioconductor.R
 
 # GitHub distributed packages:
-ARG GITHUB_PAT=foo
-ENV GITHUB_TOKEN=$GITHUB_PAT
+# ARG GITHUB_PAT=foo
+# ENV GITHUB_TOKEN=$GITHUB_PAT
 COPY /scripts/R/github.R .
 RUN Rscript github.R
 
