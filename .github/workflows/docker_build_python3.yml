@@ -1,5 +1,5 @@
-# action to build the hello Docker image at each commit without pushing it
-name: build hello Docker image
+# action to build the python3 Docker image at each commit without pushing it
+name: build python3 Docker image
 
 on:
   pull_request:
@@ -50,5 +50,5 @@ jobs:
           push: False
           tags: ${{ steps.meta.outputs.tags }}
           file:
-            ./dockerfiles/hello/Dockerfile
+            ./dockerfiles/python3/Dockerfile
           platforms: linux/amd64
