@@ -1,7 +1,7 @@
 url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
-auth_token <- Sys.getenv("GITHUB_TOKEN")
+auth_token <- Sys.getenv("github_token")
 
 # GitHub packages w. Git SHA
 packages <- list(
@@ -23,7 +23,7 @@ packages <- list(
 # install package from GitHub and quit with error if installation fails
 for (package in names(packages)) {
     ref <- packages[[package]]
-
+    cat("Installing package ", package, " from GitHub with ref ", ref, "\n")
     tryCatch(
     {
         devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade, auth_token=auth_token)
