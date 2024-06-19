@@ -1,7 +1,7 @@
 url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
-auth_token <- Sys.getenv("GITHUB_PAT")
+# auth_token <- Sys.getenv("GITHUB_TOKEN")
 
 # GitHub packages w. Git SHA
 packages <- list(
@@ -26,7 +26,8 @@ for (package in names(packages)) {
     cat("Installing package ", package, " from GitHub with ref ", ref, "\n")
     tryCatch(
     {
-        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade, auth_token=auth_token)
+        # devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade, auth_token=auth_token)
+        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade)
     },
     error = function(e) {
         cat("Error occurred during package installation:\n")
@@ -36,4 +37,5 @@ for (package in names(packages)) {
     finally = {
     }
     )
+    Sys.sleep(2)  # avoid rate limiting
 }

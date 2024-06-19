@@ -46,9 +46,7 @@ RUN Rscript cran.R
 
 # GitHub distributed packages:
 COPY /scripts/R/github.R .
-RUN --mount=type=secret,id=GITHUB_PAT \
-    cat /run/secrets/GITHUB_PAT && \
-    Rscript github.R
+RUN Rscript github.R
 
 # Misc. packages
 COPY /scripts/R/source.R .
