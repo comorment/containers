@@ -16,7 +16,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    dos2unix=7.4.0-2 \
    gdb=9.1-0ubuntu1 \
    gfortran=4:9.3.0-1ubuntu2 \
-   git=1:2.25.1-1ubuntu3.12 \
+   git=1:2.25.1-1ubuntu3.13 \
    less=551-1ubuntu0.3 \
    libatlas-base-dev=3.10.3-8ubuntu7 \
    libcurl4-openssl-dev=7.68.0-1ubuntu2.22 \
