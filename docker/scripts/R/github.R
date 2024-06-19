@@ -1,7 +1,7 @@
 url <- "https://packagemanager.posit.co/cran/__linux__/focal/2023-02-16"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
-auth_token <- Sys.getenv("github_token")
+auth_token <- Sys.getenv("GITHUB_PAT")
 
 # GitHub packages w. Git SHA
 packages <- list(
