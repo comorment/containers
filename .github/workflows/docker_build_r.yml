@@ -44,11 +44,13 @@ jobs:
       -
         name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
         with:
           context: "{{defaultContext}}:docker"
           push: False
           secrets: |
-            "github_token=${{ secrets.COMORMENT_GITHUB_PAT }}"
+            "github_pat=${{ env.github_pat }}"
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile
