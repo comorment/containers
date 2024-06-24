@@ -48,7 +48,7 @@ jobs:
           context: "{{defaultContext}}:docker"
           push: False
           secrets: |
-            "github_token=${{ secrets.GITHUB_TOKEN }}"
+            "github_token=${{ secrets.COMORMENT_GITHUB_PAT }}"
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile

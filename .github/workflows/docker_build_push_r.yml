@@ -43,7 +43,7 @@ jobs:
           context: "{{defaultContext}}:docker"
           push: ${{ github.event_name != 'pull_request' }}
           secrets: |
-            "github_token=${{ secrets.GITHUB_TOKEN }}"  
+            "github_token=${{ secrets.COMORMENT_GITHUB_PAT }}"  
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile
