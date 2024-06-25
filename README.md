@@ -11,19 +11,23 @@ The main documentation for COSGAP is hosted at [cosgap.rtfd.io](https://cosgap.r
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Hadolint](https://github.com/comorment/containers/actions/workflows/docker.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker.yml)
 [![Flake8](https://github.com/comorment/containers/actions/workflows/python.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/python.yml)
+[![Docker build "hello"](https://github.com/comorment/containers/actions/workflows/docker_build_hello.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker_build_hello.yml)
+[![Docker build "python3"](https://github.com/comorment/containers/actions/workflows/docker_build_python3.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker_build_python3.yml)
+[![Docker build "gwas"](https://github.com/comorment/containers/actions/workflows/docker_build_gwas.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker_build_gwas.yml)
+[![Docker build "r"](https://github.com/comorment/containers/actions/workflows/docker_build_r.yml/badge.svg)](https://github.com/comorment/containers/actions/workflows/docker_build_r.yml)
 
 ## Information
 
-The goal of this github repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside with their respective reference data and  scripts ("analysis pipelines") to facilitate application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
-with most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://cosgap.readthedocs.io/en/latest/).
+The goal of this GitHub repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside their respective reference data and scripts ("analysis pipelines") to facilitate the application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
+with the most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://cosgap.readthedocs.io/en/latest/).
 
 For an overview of available software, see [here](docs/README.md).
 
-Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using github's ``Download`` button, or clone the entire repository from command line as described in the [INSTALL.md](./INSTALL.md) file.
+Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using GitHub's ``Download`` button, or clone the entire repository from the command line as described in the [INSTALL.md](./INSTALL.md) file.
 
 Many of the tools require additional reference data provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
-<https://github.com/comorment/reference>. This repository is private - please approach your contact within CoMorMent project to enable your access.
+<https://github.com/comorment/reference>. This repository is private - please approach your contact within the CoMorMent project to enable your access.
 
 Description of containers and usage instructions are provided in the [docs](https://github.com/comorment/containers/tree/main/docs) folder.
 
@@ -91,11 +95,11 @@ Note that this project will soon be renamed "COSGAP", and that the citation info
 
 ## Installation
 
-See the [INSTALL.md](./INSTALL.md) file for installation instructions.
+Please confer the [INSTALL.md](./INSTALL.md) file for installation instructions.
 
 ## Legacy
 
-Earlier version (prior to April 2021) of all containers and refrence data was distributed on Google Drive. This is no longer the case, the folder on Google drive is no longer maintained. ALl containers and reference data are released through this repository.
+Earlier versions (prior to April 2021) of all containers and reference data were distributed via Google Drive. This is no longer the case, the folder on Google Drive is no longer maintained. All containers and reference data are released through this repository.
 
 ## Source files
 
@@ -114,7 +118,6 @@ make html  # make html-documentation in $PWD/_build/html/
 ```
 
 The resulting file(s) ``$PWD/_build/html/index.html`` can be viewed in any web browser.
-
 In order to make a pdf with the documentation, issue
 
 ```

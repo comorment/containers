@@ -2,7 +2,7 @@
 FROM ubuntu:20.04
 
 ENV TZ=Europe
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Essential tools
 WORKDIR /tmp

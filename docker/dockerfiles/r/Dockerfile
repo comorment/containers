@@ -2,7 +2,7 @@
 FROM rocker/verse:4.0.5
 
 ENV TZ=Europe
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Essential tools
 WORKDIR /tmp
@@ -45,10 +45,10 @@ COPY /scripts/R/bioconductor.R .
 RUN Rscript bioconductor.R
 
 # GitHub distributed packages:
-ARG GITHUB_PAT=foo
-ENV GITHUB_TOKEN=$GITHUB_PAT
 COPY /scripts/R/github.R .
-RUN Rscript github.R
+RUN --mount=type=secret,id=github_pat \
+    github_pat=$(cat /run/secrets/github_pat) \
+    Rscript github.R
 
 # Misc. packages
 COPY /scripts/R/source.R .

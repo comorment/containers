@@ -1,6 +1,87 @@
-# Installation
+# Installation and set up
 
-We recommend to clone this entire repository using ``git clone.``
+In order to set up these resources, some software may be required
+
+- [Singularity/SingularityCE](https://sylabs.io/singularity/) or [Apptainer](https://apptainer.org)
+- [Git](https://git-scm.com/)
+- [Git LFS](https://git-lfs.com)
+- [ORAS CLI](https://oras.land)
+
+## Clone the repository
+
+To download all files of the last revision of this project, issue:
+
+```bash
+cd path/to/repositories
+git clone --depth 1 https://github.com/comorment/containers.git
+cd containers
+git lfs pull  # pull "large" files
+```
+
+## Update the Singularity Image Files (containers)
+
+We are presently migrating container builds as distributed here to the [GitHub Container Registry](https://ghcr.io).
+Future image build artifacts (Singularity and Docker) will be listed under [Packages](https://github.com/orgs/comorment/packages?repo_name=containers) from hereon.
+
+To obtain updated versions of the Singularity Image Format (.sif) container files provided here, issue:
+
+```bash
+cd path/to/repositories/containers/singularity
+mv <image>.sif <image>.sif.old  # optional, just rename the old(er) file
+apptainer pull docker://ghcr.io/comorment/<image>:<tag>  # or
+singularity pull docker://ghcr.io/comorment/<image>:<tag> # or 
+oras pull ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
+```
+
+where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/containers/pkgs/container/<image>`, 
+such as `latest`, `main`, or `sha_<GIT_SHA>`. 
+The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/comorment/containers/pkgs/container/<image>_sif` using the [ORAS](https://oras.land) registry, without the need to build the container locally.
+
+## Pulling and using Docker image
+
+To pull the corresponding Docker image, issue:
+
+```bash
+docker pull ghcr.io/comorment/<image>:<tag>
+```
+
+If working on recent Macs, add the `--platform=linux/amd64` flag after `docker pull`. 
+This may allow replacing `singularity exec ...` or `apptainer exec ...` statements with appropriate `docker run ...` statements on systems where Singularity or Apptainer is unavailable.
+Functionally, the Docker image is equivalent to the Singularity container, but note that syntax for mounting volumes and invoking commands may differ.
+Please refer to [docs.docker.com](https://docs.docker.com) for more information.
+
+> [!NOTE]
+> Note that the provided Docker image may not support all CPUs, and may not be able to run on all systems via CPU virtualization.
+> An option may be to build the Docker image on the host machine directly (e.g., M1/M2/M3 Macs, PCs with older Intel CPUs), as:
+>
+>```bash
+>docker build --platform=linux/amd64 -t ghcr.io/comorment/<image> -f dockerfiles/<image>/Dockerfile .
+>```
+
+A minimal usage example may be to invoke the PLINK tool and its help function in the `hello` container:
+
+```bash
+export HELLO="ghcr.io/comorment/hello:latest"
+export PLINK1="docker run --platform=linux/amd64 --rm -v ${HELLO}/usecases:/home -v ${HELLO}/reference:/REF -w/home --entrypoint=plink1 ${HELLO}"
+$PLINK1 --help
+```
+
+A more complete example is provided for MiXeR [here](https://github.com/comorment/mixer/blob/main/usecases/mixer_simu.md#docker-details). 
+
+## Systems without internet access
+
+Some secure platforms do not have direct internet access, hence we recommend cloning/pulling all required files on a machine with internet access as explained above and archiving the `containers` directory with all files and moving it using whatever file uploader is available for the platform.
+
+```bash
+cd /path/to/containers
+SHA=$(git rev-parse --short HEAD)
+cd ..
+tar --exclude=".git/*" -cvf containers_$SHA.tar containers
+```
+
+# Install (old)
+
+We recommend to clone this entire repository using ``git clone --depth 1 https://github.com/comorment/containers.git``.
 However, you need to install the [Git LFS extension](https://git-lfs.github.com/).
 This is done by downloading and unpacking the GitLFS package, adding ``git-lfs`` binary to a folder that is in your ``PATH``, and running
 ``git lfs install`` command.
@@ -14,7 +95,7 @@ cp git-lfs /home/$USER/bin
 git lfs install
 ```
 
-Now you're all set to clone this repository (note that adding ``--depth 1`` to your command as shown below will limit the amount of data transfered from github to your machine):
+Now you're all set to clone this repository (note that adding ``--depth 1`` to your command as shown below will limit the amount of data transferred from GitHub to your machine):
 
 ```
 git clone --depth 1 https://github.com/comorment/containers.git
