@@ -20,6 +20,9 @@ git lfs pull  # pull "large" files
 
 ## Update the Singularity Image Files (containers)
 
+We are presently migrating container builds as distributed here to the [GitHub Container Registry](https://ghcr.io).
+Future image build artifacts (Singularity and Docker) will be listed under [Packages](https://github.com/orgs/comorment/packages?repo_name=containers) from hereon.
+
 To obtain updated versions of the Singularity Image Format (.sif) container files provided here, issue:
 
 ```bash
@@ -27,7 +30,7 @@ cd path/to/repositories/containers/singularity
 mv <image>.sif <image>.sif.old  # optional, just rename the old(er) file
 apptainer pull docker://ghcr.io/comorment/<image>:<tag>  # or
 singularity pull docker://ghcr.io/comorment/<image>:<tag> # or 
-oras pull ghcr.io/comorment/<image>_sif:<tag>
+oras pull ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
 ```
 
 where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/mixer/pkgs/container/<image>`, 
