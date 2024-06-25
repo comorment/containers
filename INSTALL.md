@@ -33,7 +33,7 @@ singularity pull docker://ghcr.io/comorment/<image>:<tag> # or
 oras pull ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
 ```
 
-where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/mixer/pkgs/container/<image>`, 
+where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/containers/pkgs/container/<image>`, 
 such as `latest`, `main`, or `sha_<GIT_SHA>`. 
 The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/comorment/containers/pkgs/container/<image>_sif` using the [ORAS](https://oras.land) registry, without the need to build the container locally.
 
@@ -70,13 +70,13 @@ A more complete example is provided for MiXeR [here](https://github.com/comormen
 
 ## Systems without internet access
 
-Some secure platforms do not have direct internet access, hence we recommend cloning/pulling all required files on a machine with internet access as explained above, and archive the `containers` directory with all files and moving it using whatever file uploader is available for the platform.
+Some secure platforms do not have direct internet access, hence we recommend cloning/pulling all required files on a machine with internet access as explained above and archiving the `containers` directory with all files and moving it using whatever file uploader is available for the platform.
 
 ```bash
 cd /path/to/containers
 SHA=$(git rev-parse --short HEAD)
 cd ..
-tar --exclude=".git/*" -cvf containers_$SHA.tar mixer
+tar --exclude=".git/*" -cvf containers_$SHA.tar containers
 ```
 
 # Install (old)
