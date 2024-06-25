@@ -22,7 +22,7 @@ packages <- list(
     'MRCIEU/TwoSampleMR' = 'c174107cfd9ba47cf2f780849a263f37ac472a0e',
     'WSpiller/RadialMR' = 'abe00170076284cb79ae711c96d3832da3879267',
     'gqi/MRMix' = '56afdb2bc96760842405396f5d3f02e60e305039',
-    'stephenslab/susieR' = 'c0314a6113dfb54ea3817103ee01c027849f0eb7'
+    'stephenslab/susieR' = 'c0314a6113dfb54ea3817103ee01c027849f0eb7',
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
     'psychgen/phenotools' = 'b744d927a1302d85152917f3802a2212093d588a',
