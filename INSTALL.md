@@ -35,7 +35,7 @@ oras pull ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
 
 where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/mixer/pkgs/container/<image>`, 
 such as `latest`, `main`, or `sha_<GIT_SHA>`. 
-The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/comorment/mixer/pkgs/container/<image>_sif` using the [ORAS](https://oras.land) registry, without the need to build the container locally.
+The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/comorment/containers/pkgs/container/<image>_sif` using the [ORAS](https://oras.land) registry, without the need to build the container locally.
 
 ## Pulling and using Docker image
 
@@ -50,8 +50,9 @@ This may allow replacing `singularity exec ...` or `apptainer exec ...` statemen
 Functionally, the Docker image is equivalent to the Singularity container, but note that syntax for mounting volumes and invoking commands may differ.
 Please refer to [docs.docker.com](https://docs.docker.com) for more information.
 
-> [!NOTE] Note that the provided Docker image may not support all CPUs, and may not be able to run on all systems via CPU virtualization.
-> An option may be to build the Docker image on the host machine (e.g., M1/M2/M3 Macs, older Intel CPUs), as:
+> [!NOTE]
+> Note that the provided Docker image may not support all CPUs, and may not be able to run on all systems via CPU virtualization.
+> An option may be to build the Docker image on the host machine directly (e.g., M1/M2/M3 Macs, PCs with older Intel CPUs), as:
 >
 >```bash
 >docker build --platform=linux/amd64 -t ghcr.io/comorment/<image> -f dockerfiles/<image>/Dockerfile .
