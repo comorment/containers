@@ -79,7 +79,7 @@ jobs:
           IFS= read -r first_tag <<EOF
           $tags
           EOF
-          push_tags="$(printf $csv_tags | sed -e "s/r/r_sif/g")"
+          push_tags="$(printf $csv_tags | sed -e "s#${{ github.repository_owner }}/r#${{ github.repository_owner }}/r_sif#g")"  # can't search and replace letter "r"
           echo ${{ secrets.GITHUB_TOKEN }} | oras login --username ${{ github.repository_owner }} --password-stdin ghcr.io
           docker pull kaczmarj/apptainer:latest
           docker run --rm --privileged -v $(pwd):/work kaczmarj/apptainer build r.sif docker://"$first_tag"
