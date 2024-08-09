@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Add Conda environment file for project dependencies
 * Add container build and push actions for all containers:
   * Action should trigger builds on pushes and pull requests targeting the main branch.
   * Should build and push Docker and Singularity images for new tags with `v*.*.*` pattern in main branch.
@@ -49,6 +50,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+* Fixed broken unit test `tests/test_gwas.py::test_gwas_metal` with Apptainer "sandbox" mode
 * Fixed brittle tests if `TMPDIR` is not `/tmp`
 
 ### Removed

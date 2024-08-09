@@ -7,6 +7,17 @@ In order to set up these resources, some software may be required
 - [Git LFS](https://git-lfs.com)
 - [ORAS CLI](https://oras.land)
 
+## Conda environment (optional)
+
+The above and other miscellaneous dependencies may be installed in a [Conda](https://conda.io) environment using the provided [``environment.yml``](https://github.com/comorment/containers/blob/main/environment.yml) file as (``conda`` may be replaced by ``mamba`` executable):
+
+```bash
+conda env create -f environment.yml  # create cosgap environment
+conda activate cosgap
+# do this and that...
+conda deactivate
+```
+
 ## Clone the repository
 
 To download all files of the last revision of this project, issue:
@@ -21,7 +32,7 @@ git lfs pull  # pull "large" files
 ## Update the Singularity Image Files (containers)
 
 We are presently migrating container builds as distributed here to the [GitHub Container Registry](https://ghcr.io).
-Future image build artifacts (Singularity and Docker) will be listed under [Packages](https://github.com/orgs/comorment/packages?repo_name=containers) from hereon.
+Current and future image build artifacts (Singularity and Docker) are listed under [Packages](https://github.com/orgs/comorment/packages?repo_name=containers).
 
 To obtain updated versions of the Singularity Image Format (.sif) container files provided here, issue:
 

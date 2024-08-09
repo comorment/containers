@@ -125,9 +125,9 @@ def test_gwas_metal():
         os.system(
             f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz -C {d} ' +
             '--strip-components=1')
-        print(os.listdir(d))
+        os.chdir(d)  # test must be run in temporary directory
         call = \
-            f'singularity run --home={d}:/home/ {cwd}/{pth} metal metal.txt'
+            f'singularity run {cwd}/{pth} metal metal.txt'
         out = subprocess.run(call.split(' '), capture_output=True, check=False)
         assert out.returncode == 0
         # software may not crash on error, checking captured output
