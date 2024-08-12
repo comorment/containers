@@ -8,7 +8,7 @@ import os
 import subprocess
 
 # https://github.com/comorment/containers/issues/267:
-os.environ.update({'SINGULARITYENV_LD_LIBRARY_PATH': 
+os.environ.update({'SINGULARITYENV_LD_LIBRARY_PATH':
                    '/usr/local/lib:$LD_LIBRARY_PATH'})
 
 pth = os.path.join('singularity', 'python3.sif')
@@ -74,6 +74,7 @@ def test_python3_packages():
         call = f'singularity run {pth} python -c "import {pkg}"'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
+
 
 def test_python3_import_pandas_scipy_stats():
     pwd = os.getcwd()
