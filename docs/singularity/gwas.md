@@ -44,7 +44,7 @@ List of software included in the container:
   | GWAMA[^gwama]                   | 2.2.2                                     | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
   | HTSlib[^htslib]                 | 1.19.1                                    | [MIT/Expat/Modified-BSD](https://github.com/samtools/htslib/blob/develop/LICENSE)
   | king[^king]                     | 2.3.2                                     | [permissive](https://www.kingrelatedness.com/Download.shtml)
-  | ldak[^ldak]                     | 5.2                                       | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | ldak[^ldak]                     | 6                                         | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | liftOver[^liftover]             | latest                                    | [permissive](https://genome-store.ucsc.edu)
   | metal[^metal]                   | 2020-05-05                                | -
   | minimac4[^minimac4]             | v4.1.6                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)

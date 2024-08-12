@@ -33,6 +33,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* Update LDAK binary to version 6 in gwas.sif (from 5.2)
 * Rebuilt `gwas.sif` container with md5sum checksum:
   
   ```
