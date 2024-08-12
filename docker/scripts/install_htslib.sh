@@ -5,7 +5,7 @@ set -euo pipefail
 apt-get update && apt-get install --no-install-recommends \
     libbz2-dev=1.0.8-2 \
     liblzma-dev=5.2.4-1ubuntu1.1 \
-    libssl-dev=1.1.1f-1ubuntu2.22 \
+    libssl-dev=1.1.1f-1ubuntu2.23 \
     -y 
 
 apt-get clean && \
