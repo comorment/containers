@@ -33,7 +33,7 @@ RUN mamba install python=3.10.6 \
     pandas=1.5.0 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
-    pyreadstat \
+    pyreadstat=1.2.7 \
     pyyaml=6.0 \
     scikit-learn=1.1.2 \
     scikit-survival=0.19.0.post1 \
