@@ -3,7 +3,7 @@ set -euo pipefail
 
 # king
 VERSION="232"
-wget --no-check-certificate https://www.kingrelatedness.com/executables/Linux-king$VERSION.tar.gz && \
+wget --no-check-certificate --referer=http://example.com/referer-page/ https://www.kingrelatedness.com/executables/Linux-king$VERSION.tar.gz && \
     tar -xvzf Linux-king$VERSION.tar.gz && \
     rm -rf Linux-king$VERSION.tar.gz
 
