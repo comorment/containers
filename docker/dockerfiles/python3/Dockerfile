@@ -33,7 +33,7 @@ RUN mamba install python=3.10.6 \
     pandas=1.5.0 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
-    pyreadstat=1.1.9 \
+    pyreadstat \
     pyyaml=6.0 \
     scikit-learn=1.1.2 \
     scikit-survival=0.19.0.post1 \
@@ -43,7 +43,9 @@ RUN mamba install python=3.10.6 \
     statsmodels=0.13.2 \
     xlrd=2.0.1 \
     xmltodict=0.13.0 \
-    --yes
+    --yes && \
+    mamba clean -a -y
+
 
 # pip install stuff in env.
 RUN pip install --no-cache-dir cbgen==1.0.2 && \
@@ -54,7 +56,8 @@ RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir plinkio==0.9.8 && \
     pip install --no-cache-dir LDpred==1.0.11 && \
     pip install --no-cache-dir pycap==2.1.0 && \
-    pip install --no-cache-dir pyliftover==0.4.1
+    pip install --no-cache-dir pyliftover==0.4.1 && \
+    pip cache purge 
 
 # Plink (as python_convert depends on plink)
 WORKDIR /tmp/plink
@@ -72,9 +75,8 @@ WORKDIR /tools/ukb
 RUN git clone https://github.com/precimed/ukb.git . && \
     git reset --hard dc57e0d8380cd9b2eca479dc6f181d76ca5a429a
 
-# cleanup for smaller image size
-RUN mamba clean -a -y
-RUN pip cache purge 
-
 WORKDIR /tools
+
+# https://github.com/comorment/containers/issues/267:
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
  
