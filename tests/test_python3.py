@@ -53,23 +53,32 @@ def test_python3_ukb():
 
 def test_python3_packages():
     packages = [
+        'configparser',
         'h5py',
+        'intervaltree',
         'ldpred',
         'lifelines',
         'matplotlib',
         'matplotlib_venn',
+        'numba',
         'numdifftools',
         'numpy',
         'pandas',
+        'pandas_plink',
         'plinkio',
-        'redcap',  # pycap
+        'pyliftover',
         'pyreadstat',
-        'yaml',  # pyyaml
+        'redcap',  # pycap
         'scipy',
         'seaborn',
         'semantic_version',
+        'sklearn',
+        'sksurv',
         'statsmodels',
-        'xlrd']
+        'xlrd',
+        'xmltodict',
+        'yaml',  # pyyaml
+        ]
     for pkg in packages:
         call = f'singularity run {pth} python -c "import {pkg}"'
         out = subprocess.run(call.split(' '))

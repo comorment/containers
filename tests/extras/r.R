@@ -86,6 +86,7 @@ libraries_to_check <- c(
     "gwasglue2",
     "gwasvcf",
     "haven",
+    "Haplin",
     "homologene",
     "ieugwasr",
     "imputeMissings",
