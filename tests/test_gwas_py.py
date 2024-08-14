@@ -14,8 +14,6 @@ ref = os.path.join(cwd, "reference", "examples", "regenie")
 
 os.environ["SINGULARITY_BIND"] = f"{os.path.join(cwd,'reference')}:/REF:ro"
 os.environ["COMORMENT"] = f"{os.path.join(cwd, '..')}"
-# https://github.com/comorment/containers/issues/267:
-os.environ["SINGULARITYENV_LD_LIBRARY_PATH"] = "/usr/local/lib:$LD_LIBRARY_PATH"
 
 
 def test_gwas_py_plink():

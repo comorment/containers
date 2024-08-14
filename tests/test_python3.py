@@ -7,10 +7,6 @@ Test module for ``python3.sif`` build
 import os
 import subprocess
 
-# https://github.com/comorment/containers/issues/267:
-os.environ.update({'SINGULARITYENV_LD_LIBRARY_PATH':
-                   '/usr/local/lib:$LD_LIBRARY_PATH'})
-
 pth = os.path.join('singularity', 'python3.sif')
 
 
