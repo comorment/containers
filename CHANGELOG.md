@@ -21,6 +21,9 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Add Conda environment file for project dependencies
+* Add Python packages `scikit-survival, pandas-plink, numba, xmltodict, pyliftover, configparser, intervaltree` to `python3.sif` container
+* Add `Haplin`, `WSpiller/MVMR`, `noahlorinczcomi/MRBEE` R packages to `r.sif` container
 * Add container build and push actions for all containers:
   * Action should trigger builds on pushes and pull requests targeting the main branch.
   * Should build and push Docker and Singularity images for new tags with `v*.*.*` pattern in main branch.
@@ -32,6 +35,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* Update LDAK binary to version 6 in gwas.sif (from 5.2)
 * Rebuilt `gwas.sif` container with md5sum checksum:
   
   ```
@@ -49,6 +53,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+* Fixed broken unit test `tests/test_gwas.py::test_gwas_metal` with Apptainer "sandbox" mode
+* Workaround for pandas import before scipy in python codes via `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
 * Fixed brittle tests if `TMPDIR` is not `/tmp`
 
 ### Removed

@@ -12,14 +12,14 @@ apt-get update && apt-get install -y --no-install-recommends \
    build-essential=12.8ubuntu1 \
    bzip2=1.0.8-2 \
    cmake=3.16.3-1ubuntu1.20.04.1 \
-   curl=7.68.0-1ubuntu2.22 \
+   curl=7.68.0-1ubuntu2.23 \
    dos2unix=7.4.0-2 \
    gdb=9.1-0ubuntu1 \
    gfortran=4:9.3.0-1ubuntu2 \
    git=1:2.25.1-1ubuntu3.13 \
    less=551-1ubuntu0.3 \
    libatlas-base-dev=3.10.3-8ubuntu7 \
-   libcurl4-openssl-dev=7.68.0-1ubuntu2.22 \
+   libcurl4-openssl-dev=7.68.0-1ubuntu2.23 \
    libgomp1=10.5.0-1ubuntu1~20.04 \
    libgsl-dev=2.5+dfsg-6+deb10u1build0.20.04.1 \
    libnss3=2:3.98-0ubuntu0.20.04.2 \

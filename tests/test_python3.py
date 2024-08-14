@@ -7,7 +7,6 @@ Test module for ``python3.sif`` build
 import os
 import subprocess
 
-
 pth = os.path.join('singularity', 'python3.sif')
 
 
@@ -50,24 +49,40 @@ def test_python3_ukb():
 
 def test_python3_packages():
     packages = [
+        'configparser',
         'h5py',
+        'intervaltree',
         'ldpred',
         'lifelines',
         'matplotlib',
         'matplotlib_venn',
+        'numba',
         'numdifftools',
         'numpy',
         'pandas',
+        'pandas_plink',
         'plinkio',
-        'redcap',  # pycap
+        'pyliftover',
         'pyreadstat',
-        'yaml',  # pyyaml
+        'redcap',  # pycap
         'scipy',
         'seaborn',
         'semantic_version',
+        'sklearn',
+        'sksurv',
         'statsmodels',
-        'xlrd']
+        'xlrd',
+        'xmltodict',
+        'yaml',  # pyyaml
+        ]
     for pkg in packages:
         call = f'singularity run {pth} python -c "import {pkg}"'
         out = subprocess.run(call.split(' '))
         assert out.returncode == 0
+
+
+def test_python3_import_pandas_scipy_stats():
+    pwd = os.getcwd()
+    call = f'singularity run --home={pwd} {pth} python -c "import pandas as pd; from scipy import *"'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0

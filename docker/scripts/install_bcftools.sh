@@ -3,10 +3,10 @@ set -euo pipefail
 
 # deps 
 apt-get update && apt-get install -y --no-install-recommends \
-    libcurl4-gnutls-dev=7.68.0-1ubuntu2.22 \
-    libperl-dev=5.30.0-9ubuntu0.5 \
-    && \
-    apt-get clean && \
+    libcurl4-gnutls-dev=7.68.0-1ubuntu2.23 \
+    libperl-dev=5.30.0-9ubuntu0.5
+
+apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # bcftools

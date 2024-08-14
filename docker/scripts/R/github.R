@@ -24,9 +24,11 @@ packages <- list(
     'gqi/MRMix' = '56afdb2bc96760842405396f5d3f02e60e305039',
     'stephenslab/susieR' = 'c0314a6113dfb54ea3817103ee01c027849f0eb7',
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
+    'noahlorinczcomi/MRBEE' = '96971e346099b89585a6eff4a6f22bbcf25d6ca8',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
     'psychgen/phenotools' = 'b744d927a1302d85152917f3802a2212093d588a',
-    'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5'
+    'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
+    'WSpiller/MVMR' = '6adf8839a33fbe225c0161c564a517dfd61cee32'
 )
 
 # install package from GitHub and quit with error if installation fails
