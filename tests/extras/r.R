@@ -100,6 +100,8 @@ libraries_to_check <- c(
     "MatrixEQTL",
     "mgcv",
     "miniCRAN",
+    "MRBEE",
+    "MVMR",
     "modelr",
     "moments",
     "MplusAutomation",
