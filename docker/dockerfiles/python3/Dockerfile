@@ -37,7 +37,6 @@ RUN mamba install python=3.10.6 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
     pyreadstat=1.2.7 \
-    pysurvival \
     pyyaml=6.0 \
     scikit-learn=1.1.2 \
     scikit-survival=0.19.0.post1 \
@@ -60,6 +59,7 @@ RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir LDpred==1.0.11 && \
     pip install --no-cache-dir pycap==2.1.0 && \
     pip install --no-cache-dir pyliftover==0.4.1 && \
+    pip install --no-cache-dir pysurvival && \
     pip cache purge 
 
 # Plink (as python_convert depends on plink)
