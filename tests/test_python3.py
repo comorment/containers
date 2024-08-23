@@ -71,7 +71,6 @@ def test_python3_packages():
         'plinkio',
         'pyliftover',
         'pyreadstat',
-        'pysurvival',
         'redcap',  # pycap
         'scipy',
         'seaborn',

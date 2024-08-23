@@ -21,7 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Add Python packages `imbalanced-learn, lightgbm, pysurvival, openpyxl` to `python3.sif` container
+* Add Python packages `imbalanced-learn, lightgbm, openpyxl` + PRSice_linux binary to `python3.sif` container
 * Add Conda environment file for project dependencies
 * Add Python packages `scikit-survival, pandas-plink, numba, xmltodict, pyliftover, configparser, intervaltree` to `python3.sif` container
 * Add `Haplin`, `WSpiller/MVMR`, `noahlorinczcomi/MRBEE` R packages to `r.sif` container

@@ -59,7 +59,6 @@ RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir LDpred==1.0.11 && \
     pip install --no-cache-dir pycap==2.1.0 && \
     pip install --no-cache-dir pyliftover==0.4.1 && \
-    pip install --no-cache-dir pysurvival && \
     pip cache purge 
 
 # Plink (as python_convert depends on plink)
