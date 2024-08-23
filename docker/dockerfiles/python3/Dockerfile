@@ -22,9 +22,9 @@ RUN mamba install python=3.10.6 \
     configparser=7.0.0 \
     "h5py=3.7.0=nompi*" \
     jupyterlab=3.4.8 \
-    lightgbm \
+    lightgbm=4.5.0 \
     lifelines=0.27.0 \
-    imbalanced-learn \
+    imbalanced-learn=0.12.3 \
     intervaltree=3.1.0 \
     matplotlib-venn=0.11.5 \
     matplotlib=3.6.0 \
@@ -32,7 +32,7 @@ RUN mamba install python=3.10.6 \
     numdifftools=0.9.39 \
     numba=0.60.0 \
     numpy=1.23.3 \
-    openpyxl \
+    openpyxl=3.1.5 \
     pandas=1.5.0 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
