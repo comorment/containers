@@ -22,7 +22,9 @@ RUN mamba install python=3.10.6 \
     configparser=7.0.0 \
     "h5py=3.7.0=nompi*" \
     jupyterlab=3.4.8 \
+    lightgbm=4.5.0 \
     lifelines=0.27.0 \
+    imbalanced-learn=0.12.3 \
     intervaltree=3.1.0 \
     matplotlib-venn=0.11.5 \
     matplotlib=3.6.0 \
@@ -30,6 +32,7 @@ RUN mamba install python=3.10.6 \
     numdifftools=0.9.39 \
     numba=0.60.0 \
     numpy=1.23.3 \
+    openpyxl=3.1.5 \
     pandas=1.5.0 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
@@ -45,7 +48,6 @@ RUN mamba install python=3.10.6 \
     xmltodict=0.13.0 \
     --yes && \
     mamba clean -a -y
-
 
 # pip install stuff in env.
 RUN pip install --no-cache-dir cbgen==1.0.2 && \
@@ -74,6 +76,12 @@ RUN git clone https://github.com/precimed/python_convert.git . && \
 WORKDIR /tools/ukb
 RUN git clone https://github.com/precimed/ukb.git . && \
     git reset --hard dc57e0d8380cd9b2eca479dc6f181d76ca5a429a
+
+# PRSice_linux binary (useful)
+WORKDIR /tmp/prsice
+COPY /scripts/install_prsice.sh /tmp/prsice/
+RUN bash /tmp/prsice/install_prsice.sh && \
+    rm -rf /tmp/prsice
 
 WORKDIR /tools
 

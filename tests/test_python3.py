@@ -15,6 +15,10 @@ def test_python3_plink():
     out = subprocess.run(call.split(' '))
     assert out.returncode == 0
 
+def test_python3_prsice():
+    call = f'singularity run {pth} PRSice_linux --version'
+    out = subprocess.run(call.split(' '))
+    assert out.returncode == 0
 
 def test_python3_python():
     call = f'singularity run {pth} python --version'
@@ -51,14 +55,17 @@ def test_python3_packages():
     packages = [
         'configparser',
         'h5py',
+        'imblearn',
         'intervaltree',
         'ldpred',
         'lifelines',
+        'lightgbm',
         'matplotlib',
         'matplotlib_venn',
         'numba',
         'numdifftools',
         'numpy',
+        'openpyxl',
         'pandas',
         'pandas_plink',
         'plinkio',
