@@ -12,7 +12,7 @@ on:
       - "v*.*.*"
 
 env:
-  TEST_TAG: ghcr.io/comorment/hello
+  TEST_TAG: ghcr.io/comorment/hello:latest
 
 jobs:
   docker:
