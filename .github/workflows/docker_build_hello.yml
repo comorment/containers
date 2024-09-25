@@ -60,7 +60,8 @@ jobs:
         name: Test
         run: |
           pip3 install -r test-requirements.txt
-          py.test -v tests/test_hello.py    
+          py.test -v tests/test_hello.py
+          docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_hello.py
       -
         name: Build and push
         uses: docker/build-push-action@v5
