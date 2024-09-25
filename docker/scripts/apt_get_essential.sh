@@ -31,6 +31,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    perl=5.30.0-9ubuntu0.5 \
    pkg-config=0.29.1-0ubuntu4 \
    python3=3.8.2-0ubuntu2 \
+   python3-pytest=6.2.5-1ubuntu2 \
    tar=1.30+dfsg-7ubuntu0.20.04.4 \
    tofrodos=1.7.13+ds-4 \
    unzip=6.0-25ubuntu1.1 \
