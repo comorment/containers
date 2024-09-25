@@ -12,7 +12,7 @@ on:
       - "v*.*.*"
 
 env:
-  TEST_TAG: ghcr.io/comorment/hello:test
+  TEST_TAG: ghcr.io/comorment/hello
 
 jobs:
   docker:
@@ -56,7 +56,8 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           file:
             ./dockerfiles/hello/Dockerfile
-      - name: Test
+      - 
+        name: Test
         run: |
           pip3 install -r test-requirements.txt
           py.test -v tests/test_hello.py    
