@@ -55,7 +55,7 @@ jobs:
           load: true
           tags: ${{ env.TEST_TAG }}
           file:
-            ./dockerfiles/container_template/Dockerfile
+            ./dockerfiles/python3/Dockerfile
       - name: Test
         run: |
           docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_python3.py
