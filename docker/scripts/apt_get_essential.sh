@@ -43,3 +43,4 @@ apt-get clean && rm -rf /var/lib/apt/lists/*
    
 # /usr/bin/python must exist for bgenix, qctool
 update-alternatives --install /usr/bin/python python /usr/bin/python3 10
+update-alternatives --install /usr/bin/py.test py.test /usr/bin/py.test-3 10
