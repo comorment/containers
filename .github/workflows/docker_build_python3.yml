@@ -12,7 +12,7 @@ on:
       - "v*.*.*"
 
 env:
-  TEST_TAG: ghcr.io/precimed/container_template:test
+  TEST_TAG: ghcr.io/comorment/python3:test
 
 jobs:
   docker:
