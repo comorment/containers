@@ -39,10 +39,9 @@ except FileNotFoundError:
         PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
         PLINK = f'{PREFIX} plink'
         PRSICE = f'{PREFIX} PRSice_linux'
-    except FileNotFoundError as err:
+    except FileNotFoundError:
         # neither singularity nor docker found, fall back to plain python
-        # raise FileNotFoundError('Neither singularity nor docker found') from err
-        # neither singularity nor docker found, fall back to plain python
+        # presumably because we are running on the client
         PYTHON = 'python'
         PYTHON_MOUNT = 'python'
         PLINK = 'plink'
