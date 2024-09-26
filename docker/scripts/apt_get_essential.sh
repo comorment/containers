@@ -2,7 +2,7 @@
 set -euo pipefail
 
 apt-get update && apt-get install -y --no-install-recommends apt-utils=2.0.10
-apt-get update && apt-get install -y --no-install-recommends ca-certificates=20230311ubuntu0.20.04.1 && \
+apt-get update && apt-get install -y --no-install-recommends ca-certificates=20240203~20.04.1 && \
    update-ca-certificates
 
 # (!) Keep the list below sorted (!)
