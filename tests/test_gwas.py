@@ -5,16 +5,10 @@ Test module for ``gwas.sif`` build
 """
 
 import os
-import socket
 import subprocess
 import tempfile
 import pytest
 
-
-# port used by tests
-sock = socket.socket()
-sock.bind(('', 0))
-port = sock.getsockname()[1]
 
 # Check that (1) singularity exist, and (2) if not, check for docker.
 # If neither are found, tests will fail
@@ -27,10 +21,9 @@ try:
 except FileNotFoundError:
     try:
         subprocess.run('docker', check=False)
-        PREFIX = (f'docker run -p {port}:{port} ' +
-                  'ghcr.io/comorment/gwas')
+        PREFIX = 'docker run --platform linux/amd64 ghcr.io/comorment/gwas'
         PREFIX_MOUNT = (
-            f'docker run -p {port}:{port} ' +
+            'docker run ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
