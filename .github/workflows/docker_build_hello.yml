@@ -64,7 +64,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_hello.py
       -
         name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:docker"
           push: False
