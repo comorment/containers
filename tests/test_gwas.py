@@ -30,8 +30,7 @@ except FileNotFoundError:
         PREFIX = (f'docker run -p {port}:{port} ' +
                   'ghcr.io/comorment/gwas')
         PREFIX_MOUNT = (
-            # f'docker run -p {port}:{port} ' +
-            f'docker run ' +
+            f'docker run -p {port}:{port} ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
@@ -101,9 +100,9 @@ def test_gwas_gcta():
         custom_mount = f'--mount type=bind,source={d},target=/home/ '
         call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} gcta64 ' + \
             '--bfile ex --out .'
-        # out = subprocess.run(call.split(' '), check=False)
         out = subprocess.run(call, shell=True, check=True)
         assert out.returncode == 0
+
 
 def test_gwas_gctb():
     """test gctb"""
@@ -113,10 +112,11 @@ def test_gwas_gctb():
         with tempfile.TemporaryDirectory() as d:
             os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
             custom_mount = f'--mount type=bind,source={d},target=/home/ '
-            call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} gctb --bfile ex --out .'
-            # out = subprocess.run(call.split(' '), check=False)
+            call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} ' + \
+                'gctb --bfile ex --out .'
             out = subprocess.run(call, shell=True, check=True)
             assert out.returncode == 0
+
 
 def test_gwas_gwama():
     """test gwama"""
@@ -215,7 +215,8 @@ def test_gwas_qctools():
     if os.environ['HOST'].rfind('arm64') >= 0:
         pytest.skip('qctools is not available for arm64 architecture')
     else:
-        for binary in ['inthinnerator', 'hptest', 'ldbird', 'qctool', 'selfmap']:
+        for binary in ['inthinnerator', 'hptest',
+                       'ldbird', 'qctool', 'selfmap']:
             call = f'{PREFIX} {binary} -help'
             out = subprocess.run(call.split(' '), check=False)
             assert out.returncode == 0
@@ -251,7 +252,7 @@ def test_gwas_shapeit5():
         pytest.skip('shapeit5 is not available for arm64 architecture')
     else:
         for binary in ['phase_common', 'phase_rare',
-                    'ligate', 'switch', 'xcftools']:
+                       'ligate', 'switch', 'xcftools']:
             call = f'{PREFIX} {binary} --help'
             out = subprocess.run(call.split(' '), check=False)
             assert out.returncode == 0
