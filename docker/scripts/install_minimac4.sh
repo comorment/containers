@@ -25,7 +25,7 @@ make && \
 cp minimac4 /bin
 
 # remove cget, python-pip etc. used to build Minimac4
-pip3 uninstall cget -y
-apt-get purge \
-    python3-pip python3-click python3-six -y && \
-    apt-get autoremove --purge -y
+# pip3 uninstall cget -y
+# apt-get purge \
+#     python3-pip python3-click python3-six -y && \
+#     apt-get autoremove --purge -y
