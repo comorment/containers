@@ -7,6 +7,7 @@ Test module for ``gwas.sif`` build
 import os
 import subprocess
 import tempfile
+import platform
 import pytest
 
 
@@ -99,7 +100,7 @@ def test_gwas_gcta():
 
 def test_gwas_gctb():
     """test gctb"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('gctb is not available for arm64 architecture')
     else:
         with tempfile.TemporaryDirectory() as d:
@@ -188,7 +189,7 @@ def test_gwas_plink2():
 
 def test_gwas_plink2_avx2():
     """test plink2_avx2"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('plink2_avx2 is not available for arm64 architecture')
     else:
         call = f'{PREFIX} plink2_avx2 --version'
@@ -205,7 +206,7 @@ def test_gwas_prsice():
 
 def test_gwas_qctools():
     """test qctools"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('qctools is not available for arm64 architecture')
     else:
         for binary in ['inthinnerator', 'hptest',
@@ -231,7 +232,7 @@ def test_gwas_samtools():
 
 def test_gwas_shapeit4():
     """test shapeit4"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('shapeit4 is not available for arm64 architecture')
     else:
         call = f'{PREFIX} shapeit4.2 --help'
@@ -241,7 +242,7 @@ def test_gwas_shapeit4():
 
 def test_gwas_shapeit5():
     """test shapeit5"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('shapeit5 is not available for arm64 architecture')
     else:
         for binary in ['phase_common', 'phase_rare',
@@ -253,7 +254,7 @@ def test_gwas_shapeit5():
 
 def test_gwas_snptest():
     """test snptest"""
-    if os.environ['HOST'].rfind('arm64') >= 0:
+    if platform.machine() == 'arm64':
         pytest.skip('snptest is not available for arm64 architecture')
     else:
         call = f'{PREFIX} snptest -help'
