@@ -22,13 +22,13 @@ try:
 except FileNotFoundError:
     try:
         subprocess.run('docker', check=False)
-        PREFIX = 'docker run --platform linux/amd64 ghcr.io/comorment/gwas'
+        PREFIX = 'docker run ghcr.io/comorment/gwas'
         PREFIX_MOUNT = (
             'docker run ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
-            '--platform linux/amd64 ' +
+            # '--platform linux/amd64 ' +
             'ghcr.io/comorment/gwas')
     except FileNotFoundError as err:
         # neither singularity nor docker found, fall back to plain python
@@ -91,9 +91,9 @@ def test_gwas_gcta():
     """test gcta"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target=/home/ '
+        custom_mount = f'--mount type=bind,source={d},target={d} '
         call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} gcta64 ' + \
-            '--bfile ex --out .'
+            f'--bfile {d}/ex --out .'
         out = subprocess.run(call, shell=True, check=True)
         assert out.returncode == 0
 
@@ -105,9 +105,9 @@ def test_gwas_gctb():
     else:
         with tempfile.TemporaryDirectory() as d:
             os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-            custom_mount = f'--mount type=bind,source={d},target=/home/ '
+            custom_mount = f'--mount type=bind,source={d},target={d} '
             call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} ' + \
-                'gctb --bfile ex --out .'
+                f'gctb --bfile {d}/ex --out .'
             out = subprocess.run(call, shell=True, check=True)
             assert out.returncode == 0
 
@@ -123,10 +123,10 @@ def test_gwas_king():
     """test king"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target=/home/ '
+        custom_mount = f'--mount type=bind,source={d},target={d} '
         call = ' '.join(
             [f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} king -b',
-             '/home/ex.bed --fam /home/ex.fam --bim /home/ex.bim --related'])
+             f'{d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
