@@ -69,11 +69,12 @@ except FileNotFoundError:
 def test_gwas_bolt():
     """test bolt"""
     call = f'{PREFIX} bolt -h'
-    out = subprocess.run(call, shell=True, check=True)
+    out = subprocess.run(call, shell=True, check=False, capture_output=True)
     try:
         assert out.returncode == 0
     except AssertionError:
         print(out.stdout.decode('utf-8'))
+        print(out.stderr.decode('utf-8'))
         raise
 
 
@@ -162,7 +163,7 @@ def test_gwas_metal():
             f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} metal metal.txt'
         
         # out = subprocess.run(call.split(' '), capture_output=True, check=False)
-        out = subprocess.run(call.replace('/home', d), shell=True, capture_output=True, check=False)
+        out = subprocess.run(call.replace('-w /home', f'-w {d}'), shell=True, capture_output=True, check=False)
         assert out.returncode == 0
         # software may not crash on error, checking captured output
         assert out.stdout.decode('utf-8').rfind('Error') <= 0
