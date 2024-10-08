@@ -22,11 +22,11 @@ RUN bash apt_get_essential.sh && \
 # RUN bash /tmp/prsice/install_prsice.sh && \
 #     rm -rf /tmp/prsice
 
-# simu
-WORKDIR /tmp/simu
-COPY /scripts/install_simu.sh /tmp/simu/
-RUN bash /tmp/simu/install_simu.sh && \
-    rm -rf /tmp/simu
+# # simu
+# WORKDIR /tmp/simu
+# COPY /scripts/install_simu.sh /tmp/simu/
+# RUN bash /tmp/simu/install_simu.sh && \
+#     rm -rf /tmp/simu
 
 # # Plink2
 # WORKDIR /tmp/plink2

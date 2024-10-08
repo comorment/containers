@@ -64,7 +64,6 @@ jobs:
       - 
         name: Test
         run: |
-          df -h ${{ runner.temp }}
           git lfs pull -I tests/extras/*.tar.gz
           pip3 install -r test-requirements.txt
           py.test -v tests/test_gwas.py
