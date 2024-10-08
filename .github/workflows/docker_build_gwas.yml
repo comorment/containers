@@ -62,6 +62,9 @@ jobs:
           file:
             ./dockerfiles/gwas/Dockerfile
       - 
+        name: Adjust permissions
+        run: sudo chmod -R 777 ${{ runner.temp }}
+      - 
         name: Test
         run: |
           git lfs pull -I tests/extras/*.tar.gz
