@@ -72,10 +72,10 @@ def test_gwas_bolt():
     out = subprocess.run(call, shell=True, check=False, capture_output=True)
     try:
         assert out.returncode == 0
-    except AssertionError:
+    except AssertionError as exc:
         print(out.stdout.decode('utf-8'))
         print(out.stderr.decode('utf-8'))
-        raise
+        raise AssertionError from exc
 
 
 # def test_gwas_eagle():
@@ -161,16 +161,15 @@ def test_gwas_metal():
         custom_mount = f'--mount type=bind,source={d},target={d} '
         call = \
             f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} metal metal.txt'
-        
-        # out = subprocess.run(call.split(' '), capture_output=True, check=False)
-        out = subprocess.run(call.replace('-w /home', f'-w {d}'), shell=True, capture_output=True, check=False)
+
+        out = subprocess.run(call.replace('-w /home', f'-w {d}'),
+                             shell=True, capture_output=True, check=False)
         assert out.returncode == 0
         # software may not crash on error, checking captured output
         assert out.stdout.decode('utf-8').rfind('Error') <= 0
         assert out.stdout.decode(
             'utf-8').rfind(
                 "## Smallest p-value is 1.491e-12 at marker 'rs560887'") > 0
-    # os.chdir(cwd)
 
 
 # def test_gwas_minimac4():
