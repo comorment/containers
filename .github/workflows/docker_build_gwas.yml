@@ -62,14 +62,11 @@ jobs:
           file:
             ./dockerfiles/gwas/Dockerfile
       - 
-        name: Adjust permissions
-        run: sudo chmod -R 777 ${{ runner.temp }}
-      - 
         name: Test
         run: |
+          df -h ${{ runner.temp}}
           git lfs pull -I tests/extras/*.tar.gz
           pip3 install -r test-requirements.txt
-          export TMPDIR=${{ runner.temp }} 
           py.test -v tests/test_gwas.py
       -
         name: Build and push
