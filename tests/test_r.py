@@ -13,24 +13,31 @@ import tempfile
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join('singularity', 'r.sif')
-    subprocess.run('singularity', check=False)
-    PREFIX = f'singularity run {pth}'
-    PREFIX_MOUNT = f'singularity run --home={cwd}:/home/ {pth}'
-    PREFIX_CUSTOM_MOUNT = f'singularity run --home={cwd}:/home/ {pth}'
+    pth = os.path.join(cwd, 'singularity', 'r.sif')
+    try:
+        runtime = 'apptainer'
+        subprocess.run(runtime, check=False)
+    except FileNotFoundError:
+        try:
+            runtime = 'singularity'
+            subprocess.run(runtime, check=False)
+        except FileNotFoundError as exc:
+            raise FileNotFoundError from exc
+    PREFIX = f'{runtime} run {pth}'
+    PREFIX_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + pth
+    PREFIX_CUSTOM_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + '{custom_mount}' + pth
 except FileNotFoundError:
     try:
         runtime = 'docker'
         subprocess.run(runtime, check=False)
-        PREFIX = 'docker run ghcr.io/comorment/r'
+        PREFIX = f'{runtime} run ghcr.io/comorment/r'
         PREFIX_MOUNT = (
-            'docker run ' +
+            f'{runtime} run ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
-            # '{custom_mount}' +
             '-w /home/ ' +
             'ghcr.io/comorment/r')
         PREFIX_CUSTOM_MOUNT = (
-            'docker run ' +
+            f'{runtime} run ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
@@ -77,7 +84,10 @@ def test_gwas_gcta():
     """test gcta"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target={d} '
+        if runtime == 'docker':
+            custom_mount = f'--mount type=bind,source={d},target={d} '
+        else:
+            custom_mount = f'--bind {d}:{d} '
         call = f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} gcta64 ' + \
             f'--bfile {d}/ex --out .'
         out = subprocess.run(call, shell=True, check=True)
