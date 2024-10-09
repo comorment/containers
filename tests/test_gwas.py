@@ -15,16 +15,25 @@ import pytest
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join('singularity', 'gwas.sif')
-    subprocess.run('singularity', check=False)
-    PREFIX = f'singularity run {pth}'
-    PREFIX_MOUNT = f'singularity run --home={cwd}:/home/ {pth}'
+    pth = os.path.join(cwd, 'singularity', 'gwas.sif')
+    try:
+        runtime = 'apptainer'
+        subprocess.run(runtime, check=False)
+    except FileNotFoundError:
+        try:
+            runtime = 'singularity'
+            subprocess.run(runtime, check=False)
+        except FileNotFoundError as exc:
+            raise FileNotFoundError from exc
+    PREFIX = f'{runtime} run {pth}'
+    PREFIX_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + '{custom_mount}' + pth
 except FileNotFoundError:
     try:
-        subprocess.run('docker', check=False)
-        PREFIX = 'docker run ghcr.io/comorment/gwas'
+        runtime = 'docker'
+        subprocess.run(runtime, check=False)
+        PREFIX = f'{runtime} run ghcr.io/comorment/gwas'
         PREFIX_MOUNT = (
-            'docker run ' +
+            f'{runtime} run ' +
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
@@ -33,7 +42,7 @@ except FileNotFoundError:
     except FileNotFoundError as err:
         # neither singularity nor docker found, fall back to plain python
         # presumably because we are running on the client
-        mssg = 'Neither singularity nor docker found, tests will fail'
+        mssg = 'Neither apptainer, singularity nor docker found, tests will fail'
         raise FileNotFoundError(mssg) from err
 
 
@@ -91,7 +100,10 @@ def test_gwas_gcta():
     """test gcta"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target={d} '
+        if runtime == 'docker':
+            custom_mount = f'--mount type=bind,source={d},target={d} '
+        else:
+            custom_mount = f'--bind {d}:{d} '
         call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} gcta64 ' + \
             f'--bfile {d}/ex --out .'
         out = subprocess.run(call, shell=True, check=True)
@@ -105,7 +117,10 @@ def test_gwas_gctb():
     else:
         with tempfile.TemporaryDirectory() as d:
             os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-            custom_mount = f'--mount type=bind,source={d},target={d} '
+            if runtime == 'docker':
+                custom_mount = f'--mount type=bind,source={d},target={d} '
+            else:
+                custom_mount = f'--bind {d}:{d} '
             call = f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} ' + \
                 f'gctb --bfile {d}/ex --out .'
             out = subprocess.run(call, shell=True, check=True)
@@ -123,7 +138,10 @@ def test_gwas_king():
     """test king"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target={d} '
+        if runtime == 'docker':
+            custom_mount = f'--mount type=bind,source={d},target={d} '
+        else:
+            custom_mount = f'--bind {d}:{d} '
         call = ' '.join(
             [f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} king -b',
              f'{d}/ex.bed --fam {d}/ex.fam --bim {d}/ex.bim --related'])
@@ -135,7 +153,7 @@ def test_gwas_ldak():
     """test ldak"""
     call = (f'{PREFIX} ldak ' +
             '--make-snps 1 --num-samples 1 --num-snps 1')
-    out = subprocess.run(call.split(' '), check=False)
+    out = subprocess.run(call, shell=True, check=False)
     assert out.returncode == 0
 
 
@@ -153,7 +171,10 @@ def test_gwas_metal():
             f'tar -xvf {cwd}/tests/extras/GlucoseExample.tar.gz -C {d} ' +
             '--strip-components=1')
         os.chdir(d)  # test must be run in temporary directory
-        custom_mount = f'--mount type=bind,source={d},target=/home/ '
+        if runtime == 'docker':
+            custom_mount = f'--mount type=bind,source={d},target={d} '
+        else:
+            custom_mount = f'--bind {d}:{d} '
         call = \
             f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} metal metal.txt'
         out = subprocess.run(call.split(' '), capture_output=True, check=False)
@@ -276,10 +297,13 @@ def test_gwas_simu():
     """test simu"""
     with tempfile.TemporaryDirectory() as d:
         os.system(f'tar -xvf {cwd}/tests/extras/ex.tar.gz -C {d}')
-        custom_mount = f'--mount type=bind,source={d},target=/home/ '
+        if runtime == 'docker':
+            custom_mount = f'--mount type=bind,source={d},target={d} '
+        else:
+            custom_mount = f'--bind {d}:{d} '
         call = ' '.join(
             [f'{PREFIX_MOUNT.format(custom_mount=custom_mount)} ' +
-             'simu_linux --bfile /home/ex --qt ',
+             f'simu_linux --bfile {d}/ex --qt ',
              '--causal-pi 0.01 --num-traits 2 --hsq 0.2 0.6 --rg 0.8'])
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
