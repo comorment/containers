@@ -25,7 +25,8 @@ try:
             raise FileNotFoundError from exc
     PREFIX = f'{runtime} run {pth}'
     PREFIX_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + pth
-    PREFIX_CUSTOM_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + '{custom_mount}' + pth
+    PREFIX_CUSTOM_MOUNT = f'{runtime} run --home={cwd}:/home/ ' + \
+        '{custom_mount}' + pth
 except FileNotFoundError:
     try:
         runtime = 'docker'
@@ -45,7 +46,7 @@ except FileNotFoundError:
     except FileNotFoundError as err:
         # neither singularity nor docker found, fall back to plain python
         # presumably because we are running on the client
-        mssg = 'Neither apptainer, singularity nor docker found, tests will fail'
+        mssg = 'apptainer, singularity nor docker found, tests will fail'
         raise FileNotFoundError(mssg) from err
 
 
@@ -70,11 +71,13 @@ def test_r_R_packages():
 def test_r_R_rmarkdown():
     with tempfile.TemporaryDirectory() as d:
         os.chdir(d)
-        os.system(f"cp {os.path.join(cwd, 'tests', 'extras', 'cars.Rmd')} {d}/")
+        os.system(
+            f"cp {os.path.join(cwd, 'tests', 'extras', 'cars.Rmd')} {d}/")
         os.system(f"cp {os.path.join(cwd, 'tests', 'extras', 'cars.R')} {d}/")
         custom_mount = f'--mount type=bind,source={d},target={d} '
-        call = f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} Rscript cars.R'
-        out = subprocess.run(call.replace('-w /home', f'-w {d}'), 
+        call = (f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} ' +
+                'Rscript cars.R')
+        out = subprocess.run(call.replace('-w /home', f'-w {d}'),
                              shell=True, check=False)
         pdf_output = os.path.isfile('cars.pdf')
         assert out.returncode == 0
@@ -89,17 +92,20 @@ def test_gwas_gcta():
             custom_mount = f'--mount type=bind,source={d},target={d} '
         else:
             custom_mount = f'--bind {d}:{d} '
-        call = f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} gcta64 ' + \
-            f'--bfile {d}/ex --out .'
+        call = (f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} ' +
+                'gcta64 ' +
+                f'--bfile {d}/ex --out .')
         out = subprocess.run(call, shell=True, check=True)
         assert out.returncode == 0
 
 
 def test_r_bigsnpr():
     with tempfile.TemporaryDirectory() as d:
-        os.system(f"cp {os.path.join(cwd, 'tests', 'extras', 'bigsnpr.R')} {d}/")
+        os.system(
+            f"cp {os.path.join(cwd, 'tests', 'extras', 'bigsnpr.R')} {d}/")
         custom_mount = f'--mount type=bind,source={d},target={d} '
-        call = f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} Rscript {d}/bigsnpr.R'
+        call = (f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} ' +
+                'Rscript {d}/bigsnpr.R')
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
