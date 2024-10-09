@@ -7,7 +7,7 @@ on:
       - "v*.*.*"
 
 env:
-  LATEST_TAG: ghcr.io/comorment/gwas:latest
+  LATEST_TAG: ghcr.io/comorment/r:latest
 
 jobs:
   docker:

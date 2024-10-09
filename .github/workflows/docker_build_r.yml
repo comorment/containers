@@ -12,7 +12,7 @@ on:
       - "v*.*.*"
 
 env:
-  LATEST_TAG: ghcr.io/comorment/gwas:latest
+  LATEST_TAG: ghcr.io/comorment/r:latest
 
 jobs:
   docker:
@@ -69,7 +69,6 @@ jobs:
         name: Test
         run: |
           git lfs pull -I tests/extras/*.tar.gz
-          git pull tests/extras/*.*
           pip3 install -r test-requirements.txt
           py.test -v tests/test_r.py
       -
