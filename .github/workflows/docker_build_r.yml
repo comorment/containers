@@ -2,19 +2,30 @@
 name: build r Docker image
 
 on:
-  # pull_request:
-  #   branches:
-  #    - 'main'
+  pull_request:
+    branches:
+      - 'main'
   push:
     branches:
       - 'main'
     tags:
       - "v*.*.*"
 
+env:
+  LATEST_TAG: ghcr.io/comorment/gwas:latest
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: 'true'
+          sparse-checkout: |
+            test-requirements.txt
+            tests
       - 
         name: Docker meta
         id: meta
@@ -48,10 +59,26 @@ jobs:
           github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
         with:
           context: "{{defaultContext}}:docker"
-          push: False
+          load: true
           secrets: |
             "github_pat=${{ env.github_pat }}"
+          tags: ${{ env.LATEST_TAG }}
+          file:
+            ./dockerfiles/r/Dockerfile
+      - 
+        name: Test
+        run: |
+          git pull -I tests/extras/*.R
+          pip3 install -r test-requirements.txt
+          py.test -v tests/test_r.py
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:docker"
+          push: False
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile
           platforms: linux/amd64
+    
