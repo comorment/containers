@@ -54,7 +54,9 @@ jobs:
       - 
         name: Test
         run: |
-          docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.LATEST_TAG }} py.test -v tests/test_gwas.py
+          git lfs pull -I tests/extras/*.tar.gz
+          pip3 install -r test-requirements.txt
+          py.test -v tests/test_gwas.py
       -
         name: Build and push
         uses: docker/build-push-action@v5

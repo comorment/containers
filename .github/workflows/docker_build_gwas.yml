@@ -66,9 +66,7 @@ jobs:
         run: |
           git lfs pull -I tests/extras/*.tar.gz
           pip3 install -r test-requirements.txt
-          # export TMPDIR=${{ runner.temp }} 
           py.test -v tests/test_gwas.py
-          # docker run --rm -v ${{ github.workspace }}:/home -v $RUNNER_TEMP:/temp -w /home ${{ env.LATEST_TAG }} py.test -v tests/test_gwas.py
       -
         name: Build and push
         uses: docker/build-push-action@v6
