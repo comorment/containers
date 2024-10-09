@@ -68,7 +68,8 @@ jobs:
       - 
         name: Test
         run: |
-          git pull -I tests/extras/*.R
+          git lfs pull tests/extras/*.tar.gz
+          git pull tests/extras/*.*
           pip3 install -r test-requirements.txt
           py.test -v tests/test_r.py
       -
