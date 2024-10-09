@@ -37,6 +37,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* update testing scripts to support both Docker and Singularity containers
 * Update REGENIE binary to version 3.6 in `gwas.sif` container
 * Update LDAK binary to version 6 in gwas.sif (from 5.2)
 * Rebuilt `gwas.sif` container with md5sum checksum:
