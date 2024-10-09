@@ -72,9 +72,10 @@ def test_r_R_rmarkdown():
         os.chdir(d)
         os.system(f"cp {os.path.join(cwd, 'tests', 'extras', 'cars.Rmd')} {d}/")
         os.system(f"cp {os.path.join(cwd, 'tests', 'extras', 'cars.R')} {d}/")
-        custom_mount = f'--mount type=bind,source={d},target=/home/ '
+        custom_mount = f'--mount type=bind,source={d},target={d} '
         call = f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} Rscript cars.R'
-        out = subprocess.run(call.split(' '), check=False)
+        out = subprocess.run(call.replace('-w /home', f'-w {d}'), 
+                             shell=True, check=False)
         pdf_output = os.path.isfile('cars.pdf')
         assert out.returncode == 0
         assert pdf_output
