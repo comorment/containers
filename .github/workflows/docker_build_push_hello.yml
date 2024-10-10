@@ -1,5 +1,5 @@
 # action to build and push the hello Docker and Singularity image at each tag (for release)
-name: container build push
+name: build & push hello Docker image
 
 on:
   push:

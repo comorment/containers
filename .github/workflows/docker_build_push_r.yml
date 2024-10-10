@@ -1,5 +1,5 @@
 # action to build and push the r Docker and Singularity image at each tag (for release)
-name: container build push
+name: build & push r Docker image
 
 on:
   push:
