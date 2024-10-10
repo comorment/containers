@@ -105,7 +105,7 @@ def test_r_bigsnpr():
             f"cp {os.path.join(cwd, 'tests', 'extras', 'bigsnpr.R')} {d}/")
         custom_mount = f'--mount type=bind,source={d},target={d} '
         call = (f'{PREFIX_CUSTOM_MOUNT.format(custom_mount=custom_mount)} ' +
-                'Rscript {d}/bigsnpr.R')
+                f'Rscript {d}/bigsnpr.R')
         out = subprocess.run(call.split(' '), check=False)
         assert out.returncode == 0
 
