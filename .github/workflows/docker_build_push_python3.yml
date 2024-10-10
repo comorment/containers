@@ -6,10 +6,16 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  TEST_TAG: ghcr.io/comorment/python3:test
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Checkout repository
+        uses: actions/checkout@v3
       - 
         name: Docker meta
         id: meta
@@ -36,9 +42,21 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}      
+      - 
+        name: Build and export to Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:docker"
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          file:
+            ./dockerfiles/python3/Dockerfile
+      - name: Test
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_python3.py
       -
         name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:docker"
           push: ${{ github.event_name != 'pull_request' }}

@@ -53,7 +53,7 @@ List of software included in the container:
   | plink2_avx2[^plink2]            | v2.00a5.10LM AVX2 Intel (5 Jan 2024)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | PRSice_linux[^prsice]           | 2.3.5                                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | qctool[^qctool]                 | 2.2.2, revision e5723df2c0c85959          | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | regenie[^regenie]               | v3.4                                      | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | regenie[^regenie]               | v3.6                                      | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
   | samtools[^bcftools]             | v1.19.2                                   | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
   | shapeit4.2[^shapeit4]           | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
   | shapeit5[^shapeit5] phase_rare  | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)

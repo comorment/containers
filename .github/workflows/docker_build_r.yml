@@ -11,10 +11,21 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  LATEST_TAG: ghcr.io/comorment/r:latest
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: 'true'
+          sparse-checkout: |
+            test-requirements.txt
+            tests
       - 
         name: Docker meta
         id: meta
@@ -41,6 +52,25 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}      
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        env:
+          github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
+        with:
+          context: "{{defaultContext}}:docker"
+          load: true
+          secrets: |
+            "github_pat=${{ env.github_pat }}"
+          tags: ${{ env.LATEST_TAG }}
+          file:
+            ./dockerfiles/r/Dockerfile
+      - 
+        name: Test
+        run: |
+          git lfs pull -I tests/extras/*.tar.gz
+          pip3 install -r test-requirements.txt
+          py.test -v tests/test_r.py
       -
         name: Build and push
         uses: docker/build-push-action@v6

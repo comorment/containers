@@ -14,15 +14,15 @@ packages <- list(
     'jamesliley/cFDR-common-controls' = '9b923fea283e2373ee8effa2909620a1930004bd',
     # gwasvcf deps:
     'MRCIEU/genetics.binaRies' = 'b0324f180476d80c43bba2ab026b72c5be426a92',
-    'MRCIEU/gwasglue2' = '5d4e35bad211299e95e25151972382a1d7b84092',
+    'MRCIEU/gwasglue2' = 'c93b3a1fca7d2eae5d40bd62117091b1ad57f0fa',
     'MRCIEU/gwasvcf' = '477b365da8522e9a47f3bce51993d5f36df49ceb',
-    # gwasglue deps:
+    # gwasglue/TwoSampleMR deps:
     'rondolab/MR-PRESSO' = '3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87',
-    'MRCIEU/ieugwasr' = '127d1ea5a6ead6fa6c037dcc44ec77d39f952f21',
-    'MRCIEU/TwoSampleMR' = 'c174107cfd9ba47cf2f780849a263f37ac472a0e',
-    'WSpiller/RadialMR' = 'abe00170076284cb79ae711c96d3832da3879267',
-    'gqi/MRMix' = '56afdb2bc96760842405396f5d3f02e60e305039',
-    'stephenslab/susieR' = 'c0314a6113dfb54ea3817103ee01c027849f0eb7',
+    'MRCIEU/ieugwasr' = '8aa24f74d6a6cc5beca77ff204feb2089ae90ffc',
+    'gqi/MRMix'='56afdb2bc96760842405396f5d3f02e60e305039',
+    'WSpiller/RadialMR' = '0ed91f83aebf265a09482561c128c830e58ed697',
+    'MRCIEU/TwoSampleMR' = '578c68fa754c57d764553812bf85d69ecf43b011',
+    'stephenslab/susieR' = 'ced6a9c83a45f792d4d2ef2a9ae0846e164bf92c',
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
     'noahlorinczcomi/MRBEE' = '96971e346099b89585a6eff4a6f22bbcf25d6ca8',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
