@@ -8,7 +8,7 @@ options(BioC_mirror = "https://packagemanager.posit.co/bioconductor/2024-10-01")
 options(BIOCONDUCTOR_CONFIG_FILE = "https://packagemanager.posit.co/bioconductor/2024-10-01/config.yaml")
 
 # Configure a CRAN snapshot compatible with Bioconductor 3.20:
-options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/2024-10-01"))
+options(repos = c(CRAN = url))
 
 # Bioconductor packages
 packages <- c(
