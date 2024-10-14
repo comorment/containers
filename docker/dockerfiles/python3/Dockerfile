@@ -28,6 +28,8 @@ RUN mamba install python=3.10.6 \
     intervaltree=3.1.0 \
     matplotlib-venn=0.11.5 \
     matplotlib=3.6.0 \
+    miniwdl \
+    miniwdl-slurm \
     more-itertools=9.0.0 \
     numdifftools=0.9.39 \
     numba=0.60.0 \
@@ -53,6 +55,7 @@ RUN mamba install python=3.10.6 \
 RUN pip install --no-cache-dir cbgen==1.0.2 && \
     pip install --no-cache-dir bgen-reader==4.0.8 && \
     pip install --no-cache-dir bed-reader==0.2.24 && \
+    pip install --no-cache-dir dxpy==0.383.1 && \
     pip install --no-cache-dir pysnptools==0.5.7 && \
     pip install --no-cache-dir fastlmm==0.6.3 && \
     pip install --no-cache-dir plinkio==0.9.8 && \

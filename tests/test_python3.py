@@ -83,9 +83,16 @@ def test_python3_ukb():
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
+def test_python3_miniwdl():
+    arg = 'miniwdl --help'
+    call = f'{PREFIX} {arg}'
+    out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0
+
 def test_python3_packages():
     packages = [
         'configparser',
+        'dxpy',
         'h5py',
         'imblearn',
         'intervaltree',

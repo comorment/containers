@@ -28,7 +28,8 @@ packages <- list(
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
     'psychgen/phenotools' = 'b744d927a1302d85152917f3802a2212093d588a',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
-    'WSpiller/MVMR' = '6adf8839a33fbe225c0161c564a517dfd61cee32'
+    'WSpiller/MVMR' = '6adf8839a33fbe225c0161c564a517dfd61cee32',
+    'cnfoley/hyprcoloc' = '26ea5953a46b3e204dfa8eadd202f746244afa13'
 )
 
 # install package from GitHub and quit with error if installation fails
