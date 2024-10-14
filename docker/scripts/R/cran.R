@@ -95,7 +95,8 @@ packages <- list(
     xgboost)
  
 # install package from CRAN and quit with error if installation fails
-for (package in names(packages)) {
+# for (package in names(packages)) {
+for (package in packages) {
     # version <- packages[[package]]
 
     tryCatch(
