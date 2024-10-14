@@ -7,13 +7,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Essential tools
 WORKDIR /tmp
-# skip, and install deps when explicitly needed
-# COPY /scripts/apt_get_essential.sh .
-# RUN bash apt_get_essential.sh && \
-#     rm apt_get_essential.sh
 
 # deps for R packages; 
-# 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     apt-utils=2.4.13 \
     ca-certificates=20240203~22.04.1 && \
