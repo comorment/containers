@@ -28,7 +28,7 @@ packages <- list(
     'psychgen/phenotools' = '9eefa4ee0e8ea00bcbdb0e579dcdd7912cfe0597',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
     'WSpiller/MVMR' = '65705da9421b6235c7458dba6f01cddfebfe96f5',
-    'cnfoley/hyprcoloc' = '26ea5953a46b3e204dfa8eadd202f746244afa13'
+    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16'
 )
 
 # install package from GitHub and quit with error if installation fails
@@ -48,3 +48,9 @@ for (package in names(packages)) {
     }
     )
 }
+
+
+# misc. packages
+library(remotes)
+remotes::install_version('RcppEigen', version = '0.3.3.9.3')
+remotes::install_github('jrs95/hyprcoloc', build_opts = c('--resave-data', '--no-manual'), upgrade = 'never')
