@@ -39,6 +39,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* update R to 4.4.1 in `r.sif` container (from 4.0.5); update R packages to Posit/CRAN/BioConductor dated 01.10.2024
 * update testing scripts to support both Docker and Singularity containers
 * Update REGENIE binary to version 3.6 in `gwas.sif` container
 * Update LDAK binary to version 6 in gwas.sif (from 5.2)
