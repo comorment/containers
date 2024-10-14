@@ -25,6 +25,7 @@ try:
     PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
     PLINK = f'{PREFIX} plink'
     PRSICE = f'{PREFIX} PRSice_linux'
+    MINIWDL = f'{PREFIX} miniwdl'
 except FileNotFoundError:
     try:
         subprocess.run('docker', check=False)
@@ -39,6 +40,7 @@ except FileNotFoundError:
         PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
         PLINK = f'{PREFIX} plink'
         PRSICE = f'{PREFIX} PRSice_linux'
+        MINIWDL = f'{PREFIX} miniwdl'
     except FileNotFoundError:
         # neither singularity nor docker found, fall back to plain python
         # presumably because we are running on the client
@@ -46,6 +48,7 @@ except FileNotFoundError:
         PYTHON_MOUNT = 'python'
         PLINK = 'plink'
         PRSICE = 'PRSice_linux'
+        MINIWDL = 'miniwdl'
 
 def test_python3_plink():
     call = f'{PLINK} --version'
@@ -84,8 +87,8 @@ def test_python3_ukb():
     assert out.returncode == 0
 
 def test_python3_miniwdl():
-    arg = 'miniwdl --help'
-    call = f'{PREFIX} {arg}'
+    arg = '--help'
+    call = f'{MINIWDL} {arg}'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
