@@ -94,7 +94,7 @@ libraries_to_check <- c(
     "haven",
     "Haplin",
     "homologene",
-    "HyPrColoc",
+    "hyprcoloc",
     "ieugwasr",
     "imputeMissings",
     "jtools",
