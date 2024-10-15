@@ -2,13 +2,13 @@
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 
-url = "https://packagemanager.posit.co/bioconductor/__linux__/jammy/2024-10-01"
+url = "https://packagemanager.posit.co/bioconductor/__linux__/jammy/2024-09-02"
 # Configure BioCManager to use Posit Package Manager:
-options(BioC_mirror = "https://packagemanager.posit.co/bioconductor/2024-10-01")
-options(BIOCONDUCTOR_CONFIG_FILE = "https://packagemanager.posit.co/bioconductor/2024-10-01/config.yaml")
+options(BioC_mirror = "https://packagemanager.posit.co/bioconductor/2024-09-02")
+options(BIOCONDUCTOR_CONFIG_FILE = "https://packagemanager.posit.co/bioconductor/2024-09-02/config.yaml")
 
 # Configure a CRAN snapshot compatible with Bioconductor 3.19:
-options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/2024-10-01"))
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01"))
 
 # Bioconductor packages
 packages <- c(
@@ -32,7 +32,6 @@ library(devtools)
 for (package in packages) {
     tryCatch(
     {
-        # devtools::install_bioc(package, mirror=url, dependencies=dependencies, upgrade=upgrade)
         BiocManager::install(package, version='3.19')
     },
     error = function(e) {

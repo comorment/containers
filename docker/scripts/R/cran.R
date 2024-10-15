@@ -1,5 +1,5 @@
 require(devtools)
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-10-01"
+url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 
@@ -103,7 +103,6 @@ for (package in packages) {
     tryCatch(
     {
         devtools::install_cran(package, dependencies=dependencies, upgrade=upgrade)
-        # devtools::install_version(package, version=version, repos=url, dependencies=dependencies, upgrade=upgrade)
     },
     error = function(e) {
         cat("Error occurred during package installation:\n")

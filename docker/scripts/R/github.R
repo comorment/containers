@@ -1,4 +1,4 @@
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-10-01"
+url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 auth_token <- Sys.getenv("github_pat")
