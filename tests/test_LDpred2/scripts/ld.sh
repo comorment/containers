@@ -11,7 +11,7 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --ld-meta-file $dirOut/map.rds \
   --merge-by-rsid --set-seed 1 \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
+  --col-snp-id rsid --col-chr chr --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
 
 echo "Running unittests on functions"
