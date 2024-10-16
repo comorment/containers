@@ -32,7 +32,7 @@ library(devtools)
 for (package in packages) {
     tryCatch(
     {
-        BiocManager::install(package, version='3.18')
+        BiocManager::install(package, version='3.19')
     },
     error = function(e) {
         cat("Error occurred during package installation:\n")

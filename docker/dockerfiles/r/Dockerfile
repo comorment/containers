@@ -1,5 +1,5 @@
 # R container
-FROM rocker/verse:4.3.3
+FROM rocker/verse:4.4.1
 # based on Ubuntu 22.04.5 LTS (jammy)
 
 ENV TZ=Europe
