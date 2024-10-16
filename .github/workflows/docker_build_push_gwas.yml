@@ -2,9 +2,9 @@
 name: build & push gwas Docker image
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  # push:
+  #   tags:
+  #     - "v*.*.*"
 
 env:
   LATEST_TAG: ghcr.io/comorment/gwas:latest

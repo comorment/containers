@@ -2,9 +2,9 @@
 name: build & push hello Docker image
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  # push:
+  #  tags:
+  #    - "v*.*.*"
 
 env:
   TEST_TAG: ghcr.io/comorment/hello:latest

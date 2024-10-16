@@ -2,14 +2,14 @@
 name: build gwas Docker image
 
 on:
-  pull_request:
-    branches:
-      - 'main'
-  push:
-    branches:
-      - 'main'
-    tags:
-      - "v*.*.*"
+  # pull_request:
+  #   branches:
+  #     - 'main'
+  # push:
+  #   branches:
+  #     - 'main'
+  #   tags:
+  #     - "v*.*.*"
 
 env:
   LATEST_TAG: ghcr.io/comorment/gwas:latest
