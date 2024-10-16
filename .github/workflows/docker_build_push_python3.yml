@@ -2,9 +2,9 @@
 name: build & push python3 Docker image
 
 on:
-  # push:
-  #   tags:
-  #     - "v*.*.*"
+  push:
+    tags:
+      - "v*.*.*"
 
 env:
   TEST_TAG: ghcr.io/comorment/python3:test
