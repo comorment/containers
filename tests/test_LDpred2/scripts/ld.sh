@@ -11,7 +11,7 @@ LDP="$RSCRIPT $DIR_SCRIPTS/ldpred2.R \
   --ld-meta-file $dirOut/map.rds \
   --merge-by-rsid --set-seed 1 \
   --col-stat beta --col-stat-se beta_se \
-  --col-snp-id rsid --col-chr chr --col-bp pos --col-A1 a1 --col-A2 a0 \
+  --col-snp-id rsid --col-chr chr --col-A1 a1 --col-A2 a0 \
   --geno-file-rds $fileOutputSNPR --sumstats $fileInputSumStats"
 
 echo "Running unittests on functions"
@@ -40,7 +40,7 @@ testSuccess $LDP --ldpred-mode inf --out $fileOut.inf --chr2use 20 21 22
 echo "Test LD estimation with SNP filtering"
 cut -f 1 -d , $fileInputSumStats > $DIR_TESTS/data/snps-for-ld.txt
 testSuccess $LDE --sumstats $DIR_TESTS/data/snps-for-ld.txt rsid --file-ld-chr $dirOut/ld-chr@.rds
-testSuccess $LDP --ldpred-mode auto --out $fileOut.inf --chr2use 20 21 22
+testSuccess $LDP --ldpred-mode inf --out $fileOut.inf --chr2use 20 21 22
 
 
 echo "Testing analyzeLD.R"

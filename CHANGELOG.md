@@ -21,6 +21,8 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Add R packages lightgbm, EFAtools, RiskScorescvd, glmnet, survival, caret, PooledCohort, genio, HyPrColoc
+* Add Python3 packages miniwdl, miniwdl-slurm, dxpy
 * Add unit test runs as part of the GitHub Actions workflow for building Docker containers
 * Add Python packages `imbalanced-learn, lightgbm, openpyxl` + PRSice_linux binary to `python3.sif` container
 * Add Conda environment file for project dependencies
@@ -37,6 +39,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* update R to 4.4.1 in `r.sif` container (from 4.0.5); update R packages to Posit/CRAN/BioConductor dated 2024.09.01; BioConductor version 3.19 (from 3.12)
 * update testing scripts to support both Docker and Singularity containers
 * Update REGENIE binary to version 3.6 in `gwas.sif` container
 * Update LDAK binary to version 6 in gwas.sif (from 5.2)
@@ -57,6 +60,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+* Fixed broken unit test in `tests/test_LDpred2/scripts/ld.sh`
 * Fixed broken unit test `tests/test_gwas.py::test_gwas_metal` with Apptainer "sandbox" mode
 * Workaround for pandas import before scipy in python codes via `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
 * Fixed brittle tests if `TMPDIR` is not `/tmp`

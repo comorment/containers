@@ -32,7 +32,6 @@
 ##################################################
 timeStart=$(date +%s)
 
-export LC_ALL=C # Silence container locale warning
 # To run scripts for ldpred2 and others one needs to define some directories
 export DIR_BASE=$( git rev-parse --show-toplevel )
 # assume that ldpred2_ref is alongside containers directory:
