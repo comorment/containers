@@ -4,7 +4,7 @@ set -euo pipefail
 # install some deps for installing cget
 apt-get update && \
     apt-get install --no-install-recommends \
-    fossil=1:2.10-1 \
+    fossil=1:2.10-1ubuntu0.1 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
