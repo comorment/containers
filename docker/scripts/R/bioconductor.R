@@ -22,7 +22,9 @@ packages <- c(
     'limma',
     'org.Hs.eg.db',
     'rtracklayer',
+    'SNPRelate',
     'snpStats', 
+    'SummarizedExperiment',
     'TMixClust',
     'VariantAnnotation',
     'zlibbioc')

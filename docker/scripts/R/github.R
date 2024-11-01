@@ -12,6 +12,7 @@ packages <- list(
     'GenomicSEM/GenomicSEM' = '199d16f5e45c040a25ee0c885338ebd667277135',
     'jamesliley/cfdr' = 'ec5fddbd27c746a470eb827dc249a80194b231e8',
     'jamesliley/cFDR-common-controls' = '9b923fea283e2373ee8effa2909620a1930004bd',
+    'suchestoncampbelllab/gwasurvivr' = 'adad8509ad5f1f3033548bcb4d00f6f9c60778fa',
     # gwasvcf deps:
     'MRCIEU/genetics.binaRies' = 'b0324f180476d80c43bba2ab026b72c5be426a92',
     'MRCIEU/gwasglue2' = 'c93b3a1fca7d2eae5d40bd62117091b1ad57f0fa',

@@ -54,6 +54,7 @@ packages <- list(
     'lmerTest',
     'magrittr',
     'MatrixEQTL',
+    'matrixStats',
     'mgcv',  # has gamm function
     'miniCRAN',
     'moments',
@@ -61,6 +62,7 @@ packages <- list(
     'MVN',
     'mvtnorm',
     'optparse',
+    'parallel',
     'parameters',
     'patchwork',
     'PooledCohort',
