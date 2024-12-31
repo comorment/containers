@@ -83,6 +83,10 @@ jobs:
     steps:
       - name: Check out code for the container builds
         uses: actions/checkout@v4
+      - name: Setup ORAS
+        uses: oras-project/setup-oras@v1
+        with:
+          version: 1.0.0
       - name: Docker meta 
         id: meta
         uses: docker/metadata-action@v5
