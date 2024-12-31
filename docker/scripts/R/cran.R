@@ -7,6 +7,7 @@ options(repos = c(CRAN = url))
 
 # CRAN packages w. version
 packages <- list(
+    'AER',
     'argparser',
     'arsenal',
     'bigreadr',
@@ -54,6 +55,7 @@ packages <- list(
     'lmerTest',
     'magrittr',
     'MatrixEQTL',
+    'MendelianRandomization',
     'mgcv',  # has gamm function
     'miniCRAN',
     'moments',

@@ -1,5 +1,5 @@
 # R container
-FROM rocker/verse:4.4.1
+FROM ghcr.io/rocker-org/verse:4.4.1
 # based on Ubuntu 22.04.5 LTS (jammy)
 
 ENV TZ=Europe
