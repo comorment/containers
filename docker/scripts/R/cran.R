@@ -1,5 +1,5 @@
 require(devtools)
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01"
+url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 
@@ -7,6 +7,7 @@ options(repos = c(CRAN = url))
 
 # CRAN packages w. version
 packages <- list(
+    'AER',
     'argparser',
     'arsenal',
     'bigreadr',
@@ -54,6 +55,7 @@ packages <- list(
     'lmerTest',
     'magrittr',
     'MatrixEQTL',
+    'MendelianRandomization',
     'mgcv',  # has gamm function
     'miniCRAN',
     'moments',

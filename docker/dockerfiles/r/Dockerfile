@@ -1,5 +1,5 @@
 # R container
-FROM rocker/verse:4.4.1
+FROM ghcr.io/rocker-org/verse:4.4.1
 # based on Ubuntu 22.04.5 LTS (jammy)
 
 ENV TZ=Europe
@@ -35,7 +35,7 @@ RUN bash /tmp/gcta/install_gcta.sh && \
 # R packages.
 # CRAN packages
 WORKDIR /tmp/
-RUN R -e "install.packages('devtools', repos='https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
+RUN R -e "install.packages('devtools', repos='https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
 COPY /scripts/R/cran.R .
 RUN Rscript cran.R
 

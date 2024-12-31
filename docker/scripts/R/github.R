@@ -1,4 +1,4 @@
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-01"
+url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 auth_token <- Sys.getenv("github_pat")
@@ -28,7 +28,8 @@ packages <- list(
     'psychgen/phenotools' = '9eefa4ee0e8ea00bcbdb0e579dcdd7912cfe0597',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
     'WSpiller/MVMR' = '65705da9421b6235c7458dba6f01cddfebfe96f5',
-    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16'
+    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16',
+    'suchestoncampbelllab/gwasurvivr' = 'adad8509ad5f1f3033548bcb4d00f6f9c60778fa'
 )
 
 # install package from GitHub and quit with error if installation fails

@@ -5,6 +5,7 @@ library(testthat)
 
 # List of libraries to check
 libraries_to_check <- c(
+    "AER",
     "argparser", 
     "bigreadr", 
     "bigsnpr",
@@ -90,6 +91,7 @@ libraries_to_check <- c(
     "gridExtra",
     "gwasglue",
     "gwasglue2",
+    "gwasurvivr",
     "gwasvcf",
     "haven",
     "Haplin",
@@ -105,6 +107,7 @@ libraries_to_check <- c(
     "lubridate",
     "MASS",
     "MatrixEQTL",
+    "MendelianRandomization",
     "mgcv",
     "miniCRAN",
     "MRBEE",

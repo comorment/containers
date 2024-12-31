@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Add R packages AER, MendelianRandomization, gwasurvivr
 * Add R packages lightgbm, EFAtools, RiskScorescvd, glmnet, survival, caret, PooledCohort, genio, HyPrColoc
 * Add Python3 packages miniwdl, miniwdl-slurm, dxpy
 * Add unit test runs as part of the GitHub Actions workflow for building Docker containers
