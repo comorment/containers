@@ -61,6 +61,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Fixed
 
+* Fixed missing ORAS CLI with `ubuntu-latest` runners in GitHub Actions
 * Fixed broken unit test in `tests/test_LDpred2/scripts/ld.sh`
 * Fixed broken unit test `tests/test_gwas.py::test_gwas_metal` with Apptainer "sandbox" mode
 * Workaround for pandas import before scipy in python codes via `export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH`
