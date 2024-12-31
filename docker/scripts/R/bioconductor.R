@@ -29,6 +29,8 @@ packages <- c(
 
 # install package from Bioconductor and quit with error if installation fails
 library(devtools)
+BiocManager::install(version = '3.19')
+
 for (package in packages) {
     tryCatch(
     {
