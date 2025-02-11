@@ -21,7 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Add argument `--file-drop-snps` to `ldpred2.R` to drop SNPs from the PGS calculation
+* Add argument `--file-drop-snps` to `ldpred2.R` to drop select SNPs from the PGS calculation
 * Add R packages AER, MendelianRandomization, gwasurvivr
 * Add R packages lightgbm, EFAtools, RiskScorescvd, glmnet, survival, caret, PooledCohort, genio, HyPrColoc
 * Add Python3 packages miniwdl, miniwdl-slurm, dxpy
