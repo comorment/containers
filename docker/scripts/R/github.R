@@ -18,7 +18,6 @@ packages <- list(
     'MRCIEU/gwasvcf' = '477b365da8522e9a47f3bce51993d5f36df49ceb',
     # gwasglue/TwoSampleMR deps:
     'rondolab/MR-PRESSO' = '3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87',
-    'MRCIEU/ieugwasr' = '8aa24f74d6a6cc5beca77ff204feb2089ae90ffc',
     'gqi/MRMix'='56afdb2bc96760842405396f5d3f02e60e305039',
     'WSpiller/RadialMR' = '0ed91f83aebf265a09482561c128c830e58ed697',
     'MRCIEU/TwoSampleMR' = '578c68fa754c57d764553812bf85d69ecf43b011',
@@ -28,8 +27,7 @@ packages <- list(
     'psychgen/phenotools' = '9eefa4ee0e8ea00bcbdb0e579dcdd7912cfe0597',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
     'WSpiller/MVMR' = '65705da9421b6235c7458dba6f01cddfebfe96f5',
-    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16',
-    'suchestoncampbelllab/gwasurvivr' = 'adad8509ad5f1f3033548bcb4d00f6f9c60778fa'
+    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16'
 )
 
 # install package from GitHub and quit with error if installation fails

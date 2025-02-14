@@ -48,6 +48,7 @@ packages <- list(
     'gtsummary',
     'Haplin',
     'homologene',
+    'ieugwasr',
     'imputeMissings',
     'jtools',
     'lavaan',
