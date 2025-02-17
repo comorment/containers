@@ -2,9 +2,8 @@ url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 # upgrade <- 'default'
 upgrade <- 'never'
-# auth_token <- Sys.getenv("github_pat")
-auth_token <- github_pat()
-cat("GitHub PAT length: ", nchar(auth_token), "\n")
+auth_token <- Sys.getenv("GITHUB_PAT")
+cat("GITHUB_PAT length: ", nchar(auth_token), "\n")
 
 # GitHub packages w. Git SHA
 packages <- list(
@@ -38,7 +37,7 @@ for (package in names(packages)) {
     cat("Installing package ", package, " from GitHub with ref ", ref, "\n")
     tryCatch(
     {
-        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade, auth_token=auth_token)
+        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade)
     },
     error = function(e) {
         cat("Error occurred during package installation:\n")
