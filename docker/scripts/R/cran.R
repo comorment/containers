@@ -43,6 +43,7 @@ packages <- list(
     'ggthemes',
     'ggpubr',
     'gitcreds',
+    'glmmTMB',
     'glmnet',
     'glue',
     'gplots',

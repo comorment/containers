@@ -20,6 +20,7 @@ RUN bash install_mambaforge.sh && \
 # https://www.online-utility.org/text/sort.jsp
 RUN mamba install python=3.10.6 \
     configparser=7.0.0 \
+    graphviz \
     "h5py=3.7.0=nompi*" \
     jupyterlab=3.4.8 \
     lightgbm=4.5.0 \
@@ -38,14 +39,18 @@ RUN mamba install python=3.10.6 \
     pandas=1.5.0 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
+    pydot \
     pyreadstat=1.2.7 \
+    pytables \
     pyyaml=6.0 \
     scikit-learn=1.1.2 \
     scikit-survival=0.19.0.post1 \
     scipy=1.9.1 \
     seaborn=0.12.0 \
     semantic_version=2.10.0 \
+    shap \
     statsmodels=0.13.2 \
+    xgboost \
     xlrd=2.0.1 \
     xmltodict=0.13.0 \
     --yes && \

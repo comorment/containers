@@ -28,7 +28,8 @@ packages <- list(
     'psychgen/phenotools' = '9eefa4ee0e8ea00bcbdb0e579dcdd7912cfe0597',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
     'WSpiller/MVMR' = '65705da9421b6235c7458dba6f01cddfebfe96f5',
-    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16'
+    'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16',
+    'amorris28/hazrd' = 'f2748a815a094f2e12a5de89c707aa808de5fe25'
 )
 
 # install package from GitHub and quit with error if installation fails
