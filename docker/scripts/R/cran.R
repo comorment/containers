@@ -95,7 +95,6 @@ packages <- list(
     'survminer',
     'tibble',
     'tidyr',
-    'tidytuesdayR',
     'tree',
     'vctrs',
     'xgboost')

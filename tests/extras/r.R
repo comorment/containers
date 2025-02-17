@@ -149,7 +149,6 @@ libraries_to_check <- c(
     "survival",
     "survminer",
     "tidyverse",
-    "tidytuesdayR",
     "TMixClust",
     "tree",
     "viridis")
