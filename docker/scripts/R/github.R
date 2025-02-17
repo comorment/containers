@@ -4,7 +4,6 @@ dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'never'
 auth_token <- Sys.getenv("github_pat")
 cat("GitHub PAT length: ", nchar(auth_token), "\n")
-gitcreds::gitcreds_set(auth_token)
 
 # GitHub packages w. Git SHA
 packages <- list(
@@ -38,7 +37,7 @@ for (package in names(packages)) {
     cat("Installing package ", package, " from GitHub with ref ", ref, "\n")
     tryCatch(
     {
-        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade)
+        devtools::install_github(package, ref=ref, repos=url, dependencies=dependencies, upgrade=upgrade, auth_token=auth_token)
     },
     error = function(e) {
         cat("Error occurred during package installation:\n")
