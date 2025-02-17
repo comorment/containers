@@ -85,6 +85,7 @@ libraries_to_check <- c(
     "ggseg3d",
     "ggstar",
     "ggthemes",
+    "gitcreds",
     "glmExtras",
     "glmnet",
     "gplots",
@@ -148,6 +149,7 @@ libraries_to_check <- c(
     "survival",
     "survminer",
     "tidyverse",
+    "tidytuesdayR",
     "TMixClust",
     "tree",
     "viridis")
