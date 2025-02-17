@@ -56,12 +56,12 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         env:
-          github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
+          GITHUB_PAT: ${{ secrets.COMORMENT_GITHUB_PAT }}
         with:
           context: "{{defaultContext}}:docker"
           load: true
           secrets: |
-            "github_pat=${{ env.github_pat }}"
+            "GITHUB_PAT=${{ env.GITHUB_PAT }}"
           tags: ${{ env.LATEST_TAG }}
           file:
             ./dockerfiles/r/Dockerfile
@@ -75,12 +75,12 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         env:
-          github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
+          GITHUB_PAT: ${{ secrets.COMORMENT_GITHUB_PAT }}
         with:
           context: "{{defaultContext}}:docker"
           push: False
           secrets: |
-            "github_pat=${{ env.github_pat }}"
+            "GITHUB_PAT=${{ env.GITHUB_PAT }}"
           tags: ${{ steps.meta.outputs.tags }}
           file:
             ./dockerfiles/r/Dockerfile
