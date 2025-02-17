@@ -22,7 +22,8 @@ par <- add_argument(par, "--out", help="Output file with calculated PGS")
 # Optional files
 par <- add_argument(par, "--out-merge", flag=T, help="Merge output with existing file.")
 par <- add_argument(par, "--out-merge-ids", nargs=2, help='Pass ID columns in this order: [family ID] [individual ID]')
-par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep")
+par <- add_argument(par, "--file-keep-snps", help="File with RSIDs of SNPs to keep. Columns: rsid")
+par <- add_argument(par, "--file-drop-snps", help="File with RSIDs of SNPs to drop. Columns: rsid")
 par <- add_argument(par, "--ld-file", default="/ldpred2_ref/ldref_hm3_plus/LD_with_blocks_chr@.rds", help="LD reference files, split per chromosome; chr label should be indicated by '@' symbol")
 par <- add_argument(par, "--ld-meta-file", default="/ldpred2_ref/map_hm3_plus.rds", help="list of variants in --ld-file")
 
@@ -68,6 +69,7 @@ fileMetaLD <- parsed$ld_meta_file
 
 ### Optional
 fileKeepSNPs <- parsed$file_keep_snps
+fileDropSNPs <- parsed$file_drop_snps
 fileOutputMerge <- parsed$out_merge
 fileOutputMergeIDs <- parsed$out_merge_ids
 # Vectors as defaults causes a warning for argparse, so the default is set this way instead
@@ -217,7 +219,12 @@ sumstats$n_eff <- getEffectiveSampleSize(sumstats, effectiveSampleSize=argEffect
 
 if (!is.na(fileKeepSNPs)) {
   cat('Filtering sumstats by SNPs using', fileKeepSNPs, '\n')
-  sumstats <- filterFromFile(sumstats, fileKeepSNPs, colFilter='rsid')
+  sumstats <- filterFromFile(sumstats, fileKeepSNPs, colFilter='rsid', operation='keep')
+}
+
+if (!is.na(fileDropSNPs)) {
+  cat('Dropping SNPs from sumstats using', fileDropSNPs, '\n')
+  sumstats <- filterFromFile(sumstats, fileDropSNPs, colFilter='rsid', operation='remove')
 }
 
 # If the statistic is an OR, convert it into a log-OR
