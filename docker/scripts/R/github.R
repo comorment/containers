@@ -2,8 +2,9 @@ url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 # upgrade <- 'default'
 upgrade <- 'never'
-auth_token <- Sys.getenv("GITHUB_PAT")
-cat("GITHUB_PAT length: ", nchar(auth_token), "\n")
+auth_token <- Sys.getenv("github_pat")
+cat("GitHub PAT length: ", nchar(auth_token), "\n")
+gitcreds::gitcreds_set(auth_token)
 
 # GitHub packages w. Git SHA
 packages <- list(
