@@ -56,19 +56,11 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           file:
             ./dockerfiles/hello/Dockerfile
+          platforms: linux/amd64
       - 
         name: Test
         run: |
           pip3 install -r test-requirements.txt
           py.test -v tests/test_hello.py
           docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_hello.py
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}:docker"
-          push: False
-          tags: ${{ steps.meta.outputs.tags }}
-          file:
-            ./dockerfiles/hello/Dockerfile
-          platforms: linux/amd64
+

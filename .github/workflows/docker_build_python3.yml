@@ -56,16 +56,8 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           file:
             ./dockerfiles/python3/Dockerfile
-      - name: Test
+          platforms: linux/amd64
+      - 
+        name: Test
         run: |
           docker run --rm -v ${{ github.workspace }}:/home -w /home ${{ env.TEST_TAG }} py.test -v tests/test_python3.py
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}:docker"
-          push: False
-          tags: ${{ steps.meta.outputs.tags }}
-          file:
-            ./dockerfiles/python3/Dockerfile
-          platforms: linux/amd64

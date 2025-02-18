@@ -95,7 +95,9 @@ def test_python3_miniwdl():
 def test_python3_packages():
     packages = [
         'configparser',
+        'pydot',
         'dxpy',
+        'graphviz',
         'h5py',
         'imblearn',
         'intervaltree',
@@ -117,11 +119,14 @@ def test_python3_packages():
         'scipy',
         'seaborn',
         'semantic_version',
+        'shap',
         'sklearn',
         'sksurv',
         'statsmodels',
+        'tables',
         'xlrd',
         'xmltodict',
+        'xgboost',
         'yaml',  # pyyaml
         ]
     importstr = 'import ' + ', '.join(packages)
