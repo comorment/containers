@@ -42,7 +42,7 @@ RUN mamba install python=3.10.6 \
     pydot=3.0.4 \
     pyreadstat=1.2.7 \
     pytables=3.7.0 \
-    python-graphviz \
+    python-graphviz=0.20.3 \
     pyyaml=6.0 \
     scikit-learn=1.1.2 \
     scikit-survival=0.19.0.post1 \
