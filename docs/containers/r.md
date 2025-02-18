@@ -52,8 +52,8 @@ List of main software in the container:
 
   | OS/tool                   | version                                   | license
   | ------------------------- | ----------------------------------------- | -------------
-  | ubuntu                    | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | R[^r]                     | 4.0.5 (2021-03-31) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | ubuntu                    | 22.04.5                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | R[^r]                     | 4.4.1 (2024-09-04) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | gcta64[^gcta]             | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GSMR[^gsmr]               | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)

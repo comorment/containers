@@ -116,7 +116,7 @@ is provided [here](docker/README.md). Please keep this up to date when pushing n
 
 ### Sphinx
 
-We use sphinx to generate online documentation from README.md files of this repository.
+We use sphinx to generate online documentation from markdown files of this repository.
 This uses [MyST](https://myst-parser.readthedocs.io) package to generate links in the documentation.
 Here are few rules that we follow across ``.md`` files to make it work well:
 
