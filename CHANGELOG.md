@@ -21,6 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+* Add script to pull latest version of container builds from GitHub Container Registry, revising folder layout as `containers/<tag>/<image>.sif`
 * Add R packages glmmTMB, hazrd; Python packages shap, pytables, xgboost, pydot, graphviz.
 * Add argument `--file-drop-snps` to `ldpred2.R` to drop select SNPs from the PGS calculation
 * Add R packages AER, MendelianRandomization, gwasurvivr
@@ -42,6 +43,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* updated citation info to published paper
 * update R to 4.4.1 in `r.sif` container (from 4.0.5); update R packages to Posit/CRAN/BioConductor dated 2024.09.01; BioConductor version 3.19 (from 3.12)
 * update testing scripts to support both Docker and Singularity containers
 * Update REGENIE binary to version 3.6 in `gwas.sif` container
@@ -71,6 +73,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Removed
 
+* Removed Singularity Image Format (.sif) files from the `singularity/` directory. These are now built and stored in the [ghcr.io](https://github.com/orgs/comorment/packages?repo_name=containers) container registry on different formats.
 * Removed Saige support and Saige-related files
 
 ### Misc

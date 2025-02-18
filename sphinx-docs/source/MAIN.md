@@ -3,7 +3,7 @@
 INTRODUCTION.md
 GETTING_STARTED.md
 INSTALL.md
-singularity/README.md
+containers/README.md
 specifications/README.md
 reference/README.md
 scripts/README.md

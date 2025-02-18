@@ -22,8 +22,8 @@ The main R scripts contained in this directory (`ldpred2.R`, `createBackingFile.
 The help output from each script can printed to the terminal, issuing:
 
 ```
-export SIF=$COMORMENT/containers/singularity
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export SIF=$COMORMENT/containers/containers/latest
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 # invoke ldpred2.R input options:
 $RSCRIPT ldpred2.R --help
 ```
@@ -84,7 +84,7 @@ $RSCRIPT imputeGenotypes.R --impute-simple mean0 --geno-file-rds <fileGeno>.nomi
 Another option is to use PLINK's ``--fill-missing-a2`` option, and re-run ``createBackingFile.R``:
 
 ```
-export PLINK="singularity exec --home=$PWD:/home $SIF/gwas.sif plink"
+export PLINK="apptainer exec --home=$PWD:/home $SIF/gwas.sif plink"
 $PLINK --bfile /REF/examples/prsice2/EUR --fill-missing-a2 --make-bed --out EUR.nomiss
 $RSCRIPT createBackingFile.R --file-input EUR.nomiss.bed --file-output EUR.nomiss.rds
 $RSCRIPT ldpred2.R --geno-file-rds EUR.nomiss.rds ...
@@ -134,12 +134,12 @@ export fileOutLDMap=ld-map.rds
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=<path/to/comorment>
-export SIF=$COMORMENT/containers/singularity
+export SIF=$COMORMENT/containers/containers/latest
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
@@ -196,11 +196,11 @@ files:
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=<path/to/comorment>
-export SIF=$COMORMENT/containers/singularity
+export SIF=$COMORMENT/containers/containers
 export REFERENCE=$COMORMENT/containers/reference
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # Directory with possibly gzipped sumstat files
 dirSumstats=directory/sumstats
@@ -221,7 +221,7 @@ columns of chromosome and position in the `HRC` reference data (default of `--re
 files that are matched. In the example below, output is piped to gzip. To write directly to a file the arguments `--file-output <output file>` and `--file-output-col-sep`
 controls the location of the output file and the column separator used (defaults to tab, "\t").
 
-**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) is outside the working directory, make sure to append its directory to the `SINGULARITY_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
+**_NOTE:_** In case the summary statistics file (or any other file used by the scripts) is outside the working directory, make sure to append its directory to the `APPTAINER_BIND` environment variable as above, and refer to the file accordingly - otherwise the running container won't see the file.
 
 ### Synthetic example (chr21 and chr22)
 
@@ -238,12 +238,12 @@ export fileOut=simu
 # set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=<path/to/comorment>
-export SIF=$COMORMENT/containers/singularity
+export SIF=$COMORMENT/containers/containers/latest
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
@@ -296,11 +296,11 @@ and place them according to the paths in the script below.
 # Set environmental variables. Replace "<path/to/comorment>" with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=<path/to/comorment>
-export SIF=$COMORMENT/containers/singularity
+export SIF=$COMORMENT/containers/containers/latest
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
 export OPENSNP=$COMORMENT/opensnp
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/opensnp
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,${OPENSNP}:/opensnp
 
 # Point to LDpred2.R input/output files
 export fileGeno=/opensnp/imputed/opensnp_hm3.bed
@@ -308,7 +308,7 @@ export fileGenoRDS=opensnp_hm3.rds
 export fileSumstats=/opensnp/gwas/UKB_NEALELAB_2018_HEIGHT.GRCh37.hm3.gz
 export fileOut=Height
 
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # convert genotype to LDpred2 format
 $RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS
@@ -379,8 +379,8 @@ One can redirect the temporary file output by setting the `TMPDIR` environment v
 by incorporating the following lines into the job script:
 
 ```
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,$SCRATCH:/scratch
-export SINGULARITYENV_TMPDIR=/scratch
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref,$SCRATCH:/scratch
+export APPTAINERENV_TMPDIR=/scratch
 ```
 
 Otherwise, the location of temporary files can be specified by the `--tmp-dir` argument to the `ldpred2.R` script.

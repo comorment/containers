@@ -8,10 +8,10 @@
 #SBATCH --mem-per-cpu=2000  # memory (MB)
 #SBATCH --partition=normal
 
-# check if singularity is available, if not load it (adapt as necessary)
-if ! command -v singularity &> /dev/null
+# check if apptainer is available, if not load it (adapt as necessary)
+if ! command -v apptainer &> /dev/null
 then
-    module load singularity
+    module load apptainer
 fi
 
 export fileGeno=/REF/examples/prsice2/EUR.bed
@@ -22,12 +22,12 @@ export fileOut=Height
 # set environmental variables. Replace $COMORMENT with 
 # the full path to the folder containing cloned "containers" and "ldpred2_ref" repositories
 export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
-export SIF=$COMORMENT/containers/singularity
+export SIF=$COMORMENT/containers/containers/latest
 export REFERENCE=$COMORMENT/containers/reference
 export LDPRED2_REF=$COMORMENT/ldpred2_ref
-export SINGULARITY_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
+export APPTAINER_BIND=$REFERENCE:/REF,${LDPRED2_REF}:/ldpred2_ref
 
-export RSCRIPT="singularity exec --home=$PWD:/home $SIF/r.sif Rscript"
+export RSCRIPT="apptainer exec --home=$PWD:/home $SIF/r.sif Rscript"
 
 # run tasks
 $RSCRIPT createBackingFile.R --file-input $fileGeno --file-output $fileGenoRDS

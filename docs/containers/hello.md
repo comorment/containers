@@ -2,42 +2,42 @@
 
 ## Description
 
-You may use ``hello.sif`` container to familirize yourself with Singularity (https://sylabs.io/docs/),
+You may use ``hello.sif`` container to familiarize yourself with Apptainer (https://apptainer.org) or Singularity (https://sylabs.io/singularity/),
 and the way it works on your secure HPC environment (TSD, Bianca, Computerome, or similar).
-This singularity container is indented as a demo. 
+This container is indented as a demo.
 It only contains Plink 1.9 (http://zzz.bwh.harvard.edu/plink/) software.
 
 ## Getting Started
 
-* Download ``hello.sif`` from [here](https://github.com/comorment/containers/tree/main/singularity)
+* Download ``hello.sif`` as described in the [INSTALL](./../../INSTALL) instructions
 * Download ``chr21.[bed,bim,fam]`` files from [here](https://github.com/comorment/containers/tree/main/reference/hapgen)
 * Import these files to your secure HPC environment
-* Run ``singularity exec --no-home hello.sif plink --help``, to validate that you can run singularity. This command is expected to produce the standard plink help message, starting like this:
+* Run ``apptainer exec --no-home hello.sif plink --help``, to validate that you can run singularity. This command is expected to produce the standard plink help message, starting like this:
   ```
   PLINK v1.90b6.18 64-bit (16 Jun 2020)          www.cog-genomics.org/plink/1.9/
   (C) 2005-2020 Shaun Purcell, Christopher Chang   GNU General Public License v3
   ```
 
-## Helpful links to singularity documentation
+## Helpful links to Singularity documentation
 
-It's good idea to familiraze with basics of the singularity, such as these:
+It's good idea to familiraze with basics of the Singularity/Apptainer, such as these:
 
 * ["singularity shell" options](https://sylabs.io/guides/3.2/user-guide/cli/singularity_shell.html#options)
 * [Bind paths and mounts](https://sylabs.io/guides/3.2/user-guide/bind_paths_and_mounts.html).
 
 ## Installing Docker and Singularity on your local machine
 
-While you're getting up to speed with singularity, it might be reasonable to have it install on your local machine (laptop or desktop),
+While you're getting up to speed with Singularity, it might be reasonable to have it install on your local machine (laptop or desktop),
 and try out containers locally before importing them to your HPC environment.
 
-To install singularity on Ubuntu follow steps described here: https://sylabs.io/guides/3.7/user-guide/quick_start.html
-Note that ``sudo apt-get`` can give only a very old version of singularity, which isn't sufficient.
-Therefore it's best to build singularity locally.  Note that singularity depends on GO, so it must be installed first.
+To install Singularity on Ubuntu follow steps described here: https://sylabs.io/guides/3.7/user-guide/quick_start.html
+Note that ``sudo apt-get`` can give only a very old version of Singularity, which isn't sufficient.
+Therefore it's best to build Singularity locally.  Note that Singularity depends on GO, so it must be installed first.
 If you discovered more speciifc instructions, please submit an issue or pull request to update this documentation.
 
-## Mapping your data to singularity containers
+## Mapping your data to Singularity containers
 
-There are several ways to give singularity container access to your data. Here are few examples:
+There are several ways to give Singularity container access to your data. Here are few examples:
 
 1. ``singularity exec --home $PWD:/home hello.sif plink --bfile chr21 --freq --out chr21`` -
    this command will map your current folder (`$PWD`) into ``/home`` folder within container, and set it as active working directory.
@@ -53,7 +53,7 @@ There are several ways to give singularity container access to your data. Here a
    Then change your folder to the root of the ``containers`` repository, and run these commands:
 
    ```
-   mkdir out_dir && singularity exec --bind reference/:/ref:ro,out_dir:/out:rw singularity/hello.sif plink --bfile /ref/hapgen/chr21 --freq --out /out/chr21
+   mkdir out_dir && singularity exec --bind reference/:/ref:ro,out_dir:/out:rw containers/latest/hello.sif plink --bfile /ref/hapgen/chr21 --freq --out /out/chr21
    ```
 
    Note that input paths are relative to the current folder. Also, we specified ``ro`` and ``rw`` access, to have reference data as read-only, 
@@ -66,7 +66,7 @@ There are several ways to give singularity container access to your data. Here a
 
  ## Running as SLURM job
 
-* Run singularity container within SLURM job scheduler, by creating a ``hello_slurm.sh`` file (by adjusting the example below), and running ``sbatch hello_slurm.sh``:
+* Run Singularity container within SLURM job scheduler, by creating a ``hello_slurm.sh`` file (by adjusting the example below), and running ``sbatch hello_slurm.sh``:
   ```
   #!/bin/bash
   #SBATCH --job-name=hello
@@ -74,9 +74,9 @@ There are several ways to give singularity container access to your data. Here a
   #SBATCH --time=00:10:00
   #SBATCH --cpus-per-task=1
   #SBATCH --mem-per-cpu=8000M
-  module load singularity/3.7.1
-  singularity exec --no-home hello.sif plink --help
-  singularity exec --home $PWD:/home hello.sif plink --bfile chr21 --freq --out chr21
+  module load apptainer/3.7.1
+  apptainer exec --no-home hello.sif plink --help
+  apptainer exec --home $PWD:/home hello.sif plink --bfile chr21 --freq --out chr21
   ```
 
 Please [let us know](https://github.com/comorment/containers/issues/new) if you face any problems.

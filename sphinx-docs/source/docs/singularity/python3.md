@@ -1,2 +1,2 @@
-```{include} ../../../../docs/singularity/python3.md
+```{include} ../../../../docs/containers/python3.md
 ```

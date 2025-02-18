@@ -23,7 +23,8 @@ with the most recent major development done as part of the CoMorMent EU H2020 pr
 
 For an overview of available software, see [here](docs/README.md).
 
-Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using GitHub's ``Download`` button, or clone the entire repository from the command line as described in the [INSTALL.md](./INSTALL.md) file.
+Most of these tools are packaged into Singularity Image Format files (<https://github.com/apptainer/sif>), compatible with both Singularity (<https://sylabs.io/singularity/>) and Apptainer (<https://apptainer.org>) and shared in the [containers](https://github.com/comorment/containers/tree/main/containers) folder of this repository.
+You can download individual container files as described in the [INSTALL.md](./INSTALL.md) file.
 
 Many of the tools require additional reference data provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
@@ -73,25 +74,32 @@ Bibtex format:
 }
 ```
 
-Please also cite our preprint:
+Please also cite our paper:
 
 ```
-Akdeniz, B.C., Frei, O., Hagen, E., Filiz, T.T., Karthikeyan, S., Pasman, J.A., Jangmo, A., Bergsted, J., Shorter, J.R., Zetterberg, R., Meijsen, J.J., Sønderby, I.E., Buil, A., Tesli, M., Lu, Y., Sullivan, P., Andreassen, O.A., & Hovig, E. (2022). COGEDAP: A COmprehensive GEnomic Data Analysis Platform. arXiv:2212.14103 [q-bio.GN]. DOI: [10.48550/arXiv.2212.14103](https://doi.org/)
+Bayram Cevdet Akdeniz, Oleksandr Frei, Espen Hagen, Tahir Tekin Filiz, Sandeep Karthikeyan, Joëlle Pasman, Andreas Jangmo, Jacob Bergstedt, John R Shorter, Richard Zetterberg, Joeri Meijsen, Ida Elken Sønderby, Alfonso Buil, Martin Tesli, Yi Lu, Patrick Sullivan, Ole A Andreassen, Eivind Hovig, COSGAP: COntainerized Statistical Genetics Analysis Pipelines, Bioinformatics Advances, Volume 4, Issue 1, 2024, vbae067, <https://doi.org/10.1093/bioadv/vbae067>
 ```
 
 Bibtex format:
 ```
-@misc{akdeniz2022cogedap,
-      title={COGEDAP: A COmprehensive GEnomic Data Analysis Platform}, 
-      author={Bayram Cevdet Akdeniz and Oleksandr Frei and Espen Hagen and Tahir Tekin Filiz and Sandeep Karthikeyan and Joelle Pasman and Andreas Jangmo and Jacob Bergsted and John R. Shorter and Richard Zetterberg and Joeri Meijsen and Ida Elken Sonderby and Alfonso Buil and Martin Tesli and Yi Lu and Patrick Sullivan and Ole Andreassen and Eivind Hovig},
-      year={2022},
-      eprint={2212.14103},
-      archivePrefix={arXiv},
-      primaryClass={q-bio.GN}
+@article{10.1093/bioadv/vbae067,
+    author = {Akdeniz, Bayram Cevdet and Frei, Oleksandr and Hagen, Espen and Filiz, Tahir Tekin and Karthikeyan, Sandeep and Pasman, Joëlle and Jangmo, Andreas and Bergstedt, Jacob and Shorter, John R and Zetterberg, Richard and Meijsen, Joeri and Sønderby, Ida Elken and Buil, Alfonso and Tesli, Martin and Lu, Yi and Sullivan, Patrick and Andreassen, Ole A and Hovig, Eivind},
+    title = {COSGAP: COntainerized Statistical Genetics Analysis Pipelines},
+    journal = {Bioinformatics Advances},
+    volume = {4},
+    number = {1},
+    pages = {vbae067},
+    year = {2024},
+    month = {05},
+    abstract = {The collection and analysis of sensitive data in large-scale consortia for statistical genetics is hampered by multiple challenges, due to their non-shareable nature. Time-consuming issues in installing software frequently arise due to different operating systems, software dependencies, and limited internet access. For federated analysis across sites, it can be challenging to resolve different problems, including format requirements, data wrangling, setting up analysis on high-performance computing (HPC) facilities, etc. Easier, more standardized, automated protocols and pipelines can be solutions to overcome these issues. We have developed one such solution for statistical genetic data analysis using software container technologies. This solution, named COSGAP: “COntainerized Statistical Genetics Analysis Pipelines,” consists of already established software tools placed into Singularity containers, alongside corresponding code and instructions on how to perform statistical genetic analyses, such as genome-wide association studies, polygenic scoring, LD score regression, Gaussian Mixture Models, and gene-set analysis. Using provided helper scripts written in Python, users can obtain auto-generated scripts to conduct the desired analysis either on HPC facilities or on a personal computer. COSGAP is actively being applied by users from different countries and projects to conduct genetic data analyses without spending much effort on software installation, converting data formats, and other technical requirements.COSGAP is freely available on GitHub (https://github.com/comorment/containers) under the GPLv3 license.},
+    issn = {2635-0041},
+    doi = {10.1093/bioadv/vbae067},
+    url = {https://doi.org/10.1093/bioadv/vbae067},
+    eprint = {https://academic.oup.com/bioinformaticsadvances/article-pdf/4/1/vbae067/57955150/vbae067.pdf},
 }
 ```
 
-Note that this project will soon be renamed "COSGAP", and that the citation info will be updated accordingly.
+Note that this project is now renamed "COSGAP", and that the citation info has been updated accordingly.
 
 ## Installation
 

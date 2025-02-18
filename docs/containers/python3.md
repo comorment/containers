@@ -7,7 +7,7 @@ including pandas, numpy, scipy, matplotlib, jupyter and few others (see [here](h
 Basic usage is very simple:
 
 ```
->singularity exec --contain --home $PWD:/home python3.sif python
+>apptainer exec --contain --home $PWD:/home python3.sif python
 Python 3.10.6 | packaged by conda-forge | (main, Aug 22 2022, 20:35:26) [GCC 10.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 ```
@@ -15,7 +15,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 You may also use jupyter notebook like this:
 
 ```
-singularity exec --contain --home $PWD:/home $SIF/python3.sif jupyter notebook --no-browser --port 8890
+apptainer exec --contain --home $PWD:/home $SIF/python3.sif jupyter notebook --no-browser --port 8890
 ```
 
 The port is optional, but you may want to specify it if you'd like to run jupyter on a remote server - in which case you need to enable port forwarding as described [here](https://docs.anaconda.com/anaconda/user-guide/tasks/remote-jupyter-notebook/). This also works if you connect from Windows using Putty as described [here](https://stackoverflow.com/questions/46276612/remote-access-jupyter-notebook-from-windows).

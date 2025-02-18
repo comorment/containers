@@ -36,7 +36,7 @@ timeStart=$(date +%s)
 export DIR_BASE=$( git rev-parse --show-toplevel )
 # assume that ldpred2_ref is alongside containers directory:
 export DIR_COMORMENT="$(dirname "$DIR_BASE")"
-export DIR_SIF=$DIR_BASE/singularity
+export DIR_SIF=$DIR_BASE/containers/latest
 export DIR_TESTS=$DIR_BASE/tests/test_LDpred2
 export DIR_TEMP=$DIR_TESTS/temp
 export DIR_DATA=$DIR_TESTS/data
@@ -76,9 +76,9 @@ fileImpute=$DIR_DATA/EUR
 fileImputed=$DIR_DATA/EUR_imputed
 
 # Create shortcut environment variable for Rscript 
-export RSCRIPT="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
-export BGENIX="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/gwas.sif bgenix"
-export PYTHON="singularity exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/python3.sif python"
+export RSCRIPT="apptainer exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/r.sif Rscript"
+export BGENIX="apptainer exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/gwas.sif bgenix"
+export PYTHON="apptainer exec -B $DIR_BASE:$DIR_BASE -B $DIR_REF_LDPRED:/ldpred2_ref -B $DIR_REFERENCE:/REF $DIR_SIF/python3.sif python"
 
 # Some testing functions
 source $DIR_TESTS/scripts/functions.sh

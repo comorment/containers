@@ -24,7 +24,7 @@ Now GWAS analysis  can be triggered as follows:
 
 ```
 mkdir out
-export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
+export PYTHON="apptainer exec --home $PWD:/home $SIF/python3.sif python"
 
 $PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis plink2 figures --out out/run1_plink2 | bash
 $PYTHON gwas.py gwas --argsfile moba.bed.argsfile --pheno height --analysis regenie figures  --out out/run2_regenie | bash

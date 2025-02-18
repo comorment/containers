@@ -13,7 +13,7 @@ You may start the container like this:
 
 ```
 cd $COMORMENT/containers/reference/examples/gsmr
-singularity shell --home $PWD:/home $SIF/r.sif 
+apptainer shell --home $PWD:/home $SIF/r.sif 
 ```
 
 and then follow the official tutorial <https://cnsgenomics.com/software/gsmr/> .
@@ -29,7 +29,7 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   cd <working/dir>
   mkdir -p run var-lib-rstudio-server
   printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
-  singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
+  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
   ```
   
   where `<working/dir>` is the directory where you want to start Rstudio-server, and `<path/to/r.sif>` is the path to the `r.sif` container.

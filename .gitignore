@@ -64,3 +64,6 @@ scripts/pgs/pgs_toolkit/bash_scripts/*
 .local
 .ipython
 .jupyter
+
+# container builds
+*.sif
