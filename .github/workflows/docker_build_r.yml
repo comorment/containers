@@ -53,7 +53,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}      
       -
-        name: Build and push
+        name: Build
         uses: docker/build-push-action@v6
         env:
           github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
@@ -65,23 +65,10 @@ jobs:
           tags: ${{ env.LATEST_TAG }}
           file:
             ./dockerfiles/r/Dockerfile
+          platforms: linux/amd64
       - 
         name: Test
         run: |
           git lfs pull -I tests/extras/*.tar.gz
           pip3 install -r test-requirements.txt
           py.test -v tests/test_r.py
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
-        env:
-          github_pat: ${{ secrets.COMORMENT_GITHUB_PAT }}
-        with:
-          context: "{{defaultContext}}:docker"
-          push: False
-          secrets: |
-            "github_pat=${{ env.github_pat }}"
-          tags: ${{ steps.meta.outputs.tags }}
-          file:
-            ./dockerfiles/r/Dockerfile
-          platforms: linux/amd64
