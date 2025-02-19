@@ -21,7 +21,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
-* Add script to pull latest version of container builds from GitHub Container Registry, revising folder layout as `containers/<tag>/<image>.sif`
+* Add script `./containers/pull_all_containers.py` to pull tagged versions of container builds from GitHub Container Registry, revising folder layout as `./containers/<tag>/<image>.sif`
 * Add R packages glmmTMB, hazrd; Python packages shap, pytables, xgboost, pydot, graphviz.
 * Add argument `--file-drop-snps` to `ldpred2.R` to drop select SNPs from the PGS calculation
 * Add R packages AER, MendelianRandomization, gwasurvivr

@@ -51,6 +51,13 @@ The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/
 
 Examples and scripts may assume that the "latest" version of the containers are used and found in the directory `containers/latest/` (e.g., `containers/latest/hello.sif`).
 
+For convenience, a script is provided to pull all images at once:
+
+```bash
+cd path/to/repositories/containers/containers
+python pull_all_containers.py <tag>  # multiple tags accepted
+```
+
 ## Pulling and using Docker image
 
 To pull the corresponding Docker image, issue:

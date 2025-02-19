@@ -67,3 +67,6 @@ scripts/pgs/pgs_toolkit/bash_scripts/*
 
 # container builds
 *.sif
+
+# symlinks
+containers/latest
