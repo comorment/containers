@@ -1,2 +1,2 @@
-```{include} ../../../../docs/singularity/gwas.md
+```{include} ../../../../docs/containers/gwas.md
 ```

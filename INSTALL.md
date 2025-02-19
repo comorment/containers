@@ -133,13 +133,13 @@ export COMORMENT=/cluster/projects/p33/github/comorment
 export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
 ```
 
-Once you have a clone of this repository on your system, you may proceed with [docs/apptainer/hello.md](./docs/apptainer/hello.md) example.
-Take a look at the [README](./docs/apptainer/README.md) file in the [docs/apptainer](https://github.com/comorment/containers/tree/main/docs/apptainer) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases).
+Once you have a clone of this repository on your system, you may proceed with [docs/containers/hello.md](./docs/containers/hello.md) example.
+Take a look at the [README](./docs/containers/README.md) file in the [docs/containers](https://github.com/comorment/containers/tree/main/docs/containers) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases).
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
 * ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of the [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub. Cloning ``reference`` repository is optional, and it's only needed for internal work within the CoMorMent project - for normal use you may proceed without it.
-* ``$SIF`` refers to ``$COMORMENT/containers/apptainer`` folder, containing singulairty containers (the ``.sif`` files)
+* ``$SIF`` refers to ``$COMORMENT/containers/containers/latest`` folder, containing singularity containers (the ``.sif`` files)
 * ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most (if not all) of the exmples don't require private reference data.
 * We assume that all containers run with ``--home $PWD:/home``, mounting current folder mounted as ``/home`` within container
 * We also recommend using ``--contain`` argument to better isolate container from the environment in your host machine. If you choose not to mount ``--home $PWD:/home``, you may want to add ``--no-home`` argument.

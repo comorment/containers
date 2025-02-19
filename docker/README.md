@@ -1,16 +1,23 @@
 # Docker
 
-Build recipes for containers using [Docker](https://www.docker.com) and [Singularity](https://sylabs.io/singularity/).
+Build recipes for containers using [Docker](https://www.docker.com) and [Singularity](https://sylabs.io/singularity/) or [Apptainer](https://apptainer.org).
 
 ## Software versions
 
-Please confer and update accordingly the software version tables in the respective [singularity](./../singularity/README.md) files for each container.
+Please confer and update accordingly the software version tables in the respective [containers](./../containers/README.md) files for each container.
 
 ## Feedback
 
 If you face any issues, or if you need additional software, please let us know by creating an [issue](https://github.com/comorment/containers/issues/new).
 
-## Note about NREC machine
+## Building notes
+
+We use [GitHub Actions](https://docs.github.com/en/actions) to automatically build the containers. 
+The build process is defined in the corresponding [.github/workflows/docker_build*.yml](https://github.com/comorment/containers/tree/main/.github/workflows) files.
+In general, a created PR will trigger the build process and run the unit tests automatically.
+Resulting container files will be uploaded to the [GitHub packages](https://github.com/orgs/comorment/packages?repo_name=containers) when new Git tags are pushed on the main branch.
+
+## Note about NREC machine (old)
 
 We use NREC machine to develop and build containers.
 NREC machine has small local disk (~20 TB) and a larger external volume attached (~400 TB)

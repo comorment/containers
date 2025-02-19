@@ -1,2 +1,2 @@
-```{include} ../../../../docs/singularity/r.md
+```{include} ../../../../docs/containers/r.md
 ```
