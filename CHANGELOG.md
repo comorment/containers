@@ -43,6 +43,7 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Updated
 
+* updated documentation throughout, replacing Singularity with Apptainer, reflect new container build directory
 * updated citation info to published paper
 * update R to 4.4.1 in `r.sif` container (from 4.0.5); update R packages to Posit/CRAN/BioConductor dated 2024.09.01; BioConductor version 3.19 (from 3.12)
 * update testing scripts to support both Docker and Singularity containers
