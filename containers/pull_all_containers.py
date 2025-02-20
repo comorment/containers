@@ -80,8 +80,7 @@ for ref, dest_prefix_tags in docker_packages_dest_prefix_tags.items():
                 with tempfile.TemporaryDirectory() as tmpdir:
                     cmmd = f'''export APPTAINER_CACHEDIR={tmpdir} && \n
                     apptainer pull {fname} docker://{ref}:{tag}'''
-                    os.system(
-                        )
+                    os.system(cmmd)
 
     # if 'latest' not in tags, symlink tag with highest semantic version:
     cwd = os.getcwd()
