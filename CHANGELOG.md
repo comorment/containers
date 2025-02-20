@@ -21,6 +21,26 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 ### Added
 
+### Updated
+
+Updates goes here
+
+### Fixed
+
+Fixes goes here
+
+### Removed
+
+Removed features goes here
+
+### Misc
+
+Miscellaneous goes here
+
+## [1.9.0] - 2025-02-20
+
+### Added
+
 * Add script `./containers/pull_all_containers.py` to pull tagged versions of container builds from GitHub Container Registry, revising folder layout as `./containers/<tag>/<image>.sif`
 * Add R packages glmmTMB, hazrd; Python packages shap, pytables, xgboost, pydot, graphviz.
 * Add argument `--file-drop-snps` to `ldpred2.R` to drop select SNPs from the PGS calculation
@@ -76,10 +96,6 @@ If MD5 sum is not listed for a certain release then it means that the container 
 
 * Removed Singularity Image Format (.sif) files from the `singularity/` directory. These are now built and stored in the [ghcr.io](https://github.com/orgs/comorment/packages?repo_name=containers) container registry on different formats.
 * Removed Saige support and Saige-related files
-
-### Misc
-
-* Miscellaneous goes here
 
 ## [1.8.1] - 2024-03-05
 
