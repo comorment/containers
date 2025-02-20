@@ -9,11 +9,11 @@ import subprocess
 import tempfile
 
 
-# Check that (1) singularity exist, and (2) if not, check for docker.
+# Check that (1) apptainer exist, and (2) if not, check for docker.
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join(cwd, 'singularity', 'r.sif')
+    pth = os.path.join(cwd, 'containers', 'latest', 'r.sif')
     try:
         runtime = 'apptainer'
         subprocess.run(runtime, check=False)

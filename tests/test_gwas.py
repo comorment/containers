@@ -15,7 +15,7 @@ import pytest
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join(cwd, 'containers', 'gwas.sif')
+    pth = os.path.join(cwd, 'containers', 'latest', 'gwas.sif')
     try:
         runtime = 'apptainer'
         subprocess.run(runtime, check=False)

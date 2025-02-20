@@ -13,14 +13,14 @@ sock = socket.socket()
 sock.bind(('', 0))
 port = sock.getsockname()[1]
 
-# Check that (1) singularity exist, and (2) if not, check for docker.
+# Check that (1) apptainer exist, and (2) if not, check for docker.
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join('singularity', 'python3.sif')
-    subprocess.run('singularity', check=False)
-    PREFIX = f'singularity run {pth}'
-    PREFIX_MOUNT = f'singularity run --home={cwd}:/home/ {pth}'
+    pth = os.path.join('containers', 'latest', 'python3.sif')
+    subprocess.run('apptainer', check=False)
+    PREFIX = f'apptainer run {pth}'
+    PREFIX_MOUNT = f'apptainer run --home={cwd}:/home/ {pth}'
     PYTHON = f'{PREFIX} python'
     PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
     PLINK = f'{PREFIX} plink'
@@ -42,7 +42,7 @@ except FileNotFoundError:
         PRSICE = f'{PREFIX} PRSice_linux'
         MINIWDL = f'{PREFIX} miniwdl'
     except FileNotFoundError:
-        # neither singularity nor docker found, fall back to plain python
+        # neither apptainer nor docker found, fall back to plain python
         # presumably because we are running on the client
         PYTHON = 'python'
         PYTHON_MOUNT = 'python'

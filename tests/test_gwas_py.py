@@ -8,11 +8,11 @@ import os
 import subprocess
 import tempfile
 
-p3_sif = os.path.abspath(os.path.join("singularity", "python3.sif"))
+p3_sif = os.path.abspath(os.path.join("containers", "latest", "python3.sif"))
 cwd = os.getcwd()
 ref = os.path.join(cwd, "reference", "examples", "regenie")
 
-os.environ["SINGULARITY_BIND"] = f"{os.path.join(cwd,'reference')}:/REF:ro"
+os.environ["APPTAINER_BIND"] = f"{os.path.join(cwd,'reference')}:/REF:ro"
 os.environ["COMORMENT"] = f"{os.path.join(cwd, '..')}"
 
 
@@ -23,7 +23,7 @@ def test_gwas_py_plink():
         os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
         os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         call = (
-            f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
+            f"apptainer exec -B {ref} --home {d}:/home {p3_sif} python"
             " gwas.py gwas --argsfile"
             f" {os.path.join(ref, 'example_3chr.argsfile')} --pheno CASE CASE2"
             " --covar PC1 PC2 BATCH --analysis plink2 figures --out"
@@ -51,7 +51,7 @@ def test_gwas_py_regenie():
         os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'gwas.py')} {d}")
         os.system(f"cp {os.path.join(cwd, 'scripts', 'gwas', 'config.yaml')} {d}")
         call = (
-            f"singularity exec -B {ref} --home {d}:/home {p3_sif} python"
+            f"apptainer exec -B {ref} --home {d}:/home {p3_sif} python"
             " gwas.py gwas --argsfile"
             f" {os.path.join(ref, 'example_3chr.argsfile')} --pheno PHENO"
             " PHENO2 --covar PC1 PC2 BATCH --analysis regenie figures --out"
@@ -89,7 +89,7 @@ def test_gwas_py_variance_standardize():
             " example_3chr.pheno"
         )
         call = (
-            f"singularity exec --home {d}:/home {p3_sif} python"
+            f"apptainer exec --home {d}:/home {p3_sif} python"
             " gwas.py gwas --pheno-file example_3chr.pheno --geno-fit-file"
             " example_3chr.bed --geno-file example_3chr.bed --info-file"
             " example_3chr.info --fam example_3chr.fam --info 0.8 --chr2use"
@@ -117,7 +117,7 @@ def test_gwas_py_identical_FIDs():
             "example_3chr.fam.tmp $$ mv example_3chr.fam.tmp example_3chr.fam"
         )
         call = (
-            f"singularity exec --home {d}:/home {p3_sif} python"
+            f"apptainer exec --home {d}:/home {p3_sif} python"
             " gwas.py gwas --pheno-file example_3chr.pheno --geno-fit-file"
             " example_3chr.bed --geno-file example_3chr.bed --info-file"
             " example_3chr.info --fam example_3chr.fam --info 0.8 --chr2use"
@@ -151,7 +151,7 @@ def test_gwas_py_custom_IIDs():
             "sed -i '1s/IID/SENTRIXID/' example_3chr.pheno"
         )
         call = (
-            f"singularity exec --home {d}:/home {p3_sif} python"
+            f"apptainer exec --home {d}:/home {p3_sif} python"
             " gwas.py gwas --pheno-file example_3chr.pheno --geno-fit-file"
             " example_3chr.bed --geno-file example_3chr.bed --info-file"
             " example_3chr.info --fam example_3chr.fam --info 0.8 --chr2use"
