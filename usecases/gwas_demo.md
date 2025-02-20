@@ -11,19 +11,19 @@ In this demo we're using example data from [reference/examples/regenie](https://
 Take a moment to look at the [phenotype file](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.pheno) and it's [dictionary file](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.pheno.dict) which will be used throughout this example.
 For genetic data, we're using hard genotype calles in plink format, with ``n=500`` individuals ([example_3chr.fam](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.fam)) and ``m=500`` SNPs across three chromosomes ([example_3chr.bim](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.bim)). Note: if you click on the above links and see ``Stored with Git LFS`` message on the github pages, you'll only need to click the ``View raw`` link and it should show the content of the file you're trying to see.
 
-Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``SINGULARITY_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
+Now, to run this use case, just copy the [gwas.py](https://github.com/comorment/containers/blob/main/scripts/gwas/gwas.py) script and [config.yaml](https://github.com/comorment/containers/blob/main/scripts/gwas/config.yaml) file from ``$COMORMENT/containers/scripts/gwas.py`` into your current folder, and run the following commands (where ``run1`` gives example of case/control GWAS with plink2, while ``run2`` is an example for quantitative traits with regenie; these choices are independent - you could run case/control GWAS with regenie, and quantitative trait with plink2 by choosing --analysis argument accordingly; the meaning of the ``/REF`` and ``$SIF`` is explained in the [INSTALL](../INSTALL.md) section of the main README file, as well as the way you are expected to setup the ``APPTAINER_BIND`` variable; if you are confused by ``--argsfile``, read further down below on this page where it's explained in detail):
 
 ```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
+apptainer exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
 --pheno CASE CASE2 --covar PC1 PC2 BATCH --analysis plink2 figures --out run1_plink2 
 
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
+apptainer exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas \
 --argsfile /REF/examples/regenie/example_3chr.argsfile \
 --pheno PHENO PHENO2 --covar PC1 PC2 BATCH --analysis regenie figures --out run2_regenie
 ```
 
-Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``singularity exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
+Off note, if you configured a local python3 environment (i.e. if you can use python without containers), and you have basic packages such as numpy, scipy and pandas, you may use ``gwas.py`` script directly - i.e. drop ``apptainer exec --home $PWD:/home $SIF/python3.sif`` part of the above comand. Otherwise, we recommend to export ``$PYTHON`` variable as follows: ``export PYTHON="apptainer exec --home $PWD:/home $SIF/python3.sif python"``, and then it e.g. like this: ``$PYTHON gwas.py ...``.
 
 We're going to use ``--argsfile`` argument pointing to [example_3chr.argsfile](https://github.com/comorment/containers/blob/main/reference/examples/regenie/example_3chr.argsfile) to specify some lengthy flags used across all invocations of the ``gwas.py`` scripts in this tutorial. It defines what phenotype file to use (``--pheno-file``), which chromosome labels to use (``--chr2use``), which genotype file to use in fitting the regenie model (``--geno-fit-file``) as well as genotype file to use when testing for associations (``--geno-file``); the ``--variance-standardize`` will apply linear transformation to all continuous phenotypes so that they became zero mean and unit variance, similar [--variance-standardize](https://www.cog-genomics.org/plink/2.0/data#variance_standardize) argument in plink2. The ``--info-file`` points to a file with two columns, ``SNP`` and ``INFO``, listing imputation info score for the  variants. This is optional and only needed for the ``--info`` threshold to work. Other available QC filters include ``--maf``, ``--geno`` and ``--hwe``.
 
@@ -49,10 +49,10 @@ Take a look at the resulting [run1.log](https://github.com/comorment/containers/
 For this small-scale demo example, you could execute the actual GWAS locally on your machine as follows:
 
 ```
-export REGENIE="singularity exec --home $PWD:/home $SIF/gwas.sif regenie"
-export PLINK2="singularity exec --home $PWD:/home $SIF/gwas.sif plink2"
-export PYTHON="singularity exec --home $PWD:/home $SIF/python3.sif python"
-export RSCRIPT="singularity exec --home $PWD:/home $SIF/r.sif Rscript"
+export REGENIE="apptainer exec --home $PWD:/home $SIF/gwas.sif regenie"
+export PLINK2="apptainer exec --home $PWD:/home $SIF/gwas.sif plink2"
+export PYTHON="apptainer exec --home $PWD:/home $SIF/python3.sif python"
+export RSCRIPT="apptainer exec --home $PWD:/home $SIF/r.sif Rscript"
 
 cat run1_plink2_cmd.sh | bash
 cat run2_regenie_cmd.sh | bash
@@ -70,8 +70,8 @@ RES=$(sbatch --dependency=afterany:${RES##* } run2_regenie.3.job)
 
 To customize parameters in the header of the slurm jobs, use ``--slurm-job-name``, ``--slurm-account``, ``--slurm-time``, ``--slurm-cpus-per-task``, ``--slurm-mem-per-cpu`` arguments of the ``gwas.py`` script (and let us know if there is anything else you need to customize!).
 Further, you may need to customize ``--module-load`` argument, which by default loads ``singularity/3.7.1`` module.
-Feel free to replace this with other version of singularity, or list multiple modules if you need to load something else in addition to singularity.
-(a handy trick: if you want to explicily avoid loading the singularity module, because it's pre-installed, but don't need any other modules, you may add another irrelevant module just to overwrite the default ``--module-load`` argument).
+Feel free to replace this with other version of Singularity/Apptainer, or list multiple modules if you need to load something else in addition to Singularity.
+(a handy trick: if you want to explicily avoid loading the Singularity module, because it's pre-installed, but don't need any other modules, you may add another irrelevant module just to overwrite the default ``--module-load`` argument).
 Finally, you need to customize ``--comorment-folder`` folder containing a ``containers`` subfolder with a full copy of <https://github.com/comorment/containers>.
 
 For more results, see [gwas_demo](https://github.com/comorment/containers/blob/main/usecases/gwas_demo) folder. Main results are the following GWAS summary statistics:
@@ -94,7 +94,7 @@ Similarly, for a ``.vcf`` (or ``.vcf.gz``) formats you need to generate ``.tbi``
 To see more info about ``gwas.py`` arguments, try this:
 
 ```
->singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
+>apptainer exec --home $PWD:/home $SIF/python3.sif python gwas.py gwas --help
 ```
 
 Key arguments are also described below,
@@ -180,7 +180,7 @@ with an addition of an ``--sumstats`` argument that points to summary statistics
 You can run an example as follows:
 
 ```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
+apptainer exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
   --sumstats run1_plink2_CASE.gz \
   --geno-file /REF/examples/regenie/example_3chr.bed \
   --geno-ld-file /REF/examples/regenie/example_3chr.bed \
@@ -189,7 +189,7 @@ singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs \
   --analysis prsice2 --out run3_prsice2 \
   --keep-ambig  # only for a purpose of this demo; exclude for real analysis (unlee you know why it's there)
 
-export PRSICE2="singularity exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
+export PRSICE2="apptainer exec --home $PWD:/home $SIF/gwas.sif PRSice_linux"
 
 cat run3_prsice2_cmd.sh | bash
 ```
@@ -206,5 +206,5 @@ CASE2 Base 0.9 5.09224e-05 0.0334905 0.0334396 - 0.93301 7.02908 0.894402 50
 For more information, see this:
 
 ```
-singularity exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs --help
+apptainer exec --home $PWD:/home $SIF/python3.sif python gwas.py pgrs --help
 ```

@@ -8,7 +8,7 @@ To run the example provided with GWAMA software, use this following:
 
 ```
 cd $COMORMENT/containers/reference/examples/gwama
-singularity exec --home $PWD:/home $SIF/gwas.sif GWAMA -qt
+apptainer exec --home $PWD:/home $SIF/gwas.sif GWAMA -qt
 ```
 
 Each GWA study file has mandatory column headers:
@@ -46,11 +46,11 @@ For more informatino about GWAMA, see [genomics.ut.ee/en/tools](https://genomics
 METAL tool for meta-analysis ([METAL_Documentation](https://genome.sph.umich.edu/wiki/METAL_Documentation)) is available in ``gwas.sif`` container and can be executed as follows:
 
 ```
-singularity exec --home $PWD:/home $SIF/gwas.sif metal
+apptainer exec --home $PWD:/home $SIF/gwas.sif metal
 ```
 
 Here is an example script for METAL analysis. If this file is named ``metal_script.txt`` and it's stored in your local folder,
-you may then trigger the analysis using ``singularity exec --home $PWD:/home $SIF/gwas.sif metal metal_script.txt`` command.
+you may then trigger the analysis using ``apptainer exec --home $PWD:/home $SIF/gwas.sif metal metal_script.txt`` command.
 See comments below, and refer to the METAL documentation for more information.
 
 ```

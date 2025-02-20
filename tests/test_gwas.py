@@ -11,11 +11,11 @@ import platform
 import pytest
 
 
-# Check that (1) singularity exist, and (2) if not, check for docker.
+# Check that (1) singularity or apptainer runtimes exist, and (2) if not, check for docker.
 # If neither are found, tests will fail
 cwd = os.getcwd()
 try:
-    pth = os.path.join(cwd, 'singularity', 'gwas.sif')
+    pth = os.path.join(cwd, 'containers', 'latest', 'gwas.sif')
     try:
         runtime = 'apptainer'
         subprocess.run(runtime, check=False)

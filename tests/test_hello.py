@@ -10,9 +10,9 @@ import subprocess
 # Check that (1) singularity exist, and (2) if not, check for docker.
 # If neither are found, tests will fail
 try:
-    pth = os.path.join('singularity', 'hello.sif')
-    subprocess.run('singularity', check=False)
-    PREFIX = f'singularity run {pth}'
+    pth = os.path.join('containers', 'latest', 'hello.sif')
+    subprocess.run('apptainer', check=False)
+    PREFIX = f'apptainer run {pth}'
     PLINK = f'{PREFIX} plink'
 except FileNotFoundError:
     try:

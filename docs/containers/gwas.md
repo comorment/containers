@@ -8,7 +8,7 @@ Note that some specific tools (e.g. ``bolt``) are added to the path directly fro
 Either way, all tools can be invoked by their name, as listed above. For example:
 
 ```
->singularity exec gwas.sif regenie
+>apptainer exec gwas.sif regenie
               |=============================|
               |      REGENIE v2.0.2.gz      |
               |=============================|

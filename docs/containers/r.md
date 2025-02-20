@@ -13,7 +13,7 @@ You may start the container like this:
 
 ```
 cd $COMORMENT/containers/reference/examples/gsmr
-singularity shell --home $PWD:/home $SIF/r.sif 
+apptainer shell --home $PWD:/home $SIF/r.sif 
 ```
 
 and then follow the official tutorial <https://cnsgenomics.com/software/gsmr/> .
@@ -29,7 +29,7 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   cd <working/dir>
   mkdir -p run var-lib-rstudio-server
   printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
-  singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
+  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
   ```
   
   where `<working/dir>` is the directory where you want to start Rstudio-server, and `<path/to/r.sif>` is the path to the `r.sif` container.
@@ -52,8 +52,8 @@ List of main software in the container:
 
   | OS/tool                   | version                                   | license
   | ------------------------- | ----------------------------------------- | -------------
-  | ubuntu                    | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | R[^r]                     | 4.0.5 (2021-03-31) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | ubuntu                    | 22.04.5                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | R[^r]                     | 4.4.1 (2024-09-04) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | gcta64[^gcta]             | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GSMR[^gsmr]               | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)

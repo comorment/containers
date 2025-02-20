@@ -19,13 +19,14 @@ The main documentation for COSGAP is hosted at [cosgap.rtfd.io](https://cosgap.r
 ## Information
 
 The goal of this GitHub repository (<https://github.com/comorment/containers>) is to distribute software tools for statistical genetics analysis, alongside their respective reference data and scripts ("analysis pipelines") to facilitate the application of these tools. The scope of this project is currently limited to genome-wide association studies (GWAS) and post-GWAS statistical-genetics analyses, including polygenic scoring (PGS). This project builds on earlier work by [Tryggve consortium](https://neic.no/tryggve/),
-with the most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [preprint](https://arxiv.org/abs/2212.14103) manuscript, [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://cosgap.readthedocs.io/en/latest/).
+with the most recent major development done as part of the CoMorMent EU H2020 project ([comorment.eu](https://comorment.eu)). For more information see our [paper](https://doi.org/10.1093/bioadv/vbae067), [this presentation](https://www.youtube.com/watch?v=msegdR2vJZs) on PGC WWL meeting (Feb 9, 2024), or our online documentation [here](https://cosgap.readthedocs.io/en/latest/).
 
 For an overview of available software, see [here](docs/README.md).
 
-Most of these tools are packaged into singularity containers (<https://sylabs.io/singularity/>) and shared in the [singularity](https://github.com/comorment/containers/tree/main/singularity) folder of this repository. You can download individual containers using GitHub's ``Download`` button, or clone the entire repository from the command line as described in the [INSTALL.md](./INSTALL.md) file.
+Most of these tools are packaged into Docker images (<https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/>) and Singularity Image Format files (<https://github.com/apptainer/sif>), compatible with both Singularity (<https://sylabs.io/singularity/>) and Apptainer (<https://apptainer.org>) and shared as [packages](https://github.com/orgs/comorment/packages?repo_name=containers) on GitHub.
+You can download individual container files as described in the [INSTALL](./INSTALL.md) file.
 
-Many of the tools require additional reference data provided in the [reference](https://github.com/comorment/containers/tree/main/reference) folder of this repository.
+Many of the tools require additional reference data provided in the [reference](https://github.com/comorment/containers/tree/main/reference).
 Certain reference data can not be made publicly available, in which case we provide access instructions in a separate GitHub repository:
 <https://github.com/comorment/reference>. This repository is private - please approach your contact within the CoMorMent project to enable your access.
 
@@ -33,7 +34,7 @@ Description of containers and usage instructions are provided in the [docs](http
 
 More extensive use cases of containers, focusing on real data analysis, are provided in the [usecases](https://github.com/comorment/containers/tree/main/usecases) folder.
 
-The history of changes is available in the [CHANGELOG.md](./CHANGELOG.md) file.
+The history of changes is available in the [CHANGELOG](./CHANGELOG.md) file.
 
 If you would like to contribute to developing these containers, please see the [CONTRIBUTING](CONTRIBUTING.md) file.
 
@@ -44,6 +45,7 @@ Additional tools are available in separate repositories:
 * <https://github.com/comorment/popcorn> - cross-ancestry genetic correlations
 * <https://github.com/comorment/magma> - MAGMA, LAVA, lava-partitioning tools
 * <https://github.com/comorment/HDL> - High-Definition Likelihood
+* <https://github.com/comorment/mtag_container> - Multi-Trait Analysis of GWAS using MTAG
 * <https://github.com/comorment/ldpred2_ref> - reference files for LDpred2. The tool itself is included in ``r.sif`` ([more info](https://github.com/comorment/containers/tree/main/scripts/pgs)).
 
 ## Cite
@@ -73,25 +75,32 @@ Bibtex format:
 }
 ```
 
-Please also cite our preprint:
+Please also cite our paper:
 
 ```
-Akdeniz, B.C., Frei, O., Hagen, E., Filiz, T.T., Karthikeyan, S., Pasman, J.A., Jangmo, A., Bergsted, J., Shorter, J.R., Zetterberg, R., Meijsen, J.J., Sønderby, I.E., Buil, A., Tesli, M., Lu, Y., Sullivan, P., Andreassen, O.A., & Hovig, E. (2022). COGEDAP: A COmprehensive GEnomic Data Analysis Platform. arXiv:2212.14103 [q-bio.GN]. DOI: [10.48550/arXiv.2212.14103](https://doi.org/)
+Bayram Cevdet Akdeniz, Oleksandr Frei, Espen Hagen, Tahir Tekin Filiz, Sandeep Karthikeyan, Joëlle Pasman, Andreas Jangmo, Jacob Bergstedt, John R Shorter, Richard Zetterberg, Joeri Meijsen, Ida Elken Sønderby, Alfonso Buil, Martin Tesli, Yi Lu, Patrick Sullivan, Ole A Andreassen, Eivind Hovig, COSGAP: COntainerized Statistical Genetics Analysis Pipelines, Bioinformatics Advances, Volume 4, Issue 1, 2024, vbae067, <https://doi.org/10.1093/bioadv/vbae067>
 ```
 
 Bibtex format:
 ```
-@misc{akdeniz2022cogedap,
-      title={COGEDAP: A COmprehensive GEnomic Data Analysis Platform}, 
-      author={Bayram Cevdet Akdeniz and Oleksandr Frei and Espen Hagen and Tahir Tekin Filiz and Sandeep Karthikeyan and Joelle Pasman and Andreas Jangmo and Jacob Bergsted and John R. Shorter and Richard Zetterberg and Joeri Meijsen and Ida Elken Sonderby and Alfonso Buil and Martin Tesli and Yi Lu and Patrick Sullivan and Ole Andreassen and Eivind Hovig},
-      year={2022},
-      eprint={2212.14103},
-      archivePrefix={arXiv},
-      primaryClass={q-bio.GN}
+@article{10.1093/bioadv/vbae067,
+    author = {Akdeniz, Bayram Cevdet and Frei, Oleksandr and Hagen, Espen and Filiz, Tahir Tekin and Karthikeyan, Sandeep and Pasman, Joëlle and Jangmo, Andreas and Bergstedt, Jacob and Shorter, John R and Zetterberg, Richard and Meijsen, Joeri and Sønderby, Ida Elken and Buil, Alfonso and Tesli, Martin and Lu, Yi and Sullivan, Patrick and Andreassen, Ole A and Hovig, Eivind},
+    title = {COSGAP: COntainerized Statistical Genetics Analysis Pipelines},
+    journal = {Bioinformatics Advances},
+    volume = {4},
+    number = {1},
+    pages = {vbae067},
+    year = {2024},
+    month = {05},
+    abstract = {The collection and analysis of sensitive data in large-scale consortia for statistical genetics is hampered by multiple challenges, due to their non-shareable nature. Time-consuming issues in installing software frequently arise due to different operating systems, software dependencies, and limited internet access. For federated analysis across sites, it can be challenging to resolve different problems, including format requirements, data wrangling, setting up analysis on high-performance computing (HPC) facilities, etc. Easier, more standardized, automated protocols and pipelines can be solutions to overcome these issues. We have developed one such solution for statistical genetic data analysis using software container technologies. This solution, named COSGAP: “COntainerized Statistical Genetics Analysis Pipelines,” consists of already established software tools placed into Singularity containers, alongside corresponding code and instructions on how to perform statistical genetic analyses, such as genome-wide association studies, polygenic scoring, LD score regression, Gaussian Mixture Models, and gene-set analysis. Using provided helper scripts written in Python, users can obtain auto-generated scripts to conduct the desired analysis either on HPC facilities or on a personal computer. COSGAP is actively being applied by users from different countries and projects to conduct genetic data analyses without spending much effort on software installation, converting data formats, and other technical requirements.COSGAP is freely available on GitHub (https://github.com/comorment/containers) under the GPLv3 license.},
+    issn = {2635-0041},
+    doi = {10.1093/bioadv/vbae067},
+    url = {https://doi.org/10.1093/bioadv/vbae067},
+    eprint = {https://academic.oup.com/bioinformaticsadvances/article-pdf/4/1/vbae067/57955150/vbae067.pdf},
 }
 ```
 
-Note that this project will soon be renamed "COSGAP", and that the citation info will be updated accordingly.
+Note that this project is now renamed "COSGAP", and that the citation info has been updated accordingly.
 
 ## Installation
 

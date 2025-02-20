@@ -8,10 +8,3 @@
 .. automodule:: gwas
    :members:
 ```
-
-## pgs.pgs
-
-```{eval-rst}
-.. automodule:: pgs.pgs
-   :members:
-```

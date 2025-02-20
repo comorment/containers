@@ -37,16 +37,26 @@ Current and future image build artifacts (Singularity and Docker) are listed und
 To obtain updated versions of the Singularity Image Format (.sif) container files provided here, issue:
 
 ```bash
-cd path/to/repositories/containers/singularity
+cd path/to/repositories/containers/containers
 mv <image>.sif <image>.sif.old  # optional, just rename the old(er) file
-apptainer pull docker://ghcr.io/comorment/<image>:<tag>  # or
-singularity pull docker://ghcr.io/comorment/<image>:<tag> # or 
-oras pull ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
+mkdir <tag>  # suggested, create a new directory for the new images
+apptainer pull <tag>/<image>.sif docker://ghcr.io/comorment/<image>:<tag>  # or
+singularity pull <tag>/<image>.sif docker://ghcr.io/comorment/<image>:<tag> # or 
+oras pull -o <tag> ghcr.io/comorment/<image>_sif:<tag>  # note the "_sif" suffix
 ```
 
 where  `<image>` corresponds to one of `{hello|gwas|python3|r}` and `<tag>` corresponds to a tag listed under `https://github.com/comorment/containers/pkgs/container/<image>`, 
 such as `latest`, `main`, or `sha_<GIT_SHA>`. 
 The `oras pull` statement pulls the `<image>.sif` file from `https://github.com/comorment/containers/pkgs/container/<image>_sif` using the [ORAS](https://oras.land) registry, without the need to build the container locally.
+
+Examples and scripts may assume that the "latest" version of the containers are used and found in the directory `containers/latest/` (e.g., `containers/latest/hello.sif`).
+
+For convenience, a script is provided to pull all images at once:
+
+```bash
+cd path/to/repositories/containers/containers
+python pull_all_containers.py <tag>  # multiple tags accepted
+```
 
 ## Pulling and using Docker image
 
@@ -130,13 +140,13 @@ export COMORMENT=/cluster/projects/p33/github/comorment
 export COMORMENT=/ess/p697/data/durable/s3-api/github/comorment
 ```
 
-Once you have a clone of this repository on your system, you may proceed with [docs/singularity/hello.md](./docs/singularity/hello.md) example.
-Take a look at the [README](./docs/singularity/README.md) file in the [docs/singularity](https://github.com/comorment/containers/tree/main/docs/singularity) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases).
+Once you have a clone of this repository on your system, you may proceed with [docs/containers/hello.md](./docs/containers/hello.md) example.
+Take a look at the [README](./docs/containers/README.md) file in the [docs/containers](https://github.com/comorment/containers/tree/main/docs/containers) folder, as well as detailed use cases in [usecases](https://github.com/comorment/containers/tree/main/usecases).
 
 To simplify instructions throughout this repository we use certain variables (it's a good idea to include them in your ``.bashrc`` or similar):
 
 * ``$COMORMENT`` refers to a folder with ``comorment`` and ``reference`` subfolders, containing a clone of the [containers](https://github.com/comorment/containers) and [reference](https://github.com/comorment/reference) repositories from GitHub. Cloning ``reference`` repository is optional, and it's only needed for internal work within the CoMorMent project - for normal use you may proceed without it.
-* ``$SIF`` refers to ``$COMORMENT/containers/singularity`` folder, containing singulairty containers (the ``.sif`` files)
+* ``$SIF`` refers to ``$COMORMENT/containers/containers/latest`` folder, containing singularity containers (the ``.sif`` files)
 * ``SINGULARITY_BIND="$COMORMENT/containers/reference:/REF:ro,$COMORMENT/reference:/REF2:ro"`` defines default bindings within container (``/REF``, ``/REF2``). If you don't have access to private reference, try out commands without mapping ``$COMORMENT/reference:/REF2:ro`` - most (if not all) of the exmples don't require private reference data.
 * We assume that all containers run with ``--home $PWD:/home``, mounting current folder mounted as ``/home`` within container
 * We also recommend using ``--contain`` argument to better isolate container from the environment in your host machine. If you choose not to mount ``--home $PWD:/home``, you may want to add ``--no-home`` argument.
