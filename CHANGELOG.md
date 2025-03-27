@@ -37,6 +37,17 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## [1.9.1] - 2025-03-27
+
+### Added
+
+* add fastparquet, pyarrow, dask (explicitly) packages and plink2 binary to python3.sif container
+
+### Updated 
+
+* updated scikit-learn, pandas, sksurv, seaborn packages in python3.sif container
+* updated pull_all_containers.py script
+
 ## [1.9.0] - 2025-02-20
 
 ### Added
