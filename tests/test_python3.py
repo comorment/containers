@@ -55,6 +55,12 @@ def test_python3_plink():
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
+def test_python3_plink2():
+    """test plink2"""
+    call = f'{PREFIX} plink2 --version'
+    out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0
+
 def test_python3_prsice():
     call = f'{PRSICE} --version'
     out = subprocess.run(call.split(' '), check=False)
@@ -95,7 +101,8 @@ def test_python3_miniwdl():
 def test_python3_packages():
     packages = [
         'configparser',
-        'pydot',
+        'dask',
+        'fastparquet',
         'dxpy',
         'graphviz',
         'h5py',
@@ -113,6 +120,8 @@ def test_python3_packages():
         'pandas',
         'pandas_plink',
         'plinkio',
+        'pyarrow',
+        'pydot',
         'pyliftover',
         'pyreadstat',
         'redcap',  # pycap

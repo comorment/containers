@@ -20,6 +20,8 @@ RUN bash install_mambaforge.sh && \
 # https://www.online-utility.org/text/sort.jsp
 RUN mamba install python=3.10.6 \
     configparser=7.0.0 \
+    dask=2023.3.0 \
+    fastparquet \
     graphviz=12.2.1 \
     "h5py=3.7.0=nompi*" \
     jupyterlab=3.4.8 \
@@ -39,6 +41,7 @@ RUN mamba install python=3.10.6 \
     pandas=2.2.3 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
+    pyarrow \
     pydot=3.0.4 \
     pyreadstat=1.2.7 \
     pytables=3.7.0 \
@@ -75,6 +78,12 @@ WORKDIR /tmp/plink
 COPY /scripts/install_plink.sh /tmp/plink/
 RUN bash /tmp/plink/install_plink.sh && \
     rm -rf /tmp/plink
+
+# Plink2
+WORKDIR /tmp/plink2
+COPY /scripts/install_plink2.sh /tmp/plink2/
+RUN bash /tmp/plink2/install_plink2.sh && \
+    rm -rf /tmp/plink2
 
 # python_convert script(s)
 WORKDIR /tools/python_convert
