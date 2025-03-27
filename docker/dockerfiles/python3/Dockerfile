@@ -21,7 +21,7 @@ RUN bash install_mambaforge.sh && \
 RUN mamba install python=3.10.6 \
     configparser=7.0.0 \
     dask=2023.3.0 \
-    fastparquet \
+    fastparquet=2024.11.0 \
     graphviz=12.2.1 \
     "h5py=3.7.0=nompi*" \
     jupyterlab=3.4.8 \
@@ -41,7 +41,7 @@ RUN mamba install python=3.10.6 \
     pandas=2.2.3 \
     pandas-plink=2.2.9 \
     psutil=5.9.3 \
-    pyarrow \
+    pyarrow=19.0.1 \
     pydot=3.0.4 \
     pyreadstat=1.2.7 \
     pytables=3.7.0 \
