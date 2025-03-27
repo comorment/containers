@@ -24,6 +24,7 @@ try:
     PYTHON = f'{PREFIX} python'
     PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
     PLINK = f'{PREFIX} plink'
+    PLINK2 = f'{PREFIX} plink2'
     PRSICE = f'{PREFIX} PRSice_linux'
     MINIWDL = f'{PREFIX} miniwdl'
 except FileNotFoundError:
@@ -39,6 +40,7 @@ except FileNotFoundError:
         PYTHON = f'{PREFIX} python'
         PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
         PLINK = f'{PREFIX} plink'
+        PLINK2 = f'{PREFIX} plink2'
         PRSICE = f'{PREFIX} PRSice_linux'
         MINIWDL = f'{PREFIX} miniwdl'
     except FileNotFoundError:
@@ -47,6 +49,7 @@ except FileNotFoundError:
         PYTHON = 'python'
         PYTHON_MOUNT = 'python'
         PLINK = 'plink'
+        PLINK2 = 'plink2'
         PRSICE = 'PRSice_linux'
         MINIWDL = 'miniwdl'
 
@@ -57,7 +60,7 @@ def test_python3_plink():
 
 def test_python3_plink2():
     """test plink2"""
-    call = f'{PREFIX} plink2 --version'
+    call = f'{PLINK2} --version'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
 
