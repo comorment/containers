@@ -40,6 +40,7 @@ RUN mamba install python=3.10.6 \
     openpyxl=3.1.5 \
     pandas=2.2.3 \
     pandas-plink=2.2.9 \
+    paramiko \
     psutil=5.9.3 \
     pyarrow=19.0.1 \
     pydot=3.0.4 \

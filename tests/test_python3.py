@@ -122,6 +122,7 @@ def test_python3_packages():
         'openpyxl',
         'pandas',
         'pandas_plink',
+        'paramiko',
         'plinkio',
         'pyarrow',
         'pydot',

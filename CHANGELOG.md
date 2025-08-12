@@ -37,6 +37,13 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## [1.9.2] - 2025-08-12
+
+### Updated
+
+* Add 'paramiko' package to `python3.sif` container, updated genomicSEM in `r.sif` container
+
+
 ## [1.9.1] - 2025-03-27
 
 ### Added

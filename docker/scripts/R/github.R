@@ -10,7 +10,7 @@ packages <- list(
     'alexploner/cfdr.pleio' = '76d5085e6d3f3ca9576d5d7564d2acf11bcfd021',
     'dajiangliu/rareGWAMA' = '72e962dae19dc07251244f6c33275ada189c2126',
     'deepchocolate/glm-extras' = 'ecba68c0378fc953edf8fe594ce914aff8ada6fa',
-    'GenomicSEM/GenomicSEM' = '199d16f5e45c040a25ee0c885338ebd667277135',
+    'GenomicSEM/GenomicSEM' = '8e0ef594e95885b1f734f1dfcfe668b16ada2880',
     'jamesliley/cfdr' = 'ec5fddbd27c746a470eb827dc249a80194b231e8',
     'jamesliley/cFDR-common-controls' = '9b923fea283e2373ee8effa2909620a1930004bd',
     # gwasvcf deps:
