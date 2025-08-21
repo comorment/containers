@@ -18,6 +18,7 @@ packages <- c(
     'biomaRt',
     'biomartr',
     'clusterProfiler',
+    'GenomeInfoDb',
     'gwasurvivr',
     'GWASTools',
     'limma',
