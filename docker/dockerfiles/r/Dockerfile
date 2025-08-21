@@ -1,6 +1,6 @@
 # R container
-FROM ghcr.io/rocker-org/verse:4.4.1
-# based on Ubuntu 22.04.5 LTS (jammy)
+FROM ghcr.io/rocker-org/verse:4.5.1
+# based on Ubuntu 24.04 LTS (noble)
 
 ENV TZ=Europe
 ENV DEBIAN_FRONTEND=noninteractive
@@ -10,19 +10,19 @@ WORKDIR /tmp
 
 # deps for R packages; 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    apt-utils=2.4.13 \
-    ca-certificates=20240203~22.04.1 && \
+    apt-utils=2.8.3 \
+    ca-certificates=20240203 && \
     update-ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    curl=7.81.0-1ubuntu1.18 \
-    libperl-dev=5.34.0-3ubuntu1.3 \
-    libgslcblas0=2.7.1+dfsg-3 \
-    lmodern=2.004.5-6.1 \
-    texlive-latex-extra=2021.20220204-1 && \
-    wget=1.21.2-2ubuntu1.1 \
+    curl=8.5.0-2ubuntu10.6 \
+    libperl-dev=5.38.2-3.2ubuntu0.2 \
+    libgslcblas0=2.7.1+dfsg-6ubuntu2 \
+    lmodern=2.005-1 \
+    texlive-latex-extra=2023.20240207-1 && \
+    wget=1.21.4-1ubuntu4.1 \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +35,7 @@ RUN bash /tmp/gcta/install_gcta.sh && \
 # R packages.
 # CRAN packages
 WORKDIR /tmp/
-RUN R -e "install.packages('devtools', repos='https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
+RUN R -e "install.packages('devtools', repos='https://packagemanager.posit.co/cran/__linux__/noble/2025-08-01', dependencies=c('Depends', 'Imports', 'LinkingTo'))"
 COPY /scripts/R/cran.R .
 RUN Rscript cran.R
 
