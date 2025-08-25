@@ -22,6 +22,7 @@ packages <- list(
     'gqi/MRMix'='56afdb2bc96760842405396f5d3f02e60e305039',
     'WSpiller/RadialMR' = '0ed91f83aebf265a09482561c128c830e58ed697',
     'MRCIEU/TwoSampleMR' = '578c68fa754c57d764553812bf85d69ecf43b011',
+    'qingyuanzhao/mr.raps' = '27b96f31e26ae97a395422bd757f514a7f96cc85',
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
     'noahlorinczcomi/MRBEE' = '6295549a1f5a158c6701eb793646d60c8aef11ca',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',

@@ -99,7 +99,8 @@ packages <- list(
     'tidyr',
     'tree',
     'vctrs',
-    'xgboost')
+    'xgboost',
+    'zlib')
  
 # install package from CRAN and quit with error if installation fails
 # for (package in names(packages)) {

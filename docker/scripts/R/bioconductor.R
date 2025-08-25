@@ -26,8 +26,7 @@ packages <- c(
     'rtracklayer',
     'snpStats', 
     'TMixClust',
-    'VariantAnnotation',
-    'zlibbioc')
+    'VariantAnnotation')
 
 # install package from Bioconductor and quit with error if installation fails
 library(devtools)
