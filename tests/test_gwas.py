@@ -236,6 +236,7 @@ def test_gwas_prsice():
     assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="qctools temporarily removed from build")
 def test_gwas_qctools():
     """test qctools"""
     if platform.machine() == 'arm64':
@@ -272,6 +273,7 @@ def test_gwas_shapeit4():
         assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="shapeit5 temporarily removed from build")
 def test_gwas_shapeit5():
     """test shapeit5"""
     if platform.machine() == 'arm64':
