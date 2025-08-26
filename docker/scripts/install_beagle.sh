@@ -3,7 +3,7 @@ set -euo pipefail
 
 # additional deps
 apt-get update && apt-get install --no-install-recommends \
-    default-jre=2:1.11-72 \
+    default-jre=2:1.21-75+exp1 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

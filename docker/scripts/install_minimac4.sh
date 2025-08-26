@@ -4,15 +4,15 @@ set -euo pipefail
 # install some deps for installing cget
 apt-get update && \
     apt-get install --no-install-recommends \
-    python3-pip=20.0.2-5ubuntu1.11 \
-    python3-click=7.0-3 \
-    python3-six=1.14.0-2 \
+    python3-pip=24.0+dfsg-1ubuntu1.2 \
+    python3-click=8.1.6-2 \
+    python3-six=1.16.0-4 \
     -y && \
-    apt-get clean && \
+    apt clean && \
     rm -rf /var/lib/apt/lists/*
 
 # install cget 
-pip3 install --no-cache-dir cget==0.2.0
+pip3 install --no-cache-dir --break-system-packages cget==0.2.0
 
 # install Minimac4
 VERSION="v4.1.6"
@@ -25,7 +25,7 @@ make && \
 cp minimac4 /bin
 
 # remove cget, python-pip etc. used to build Minimac4
-pip3 uninstall cget -y
+pip3 uninstall --break-system-packages cget -y
 apt-get purge \
     python3-pip python3-click python3-six -y && \
     apt-get autoremove --purge -y

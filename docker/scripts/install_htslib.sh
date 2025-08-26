@@ -3,9 +3,9 @@ set -euo pipefail
 
 # additional deps
 apt-get update && apt-get install --no-install-recommends \
-    libbz2-dev=1.0.8-2 \
-    liblzma-dev=5.2.4-1ubuntu1.1 \
-    libssl-dev=1.1.1f-1ubuntu2.24 \
+    libbz2-dev=1.0.8-5.1build0.1 \
+    liblzma-dev=5.6.1+really5.4.5-1ubuntu0.2 \
+    libssl-dev=3.0.13-0ubuntu3.5 \
     -y 
  
 apt-get clean && \

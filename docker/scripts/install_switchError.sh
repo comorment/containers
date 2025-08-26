@@ -2,8 +2,8 @@
 set -euo pipefail
 
 apt-get update && apt-get install --no-install-recommends \
-    r-mathlib=3.6.3-2 \
-    libboost-iostreams1.71-dev=1.71.0-6ubuntu6 \
+    r-mathlib=4.3.3-2build2 \
+    libboost-iostreams1.83-dev=1.83.0-2.1ubuntu3.1 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

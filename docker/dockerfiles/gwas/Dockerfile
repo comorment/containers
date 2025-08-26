@@ -60,10 +60,10 @@ RUN bash /tmp/gctb/install_gctb.sh && \
     rm -rf /tmp/gctb
 
 # qctool
-WORKDIR /tmp/qctool
-COPY /scripts/install_qctools.sh /tmp/qctool/
-RUN bash /tmp/qctool/install_qctools.sh && \
-    rm -rf /tmp/qctool
+# WORKDIR /tmp/qctool
+# COPY /scripts/install_qctools.sh /tmp/qctool/
+# RUN bash /tmp/qctool/install_qctools.sh && \
+#     rm -rf /tmp/qctool
 
 # snptest
 WORKDIR /tmp/snptest
@@ -147,12 +147,12 @@ RUN bash /tmp/shapeit4/install_shapeit4.sh && \
     rm -rf /tmp/shapeit4
 
 # shapeit5
-WORKDIR /tmp/shapeit5
-COPY /scripts/install_shapeit5.sh /tmp/shapeit5/
-COPY /scripts/patches/shapeit5.diff /tmp/shapeit5/
-COPY /scripts/patches/xcftools.diff /tmp/shapeit5/
-RUN bash /tmp/shapeit5/install_shapeit5.sh && \
-    rm -rf /tmp/shapeit5
+# WORKDIR /tmp/shapeit5
+# COPY /scripts/install_shapeit5.sh /tmp/shapeit5/
+# COPY /scripts/patches/shapeit5.diff /tmp/shapeit5/
+# COPY /scripts/patches/xcftools.diff /tmp/shapeit5/
+# RUN bash /tmp/shapeit5/install_shapeit5.sh && \
+#     rm -rf /tmp/shapeit5
 
 # eagle
 WORKDIR /tmp/eagle
