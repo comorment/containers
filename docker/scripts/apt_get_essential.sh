@@ -37,7 +37,6 @@ apt-get update && apt-get install -y --no-install-recommends \
    vim=2:9.1.0016-1ubuntu7.8 \
    wget=1.21.4-1ubuntu4.1 \
    zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1
-   # pandoc-citeproc=0.15.0.1-1build4 \ 
    
 apt-get clean && rm -rf /var/lib/apt/lists/*
    

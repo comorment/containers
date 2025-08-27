@@ -29,10 +29,17 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   cd <working/dir>
   mkdir -p run var-lib-rstudio-server
   printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
-  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
+  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf --home=$PWD <path/to>/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1 --www-port=8787 --server-user $USER
   ```
   
   where `<working/dir>` is the directory where you want to start Rstudio-server, and `<path/to/r.sif>` is the path to the `r.sif` container.
+
+  If you want to mount additional directories, you can append the ``--bind`` argument to the apptainer call (attaching ``/ess`` and ``/cluster`` as examples):
+  ```
+  --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf,/ess:/ess,/cluster:/cluster
+  ```
+
+  If you get messages like “address already in use”, try and replace the port number 8787 with another port number (e.g., 8888, etc.) everywhere in the steps above and below.
 
 2. (Optional) Create SSH tunnel using port 8787 from the local host to the remote machine
 

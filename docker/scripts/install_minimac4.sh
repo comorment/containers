@@ -11,7 +11,8 @@ apt-get update && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-# install cget 
+# install cget
+# The "--break-system-packages" flag was needed to not break build
 pip3 install --no-cache-dir --break-system-packages cget==0.2.0
 
 # install Minimac4
