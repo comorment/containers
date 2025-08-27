@@ -47,7 +47,7 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   ssh -N -f -L "localhost:8787:localhost:8787" <remote/machine/address>  # replace <remote/machine/address> as necessary
   ```
 
-3. Then, open [0.0.0.0:8787](https://0.0.0.0:8787) in a web browser on the host.
+3. Then, open address [0.0.0.0:8787](https://0.0.0.0:8787) or [127.0.0.1:8787](https://127.0.0.1:8787) in a web browser like Firefox on the host.
 
 Please refer to the Rocker Project [documentation](https://rocker-project.org/use/singularity.html) for more details.
 
