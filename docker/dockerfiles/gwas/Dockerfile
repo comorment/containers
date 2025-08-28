@@ -152,6 +152,7 @@ WORKDIR /tmp/shapeit5
 # COPY /scripts/patches/shapeit5.diff /tmp/shapeit5/
 # COPY /scripts/patches/xcftools.diff /tmp/shapeit5/
 # RUN bash /tmp/shapeit5/install_shapeit5.sh && \
+COPY /scripts/install_shapeit5_static.sh /tmp/shapeit5/
 RUN bash /tmp/shapeit5/install_shapeit5_static.sh && \
     rm -rf /tmp/shapeit5
 
