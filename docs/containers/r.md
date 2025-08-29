@@ -59,10 +59,10 @@ List of main software in the container:
 
   | OS/tool                   | version                                   | license
   | ------------------------- | ----------------------------------------- | -------------
-  | ubuntu                    | 22.04.5                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | R[^r]                     | 4.4.1 (2024-09-04) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | ubuntu                    | 24.04LTS                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | R[^r]                     | 4.5.1 (2025-06-13) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | gcta64[^gcta]             | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@8e0ef5](https://github.com/GenomicSEM/GenomicSEM/commit/8e0ef594e95885b1f734f1dfcfe668b16ada2880)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GSMR[^gsmr]               | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
   | rareGWAMA[^raregwama]     | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
   | seqminer[^seqminer]       | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)
