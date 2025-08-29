@@ -28,7 +28,7 @@ List of software included in the container:
 
   | OS/tool                         | version                                   | license
   | ------------------------------- | ----------------------------------------- | -------------
-  | ubuntu                          | 20.04                                     | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | ubuntu                          | 24.04LTS                                  | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
   | bcftools[^bcftools]             | 1.19                                      | [MIT/Expat/GPLv3](https://github.com/samtools/bcftools/blob/develop/LICENSE)
   | bedtools[^bedtools]             | 2.31.1                                    | [MIT](https://opensource.org/licenses/MIT)
   | beagle[^beagle1] [^beagle2]     | 22Jul22.46e                               | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -48,12 +48,12 @@ List of software included in the container:
   | liftOver[^liftover]             | latest                                    | [permissive](https://genome-store.ucsc.edu)
   | metal[^metal]                   | 2020-05-05                                | -
   | minimac4[^minimac4]             | v4.1.6                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | plink[^plink19]                 | v1.90b7.2 64-bit (11 Dec 2023)            | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | plink2[^plink2]                 | v2.00a5.10LM 64-bit Intel (5 Jan 2024)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | plink2_avx2[^plink2]            | v2.00a5.10LM AVX2 Intel (5 Jan 2024)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | plink[^plink19]                 | v1.9.0-b.7.11 64-bit (19 Aug 2025)            | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | plink2[^plink2]                 | v2.0.0-a.6.23LM 64-bit Intel (24 Aug 2025)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | plink2_avx2[^plink2]            | v2.0.0-a.6.23LM AVX2 Intel (24 Aug 2025)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | PRSice_linux[^prsice]           | 2.3.5                                     | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | qctool[^qctool]                 | 2.2.2, revision e5723df2c0c85959          | [Boost](https://www.boost.org/LICENSE_1_0.txt)
-  | regenie[^regenie]               | v3.6                                      | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
+  | (qctool[^qctool])               | 2.2.2, revision e5723df2c0c85959          | [Boost](https://www.boost.org/LICENSE_1_0.txt)
+  | regenie[^regenie]               | v4.1.2                                    | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
   | samtools[^bcftools]             | v1.19.2                                   | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
   | shapeit4.2[^shapeit4]           | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
   | shapeit5[^shapeit5] phase_rare  | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)

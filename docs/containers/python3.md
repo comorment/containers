@@ -33,9 +33,10 @@ List of software in the container:
 
   | OS/tool                     | version                                   | license
   | --------------------------- | ----------------------------------------- | -------------
-  | ubuntu                      | 20.04 (LTS)                               | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | ubuntu                      | 24.04 (LTS)                               | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
   | LDpred[^ldpred]             | 1.0.11                                    | [MIT](https://opensource.org/licenses/MIT)
-  | plink[^plink19]             | v1.90b6.18 64-bit (16 Jun 2020)           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | plink[^plink19]             | v1.9.0-b.7.11 64-bit (19 Aug 2025)        | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | Miniforge                   | 25.3.1-0                                  | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
   | python3[^python3]           | python 3.10.6 + numpy, pandas, etc.       | [PSF](https://docs.python.org/3.10/license.html)
   | python_convert[^convert]    | git SHA bcde562                           | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
 

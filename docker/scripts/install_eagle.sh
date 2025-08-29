@@ -2,7 +2,7 @@
 set -euo pipefail
 
 apt-get update && apt-get install --no-install-recommends \
-    libopenblas-dev=0.3.8+ds-1ubuntu0.20.04.1 \
+    libopenblas-dev=0.3.26+ds-1 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

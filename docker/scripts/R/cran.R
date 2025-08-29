@@ -1,5 +1,5 @@
 require(devtools)
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
+url <- "https://packagemanager.posit.co/cran/__linux__/noble/2025-08-01"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 upgrade <- 'default'
 
@@ -10,6 +10,7 @@ packages <- list(
     'AER',
     'argparser',
     'arsenal',
+    'arrow',
     'bigreadr',
     'bigsnpr',
     'BiocManager',
@@ -98,7 +99,8 @@ packages <- list(
     'tidyr',
     'tree',
     'vctrs',
-    'xgboost')
+    'xgboost',
+    'zlib')
  
 # install package from CRAN and quit with error if installation fails
 # for (package in names(packages)) {

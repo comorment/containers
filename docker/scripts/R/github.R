@@ -1,4 +1,4 @@
-url <- "https://packagemanager.posit.co/cran/__linux__/jammy/2024-09-04"
+url <- "https://packagemanager.posit.co/cran/__linux__/noble/2025-08-01"
 dependencies <- c('Depends', 'Imports', 'LinkingTo')
 # upgrade <- 'default'
 upgrade <- 'never'
@@ -10,7 +10,7 @@ packages <- list(
     'alexploner/cfdr.pleio' = '76d5085e6d3f3ca9576d5d7564d2acf11bcfd021',
     'dajiangliu/rareGWAMA' = '72e962dae19dc07251244f6c33275ada189c2126',
     'deepchocolate/glm-extras' = 'ecba68c0378fc953edf8fe594ce914aff8ada6fa',
-    'GenomicSEM/GenomicSEM' = '199d16f5e45c040a25ee0c885338ebd667277135',
+    'GenomicSEM/GenomicSEM' = '8e0ef594e95885b1f734f1dfcfe668b16ada2880',
     'jamesliley/cfdr' = 'ec5fddbd27c746a470eb827dc249a80194b231e8',
     'jamesliley/cFDR-common-controls' = '9b923fea283e2373ee8effa2909620a1930004bd',
     # gwasvcf deps:
@@ -21,6 +21,7 @@ packages <- list(
     'rondolab/MR-PRESSO' = '3e3c92d7eda6dce0d1d66077373ec0f7ff4f7e87',
     'gqi/MRMix'='56afdb2bc96760842405396f5d3f02e60e305039',
     'WSpiller/RadialMR' = '0ed91f83aebf265a09482561c128c830e58ed697',
+    'qingyuanzhao/mr.raps' = '27b96f31e26ae97a395422bd757f514a7f96cc85',
     'MRCIEU/TwoSampleMR' = '578c68fa754c57d764553812bf85d69ecf43b011',
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
     'noahlorinczcomi/MRBEE' = '6295549a1f5a158c6701eb793646d60c8aef11ca',

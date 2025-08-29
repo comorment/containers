@@ -29,10 +29,17 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   cd <working/dir>
   mkdir -p run var-lib-rstudio-server
   printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
-  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf <path/to/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1
+  apptainer exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf --home=$PWD <path/to>/r.sif /usr/lib/rstudio-server/bin/rserver --www-address=127.0.0.1 --www-port=8787 --server-user $USER
   ```
   
   where `<working/dir>` is the directory where you want to start Rstudio-server, and `<path/to/r.sif>` is the path to the `r.sif` container.
+
+  If you want to mount additional directories, you can append the ``--bind`` argument to the apptainer call (attaching ``/ess`` and ``/cluster`` as examples):
+  ```
+  --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf,/ess:/ess,/cluster:/cluster
+  ```
+
+  If you get messages like “address already in use”, try and replace the port number 8787 with another port number (e.g., 8888, etc.) everywhere in the steps above and below.
 
 2. (Optional) Create SSH tunnel using port 8787 from the local host to the remote machine
 
@@ -40,7 +47,7 @@ The `r.sif` container includes Rstudio-server, which can be accessed in a browse
   ssh -N -f -L "localhost:8787:localhost:8787" <remote/machine/address>  # replace <remote/machine/address> as necessary
   ```
 
-3. Then, open [0.0.0.0:8787](https://0.0.0.0:8787) in a web browser on the host.
+3. Then, open address [0.0.0.0:8787](https://0.0.0.0:8787) or [127.0.0.1:8787](https://127.0.0.1:8787) in a web browser like Firefox on the host.
 
 Please refer to the Rocker Project [documentation](https://rocker-project.org/use/singularity.html) for more details.
 
@@ -52,10 +59,10 @@ List of main software in the container:
 
   | OS/tool                   | version                                   | license
   | ------------------------- | ----------------------------------------- | -------------
-  | ubuntu                    | 22.04.5                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
-  | R[^r]                     | 4.4.1 (2024-09-04) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
+  | ubuntu                    | 24.04LTS                                   | [Creative Commons CC-BY-SA version 3.0 UK licence](https://ubuntu.com/legal/intellectual-property-policy)
+  | R[^r]                     | 4.5.1 (2025-06-13) + data.table, ggplot, etc. | [misc](https://www.r-project.org/Licenses/)
   | gcta64[^gcta]             | 1.94.1                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
-  | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@bcbbaff](https://github.com/GenomicSEM/GenomicSEM/commit/bcbbaffff5767acfc5c020409a4dc54fbf07876b)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | GenomicSEM[^genomicsem]   | [GenomicSEM/GenomicSEM@8e0ef5](https://github.com/GenomicSEM/GenomicSEM/commit/8e0ef594e95885b1f734f1dfcfe668b16ada2880)  | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | GSMR[^gsmr]               | v1.0.9                                    | [GPL>=v2](https://www.gnu.org/licenses/gpl-2.0.html)
   | rareGWAMA[^raregwama]     | [dajiangliu/rareGWAMA@72e962d](https://github.com/dajiangliu/rareGWAMA/commit/72e962dae19dc07251244f6c33275ada189c2126)  | -
   | seqminer[^seqminer]       | [zhanxw/seqminer@142204d](https://github.com/zhanxw/seqminer/commit/142204d1005553ea87e1740ff97f0286291e41f9)  | [GPL](https://github.com/zhanxw/seqminer/blob/master/LICENSE)

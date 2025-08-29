@@ -3,7 +3,7 @@ set -euo pipefail
 
 # additional deps
 apt-get update && apt-get install --no-install-recommends \
-    libboost-program-options-dev=1.71.0.0ubuntu2 \
+    libboost-program-options-dev=1.83.0.1ubuntu2 \
     -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

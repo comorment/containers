@@ -3,7 +3,7 @@ set -euo pipefail
 
 export VERSION="v2.4.1"
                            
-wget --no-check-certificate https://storage.googleapis.com/broad-alkesgroup-public/BOLT-LMM/downloads/BOLT-LMM_$VERSION.tar.gz
+wget --no-check-certificate https://storage.googleapis.com/broad-alkesgroup-public/BOLT-LMM/downloads/old/BOLT-LMM_${VERSION}.tar.gz
 tar -xvzf BOLT-LMM_$VERSION.tar.gz
 rm -rf BOLT-LMM_$VERSION.tar.gz
 mv BOLT-LMM_$VERSION/* .

@@ -37,6 +37,20 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## [1.10.0] - 2025-08-27
+
+### Updated
+
+* Use Ubuntu 24.04LTS as base image for all container builds for futureproofing/security
+* Add 'paramiko' package to `python3.sif` container, updated genomicSEM and added arrow, zlib, mr.raps in `r.sif` container
+* More recent posit/cran(@2025-08-01)/bioconductor (3.19->3.22@2025-08-01) packages, removing deprecated packages (zlibbioc)
+* revised a bunch of tool installer scripts
+* shapeit5 binaries now use static builds provided by developer
+
+### Removed
+
+* temporarily remove build of qctool from gwas.sif due to GCC >= 13 issues
+
 ## [1.9.1] - 2025-03-27
 
 ### Added
