@@ -26,11 +26,14 @@ packages <- list(
     'MRCIEU/gwasglue' = 'c2d5660eed389e1a9b3e04406b88731d642243f1',
     'noahlorinczcomi/MRBEE' = '6295549a1f5a158c6701eb793646d60c8aef11ca',
     'norment/normentR' = 'dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1',
-    'psychgen/phenotools' = '9eefa4ee0e8ea00bcbdb0e579dcdd7912cfe0597',
+    'psychgen/phenotools' = '62dd11e111d8d952837c9f207557e9b297ba56bc',
     'wouterpeyrot/CCGWAS' = 'ce9764da946189623a0164f156ad119773bc32f5',
     'WSpiller/MVMR' = '65705da9421b6235c7458dba6f01cddfebfe96f5',
     'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16',
-    'amorris28/hazrd' = 'f2748a815a094f2e12a5de89c707aa808de5fe25'
+    'amorris28/hazrd' = 'ff9f1690e930792f29e1fd87e25c0dc8632339d5',
+    'cnfoley/hyprcoloc' = '26ea5953a46b3e204dfa8eadd202f746244afa13',
+    'YuyingLi-X/HDL-L' = 'fd6655f8bf78cbf667d19f362bc14171e600e987',
+    'JBPG/Gsens' = '6cac02ba1ccaf38870e2526076f0306c0cf0dc0a'
 )
 
 # install package from GitHub and quit with error if installation fails

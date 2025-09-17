@@ -24,7 +24,8 @@ packages <- c(
     'limma',
     'org.Hs.eg.db',
     'rtracklayer',
-    'snpStats', 
+    'snpStats',
+    'survcomp',
     'TMixClust',
     'VariantAnnotation')
 

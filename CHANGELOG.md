@@ -37,6 +37,12 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## [1.11.0] - 2025-09-17
+
+### Added
+
+* added some requested R packages to R container.
+
 ## [1.10.0] - 2025-08-27
 
 ### Updated
