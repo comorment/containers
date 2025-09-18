@@ -32,7 +32,7 @@ packages <- list(
     'xiashen/MultiABEL' = '7067fe6753c74f6580029abc82bce914472b4b16',
     'amorris28/hazrd' = 'ff9f1690e930792f29e1fd87e25c0dc8632339d5',
     'cnfoley/hyprcoloc' = '26ea5953a46b3e204dfa8eadd202f746244afa13',
-    'YuyingLi-X/HDL-L' = 'fd6655f8bf78cbf667d19f362bc14171e600e987',
+    'zhenin/HDL/HDL' = '551a8864c5ed3389a6892743ff059357735dc195',
     'JBPG/Gsens' = '6cac02ba1ccaf38870e2526076f0306c0cf0dc0a'
 )
 

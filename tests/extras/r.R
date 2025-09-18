@@ -105,7 +105,7 @@ libraries_to_check <- c(
     "haven",
     "Haplin",
     "hazrd",
-    "HDL-L",
+    "HDL",
     "homologene",
     "hyprcoloc",
     "ieugwasr",
