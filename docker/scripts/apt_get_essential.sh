@@ -34,7 +34,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    tar=1.35+dfsg-3build1 \
    tofrodos=1.7.13+ds-6 \
    unzip=6.0-28ubuntu4.1 \
-   vim=2:9.1.0016-1ubuntu7.8 \
+   vim=2:9.1.0016-1ubuntu7.9 \
    wget=1.21.4-1ubuntu4.1 \
    zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1
    
