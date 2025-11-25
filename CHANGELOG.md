@@ -37,6 +37,12 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## [1.11.1] - 2025-11-25
+
+### Fixed
+
+* quiet import of `bit64` in `ldpred2.R` to fix broken IDs with `attach_snp()` function
+
 ## [1.11.0] - 2025-09-17
 
 ### Added

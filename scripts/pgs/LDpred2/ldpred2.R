@@ -1,13 +1,16 @@
 # Calculate polygenic scores using ldpred2
-# this script is an adaptation of the demo script available at the bigsnpr homepage
-library(bigsnpr, quietly = T)
+# this script is an adaptation of the LDpred2 vignette available at the
+# bigsnpr homepage (https://privefl.github.io/bigsnpr/articles/LDpred2.html)
+library(bigsnpr, quietly = TRUE)
 options(bigstatsr.check.parallel.blas = FALSE)
 options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
 library(stringr)
+suppressPackageStartupMessages(library(bit64))
 
-### Maybe there's some environment variable availble to determine the location of the script instead
+# Maybe there's some environment variable availble to determine the
+# location of the script instead
 coms <- commandArgs()
 coms <- coms[substr(coms, 1, 7) == '--file=']
 dirScript <- dirname(substr(coms, 8, nchar(coms)))
