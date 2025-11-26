@@ -7,6 +7,7 @@ Test module for ``r.sif`` build
 import os
 import subprocess
 import tempfile
+import pytest
 
 
 # Check that (1) apptainer exist, and (2) if not, check for docker.
@@ -84,6 +85,7 @@ def test_r_R_rmarkdown():
         assert pdf_output
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_gcta():
     """test gcta"""
     with tempfile.TemporaryDirectory() as d:
