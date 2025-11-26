@@ -63,7 +63,7 @@ RUN mamba install python=3.10.6 \
     mamba clean -a -y
 
 # pip install stuff in env.
-RUN pip install --no-cache-dir cbgen==1.0.2 \
+RUN pip install --no-cache-dir --no-deps cbgen==1.0.2 \
     bgen-reader==4.0.8 \
     bed-reader==0.2.24 \
     dxpy==0.383.1 \
@@ -74,6 +74,7 @@ RUN pip install --no-cache-dir cbgen==1.0.2 \
     plinkio==0.9.8 \
     plinkliftover \
     poetry==2.2.1 \
+    pooch==1.8.2 \
     pycap==2.1.0 \
     pyliftover==0.4.1 \
     pysnptools==0.5.7 && \
