@@ -174,6 +174,7 @@ def test_gwas_liftover():
     assert out.stdout.decode('utf-8').lower().rfind('error') <= 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_metal():
     """test metal"""
     with tempfile.TemporaryDirectory() as d:

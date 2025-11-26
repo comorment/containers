@@ -17,7 +17,7 @@ jobs:
         name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: 'true'
+          lfs: 'false'
           sparse-checkout: |
             test-requirements.txt
             tests
@@ -59,7 +59,6 @@ jobs:
       - 
         name: Test
         run: |
-          git lfs pull -I tests/extras/*.tar.gz
           pip3 install -r test-requirements.txt
           py.test -v tests/test_gwas.py
       -
