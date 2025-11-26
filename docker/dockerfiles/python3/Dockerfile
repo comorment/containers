@@ -34,6 +34,7 @@ RUN mamba install python=3.10.6 \
     miniwdl=1.12.1 \
     miniwdl-slurm=0.2.0 \
     more-itertools=9.0.0 \
+    networkx \
     numdifftools=0.9.39 \
     numba=0.60.0 \
     numpy=1.23.3 \
@@ -62,16 +63,21 @@ RUN mamba install python=3.10.6 \
     mamba clean -a -y
 
 # pip install stuff in env.
-RUN pip install --no-cache-dir cbgen==1.0.2 && \
-    pip install --no-cache-dir bgen-reader==4.0.8 && \
-    pip install --no-cache-dir bed-reader==0.2.24 && \
-    pip install --no-cache-dir dxpy==0.383.1 && \
-    pip install --no-cache-dir pysnptools==0.5.7 && \
-    pip install --no-cache-dir fastlmm==0.6.3 && \
-    pip install --no-cache-dir plinkio==0.9.8 && \
-    pip install --no-cache-dir LDpred==1.0.11 && \
-    pip install --no-cache-dir pycap==2.1.0 && \
-    pip install --no-cache-dir pyliftover==0.4.1 && \
+RUN pip install --no-cache-dir \
+    cbgen==1.0.2 \
+    bgen-reader==4.0.8 \
+    bed-reader==0.2.24 \
+    dxpy==0.383.1 \
+    fastlmm==0.6.3 \
+    hdf5storage==0.2.2 \
+    LDpred==1.0.11 \
+    Pgenlib==0.93.0 \
+    plinkio==0.9.8 \
+    plinkliftover \
+    poetry==2.2.1 \
+    pycap==2.1.0 \
+    pyliftover==0.4.1 \
+    pysnptools==0.5.7 && \
     pip cache purge 
 
 # Plink (as python_convert depends on plink)
