@@ -7,7 +7,6 @@ options(default.nproc.blas = NULL)
 library(tools)
 library(argparser, quietly=T)
 library(stringr)
-suppressPackageStartupMessages(library(bit64))
 
 # Maybe there's some environment variable availble to determine the
 # location of the script instead
@@ -145,7 +144,9 @@ if (fileOutputMerge) {
 if (!file.exists(parsed$tmp_dir)) stop("Temporary directory", parsed$tmp_dir, "does not exist") 
 
 cat('Loading backingfile:', fileGeno ,'\n')
+suppressPackageStartupMessages(library(bit64))
 obj.bigSNP <- snp_attach(fileGeno)
+detach("package:bit64", unload = TRUE)
 
 # Store some key variables
 G <- obj.bigSNP$genotypes
