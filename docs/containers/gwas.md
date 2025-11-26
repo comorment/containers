@@ -56,11 +56,6 @@ List of software included in the container:
   | regenie[^regenie]               | v4.1.2                                    | [MIT/Boost](https://github.com/rgcgithub/regenie/blob/master/LICENSE)
   | samtools[^bcftools]             | v1.19.2                                   | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
   | shapeit4.2[^shapeit4]           | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
-  | shapeit5[^shapeit5] phase_rare  | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | shapeit5[^shapeit5] phase_common | v5.1.1                                  | [MIT](https://opensource.org/licenses/MIT)
-  | shapeit5[^shapeit5] ligate      | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | shapeit5[^shapeit5] switch      | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
-  | shapeit5[^shapeit5] xcftools    | v5.1.1                                    | [MIT](https://opensource.org/licenses/MIT)
   | simu_linux[^simu]               | v0.9.4                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | snptest[^snptest]               | v2.5.6                                    | [permissive](https://www.chg.ox.ac.uk/~gav/snptest/#download)
   | switchError[^switcherror]       | 6e688b1                                   | [MIT](https://opensource.org/licenses/MIT)
@@ -117,8 +112,6 @@ List of software included in the container:
 [^regenie]: Mbatchou, J., Barnard, L., Backman, J. et al. Computationally efficient whole-genome regression for quantitative and binary traits. Nat Genet 53, 1097–1103 (2021). <https://doi.org/10.1038/s41588-021-00870-7>
 
 [^shapeit4]: Delaneau, O., Zagury, JF., Robinson, M.R. et al. Accurate, scalable and integrative haplotype estimation. Nat Commun 10, 5436 (2019). <https://doi.org/10.1038/s41467-019-13225-y>
-
-[^shapeit5]: Hofmeister, R.J., Ribeiro, D.M., Rubinacci, S. et al. Accurate rare variant phasing of whole-genome and whole-exome sequencing data in the UK Biobank. Nat Genet 55, 1243–1249 (2023). <https://doi.org/10.1038/s41588-023-01415-w>
 
 [^simu]: [https://github.com/precimed/simu](https://github.com/precimed/simu)
 

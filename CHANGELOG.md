@@ -37,11 +37,16 @@ Removed features goes here
 
 Miscellaneous goes here
 
-## [1.11.1] - 2025-11-25
+## [1.12.0] - 2025-11-26
 
 ### Fixed
 
 * quiet import of `bit64` in `ldpred2.R` to fix broken IDs with `attach_snp()` function
+* not using git LFS for GH actions
+
+### Removed
+
+* removed shapeit5 installation from `gwas.sif` container build
 
 ## [1.11.0] - 2025-09-17
 
