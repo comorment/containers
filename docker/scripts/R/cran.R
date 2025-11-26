@@ -14,6 +14,7 @@ packages <- list(
     'bigreadr',
     'bigsnpr',
     'BiocManager',
+    'bit64',
     'brant',
     'brms',
     'carat',

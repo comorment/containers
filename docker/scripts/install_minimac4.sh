@@ -4,7 +4,7 @@ set -euo pipefail
 # install some deps for installing cget
 apt-get update && \
     apt-get install --no-install-recommends \
-    python3-pip=24.0+dfsg-1ubuntu1.2 \
+    python3-pip=24.0+dfsg-1ubuntu1.3 \
     python3-click=8.1.6-2 \
     python3-six=1.16.0-4 \
     -y && \

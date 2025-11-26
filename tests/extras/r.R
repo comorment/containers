@@ -11,6 +11,7 @@ libraries_to_check <- c(
     "bigsnpr",
     "BiocGenerics",
     "BiocManager",
+    'bit64',
     "caret",
     "coloc",
     "colocboost",
