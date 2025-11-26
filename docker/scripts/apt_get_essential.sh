@@ -29,7 +29,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    parallel=20231122+ds-1 \
    perl=5.38.2-3.2ubuntu0.2 \
    pkg-config=1.8.1-2build1 \
-   python3=3.12.3-0ubuntu2 \
+   python3-dev=3.12.3-0ubuntu2.1 \
    python3-pytest=7.4.4-1 \
    tar=1.35+dfsg-3build1 \
    tofrodos=1.7.13+ds-6 \

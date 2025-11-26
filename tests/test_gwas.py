@@ -101,6 +101,7 @@ def test_gwas_flashpca():
     assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_gcta():
     """test gcta"""
     with tempfile.TemporaryDirectory() as d:
@@ -115,6 +116,7 @@ def test_gwas_gcta():
         assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_gctb():
     """test gctb"""
     if platform.machine() == 'arm64':
@@ -139,6 +141,7 @@ def test_gwas_gwama():
     assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_king():
     """test king"""
     with tempfile.TemporaryDirectory() as d:
@@ -174,6 +177,7 @@ def test_gwas_liftover():
     assert out.stdout.decode('utf-8').lower().rfind('error') <= 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_metal():
     """test metal"""
     with tempfile.TemporaryDirectory() as d:
@@ -306,6 +310,7 @@ def test_gwas_switchError():
     assert out.returncode == 0
 
 
+@pytest.mark.xfail(reason="skip due to git lfs stored test data")
 def test_gwas_simu():
     """test simu"""
     with tempfile.TemporaryDirectory() as d:
