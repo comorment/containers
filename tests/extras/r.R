@@ -145,7 +145,7 @@ libraries_to_check <- c(
     "org.Hs.eg.db",
     "parallel",
     "patchwork",
-    "Pgenlib",
+    "pgenlibr",
     "phenotools",
     "pracma",
     "PredictABEL",

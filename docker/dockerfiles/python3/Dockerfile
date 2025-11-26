@@ -34,7 +34,7 @@ RUN mamba install python=3.10.6 \
     miniwdl=1.12.1 \
     miniwdl-slurm=0.2.0 \
     more-itertools=9.0.0 \
-    networkx \
+    networkx=3.4 \
     numdifftools=0.9.39 \
     numba=0.60.0 \
     numpy=1.23.3 \
@@ -63,8 +63,7 @@ RUN mamba install python=3.10.6 \
     mamba clean -a -y
 
 # pip install stuff in env.
-RUN pip install --no-cache-dir \
-    cbgen==1.0.2 \
+RUN pip install --no-cache-dir cbgen==1.0.2 \
     bgen-reader==4.0.8 \
     bed-reader==0.2.24 \
     dxpy==0.383.1 \

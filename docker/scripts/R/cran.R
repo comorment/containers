@@ -84,7 +84,7 @@ packages <- list(
     'optparse',
     'parameters',
     'patchwork',
-    'Pgenlib',
+    'pgenlibr',
     'PooledCohort',
     'pracma',
     'PredictABEL',
