@@ -43,6 +43,10 @@ RUN Rscript cran.R
 COPY /scripts/R/bioconductor.R .
 RUN Rscript bioconductor.R
 
+# MRCIEU packages:
+COPY /scripts/R/mrcieu.R .
+RUN Rscript mrcieu.R
+
 # GitHub distributed packages:
 COPY /scripts/R/github.R .
 RUN --mount=type=secret,id=github_pat \

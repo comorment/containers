@@ -37,6 +37,17 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## 1.13.0 - 2025-11-27
+
+### Added
+
+* added misc. R and Python packages to respective containers
+* added script to install R backages from [MRCIEU-Universe](https://github.com/r-universe/mrcieu)
+
+### Updated 
+
+* updated PLINK2 to v2.0.0-a.6.28 (Nov. 23, 2025) across containers
+
 ## [1.12.0] - 2025-11-26
 
 ### Fixed
