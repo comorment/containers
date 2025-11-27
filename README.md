@@ -4,6 +4,9 @@
 
 The main documentation for COSGAP is hosted at [cosgap.rtfd.io](https://cosgap.readthedocs.io)
 
+> [!WARNING] 
+> As of Nov 27, 2025 there is known issue with Git LFS quota on this repository. While this is not resolved please use [this Dropbox link](https://www.dropbox.com/scl/fo/13vobohbhq6ol4u070ak3/AEpZZ07R3AjxVr3OfM6wmGI?rlkey=mji06jak3nkm6sk0xc7owzzyq&st=21yzr7tf&dl=0) to download.
+
 ## Project status
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7385621.svg)](https://doi.org/10.5281/zenodo.7385621)
