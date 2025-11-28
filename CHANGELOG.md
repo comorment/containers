@@ -37,6 +37,11 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## 1.13.1 - 2025-11-27
+
+### 
+* Removed mrcieu.R installer script, prefer installation from GitHub repos.
+
 ## 1.13.0 - 2025-11-27
 
 ### Added

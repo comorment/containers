@@ -41,7 +41,7 @@ RUN mamba install python=3.10.6 \
     openpyxl=3.1.5 \
     pandas=2.2.3 \
     pandas-plink=2.2.9 \
-    paramiko \
+    paramiko=4.0.0 \
     psutil=5.9.3 \
     pyarrow=19.0.1 \
     pydot=3.0.4 \
@@ -72,7 +72,7 @@ RUN pip install --no-cache-dir --no-deps cbgen==1.0.2 \
     LDpred==1.0.11 \
     Pgenlib==0.93.0 \
     plinkio==0.9.8 \
-    plinkliftover \
+    plinkliftover==0.5.2 \
     poetry==2.2.1 \
     pooch==1.8.2 \
     pycap==2.1.0 \
