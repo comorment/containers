@@ -107,6 +107,7 @@ def test_python3_miniwdl():
 def test_python3_packages():
     packages = [
         'configparser',
+        'crc32c',
         'dask',
         'fastparquet',
         'dxpy',

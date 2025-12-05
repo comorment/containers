@@ -37,6 +37,17 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## 1.14.0 - 2025-12-05
+
+### Updated
+
+* Using Miniforge3 installer (was Mambaforge)
+* Updated Python (3.10.6 -> 3.12.12) and installed packages in `python3.sif` container.
+
+### Fixed
+
+* Fixed issue with %matplotlib inline magic with IPython/Jupyter in `python3.sif` container.
+
 ## 1.13.1 - 2025-11-27
 
 ### 
