@@ -21,6 +21,7 @@ try:
     subprocess.run('apptainer', check=False)
     PREFIX = f'apptainer run {pth}'
     PREFIX_MOUNT = f'apptainer run --home={cwd}:/home/ {pth}'
+    IPYTHON = f'{PREFIX} ipython'
     PYTHON = f'{PREFIX} python'
     PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
     PLINK = f'{PREFIX} plink'
@@ -37,6 +38,7 @@ except FileNotFoundError:
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '--platform linux/amd64 ' +
             'ghcr.io/comorment/python3')
+        IPYTHON = f'{PREFIX} ipython'
         PYTHON = f'{PREFIX} python'
         PYTHON_MOUNT = f'{PREFIX_MOUNT} python'
         PLINK = f'{PREFIX} plink'
@@ -46,6 +48,7 @@ except FileNotFoundError:
     except FileNotFoundError:
         # neither apptainer nor docker found, fall back to plain python
         # presumably because we are running on the client
+        IPYTHON = 'ipython'
         PYTHON = 'python'
         PYTHON_MOUNT = 'python'
         PLINK = 'plink'
@@ -104,6 +107,7 @@ def test_python3_miniwdl():
 def test_python3_packages():
     packages = [
         'configparser',
+        'crc32c',
         'dask',
         'fastparquet',
         'dxpy',
@@ -149,5 +153,10 @@ def test_python3_packages():
 
 def test_python3_import_pandas_scipy_stats():
     call = f'{PYTHON_MOUNT} -c "import pandas as pd; from scipy import *"'
+    out = subprocess.run(call, shell=True, check=False)
+    assert out.returncode == 0
+
+def test_python3_ipython_magic():
+    call = f'{IPYTHON} -c "get_ipython().run_line_magic(\'matplotlib\', \'inline\')"'
     out = subprocess.run(call, shell=True, check=False)
     assert out.returncode == 0
