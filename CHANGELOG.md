@@ -37,6 +37,13 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## 1.15.0 - 2026-02-23
+
+### Added
+
+* Added `OPERA` tool to `gwas.sif` container, with corresponding test.
+* Added Python and R packages to `python3.sif` and `r.sif` containers, with corresponding test.
+
 ## 1.14.0 - 2025-12-05
 
 ### Updated

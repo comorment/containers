@@ -339,3 +339,10 @@ def test_gwas_duohmm():
     call = f'{PREFIX} duohmm'
     out = subprocess.run(call.split(' '), check=False)
     assert out.returncode == 0
+
+
+def test_gwas_opera():
+    """test opera"""
+    call = f'{PREFIX} opera'
+    out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0

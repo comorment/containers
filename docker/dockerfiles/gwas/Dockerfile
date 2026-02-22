@@ -202,4 +202,12 @@ COPY /scripts/install_liftover.sh /tmp/liftover/
 RUN bash /tmp/liftover/install_liftover.sh && \
     rm -rf /tmp/liftover
 
+
+# OPERA
+WORKDIR /tmp/opera
+RUN wget https://github.com/wuyangf7/OPERA/blob/main/opera_Linux.zip?raw=true -O opera_Linux.zip && \
+    unzip opera_Linux.zip && \
+    rm opera_Linux.zip && \
+    mv opera_Linux/opera_Linux /usr/bin/opera
+
 WORKDIR /tools
