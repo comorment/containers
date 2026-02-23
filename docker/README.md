@@ -17,6 +17,23 @@ The build process is defined in the corresponding [.github/workflows/docker_buil
 In general, a created PR will trigger the build process and run the unit tests automatically.
 Resulting container files will be uploaded to the [GitHub packages](https://github.com/orgs/comorment/packages?repo_name=containers) when new Git tags are pushed on the main branch.
 
+### Offline builds
+
+It should be possible to build the Docker containers offline, using the provided Dockerfiles.
+Suggested steps for building the containers offline are as follows:
+
+```{bash}
+docker build --platform=linux/amd64 -t ghcr.io/comorment/<image> -f dockerfiles/<image>/Dockerfile .
+```
+
+To successfully build the `r` container, a GITHUB_PAT file with a valid GitHub Personal Access Token (PAT) is required, which can be created in the GitHub account settings and should have at least `read:packages` scope.
+This is needed to access a number of R package GitHub repositories.
+
+```{bash}
+docker build --secret id=github_pat,src=~/secrets/GITHUB_PAT --platform=linux/amd64 -t ghcr.io/comorment/r -f dockerfiles/r/Dockerfile .
+```
+
+
 ## Note about NREC machine (old)
 
 We use NREC machine to develop and build containers.

@@ -22,14 +22,21 @@ RUN conda install mamba -n base -c conda-forge && \
 # keep the list of packages sorted alphabetically
 # https://www.online-utility.org/text/sort.jsp
 RUN mamba install python=3.12.12 \
+    BeautifulSoup4=4.14.3 \
+    bottleneck=1.6.0 \
     configparser=7.2.0 \
     dask=2025.11.0 \
     fastparquet=2024.11.0 \
+    fsspec=2026.2.0 \
+    gcsfs=2026.2.0 \
     graphviz=14.0.5 \
     "h5py=3.15.1=nompi*" \
+    html5lib=1.1 \
+    Jinja2=3.1.6 \
     jupyterlab=4.5.0 \
     lightgbm=4.6.0 \
     lifelines=0.30.0 \
+    lxml=6.0.2 \
     imbalanced-learn=0.14.0 \
     intervaltree=3.1.0 \
     matplotlib-venn=1.1.2 \
@@ -40,18 +47,29 @@ RUN mamba install python=3.12.12 \
     networkx=3.6 \
     numdifftools=0.9.41 \
     numba=0.62.1 \
+    numexpr=2.14.1 \
     numpy=2.3.5 \
+    odfpy=1.4.1 \
     openpyxl=3.1.5 \
     pandas=2.3.3 \
+    pandas-gbq=0.28.0 \
     pandas-plink=2.3.2 \
     paramiko=4.0.0 \
     psutil=7.1.3 \
+    psycopg2=2.9.11 \
     pyarrow=22.0.0 \
     pydot=4.0.1 \
+    pymysql=1.1.2 \
+    pyqt=5.15.11 \
+    pyreadr=0.5.4 \
     pyreadstat=1.3.2 \
     pytables=3.10.2 \
     python-graphviz=0.21 \
+    python-blosc2=4.0.0 \
+    pyxlsb=1.0.10 \
     pyyaml=6.0.3 \
+    qtpy=2.4.3 \
+    s3fs=2026.2.0 \
     scikit-learn=1.7.2 \
     scikit-survival=0.25.0 \
     scipy=1.16.3 \
@@ -59,8 +77,12 @@ RUN mamba install python=3.12.12 \
     semantic_version=2.10.0 \
     shap=0.48.0 \
     statsmodels=0.14.5 \
+    SQLAlchemy=2.0.46 \
+    tabulate=0.9.0 \
+    xarray=2026.2.0 \
     xgboost=3.1.2 \
     xlrd=2.0.2 \
+    xlsxwriter=3.2.9 \
     xmltodict=1.0.2 \
     --yes && \
     mamba clean -a -y

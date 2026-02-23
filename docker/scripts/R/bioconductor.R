@@ -23,6 +23,7 @@ packages <- c(
     'GWASTools',
     'limma',
     'org.Hs.eg.db',
+    'rhdf5',
     'rtracklayer',
     'snpStats',
     'survcomp',

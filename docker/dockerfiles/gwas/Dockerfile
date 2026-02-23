@@ -202,4 +202,18 @@ COPY /scripts/install_liftover.sh /tmp/liftover/
 RUN bash /tmp/liftover/install_liftover.sh && \
     rm -rf /tmp/liftover
 
+# OPERA
+WORKDIR /tmp/opera
+RUN wget --progress=dot:giga https://github.com/wuyangf7/OPERA/blob/main/opera_Linux.zip?raw=true -O opera_Linux.zip && \
+    unzip opera_Linux.zip && \
+    rm opera_Linux.zip && \
+    mv opera_Linux/opera_Linux /usr/bin/opera
+
+# SMR
+WORKDIR /tmp/smr
+RUN wget --progress=dot:giga https://yanglab.westlake.edu.cn/software/smr/download/smr-1.4.0-linux-x86_64.zip && \
+    unzip smr-1.4.0-linux-x86_64.zip && \
+    rm smr-1.4.0-linux-x86_64.zip && \
+    mv smr-1.4.0-linux-x86_64/smr /usr/bin/smr
+
 WORKDIR /tools

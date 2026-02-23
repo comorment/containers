@@ -20,7 +20,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    less=590-2ubuntu2.1 \
    libatlas-base-dev=3.10.3-13ubuntu1 \
    libcurl4-openssl-dev=8.5.0-2ubuntu10.6 \
-   libgomp1=14.2.0-4ubuntu2~24.04 \
+   libgomp1=14.2.0-4ubuntu2~24.04.1 \
    libgsl-dev=2.7.1+dfsg-6ubuntu2 \
    libnss3=2:3.98-1build1 \
    libpcre2-dev=10.42-4ubuntu2.1 \

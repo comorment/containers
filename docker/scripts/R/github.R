@@ -26,6 +26,7 @@ packages <- list(
     "qingyuanzhao/mr.raps" = "27b96f31e26ae97a395422bd757f514a7f96cc85",
     "MRCIEU/TwoSampleMR" = "578c68fa754c57d764553812bf85d69ecf43b011",
     "MRCIEU/gwasglue" = "c2d5660eed389e1a9b3e04406b88731d642243f1",
+    # misc
     "noahlorinczcomi/MRBEE" = "6295549a1f5a158c6701eb793646d60c8aef11ca",
     "norment/normentR" = "dfa1fbae9587db6c3613b0405df4f9cfa98ee0e1",
     "psychgen/phenotools" = "62dd11e111d8d952837c9f207557e9b297ba56bc",
@@ -38,7 +39,9 @@ packages <- list(
     "JBPG/Gsens" = "6cac02ba1ccaf38870e2526076f0306c0cf0dc0a",
     "MRCIEU/genetics.binaRies" = "2fcd3ee3088b729c7eb34cf2aac9dc2e04fe4412",
     "mrcieu/gwasglue2" = "c93b3a1fca7d2eae5d40bd62117091b1ad57f0fa",
-    "gqi/MRMix" = "56afdb2bc96760842405396f5d3f02e60e305039")
+    "gqi/MRMix" = "56afdb2bc96760842405396f5d3f02e60e305039",
+    "JianYang-Lab/gsmr2" = "e7953cc136ad1cfae14674facde21e90caddea5f",
+    "n-mounier/MRlap" = "660f026864f8bfbbad5a8206bdff7d58f5d5d05b")
 
 # install package from GitHub and quit with error if installation fails
 for (package in names(packages)) {

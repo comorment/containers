@@ -37,7 +37,6 @@ except FileNotFoundError:
             f'--mount type=bind,source={cwd},target={cwd} ' +
             '{custom_mount}' +
             '-w /home/ ' +
-            # '--platform linux/amd64 ' +
             'ghcr.io/comorment/gwas')
     except FileNotFoundError as err:
         # neither singularity nor docker found, fall back to plain python
@@ -338,4 +337,17 @@ def test_gwas_duohmm():
     """test duohmm"""
     call = f'{PREFIX} duohmm'
     out = subprocess.run(call.split(' '), check=False)
+    assert out.returncode == 0
+
+
+def test_gwas_opera():
+    """test opera"""
+    call = f'{PREFIX} opera'
+    out = subprocess.run(call.split(' '), shell=True, check=False, capture_output=True)
+    assert out.returncode == 0
+
+def test_gwas_smr():
+    """test smr"""
+    call = f'{PREFIX} smr'
+    out = subprocess.run(call.split(' '), shell=True, check=False, capture_output=True)
     assert out.returncode == 0

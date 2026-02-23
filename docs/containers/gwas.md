@@ -48,6 +48,7 @@ List of software included in the container:
   | liftOver[^liftover]             | latest                                    | [permissive](https://genome-store.ucsc.edu)
   | metal[^metal]                   | 2020-05-05                                | -
   | minimac4[^minimac4]             | v4.1.6                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | OPERA[^opera]                   | v1.18                                     | -
   | plink[^plink19]                 | v1.9.0-b.7.11 64-bit (19 Aug 2025)            | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | plink2[^plink2]                 | v2.0.0-a.6.23LM 64-bit Intel (24 Aug 2025)    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
   | plink2_avx2[^plink2]            | v2.0.0-a.6.23LM AVX2 Intel (24 Aug 2025)      | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -57,6 +58,7 @@ List of software included in the container:
   | samtools[^bcftools]             | v1.19.2                                   | [MIT/ExpatD](https://github.com/samtools/samtools/blob/develop/LICENSE)
   | shapeit4.2[^shapeit4]           | v4.2.2                                    | [MIT](https://opensource.org/licenses/MIT)
   | simu_linux[^simu]               | v0.9.4                                    | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+  | SMR[^smr]                       | v1.3.2                                    | [GPLv2](https://www.gnu.org/licenses/gpl-2.0.html)
   | snptest[^snptest]               | v2.5.6                                    | [permissive](https://www.chg.ox.ac.uk/~gav/snptest/#download)
   | switchError[^switcherror]       | 6e688b1                                   | [MIT](https://opensource.org/licenses/MIT)
   | vcftools[^vcftools]             | 0.1.17 (git SHA: d511f469e)               | [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -101,6 +103,8 @@ List of software included in the container:
 
 [^minimac4]: [https://genome.sph.umich.edu/wiki/Minimac4](https://genome.sph.umich.edu/wiki/Minimac4)
 
+[^opera]: Wu Y., Qi T., Wray N.R., Visscher P.M., Zeng J. & Yang J. (2023) Joint analysis of GWAS and multi-omics QTL summary statistics reveals a large fraction of GWAS signals shared with molecular phenotypes. Cell Genomics.
+
 [^plink19]: Christopher C Chang, Carson C Chow, Laurent CAM Tellier, Shashaank Vattikuti, Shaun M Purcell, James J Lee, Second-generation PLINK: rising to the challenge of larger and richer datasets, GigaScience, Volume 4, Issue 1, December 2015, s13742–015–0047–8, <https://doi.org/10.1186/s13742-015-0047-8>
 
 [^plink2]: [https://www.cog-genomics.org/plink/2.0/](https://www.cog-genomics.org/plink/2.0/)
@@ -114,6 +118,8 @@ List of software included in the container:
 [^shapeit4]: Delaneau, O., Zagury, JF., Robinson, M.R. et al. Accurate, scalable and integrative haplotype estimation. Nat Commun 10, 5436 (2019). <https://doi.org/10.1038/s41467-019-13225-y>
 
 [^simu]: [https://github.com/precimed/simu](https://github.com/precimed/simu)
+
+[^smr]: Zhu Z, Zhang F, Hu H, Bakshi A, Robinson MR, Powell JE, Montgomery GW, Goddard ME, Wray NR, Visscher PM & Yang J (2016) Integration of summary data from GWAS and eQTL studies predicts complex trait gene targets. Nature Genetics, 48:481-487.
 
 [^snptest]: [https://www.chg.ox.ac.uk/~gav/snptest/#download](https://www.chg.ox.ac.uk/~gav/snptest/#download)
 

@@ -72,6 +72,8 @@ packages <- list(
     'lightgbm',
     'lmerTest',
     'magrittr',
+    'matlab',
+    'matlab2r',
     'MatrixEQTL',
     'matrixStats',
     'MendelianRandomization',
@@ -97,6 +99,8 @@ packages <- list(
     'remotes',
     'RiskScorescvd',
     'rjags',
+    'rmatio',
+    'R.matlab',
     'ROCR',
     'rmarkdown',
     'rstan',
@@ -120,6 +124,7 @@ packages <- list(
     'vctrs',
     'xgboost',
     'zlib')
+
  
 # install package from CRAN and quit with error if installation fails
 # for (package in names(packages)) {

@@ -106,6 +106,7 @@ libraries_to_check <- c(
     "gplots",
     "gridExtra",
     "Gsens",
+    "gsmr2",
     "gwasglue",
     "gwasglue2",
     "gwasurvivr",
@@ -126,12 +127,15 @@ libraries_to_check <- c(
     "lubridate",
     "kinship2",
     "MASS",
+    "matlab",
+    "matlab2r",
     "MatrixEQTL",
     "matrixStats",
     "MendelianRandomization",
     "mgcv",
     "miniCRAN",
     "MRBEE",
+    "MRlap",
     "MVMR",
     "modelr",
     "moments",
@@ -150,6 +154,9 @@ libraries_to_check <- c(
     "pracma",
     "PredictABEL",
     "psych",
+    "rhdf5",
+    "R.matlab",
+    "rmatio",
     "RColorBrewer",
     "Rcpp",
     "readxl",
@@ -176,6 +183,7 @@ libraries_to_check <- c(
     "TMixClust",
     "tree",
     "viridis")
+
 
 # Define a test
 test_that("Required libraries are installed", {
