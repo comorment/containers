@@ -42,8 +42,7 @@ packages <- list(
     "gqi/MRMix" = "56afdb2bc96760842405396f5d3f02e60e305039",
     "JianYang-Lab/gsmr2" = "e7953cc136ad1cfae14674facde21e90caddea5f",
     "n-mounier/MRlap" = "660f026864f8bfbbad5a8206bdff7d58f5d5d05b")
-    
-    
+
 # install package from GitHub and quit with error if installation fails
 for (package in names(packages)) {
     ref <- packages[[package]]
