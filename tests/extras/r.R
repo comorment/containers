@@ -154,7 +154,6 @@ libraries_to_check <- c(
     "pracma",
     "PredictABEL",
     "psych",
-    "raveio",
     "rhdf5",
     "R.matlab",
     "rmatio",
