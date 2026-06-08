@@ -37,6 +37,13 @@ Removed features goes here
 
 Miscellaneous goes here
 
+## 1.16.0 - 2026-06-08
+
+### Added
+
+* Added R packages: mirt, PerformanceAnalytics, tidymodels, splitstackshape, fastDummies, pbapply, kernlab, PheWAS
+* Added Python packages pymoo, paretoset, pyhazrd
+
 ## 1.15.0 - 2026-02-23
 
 ### Added

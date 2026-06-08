@@ -12,14 +12,14 @@ apt-get update && apt-get install -y --no-install-recommends \
    build-essential=12.10ubuntu1 \
    bzip2=1.0.8-5.1build0.1 \
    cmake=3.28.3-1build7 \
-   curl=8.5.0-2ubuntu10.6 \
+   curl=8.5.0-2ubuntu10.9 \
    dos2unix=7.5.1-1 \
    gdb=15.0.50.20240403-0ubuntu1 \
    gfortran=4:13.2.0-7ubuntu1 \
    git=1:2.43.0-1ubuntu7.3 \
    less=590-2ubuntu2.1 \
    libatlas-base-dev=3.10.3-13ubuntu1 \
-   libcurl4-openssl-dev=8.5.0-2ubuntu10.6 \
+   libcurl4-openssl-dev=8.5.0-2ubuntu10.9 \
    libgomp1=14.2.0-4ubuntu2~24.04.1 \
    libgsl-dev=2.7.1+dfsg-6ubuntu2 \
    libnss3=2:3.98-1build1 \
@@ -34,7 +34,7 @@ apt-get update && apt-get install -y --no-install-recommends \
    tar=1.35+dfsg-3build1 \
    tofrodos=1.7.13+ds-6 \
    unzip=6.0-28ubuntu4.1 \
-   vim=2:9.1.0016-1ubuntu7.9 \
+   vim=2:9.1.0016-1ubuntu7.14 \
    wget=1.21.4-1ubuntu4.1 \
    zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1
    

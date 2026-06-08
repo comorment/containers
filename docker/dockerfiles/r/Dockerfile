@@ -17,7 +17,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    curl=8.5.0-2ubuntu10.6 \
+    curl=8.5.0-2ubuntu10.9 \
     libperl-dev=5.38.2-3.2ubuntu0.2 \
     libgslcblas0=2.7.1+dfsg-6ubuntu2 \
     lmodern=2.005-1 \

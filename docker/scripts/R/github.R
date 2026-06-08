@@ -33,7 +33,7 @@ packages <- list(
     "wouterpeyrot/CCGWAS" = "ce9764da946189623a0164f156ad119773bc32f5",
     "WSpiller/MVMR" = "65705da9421b6235c7458dba6f01cddfebfe96f5",
     "xiashen/MultiABEL" = "7067fe6753c74f6580029abc82bce914472b4b16",
-    "amorris28/hazrd" = "ff9f1690e930792f29e1fd87e25c0dc8632339d5",
+    "amorris28/hazrd" = "c75b2f12361d98f4c50841ec67190e9e7b14c322",
     "cnfoley/hyprcoloc" = "26ea5953a46b3e204dfa8eadd202f746244afa13",
     "zhenin/HDL/HDL" = "551a8864c5ed3389a6892743ff059357735dc195",
     "JBPG/Gsens" = "6cac02ba1ccaf38870e2526076f0306c0cf0dc0a",
@@ -41,7 +41,9 @@ packages <- list(
     "mrcieu/gwasglue2" = "c93b3a1fca7d2eae5d40bd62117091b1ad57f0fa",
     "gqi/MRMix" = "56afdb2bc96760842405396f5d3f02e60e305039",
     "JianYang-Lab/gsmr2" = "e7953cc136ad1cfae14674facde21e90caddea5f",
-    "n-mounier/MRlap" = "660f026864f8bfbbad5a8206bdff7d58f5d5d05b")
+    "n-mounier/MRlap" = "660f026864f8bfbbad5a8206bdff7d58f5d5d05b",
+    "PheWAS/PheWAS" = "55dd1c24e228851922400cfba8d7db474565ccc7")
+
 
 # install package from GitHub and quit with error if installation fails
 for (package in names(packages)) {
