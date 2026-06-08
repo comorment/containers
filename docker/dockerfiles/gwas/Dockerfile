@@ -72,10 +72,10 @@ RUN bash /tmp/snptest/install_snptest.sh && \
     rm -rf /tmp/snptest
 
 # king
-WORKDIR /tmp/king
-COPY /scripts/install_king.sh /tmp/king/
-RUN bash /tmp/king/install_king.sh && \
-    rm -rf /tmp/king
+# WORKDIR /tmp/king
+# COPY /scripts/install_king.sh /tmp/king/
+# RUN bash /tmp/king/install_king.sh && \
+#     rm -rf /tmp/king
 
 # ldak
 WORKDIR /tmp/ldak
