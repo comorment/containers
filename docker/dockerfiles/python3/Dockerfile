@@ -59,6 +59,7 @@ RUN mamba install python=3.12.12 \
     psycopg2=2.9.11 \
     pyarrow=22.0.0 \
     pydot=4.0.1 \
+    pymoo=0.6.1.5 \
     pymysql=1.1.2 \
     pyqt=5.15.11 \
     pyreadr=0.5.4 \
@@ -98,13 +99,16 @@ RUN pip install --no-cache-dir --no-deps \
     hdf5storage==0.2.2 \
     LDpred==1.0.11 \
     Pgenlib==0.93.0 \
+    paretoset==1.2.5 \
     plinkio==0.9.8 \
     plinkliftover==0.5.2 \
     poetry==2.2.1 \
     pooch==1.8.2 \
     pycap==2.7.0 \
     pyliftover==0.4.1 \
-    pysnptools==0.5.14 && \
+    pysnptools==0.5.14 \
+    git+https://github.com/espenhgn/hazrd.git@copilot/convert-hazrd-to-pyhazrd \
+    && \
     pip cache purge
 
 # Plink (as python_convert depends on plink)
