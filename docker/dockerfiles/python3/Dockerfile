@@ -107,7 +107,7 @@ RUN pip install --no-cache-dir --no-deps \
     pycap==2.7.0 \
     pyliftover==0.4.1 \
     pysnptools==0.5.14 \
-    git+https://github.com/espenhgn/hazrd/tree/copilot/convert-hazrd-to-pyhazrd \
+    git+https://github.com/espenhgn/hazrd.git@copilot/convert-hazrd-to-pyhazrd \
     && \
     pip cache purge
 
